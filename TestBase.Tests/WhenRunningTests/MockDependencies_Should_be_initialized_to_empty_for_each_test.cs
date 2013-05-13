@@ -1,7 +1,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestBase.Shoulds;
 
-namespace TestBase.Tests.WhenRunningTests.MockDependencies_Should_be_initialized_to_empty_for_each_test
+namespace TestBase.Tests.WhenRunningTests
 {
     [TestClass]
     public class Given_Initialize_has_not_been_overridden : TestBase<object>
