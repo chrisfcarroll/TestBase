@@ -54,10 +54,13 @@
       <HintPath>..\packages\NUnit.2.6.2\lib\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -70,9 +73,12 @@
   <ItemGroup>
     <Compile Include="Attributes\EnvironmentalDependencyCheckAttribute.cs" />
     <Compile Include="Attributes\ExpectedUseInFitnesseAttribute.cs" />
+    <Compile Include="Attributes\NotCurrentlyTestableInCode.cs" />
     <Compile Include="EqualsByValueConstraint.cs" />
     <Compile Include="FakeXmlExceptionFormatter.cs" />
     <Compile Include="Shoulds\MoqVerificationShoulds.cs" />
+    <Compile Include="MvcExtensions.cs" />
+    <Compile Include="Shoulds\MvcShoulds.cs" />
     <Compile Include="Shoulds\ShouldsForEqualByValue.cs" />
     <Compile Include="Shoulds\AttributeShoulds.cs" />
     <Compile Include="StreamContainsConstraint.cs" />

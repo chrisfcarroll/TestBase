@@ -17,10 +17,15 @@ namespace TestBase
 
         protected MockDependencies InitMocks()  { return MockDependencies = new MockDependencies(); }
 
+        public Mock<T> GetMock<T>() where T : class
+        {
+            return MockDependencies.Get<T>();
+        }
+
         [TestCleanup, NUnit.Framework.TearDown]
         public virtual void Cleanup()  { InitMocks(); }
 
-        [TestInitialize]
+        [TestInitialize, NUnit.Framework.SetUp]
         public virtual void Initialize()
         {
             InitMocks();

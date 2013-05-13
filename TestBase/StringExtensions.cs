@@ -1,7 +1,10 @@
-static internal class StringExtensions
+namespace TestBase
 {
-    public static string WithWhiteSpaceRemoved(this string @this)
+    static public class StringExtensions
     {
-        return @this.Replace(" ", "").Replace("\n", "").Replace("\r", "").Replace("\t", "");
+        public static string WithWhiteSpaceRemoved(this string @this)
+        {
+            return @this.Replace(" ", "").Replace("\n", "").Replace("\r", "").Replace("\t", "");
+        }
     }
 }
