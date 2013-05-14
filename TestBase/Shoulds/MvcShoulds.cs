@@ -93,6 +93,11 @@ namespace TestBase.Shoulds
             return @this.ShouldBeOfType<ViewResult>();
         }
 
+        public static ViewResultBase ShouldBeViewResultNamed(this ActionResult @this, string viewName)
+        {
+            return @this.ShouldBeOfType<ViewResult>().ShouldBeViewNamed(viewName);
+        }
+
         public static JsonResult ShouldBeJsonResult(this ActionResult @this)
         {
             return @this.ShouldBeOfType<JsonResult>();
