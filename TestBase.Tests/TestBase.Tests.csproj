@@ -59,6 +59,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="DictionaryTests\When_using_a_FakesDictionary.cs" />
     <Compile Include="WhenAsserting\UsingAnNUnitWrapperAssertion\AssertionFailureMessageVerifier.cs" />
     <Compile Include="WhenAsserting\UsingAnNUnitWrapperAssertion\ShouldCall__TestCasesForCustomFailureMessageWithNoArgs.cs" />
     <Compile Include="WhenAsserting\UsingAnNUnitWrapperAssertion\ShouldCall__TestCasesForCustomMessageWithArgs.cs" />

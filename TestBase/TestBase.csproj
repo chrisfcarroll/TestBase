@@ -75,6 +75,7 @@
     <Compile Include="Attributes\ExpectedUseInFitnesseAttribute.cs" />
     <Compile Include="Attributes\NotCurrentlyTestableInCode.cs" />
     <Compile Include="EqualsByValueConstraint.cs" />
+    <Compile Include="FakesDictionary.cs" />
     <Compile Include="FakeXmlExceptionFormatter.cs" />
     <Compile Include="Shoulds\MoqVerificationShoulds.cs" />
     <Compile Include="MvcExtensions.cs" />
@@ -85,7 +86,7 @@
     <Compile Include="Shoulds\StreamShoulds.cs" />
     <Compile Include="StringExtensions.cs" />
     <Compile Include="TestBase.cs" />
-    <Compile Include="MockDependencies.cs" />
+    <Compile Include="MocksDictionary.cs" />
     <Compile Include="MockVerifyPassthroughExtensions.cs" />
     <Compile Include="Comparer.cs" />
     <Compile Include="PatternHelper.cs" />

@@ -15,7 +15,7 @@ namespace TestBase.Tests.WhenConstructingATestBase
         [TestMethod]
         public void Testbase_init_should_have_created_2_mocks()
         {
-            MockDependencies.Count().ShouldEqual(2);
+            Mocks.Count().ShouldEqual(2);
         }
 
         public class ClassWith4ConstructorDependenciesOfWhich2AreMockable

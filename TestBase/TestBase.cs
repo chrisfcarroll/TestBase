@@ -11,26 +11,30 @@ namespace TestBase
 {
     public abstract class TestBase<TClass> where TClass : class
     {
-        public MockDependencies MockDependencies { get; private set; }
+        public MocksDictionary Mocks { get; private set; }
 
-        protected TestBase()  {InitMocks();}
+        public FakesDictionary Fakes { get; private set; }
 
-        protected MockDependencies InitMocks()  { return MockDependencies = new MockDependencies(); }
+        protected TestBase()  {InitMocksAndFakes(); }
+
+        protected void InitMocksAndFakes()
+        {
+            Fakes = new FakesDictionary();
+            Mocks = new MocksDictionary();
+        }
 
         public Mock<T> GetMock<T>() where T : class
         {
-            return MockDependencies.Get<T>();
+            return Mocks.Get<T>();
         }
 
         [TestCleanup, NUnit.Framework.TearDown]
-        public virtual void Cleanup()  { InitMocks(); }
+        public virtual void Cleanup()  { InitMocksAndFakes(); }
 
         [TestInitialize, NUnit.Framework.SetUp]
         public virtual void Initialize()
         {
-            InitMocks();
-
-            var ctorInfoForClassUnderTest = typeof(TClass).GetConstructors().OrderBy(c => c.GetParameters().Length).FirstOrDefault();
+            var ctorInfoForClassUnderTest = typeof(TClass).GetConstructors().OrderByDescending(c => c.GetParameters().Length).FirstOrDefault();
             ctorInfoForClassUnderTest.ShouldNotBeNull(
                 "The TestBase<{0}>.Init() base method couldn't create a UnitUnderTest of type {0} because no constructor was found for {0}." +
                 "To test classes without a constructor, override the Initialize() method to construct your UnitUnderTest.",
@@ -52,14 +56,23 @@ namespace TestBase
             var result = new List<object>();
             foreach (var paramInfo in constructorInfo.GetParameters())
             {
-                if (paramInfo.ParameterType.IsSealed || paramInfo.ParameterType.IsValueType)
+                if (Fakes.ContainsKey(paramInfo.ParameterType.Name))
+                {
+                    result.Add(Fakes.Get<object>(paramInfo.ParameterType.Name));
+                }
+                else if (Fakes.ContainsKey(paramInfo.Name))
+                {
+                    result.Add(Fakes.Get<object>(paramInfo.Name));
+                }
+
+                else if (paramInfo.ParameterType.IsSealed || paramInfo.ParameterType.IsValueType)
                 {
                     result.Add(ConstructDefaultInstanceElseThrow(paramInfo.ParameterType));
                 }
                 else
                 {
-                    MockDependencies.EnsureMock(paramInfo.ParameterType);
-                    result.Add(MockDependencies.Object(paramInfo.ParameterType));
+                    Mocks.EnsureMock(paramInfo.ParameterType);
+                    result.Add(Mocks.Object(paramInfo.ParameterType));
                 }
             }
             return result.ToArray();
@@ -92,7 +105,7 @@ namespace TestBase
 
         public void Init<TMock1>() where TMock1 : Mock
         {
-            MockDependencies.Ensure<TMock1>();
+            Mocks.Ensure<TMock1>();
             var typeOfMock = typeof(TMock1).GetGenericArguments();
             var constructor = typeof(TClass).GetConstructor(typeOfMock);
             Debug.Assert(constructor != null,
@@ -101,12 +114,12 @@ namespace TestBase
                          typeof(TClass).FullName,
                          typeOfMock[0]);
             Debug.Assert(constructor != null, "constructor != null");
-            UnitUnderTest = (TClass)constructor.Invoke(new object[] { MockDependencies.Object<TMock1>() });
+            UnitUnderTest = (TClass)constructor.Invoke(new object[] { Mocks.Object<TMock1>() });
         }
 
-        public void Init(Func<IMockDictionary, TClass> instantiateFromMockDependencies)
+        public void Init(Func<IMocksDictionary, TClass> instantiateFromMockDependencies)
         {
-            UnitUnderTest = instantiateFromMockDependencies(MockDependencies);
+            UnitUnderTest = instantiateFromMockDependencies(Mocks);
         }
 
         public void Init(Func<TClass> instantiateClassUnderTest)
@@ -123,7 +136,7 @@ namespace TestBase
 
         public TestBase<TClass> AddMock<TMock>(string key) where TMock : class
         {
-            MockDependencies.Add(key, new Mock<TMock>());
+            Mocks.Add(key, new Mock<TMock>());
             return this;
         }
 

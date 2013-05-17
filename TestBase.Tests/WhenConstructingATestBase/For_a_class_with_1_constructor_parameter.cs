@@ -15,7 +15,7 @@ namespace TestBase.Tests.WhenConstructingATestBase
         [TestMethod]
         public void Testbase_init_should_have_created_no_mocks()
         {
-            MockDependencies.Count().ShouldEqual(0);
+            Mocks.Count().ShouldEqual(0);
         }
 
         public class ClassWithANotMockableConstructorDependency

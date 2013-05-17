@@ -9,15 +9,15 @@ namespace TestBase.Tests.WhenRunningTests
         [TestMethod]
         public void For_the_first_test()
         {
-            MockDependencies.ShouldNotBeNull().ShouldBeEmpty();
-            MockDependencies.Add<object>();
+            Mocks.ShouldNotBeNull().ShouldBeEmpty();
+            Mocks.Add<object>();
         }
 
         [TestMethod]
         public void For_the_second_test()
         {
-            MockDependencies.ShouldNotBeNull().ShouldBeEmpty();
-            MockDependencies.Add<object>();
+            Mocks.ShouldNotBeNull().ShouldBeEmpty();
+            Mocks.Add<object>();
         }
     }
 
@@ -27,19 +27,19 @@ namespace TestBase.Tests.WhenRunningTests
         [TestInitialize]
         public override void Initialize()
         {
-            MockDependencies.Add<object>();
+            Mocks.Add<object>();
         }
 
         [TestMethod]
         public void For_the_first_test()
         {
-            MockDependencies.Count().ShouldEqual(1);
+            Mocks.Count().ShouldEqual(1);
         }
 
         [TestMethod]
         public void For_the_second_test()
         {
-            MockDependencies.Count().ShouldEqual(1);
+            Mocks.Count().ShouldEqual(1);
         }
     }
 }
