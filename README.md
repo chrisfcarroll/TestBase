@@ -11,6 +11,14 @@ and (2) providing a rich extensible set of fluent assertions including
 
 Works for both NUnit & MS UnitTestFramework test projects.
 
+Examples included:
+-----------------
+The example projects under test are where possible the VS2012 Template Projects
+* Asp.Net Mvc4 Web Application
+* WebApi
+And of course TestBase itself.
+
+
 Dependencies in this version
 ------------
 * .Net 4

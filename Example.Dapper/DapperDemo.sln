@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ovineware.CodeSamples.DapperDemo.CSharp", "Ovineware.CodeSamples.DapperDemo.CSharp\Ovineware.CodeSamples.DapperDemo.CSharp.csproj", "{292F8D5D-73F7-4038-BBE8-6E2BA2A486CE}"
+EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Ovineware.CodeSamples.DapperDemo.VisualBasic", "Ovineware.CodeSamples.DapperDemo.VisualBasic\Ovineware.CodeSamples.DapperDemo.VisualBasic.vbproj", "{49544178-AC59-45F5-8A3A-25FE9E52EEBB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{A43933E5-2210-45D2-809B-B896F500A2F8}"
+	ProjectSection(SolutionItems) = preProject
+		lib\Dapper.dll = lib\Dapper.dll
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{292F8D5D-73F7-4038-BBE8-6E2BA2A486CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{292F8D5D-73F7-4038-BBE8-6E2BA2A486CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{292F8D5D-73F7-4038-BBE8-6E2BA2A486CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{292F8D5D-73F7-4038-BBE8-6E2BA2A486CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49544178-AC59-45F5-8A3A-25FE9E52EEBB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49544178-AC59-45F5-8A3A-25FE9E52EEBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49544178-AC59-45F5-8A3A-25FE9E52EEBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49544178-AC59-45F5-8A3A-25FE9E52EEBB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
