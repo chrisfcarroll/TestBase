@@ -3,11 +3,10 @@ TestBase
 Aims to get you off to a flying start when unit testing projects with many dependencies by 
 (1) reducing the amount of boilerplate mock management code you write
 and (2) providing a rich extensible set of fluent assertions including
-* Most NUnit assertions
 * ShouldEqualByValue assertion for all kinds of types and collections
 * Stream.ShouldCountain assertions
 * Moq ShouldCall assertions
-* Mvc assertions for controller action results
+* Mvc ActionResult, RedirectToRouteResult,ViewResult and Model assertions
 
 Works for both NUnit & MS UnitTestFramework test projects.
 

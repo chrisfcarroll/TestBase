@@ -17,7 +17,7 @@ namespace TestBase.Example.WebApi.Tests.Controllers
         }
 
         [TestMethod]
-        public void Get()
+        public void Get_should_return_correct_1_row_of_data()
         {
             UnitUnderTest.Get(1)
                 .ShouldNotBeNull()
@@ -25,25 +25,25 @@ namespace TestBase.Example.WebApi.Tests.Controllers
         }
 
         [TestMethod]
-        public void GetAll()
+        public void GetAll_Should_return_all_source_data()
         {
             UnitUnderTest.Get().ShouldEqual( Fakes.Get<ISimpleDataSource>().GetAll() );
         }
 
         [TestMethod]
-        public void Post()
+        public void Post_should_not_throw_WIP()
         {
             UnitUnderTest.Post("value");
         }
 
         [TestMethod]
-        public void Put()
+        public void Put_Should_not_throw_WIP()
         {
             UnitUnderTest.Put(5, "value");
         }
 
         [TestMethod]
-        public void Delete()
+        public void Delete_Should_not_throw_WIP()
         {
             UnitUnderTest.Delete(5);
         }
