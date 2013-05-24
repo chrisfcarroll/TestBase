@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace TestBase
 {
@@ -36,6 +37,25 @@ namespace TestBase
             {
                 destination.Write(buffer, 0, num);
             }
+        }
+
+        public static bool IsEqualByValue(this Stream @this, Stream expectedValue, [Optional] string message, params object[] args)
+        {
+            @this.Position = 0;
+            expectedValue.Position = 0;
+            var left = new BufferedStream(@this);
+            var right = new BufferedStream(expectedValue);
+            byte[] bufLeft = new byte[1];
+            byte[] bufRight = new byte[1];
+            long l = 0;
+
+            while (left.Read(bufLeft, 0, 1) != 0 && right.Read(bufRight, 0, 1) != 0)
+            {
+                l++;
+                if (bufLeft[0] != bufRight[0]) return false;
+            }
+
+            return @this.Length == expectedValue.Length;
         }
     }
 }

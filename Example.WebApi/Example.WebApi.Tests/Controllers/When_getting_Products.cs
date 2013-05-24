@@ -9,6 +9,12 @@ namespace TestBase.Example.WebApi.Tests.Controllers
     [TestClass]
     public class When_getting_Products : TestBase.TestBase<ProductsController>
     {
+        [TestInitialize]
+        public override void Initialize()
+        {
+            base.Initialize();
+        }
+
         [TestMethod]
         public void GetAllProducts_should_get_all_products()
         {

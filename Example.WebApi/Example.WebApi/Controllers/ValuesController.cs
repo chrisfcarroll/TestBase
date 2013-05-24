@@ -9,8 +9,6 @@ namespace TestBase.Example.WebApi.Controllers
     {
         private readonly ISimpleDataSource dataSource;
 
-        public ValuesController() : this(new ExampleDataSource()){}
-
         public ValuesController(ISimpleDataSource dataSource)
         {
             this.dataSource = dataSource;

@@ -3,7 +3,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+#if NoMSTest
+#else
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+#endif
+
 using Moq;
 using TestBase.Shoulds;
 
@@ -27,11 +31,18 @@ namespace TestBase
         {
             return Mocks.Get<T>();
         }
-
-        [TestCleanup, NUnit.Framework.TearDown]
+#if NoMSTest
+#else
+        [TestCleanup]
+#endif
+		[NUnit.Framework.TearDown]
         public virtual void Cleanup()  { InitMocksAndFakes(); }
 
-        [TestInitialize, NUnit.Framework.SetUp]
+#if NoMSTest
+#else
+        [TestInitialize]
+#endif
+        [NUnit.Framework.SetUp]
         public virtual void Initialize()
         {
             var ctorInfoForClassUnderTest = typeof(TClass).GetConstructors().OrderByDescending(c => c.GetParameters().Length).FirstOrDefault();

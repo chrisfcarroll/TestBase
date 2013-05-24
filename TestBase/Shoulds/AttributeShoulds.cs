@@ -24,46 +24,43 @@ namespace TestBase.Shoulds
             return member;
         }
 
-        public static void ShouldNotBeRequired(this PropertyInfo @this)
+        public static PropertyInfo ShouldNotBeRequired(this PropertyInfo @this)
         {
             @this.ShouldNotHaveAttribute<RequiredAttribute>();
+            return @this;
         }
 
-        public static void ShouldBeRequired(this PropertyInfo @this)
+        public static PropertyInfo ShouldBeRequired(this PropertyInfo @this)
         {
             @this.ShouldHaveAttribute<RequiredAttribute>();
+            return @this;
         }
 
-        public static T PropertyAttributeOn<T>(ICustomAttributeProvider propertyInfo)
+        public static PropertyInfo ShouldHaveAttribute<T>(this PropertyInfo @this)
         {
-            return propertyInfo.GetCustomAttributes(typeof(T), false)
-                               .Cast<T>()
-                               .FirstOrDefault();
-        }
-
-        public static T ShouldHaveAttribute<T>(this PropertyInfo @this)
-        {
-            var annotation = PropertyAttributeOn<T>(@this);
+            var annotation = AttributeExtensions.PropertyAttributeOn<T>(@this);
             annotation.ShouldNotBeNull();
 
-            return annotation;
+            return @this;
         }
 
-        public static void ShouldHaveAttribute<T>(this PropertyInfo @this, params Action<T>[] assertions)
+        public static PropertyInfo ShouldHaveAttributeSatisfying<T>(this PropertyInfo @this, params Action<T>[] assertions)
         {
             ShouldHaveAttribute<T>(@this);
 
-            var attribute = PropertyAttributeOn<T>(@this);
+            var attribute = AttributeExtensions.PropertyAttributeOn<T>(@this);
 
             foreach(var assert in assertions)
             {
                 assert(attribute);
             }
+            return @this;
         }
 
-        public static void ShouldNotHaveAttribute<T>(this PropertyInfo @this)
+        public static PropertyInfo ShouldNotHaveAttribute<T>(this PropertyInfo @this)
         {
-            PropertyAttributeOn<T>(@this).ShouldBeNull();
+            AttributeExtensions.PropertyAttributeOn<T>(@this).ShouldBeNull();
+            return @this;
         }
     }
 }
