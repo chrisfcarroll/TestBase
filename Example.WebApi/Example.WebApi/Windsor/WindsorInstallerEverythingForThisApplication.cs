@@ -18,7 +18,7 @@ namespace TestBase.Example.WebApi.Windsor
                 );
 
             container.Register(
-                Types.FromThisAssembly()
+                Classes.FromThisAssembly()
                      .Pick()
                      .WithServiceFirstInterface()
                      .Configure(c => c.LifeStyle.HybridPerWebRequestTransient())

@@ -13,6 +13,15 @@ namespace TestBase.Shoulds
             return @this;
         }
 
+        public static IEnumerable<T> ShouldContainAsSubset<T>(this IEnumerable<T> @this, IEnumerable<T> subset, [Optional] string message, params object[] args)
+        {
+            foreach (var item in subset)
+            {
+                Assert.That(@this, Contains.Item(item), message, args);
+            }
+            return @this;
+        }
+
         public static IEnumerable<T> ShouldBeEmpty<T>(this IEnumerable<T> @this, [Optional] string message, params object[] args)
         {
             Assert.That(@this, Is.Empty, message, args);
