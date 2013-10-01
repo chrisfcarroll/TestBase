@@ -36,11 +36,26 @@ namespace TestBase.Shoulds
             return @this;
         }
 
-        public static PropertyInfo ShouldHaveAttribute<T>(this PropertyInfo @this)
+        public static T ShouldHaveAttribute<T>(this PropertyInfo @this)
         {
             var annotation = AttributeExtensions.PropertyAttributeOn<T>(@this);
             annotation.ShouldNotBeNull();
 
+            return annotation;
+        }
+
+        public static Type ShouldHaveAttribute<T>(this Type @this)
+        {
+            @this.GetCustomAttributes(typeof(T), true)
+                .FirstOrDefault(a => a.GetType() == typeof(T))
+                .ShouldNotBeNull();
+            return @this;
+        }
+
+        public static Type ShouldNotHaveAttribute<T>(this Type @this)
+        {
+            @this.GetCustomAttributes(typeof (T), true).Count(a => a.GetType() == typeof (T))
+                  .ShouldEqual(0,"Expected to not find attribute {0} on type {1}", typeof(T), @this);
             return @this;
         }
 

@@ -24,7 +24,7 @@ namespace TestBase
             return (T) this[key];
         }
 
-        public IMixedTypeDictionary<string, object> Add(string key, object value)
+        public new IMixedTypeDictionary<string, object> Add(string key, object value)
         {
             base.Add(key,value);
             return this;

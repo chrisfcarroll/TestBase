@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using NUnit.Framework;
 using NUnit.Framework.Constraints;
@@ -40,18 +39,17 @@ namespace TestBase.Shoulds
             Assert.That(@this == null || @this.ToString().Trim().Length == 0, message??"ShouldBeNullOrWhitespace", args);
         }
 
-        public static T ShouldBeSuchThat<T>(this T @this, Func<T, bool> predicate, [Optional] string message, params object[] args)
-        {
-            ShouldSatisfy(@this, predicate, Is.True, message, args);
-            return @this;
-        }
-
         public static T ShouldEqual<T>(this T @this, object expectedValue, [Optional] string message, params object[] args)
         {
             Assert.That(@this, Is.EqualTo(expectedValue), message, args);
             return @this;
         }
 
+        public static T ShouldBe<T>(this T @this, T expectedValue, [Optional] string message, params object[] args)
+        {
+            Assert.AreEqual(@this,expectedValue,message,args);
+            return @this;
+        }
 
         public static T ShouldNotEqual<T>(this T @this, T obj, [Optional] string message, params object[] args)
         {
@@ -59,7 +57,14 @@ namespace TestBase.Shoulds
             return @this;
         }
 
-        public static T ShouldBeTrue<T>( this T @this, [Optional] string message, params object[] args )
+        public static T ShouldBeBetween<T>(this T @this, T left, T right, [Optional] string message, params object[] args)
+                        where T : IComparable<T>
+        {
+            Assert.That(@this, Is.InRange(left, right), message, args);
+            return @this;
+        }
+
+        public static T ShouldBeTrue<T>(this T @this, [Optional] string message, params object[] args)
         {
             Assert.That(@this, Is.True, message, args);
             return @this;
@@ -103,10 +108,39 @@ namespace TestBase.Shoulds
             return @this as T;
         }
 
+        public static T ShouldHave<T>(this T @this, Func<T, bool> predicate, [Optional] string message, params object[] args)
+        {
+            ShouldSatisfy(@this, predicate, Is.True, message, args);
+            return @this;
+        }
+
+        public static T ShouldHave<T>(this T @this, Action<T> assertion)
+        {
+            assertion(@this);
+            return @this;
+        }
+
+        public static T ShouldNotHave<T>(this T @this, Func<T, bool> predicate, [Optional] string message, params object[] args)
+        {
+            ShouldSatisfy(@this, (t)=> !predicate(t), Is.True, message, args);
+            return @this;
+        }
+
+        public static T ShouldHave<T, TResult>(this T @this, Func<T, TResult> function, IResolveConstraint expression, [Optional] string message, params object[] args)
+        {
+            return ShouldSatisfy(@this, function, expression, message, args);
+        }
+
         public static T ShouldSatisfy<T, TResult>(this T @this, Func<T, TResult> function, IResolveConstraint expression, [Optional] string message, params object[] args)
         {
             var result = function(@this);
             Assert.That(result , expression, message, args);
+            return @this;
+        }
+        public static T ShouldBeSuchThat<T>(this T @this, Func<T, bool> function, [Optional] string message, params object[] args)
+        {
+            var result = function(@this);
+            Assert.IsTrue(result, message, args);
             return @this;
         }
     }

@@ -81,8 +81,21 @@
     <Compile Include="Attributes\NotCurrentlyTestableInCode.cs" />
     <Compile Include="BoolWithString.cs" />
     <Compile Include="EqualsByValueConstraint.cs" />
+    <Compile Include="FakeDb\DbCommandExtensions.cs" />
+    <Compile Include="FakeDb\DbCommandInvocationList.cs" />
+    <Compile Include="FakeDb\FakeDbCommand.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="FakeDb\FakeDbConnection.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="FakeDb\FakeDbDataReader.cs" />
+    <Compile Include="FakeDb\FakeDbParameter.cs" />
+    <Compile Include="FakeDb\FakeDbParameterCollection.cs" />
     <Compile Include="FakesDictionary.cs" />
     <Compile Include="FakeXmlExceptionFormatter.cs" />
+    <Compile Include="IEnumerableExtensions.cs" />
+    <Compile Include="MockDbCommandExtensions.cs" />
     <Compile Include="Shoulds\IEnumerableShoulds.cs" />
     <Compile Include="Shoulds\MoqVerificationShoulds.cs" />
     <Compile Include="Shoulds\ShouldsForEqualByValue.cs" />
@@ -100,8 +113,12 @@
     <Compile Include="Shoulds\BasicShoulds.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestLogger.cs" />
+    <Compile Include="TransformExtension.cs" />
+    <Compile Include="WindsorExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="MiniPdf.pdf" />
+    <None Include="MiniPdf2.pdf" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

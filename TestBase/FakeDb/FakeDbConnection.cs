@@ -2,13 +2,13 @@
 using System.Data.Common;
 using System.Runtime.InteropServices;
 
-namespace XSell.Tests
+namespace TestBase.FakeDb
 {
     public class FakeDbConnection : DbConnection
     {
-        public DbCommand DbCommandToReturn;
+        public FakeDbCommand DbCommandToReturn;
 
-        public FakeDbConnection([Optional] DbCommand dbCommandToReturn)
+        public FakeDbConnection([Optional] FakeDbCommand dbCommandToReturn)
         {
             DbCommandToReturn = dbCommandToReturn;
         }
@@ -54,6 +54,7 @@ namespace XSell.Tests
 
         protected override DbCommand CreateDbCommand()
         {
+            DbCommandToReturn.ParameterCollectionToReturn= new FakeDbParameterCollection();
             return DbCommandToReturn;
         }
     }

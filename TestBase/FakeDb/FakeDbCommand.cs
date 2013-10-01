@@ -1,23 +1,37 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
-using Moq;
 
-namespace XSell.Tests
+namespace TestBase.FakeDb
 {
     public class FakeDbCommand : DbCommand
     {
-        public List<FakeDbCommand> Invocations = new List<FakeDbCommand>();
-        public DataTable ExecuteDbDataReaderResultTable { get; set; }
-        public int ExecuteNonQueryResult=0;
-        public object ExecuteScalarResult = 0;
-        public Mock<DbParameterCollection> MockDbParameterCollection= new Mock<DbParameterCollection>();
-
-        public FakeDbCommand(DataTable dbReaderTabletoReturn)
+        public static FakeDbCommand ForExecuteQuery(DataTable executeDbDataReaderTabletoReturn)
         {
-            ExecuteDbDataReaderResultTable = dbReaderTabletoReturn;
+            return new FakeDbCommand { ExecuteQueryResultTable = executeDbDataReaderTabletoReturn };
         }
+
+        public static FakeDbCommand ForExecuteQuery(FakeDbResultSet dbDataReaderResultSetToReturn)
+        {
+            return new FakeDbCommand { ExecuteQueryResultDbDataReader = dbDataReaderResultSetToReturn };
+        }
+
+        public static FakeDbCommand ForExecuteNonQuery(int rowsAffected)
+        {
+            return new FakeDbCommand { ExecuteNonQueryRowsAffected = rowsAffected };
+        }
+
+        public static FakeDbCommand forExecuteScalarResult(object executeScalarResult)
+        {
+            return new FakeDbCommand { ExecuteScalarResult = executeScalarResult };
+        }
+
+        public DbCommandInvocationList Invocations = new DbCommandInvocationList();
+        public DataTable ExecuteQueryResultTable { get; set; }
+        public int ExecuteNonQueryRowsAffected=0;
+        public object ExecuteScalarResult = 0;
+        public FakeDbParameterCollection ParameterCollectionToReturn;
+        public FakeDbResultSet ExecuteQueryResultDbDataReader;
 
         public override void Prepare()
         {
@@ -32,7 +46,7 @@ namespace XSell.Tests
 
         protected override DbParameterCollection DbParameterCollection
         {
-            get { return MockDbParameterCollection.Object; }
+            get { return ParameterCollectionToReturn; }
         }
 
         protected override DbTransaction DbTransaction { get; set; }
@@ -50,38 +64,37 @@ namespace XSell.Tests
 
         protected override DbDataReader ExecuteDbDataReader(CommandBehavior behavior)
         {
-            Invocations.Add(new FakeDbCommand(ExecuteDbDataReaderResultTable)
-                {
-                    CommandText = CommandText, CommandType = CommandType
-                });
-            return new DataTableReader(ExecuteDbDataReaderResultTable);
+            RecordInvocation();
+
+            if (ExecuteQueryResultDbDataReader != null)
+            {
+                return new FakeDataReader {Resultset = ExecuteQueryResultDbDataReader};
+            }
+            else
+            {
+                return new DataTableReader(ExecuteQueryResultTable);
+            }
         }
 
         public override int ExecuteNonQuery()
         {
-            throw new NotImplementedException();
+            RecordInvocation();
+            return ExecuteNonQueryRowsAffected;
         }
 
         public override object ExecuteScalar()
         {
-            throw new NotImplementedException();
+            RecordInvocation();
+            return ExecuteScalarResult;
         }
-    }
 
-    public class FakeDbParameter : DbParameter
-    {
-        public override void ResetDbType()
+        private void RecordInvocation()
         {
+            Invocations.Add(new FakeDbCommand{
+                                CommandText = CommandText,
+                                CommandType = CommandType,
+                            },
+                            ParameterCollectionToReturn);
         }
-
-        public override DbType DbType { get; set; }
-        public override ParameterDirection Direction { get; set; }
-        public override bool IsNullable { get; set; }
-        public override string ParameterName { get; set; }
-        public override string SourceColumn { get; set; }
-        public override DataRowVersion SourceVersion { get; set; }
-        public override object Value { get; set; }
-        public override bool SourceColumnNullMapping { get; set; }
-        public override int Size { get; set; }
     }
 }

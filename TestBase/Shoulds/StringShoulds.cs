@@ -12,6 +12,13 @@ namespace TestBase.Shoulds
             return @this;
         }
 
+        public static string ShouldNotBeNullOrWhiteSpace(this string @this, [Optional] string message, params object[] args)
+        {
+            Assert.That(@this,        Is.Not.Null, message, args);
+            Assert.That(@this.Trim(), Is.Not.Empty, message, args);
+            return @this;
+        }
+
         public static string ShouldEqualIgnoringCase(this string @this, string expected, [Optional] string message, params object[] args)
         {
             Assert.That(@this.ToLower(), Is.EqualTo(expected.ToLower()), message, args);

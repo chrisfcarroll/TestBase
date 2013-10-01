@@ -169,7 +169,7 @@ namespace TestBase
                         return BoolWithString.False(string.Format("Mismatch at member {0}", leftInfo.Name)).Because(memberCompare);
                     }
                 }
-                catch(Exception e)
+                catch(Exception)
                 {
                     return BoolWithString.False(string.Format("Left has property {0} but Right doesn't.", leftInfo.Name));
                 }
@@ -188,7 +188,7 @@ namespace TestBase
                                                           BindingFlags.Public | BindingFlags.NonPublic |
                                                           BindingFlags.Instance | BindingFlags.GetProperty);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     return BoolWithString.False(string.Format("Right has property {0} but Left doesn't.", rightInfo.Name));
                 }
