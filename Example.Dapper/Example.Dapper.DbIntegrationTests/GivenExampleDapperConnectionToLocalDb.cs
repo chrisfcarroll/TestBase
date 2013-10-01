@@ -7,7 +7,7 @@ namespace Example.Dapper.DbIntegrationTests
     public class GivenEmptyDb : IntegrationTestBaseForExampleDapper
     {
         [TestInitialize]
-        public override void Initialize()
+        public override void SetUp()
         {
             Init(() => new Program(ConnectionString));
 

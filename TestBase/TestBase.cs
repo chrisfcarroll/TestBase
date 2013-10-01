@@ -43,7 +43,7 @@ namespace TestBase
         [TestInitialize]
 #endif
         [NUnit.Framework.SetUp]
-        public virtual void Initialize()
+        public virtual void SetUp()
         {
             var ctorInfoForClassUnderTest = typeof(TClass).GetConstructors().OrderByDescending(c => c.GetParameters().Length).FirstOrDefault();
             ctorInfoForClassUnderTest.ShouldNotBeNull(

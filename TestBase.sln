@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestBase", "TestBase\TestBase.csproj", "{19B1A0D5-D812-4CC1-A129-012616C83FF2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestBase.Tests", "TestBase.Tests\TestBase.Tests.csproj", "{049B3FF8-4A83-45A5-88ED-CAA21A89D171}"
@@ -36,6 +36,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{461084
 		.nuget\NuGet.exe = .nuget\NuGet.exe
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestBase-Mvc", "TestBase-Mvc\TestBase-Mvc.csproj", "{8E0B6D7F-5703-4B48-AF07-FFD6104995E2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -79,6 +81,10 @@ Global
 		{94F17B64-71AE-4E75-9096-4D8CCF059259}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{94F17B64-71AE-4E75-9096-4D8CCF059259}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{94F17B64-71AE-4E75-9096-4D8CCF059259}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E0B6D7F-5703-4B48-AF07-FFD6104995E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E0B6D7F-5703-4B48-AF07-FFD6104995E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E0B6D7F-5703-4B48-AF07-FFD6104995E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E0B6D7F-5703-4B48-AF07-FFD6104995E2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
