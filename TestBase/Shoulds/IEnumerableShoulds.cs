@@ -103,7 +103,7 @@ namespace TestBase.Shoulds
 
         public static IEnumerable<T> ShouldBeOfLength<T>(this IEnumerable<T> @this, int expectedLength, [Optional] string message, params object[] args)
         {
-            @this.Count().ShouldEqual(expectedLength);
+            @this.Count().ShouldEqual(expectedLength,message,args);
             return @this;
         }
 

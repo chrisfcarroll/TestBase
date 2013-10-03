@@ -39,6 +39,11 @@ namespace TestBase.Shoulds
             Assert.That(@this == null || @this.ToString().Trim().Length == 0, message??"ShouldBeNullOrWhitespace", args);
         }
 
+        public static void ShouldNotBeNullOrEmptyOrWhitespace(this object @this, [Optional] string message, params object[] args)
+        {
+            Assert.That(@this != null && @this.ToString().Trim().Length != 0, message ?? "ShouldNotBeNullOrWhitespace", args);
+        }
+
         public static T ShouldEqual<T>(this T @this, object expectedValue, [Optional] string message, params object[] args)
         {
             Assert.That(@this, Is.EqualTo(expectedValue), message, args);
