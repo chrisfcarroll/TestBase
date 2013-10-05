@@ -1,18 +1,39 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workbench ActiveDocument="TestBase/TestBase.cs">
+    <Files>
+      <File FileName="Example.Mvc/ExampleMvc/Filters/InitializeSimpleMembershipAttribute.cs" Line="37" Column="124" />
+      <File FileName="Example.Mvc/ExampleMvc/Controllers/AccountController.cs" Line="9" Column="36" />
+      <File FileName="Example.Mvc/ExampleMvc/Models/AccountModels.cs" Line="8" Column="42" />
+      <File FileName="TestBase/TestBase.cs" Line="8" Column="17" />
+    </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
-          <Node name="Example.Mvc4" expanded="True" />
-          <Node name="TestBase" selected="True" />
+          <Node name="Example.DapperNet" expanded="True" />
+          <Node name="Example.Mvc4" expanded="True">
+            <Node name="ExampleMvc4" expanded="True">
+              <Node name="References" expanded="True" />
+              <Node name="Controllers" expanded="True" />
+              <Node name="Filters" expanded="True" />
+              <Node name="Models" expanded="True" />
+            </Node>
+          </Node>
+          <Node name="TestBase" expanded="True" selected="True" />
+          <Node name="TestBase-Mvc" expanded="True" />
         </State>
       </Pad>
       <Pad Id="ClassPad">
         <State expanded="True" selected="True" />
       </Pad>
+      <Pad Id="MonoDevelop.Debugger.WatchPad">
+        <State />
+      </Pad>
       <Pad Id="MonoDevelop.NUnit.TestPad">
         <State expanded="True" selected="True" />
+      </Pad>
+      <Pad Id="ConnectionManagerPad">
+        <State selected="True" />
       </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>
