@@ -117,6 +117,7 @@
     <Compile Include="WindsorExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="MiniPdf.pdf" />
     <None Include="MiniPdf2.pdf" />
     <None Include="packages.config" />

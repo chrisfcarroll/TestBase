@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Reflection;
 using System.Security.Principal;
 using System.Web;
+using System.Web.Hosting;
 using System.Web.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.Routing;
@@ -42,12 +43,14 @@ namespace TestBase
             return @this;
         }
 
-        public static HttpContext FakeHttpContext(string requestUrl)
+        public static HttpContext FakeHttpContext(string requestUrl, string query ="", string appVirtualDir="/")
         {
-            var httpRequest = new HttpRequest("", "http://localhost/" + requestUrl, "");
-            var stringWriter = new StringWriter();
-            var httpResponse = new HttpResponse(stringWriter);
-            var httpContext = new HttpContext(httpRequest, httpResponse);
+
+            //var httpRequest = new HttpRequest("", "http://localhost" + appVirtualDir + requestUrl, "");
+            //var httpResponse = new HttpResponse(new StringWriter());
+
+            var wr = new SimpleWorkerRequest(appVirtualDir, "..", requestUrl, query, new StringWriter());
+            var httpContext = new HttpContext(wr);
             httpContext.User = new WindowsPrincipal(WindowsIdentity.GetCurrent());
 
             var sessionContainer = new HttpSessionStateContainer("id", new SessionStateItemCollection(),
