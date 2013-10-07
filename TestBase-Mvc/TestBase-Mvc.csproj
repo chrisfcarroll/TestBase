@@ -81,6 +81,9 @@
     </Reference>
     <Reference Include="System.Web.Routing" />
     <Reference Include="System.Web.Abstractions" />
+    <Reference Include="Moq">
+      <HintPath>..\packages\Moq.4.0.10827\lib\NET40\Moq.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FakeHttpContext.cs" />
@@ -89,6 +92,12 @@
     <Compile Include="Shoulds\MvcRouteResultShoulds.cs" />
     <Compile Include="Shoulds\MvcViewResultShoulds.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="MockHttpContext\HttpContextBaseExtensions.cs" />
+    <Compile Include="MockHttpContext\HttpRequestBaseExtensions.cs" />
+    <Compile Include="MockHttpContext\HttpResponseBaseExtensions.cs" />
+    <Compile Include="MockHttpContext\HttpServerUtilityBaseExtensions.cs" />
+    <Compile Include="MockHttpContext\MockHttpRequest.cs" />
+    <Compile Include="MockHttpContext\MockSessionHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -108,4 +117,7 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <ItemGroup>
+    <Folder Include="MockHttpContext\" />
+  </ItemGroup>
 </Project>
