@@ -52,7 +52,7 @@ namespace TestBase.Shoulds
 
         public static T ShouldBe<T>(this T @this, T expectedValue, [Optional] string message, params object[] args)
         {
-            Assert.AreEqual(@this,expectedValue,message,args);
+            Assert.AreEqual(expectedValue, @this, message, args);
             return @this;
         }
 
