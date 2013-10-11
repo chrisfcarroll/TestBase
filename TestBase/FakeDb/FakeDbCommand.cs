@@ -1,11 +1,73 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Linq;
+using System.Reflection;
 
 namespace TestBase.FakeDb
 {
     public class FakeDbCommand : DbCommand
     {
+        public static FakeDbCommand ForExecuteQuery<T>(IEnumerable<T> dataToReturn)
+        {
+            var rows = dataToReturn.Count();
+            var fakeDbCommand = new FakeDbCommand();
+            var newCaseRefDbDataReader = new FakeDbResultSet();
+            newCaseRefDbDataReader.Data = new object[rows, 1];
+            int i = 0;
+            foreach (var item in dataToReturn)
+            {
+                newCaseRefDbDataReader.Data[i, 0] = item;
+            }
+            newCaseRefDbDataReader.metaData = new[] { new FakeDbResultSet.MetaData("col1", typeof(T)) };
+
+            fakeDbCommand.ExecuteQueryResultDbDataReader = newCaseRefDbDataReader;
+            return fakeDbCommand;
+        }
+
+        public static FakeDbCommand ForExecuteQuery<T>(IEnumerable<T> dataToReturn, string[] propertyNames)
+        {
+            var rows = dataToReturn.Count();
+            var fakeDbCommand = new FakeDbCommand();
+            var newCaseRefDbDataReader = new FakeDbResultSet();
+            newCaseRefDbDataReader.Data = new object[rows, propertyNames.Length];
+            int i = 0;
+            foreach (var row in dataToReturn)
+            {
+                for (int j = 0; j < propertyNames.Length; j++)
+                {
+                    var propertyInfo = typeof (T).GetProperty(propertyNames[j], BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+                    EnsurePropertyOrThrow<T>(propertyInfo, propertyNames[j]);
+                    newCaseRefDbDataReader.Data[i, j] = propertyInfo.GetValue(row, null);
+                }
+                i++;
+            }
+
+            newCaseRefDbDataReader.metaData = new FakeDbResultSet.MetaData[propertyNames.Length];
+
+            for (int j = 0; j < propertyNames.Length; j++)
+            {
+                var propertyInfo = typeof(T).GetProperty(propertyNames[j], BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+                EnsurePropertyOrThrow<T>(propertyInfo, propertyNames[j]);
+                newCaseRefDbDataReader.metaData[j] = new FakeDbResultSet.MetaData(propertyNames[j], propertyInfo.PropertyType);
+            }
+
+            fakeDbCommand.ExecuteQueryResultDbDataReader = newCaseRefDbDataReader;
+            return fakeDbCommand;
+        }
+
+        private static void EnsurePropertyOrThrow<T>(PropertyInfo propertyInfo, string propertyName)
+        {
+            if (propertyInfo == null)
+            {
+                throw new ArgumentException(
+                    string.Format("Didn't find a public property \"{1}\" of type {0} which has properties ({2}).", 
+                                    typeof (T), propertyName, string.Join(", ", typeof(T).GetProperties().Cast<PropertyInfo>() )),
+                    "propertyNames");
+            }
+        }
+
         public static FakeDbCommand ForExecuteQuery(DataTable executeDbDataReaderTabletoReturn)
         {
             return new FakeDbCommand { ExecuteQueryResultTable = executeDbDataReaderTabletoReturn };

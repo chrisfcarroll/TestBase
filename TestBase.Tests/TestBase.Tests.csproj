@@ -38,6 +38,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Dapper">
+      <HintPath>..\packages\Dapper.1.13\lib\net40\Dapper.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="Moq">
       <HintPath>..\packages\Moq.4.0.10827\lib\NET40\Moq.dll</HintPath>
     </Reference>
@@ -46,6 +50,7 @@
       <HintPath>..\packages\NUnit.2.6.2\lib\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
   </ItemGroup>
   <Choose>
@@ -62,6 +67,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="DictionaryTests\When_using_a_FakesDictionary.cs" />
+    <Compile Include="FakeDbTests\WhenSettingUpAFakeDbConnection.cs" />
     <Compile Include="WhenAsserting\UsingAnNUnitWrapperAssertion\AssertionFailureMessageVerifier.cs" />
     <Compile Include="WhenAsserting\UsingAnNUnitWrapperAssertion\ShouldCall__TestCasesForCustomFailureMessageWithNoArgs.cs" />
     <Compile Include="WhenAsserting\UsingAnNUnitWrapperAssertion\ShouldCall__TestCasesForCustomMessageWithArgs.cs" />

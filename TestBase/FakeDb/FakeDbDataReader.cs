@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Globalization;
@@ -123,7 +124,14 @@ namespace TestBase.FakeDb
 
         public override IEnumerator GetEnumerator()
         {
-            throw new NotImplementedException();
+            var rows = Resultset.Data.Length/Resultset.metaData.Length;
+            var results = new List<object[]>();
+            for (int i = 0; i < rows; i++)
+            {
+                var row = new object[Resultset.metaData.Length];
+                results.Add(row);
+            }
+            return results.GetEnumerator();
         }
 
         public override Type GetFieldType(int i)

@@ -1,4 +1,6 @@
-﻿using System.Data;
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
 using System.Data.Common;
 using System.Runtime.InteropServices;
 
@@ -6,11 +8,25 @@ namespace TestBase.FakeDb
 {
     public class FakeDbConnection : DbConnection
     {
-        public FakeDbCommand DbCommandToReturn;
+        public Queue<FakeDbCommand> DbCommandsQueued = new Queue<FakeDbCommand>();
+        public List<FakeDbCommand> Invocations = new List<FakeDbCommand>();
+
+        [Obsolete("Used QueueCommand instead")]
+        public FakeDbCommand DbCommandToReturn
+        {
+            get { return DbCommandsQueued.Dequeue(); }
+            set { DbCommandsQueued.Enqueue(value); }
+        }
+
+        public FakeDbConnection QueueCommand(FakeDbCommand command)
+        {
+            DbCommandsQueued.Enqueue(command);
+            return this;
+        }
 
         public FakeDbConnection([Optional] FakeDbCommand dbCommandToReturn)
         {
-            DbCommandToReturn = dbCommandToReturn;
+            if(dbCommandToReturn!=null){QueueCommand(dbCommandToReturn);}
         }
 
         protected override DbTransaction BeginDbTransaction(IsolationLevel isolationLevel)
@@ -54,8 +70,10 @@ namespace TestBase.FakeDb
 
         protected override DbCommand CreateDbCommand()
         {
-            DbCommandToReturn.ParameterCollectionToReturn= new FakeDbParameterCollection();
-            return DbCommandToReturn;
+            var result = DbCommandsQueued.Dequeue();
+            result.ParameterCollectionToReturn= new FakeDbParameterCollection();
+            Invocations.Add(result);
+            return result;
         }
     }
 

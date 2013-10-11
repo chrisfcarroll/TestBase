@@ -89,6 +89,7 @@
     <Compile Include="FakeDb\FakeDbConnection.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="FakeDb\FakeDbConnectionExtensions.cs" />
     <Compile Include="FakeDb\FakeDbDataReader.cs" />
     <Compile Include="FakeDb\FakeDbParameter.cs" />
     <Compile Include="FakeDb\FakeDbParameterCollection.cs" />
