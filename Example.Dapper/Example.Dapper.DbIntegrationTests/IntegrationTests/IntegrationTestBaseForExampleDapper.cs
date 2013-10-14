@@ -4,11 +4,12 @@ using System.Data.SqlClient;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestBase;
 
-namespace Example.Dapper.DbIntegrationTests
+namespace Example.Dapper.Tests.IntegrationTests
 {
-    public class IntegrationTestBaseForExampleDapper : IntegrationTestBaseForSqlDb<Program>
+    public class IntegrationTestBaseForExampleDapper : IntegrationTestBaseForSqlDb<Repository>
     {
-        protected string ConnectionString = "Server=.;Trusted_Connection=True;Database=IntegrationTestsForExampleDapper";
+        protected static string ConnectionString = "Server=.;Trusted_Connection=True;Database=IntegrationTestsForExampleDapper";
+        protected static SqlConnection SqlConnection = new SqlConnection(ConnectionString);
 
         protected static string[] DatabaseSetupCommands = new[]
                                     {
@@ -25,7 +26,7 @@ namespace Example.Dapper.DbIntegrationTests
                                         "Drop Database IntegrationTestsForExampleDapper",
                                     };
         [ClassInitialize]
-        public static void CreateExampleDapperTestsDb()
+        public static void TryCreateDb()
         {
             try
             {
@@ -33,13 +34,13 @@ namespace Example.Dapper.DbIntegrationTests
             }
             catch (Exception e)
             {
-                TryDropExampleDapperTestsDb();
+                TryDropDbAndDisposeConnection();
                 throw new ApplicationException("Exception was thrown when trying to initialise DB", e);
             }
         }
 
         [ClassCleanup]
-        public static void TryDropExampleDapperTestsDb()
+        public static void TryDropDbAndDisposeConnection()
         {
             try
             {
@@ -49,6 +50,7 @@ namespace Example.Dapper.DbIntegrationTests
             {
                 Console.WriteLine("TestCleanup TryDropExampleDapperTestsDb failed with exception: ", e);
             }
+            SqlConnection.Dispose();
         }
     }
 

@@ -76,9 +76,9 @@ namespace Example.WebApi.Windsor.Tests
         public void Should_install_WindsorHttpActivator() { }
 
         [TestInitialize]
-        public override void Initialize()
+        public override void SetUp()
         {
-            base.Initialize();
+            base.SetUp();
             UnitUnderTest.InitialiseWindsorContainer();
         }
     }

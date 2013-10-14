@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2010
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestBase", "TestBase\TestBase.csproj", "{19B1A0D5-D812-4CC1-A129-012616C83FF2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestBase.Tests", "TestBase.Tests\TestBase.Tests.csproj", "{049B3FF8-4A83-45A5-88ED-CAA21A89D171}"
@@ -26,7 +26,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Example.DapperNet", "Exampl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.Dapper", "Example.Dapper\Example.Dapper\Example.Dapper.csproj", "{EB2A9CC3-BB63-4893-BF51-A4D484B1155B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.Dapper.DbIntegrationTests", "Example.Dapper\Example.Dapper.DbIntegrationTests\Example.Dapper.DbIntegrationTests.csproj", "{0D3918A9-6158-4F8B-9517-9A11CFFDC06A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.Dapper.Tests", "Example.Dapper\Example.Dapper.DbIntegrationTests\Example.Dapper.Tests.csproj", "{0D3918A9-6158-4F8B-9517-9A11CFFDC06A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.WebApi.Windsor.Tests", "Example.WebApi\Example.WebApi.Windsor.Tests\Example.WebApi.Windsor.Tests.csproj", "{94F17B64-71AE-4E75-9096-4D8CCF059259}"
 EndProject

@@ -10,10 +10,10 @@ namespace TestBase.Example.WebApi.Tests.Controllers
         private readonly ExampleDataSource fakeData= new ExampleDataSource();
 
         [TestInitialize]
-        public override void Initialize()
+        public override void SetUp()
         {
             Fakes.Add<ISimpleDataSource>(fakeData);
-            base.Initialize();
+            base.SetUp();
         }
 
         [TestMethod]
