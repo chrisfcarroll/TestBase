@@ -9,7 +9,7 @@ namespace TestBase
 {
     public static class MockMvcHttpContextHelper
     {
-        public static T WithHttpContext<T>(this T @this, string requestUrl=null, string query = "", string appVirtualDir = "/") where T : Controller
+        public static T WithMvcHttpContext<T>(this T @this, string requestUrl=null, string query = "", string appVirtualDir = "/") where T : Controller
         {
             var httpContextBase = MockHttpContextHelper.MockHttpContextBase(requestUrl ?? @this.GetType().Name);
             @this.ControllerContext = new ControllerContext(httpContextBase, new RouteData(), @this);

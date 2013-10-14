@@ -10,19 +10,22 @@ namespace TestBase.FakeDb
             return fakeDbConnection;
         }
 
-        public static FakeDbConnection SetUpForExecuteNonQuery(this FakeDbConnection fakeDbConnection, int rowsAffected)
+        public static FakeDbConnection SetUpForExecuteNonQuery(this FakeDbConnection fakeDbConnection, int rowsAffected, int timesConsecutively=1)
         {
-            fakeDbConnection.QueueCommand(FakeDbCommand.ForExecuteNonQuery(rowsAffected));
+            for (int i = 1; i <= timesConsecutively; i++)
+            {
+                fakeDbConnection.QueueCommand(FakeDbCommand.ForExecuteNonQuery(rowsAffected));
+            }
             return fakeDbConnection;
         }
 
-        public static FakeDbConnection SetUpFor<T>(this FakeDbConnection fakeDbConnection, IEnumerable<T> dataToReturn)
+        public static FakeDbConnection SetUpForQuery<T>(this FakeDbConnection fakeDbConnection, IEnumerable<T> dataToReturn)
         {
             fakeDbConnection.QueueCommand( FakeDbCommand.ForExecuteQuery(dataToReturn) );
             return fakeDbConnection;
         }
 
-        public static FakeDbConnection SetUpFor<T>(this FakeDbConnection fakeDbConnection, IEnumerable<T> dataToReturn, string[] propertyNames)
+        public static FakeDbConnection SetUpForQuery<T>(this FakeDbConnection fakeDbConnection, IEnumerable<T> dataToReturn, string[] propertyNames)
         {
             fakeDbConnection.QueueCommand( FakeDbCommand.ForExecuteQuery(dataToReturn,propertyNames) );
             return fakeDbConnection;

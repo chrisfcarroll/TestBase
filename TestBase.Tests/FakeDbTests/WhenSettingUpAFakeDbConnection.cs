@@ -25,7 +25,7 @@ namespace TestBase.Tests.FakeDbTests
                 };
 
             //A
-            var fakeConnection = new FakeDbConnection().SetUpFor(dataToReturn,new[] {"Id", "Name"});
+            var fakeConnection = new FakeDbConnection().SetUpForQuery(dataToReturn,new[] {"Id", "Name"});
 
             //A 
             //Dapper -- the easy way to read a DbDataReader.
@@ -39,6 +39,18 @@ namespace TestBase.Tests.FakeDbTests
             var fakeConnection = new FakeDbConnection().SetUpForExecuteNonQuery(123);
 
             //A 
+            fakeConnection.CreateCommand().ExecuteNonQuery().ShouldEqual(123);
+        }
+
+        [Test]
+        public void When_SetupForExecuteNonQueryNTimes__Should_return_an_int_each_time()
+        {
+            //A
+            var fakeConnection = new FakeDbConnection().SetUpForExecuteNonQuery(123,3);
+
+            //A 
+            fakeConnection.CreateCommand().ExecuteNonQuery().ShouldEqual(123);
+            fakeConnection.CreateCommand().ExecuteNonQuery().ShouldEqual(123);
             fakeConnection.CreateCommand().ExecuteNonQuery().ShouldEqual(123);
         }
 

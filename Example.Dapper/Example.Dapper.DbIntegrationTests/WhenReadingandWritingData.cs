@@ -27,7 +27,7 @@ namespace Example.Dapper.Tests
         {
             //A
             fakeProducts = new List<Product> {new Product {Description = "Product 1", Id = 1}};
-            dbConnection.SetUpFor(fakeProducts, new string[] {"Description", "Id"});
+            dbConnection.SetUpForQuery(fakeProducts, new string[] {"Description", "Id"});
 
             //A&A
             UnitUnderTest.GetSomeData().ShouldEqualByValue(fakeProducts);

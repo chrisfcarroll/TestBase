@@ -3,7 +3,6 @@ using System.IO;
 using System.Reflection;
 using System.Security.Principal;
 using System.Web;
-using System.Web.Hosting;
 using System.Web.SessionState;
 using Moq;
 

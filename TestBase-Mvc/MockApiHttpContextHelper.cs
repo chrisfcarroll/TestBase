@@ -1,20 +1,14 @@
-﻿using System.IO;
-using System.Net.Http;
-using System.Reflection;
-using System.Security.Principal;
+﻿using System.Net.Http;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.Routing;
-using System.Web.Mvc;
-using System.Web.Routing;
-using System.Web.SessionState;
 
 namespace TestBase
 {
     public static class MockApiHttpContextHelper
     {
-        public static T WithHttpContext<T>(this T @this, HttpMethod httpMethod, string requestUri=null, string routeTemplate=null) where T : ApiController
+        public static T WithWebApiHttpContext<T>(this T @this, HttpMethod httpMethod, string requestUri=null, string routeTemplate=null) where T : ApiController
         {
             requestUri = requestUri??string.Format("{0}/{1}", @this.GetType().Name, httpMethod.Method);
             routeTemplate = routeTemplate ?? "api/{controller}/{action}";
