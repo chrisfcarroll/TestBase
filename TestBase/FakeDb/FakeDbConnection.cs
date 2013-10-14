@@ -1,8 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Linq.Expressions;
 using System.Runtime.InteropServices;
+using Moq;
 
 namespace TestBase.FakeDb
 {
@@ -10,13 +11,7 @@ namespace TestBase.FakeDb
     {
         public Queue<FakeDbCommand> DbCommandsQueued = new Queue<FakeDbCommand>();
         public List<FakeDbCommand> Invocations = new List<FakeDbCommand>();
-
-        [Obsolete("Used QueueCommand instead")]
-        public FakeDbCommand DbCommandToReturn
-        {
-            get { return DbCommandsQueued.Dequeue(); }
-            set { DbCommandsQueued.Enqueue(value); }
-        }
+        private ConnectionState _state= ConnectionState.Closed;
 
         public FakeDbConnection QueueCommand(FakeDbCommand command)
         {
@@ -34,39 +29,21 @@ namespace TestBase.FakeDb
             return new FakeDbTransaction(this);
         }
 
-        public override void Close()
-        {
-        }
+        public override void Close(){_state=ConnectionState.Open;}
 
-        public override void ChangeDatabase(string databaseName)
-        {
-        }
+        public override void ChangeDatabase(string databaseName){}
 
-        public override void Open()
-        {
-        }
+        public override void Open(){ _state=ConnectionState.Open;}
 
         public override string ConnectionString { get; set; }
 
-        public override string Database
-        {
-            get { return "FakeDatabase"; }
-        }
+        public override string Database { get { return "FakeDatabase"; } }
 
-        public override ConnectionState State
-        {
-            get { return ConnectionState.Open; }
-        }
+        public override ConnectionState State { get { return _state; } }
 
-        public override string DataSource
-        {
-            get { return "FakeDatasource"; }
-        }
+        public override string DataSource { get { return "FakeDatasource"; } }
 
-        public override string ServerVersion
-        {
-            get { return "FakeServerVersion"; }
-        }
+        public override string ServerVersion { get { return "FakeServerVersion"; } }
 
         protected override DbCommand CreateDbCommand()
         {
@@ -74,34 +51,6 @@ namespace TestBase.FakeDb
             result.ParameterCollectionToReturn= new FakeDbParameterCollection();
             Invocations.Add(result);
             return result;
-        }
-    }
-
-    public class FakeDbTransaction : DbTransaction
-    {
-        private readonly FakeDbConnection _dbConnection;
-
-        public FakeDbTransaction(FakeDbConnection dbConnection)
-        {
-            _dbConnection = dbConnection;
-        }
-
-        public override void Commit()
-        {
-        }
-
-        public override void Rollback()
-        {
-        }
-
-        protected override DbConnection DbConnection
-        {
-            get { return _dbConnection; }
-        }
-
-        public override IsolationLevel IsolationLevel
-        {
-            get { return IsolationLevel.Chaos;}
         }
     }
 }

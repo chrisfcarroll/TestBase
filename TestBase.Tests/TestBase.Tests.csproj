@@ -68,6 +68,7 @@
   <ItemGroup>
     <Compile Include="DictionaryTests\When_using_a_FakesDictionary.cs" />
     <Compile Include="FakeDbTests\WhenSettingUpAFakeDbConnection.cs" />
+    <Compile Include="FakeDbTests\WhenVerifyingAFakeDbConnectionInvocation.cs" />
     <Compile Include="WhenAsserting\UsingAnNUnitWrapperAssertion\AssertionFailureMessageVerifier.cs" />
     <Compile Include="WhenAsserting\UsingAnNUnitWrapperAssertion\ShouldCall__TestCasesForCustomFailureMessageWithNoArgs.cs" />
     <Compile Include="WhenAsserting\UsingAnNUnitWrapperAssertion\ShouldCall__TestCasesForCustomMessageWithArgs.cs" />

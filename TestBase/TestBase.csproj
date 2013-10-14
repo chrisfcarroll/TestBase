@@ -81,6 +81,7 @@
     <Compile Include="EqualsByValueConstraint.cs" />
     <Compile Include="FakeDb\DbCommandExtensions.cs" />
     <Compile Include="FakeDb\DbCommandInvocationList.cs" />
+    <Compile Include="FakeDb\DbConnectionVerifyExtensions.cs" />
     <Compile Include="FakeDb\FakeDbCommand.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -91,6 +92,7 @@
     <Compile Include="FakeDb\FakeDbDataReader.cs" />
     <Compile Include="FakeDb\FakeDbParameter.cs" />
     <Compile Include="FakeDb\FakeDbParameterCollection.cs" />
+    <Compile Include="FakeDb\FakeDbTransaction.cs" />
     <Compile Include="FakesDictionary.cs" />
     <Compile Include="FakeXmlExceptionFormatter.cs" />
     <Compile Include="IEnumerableExtensions.cs" />

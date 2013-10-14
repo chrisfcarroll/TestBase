@@ -10,7 +10,7 @@ using TestBase.Shoulds;
 namespace TestBase.Tests.FakeDbTests
 {
     [TestFixture]
-    class WhenSettingUpAFakeDbConnection
+    public class WhenSettingUpAFakeDbConnection
     {
         class IdAndName { public int Id { get; set; } public string Name { get; set; } }
 
