@@ -14,21 +14,18 @@ namespace TestBase
 {
     public static class MockApiHttpContextHelper
     {
-        public static T WithMockHttpContext<T>(
-                            this T @this,
-                            HttpMethod httpMethod,
-                            string requestUri=null) where T : ApiController
+        public static T WithHttpContext<T>(this T @this, HttpMethod httpMethod, string requestUri=null, string routeTemplate=null) where T : ApiController
         {
             requestUri = requestUri??string.Format("{0}/{1}", @this.GetType().Name, httpMethod.Method);
-            HttpContext.Current = MockHttpContextHelper.FakeHttpContext(requestUri);
-            var httpConfiguration = new HttpConfiguration(new HttpRouteCollection());
-            var request = new HttpRequestMessage(httpMethod, requestUri);
+            routeTemplate = routeTemplate ?? "api/{controller}/{action}";
+
+            @this.Request = new HttpRequestMessage(httpMethod, requestUri);
             @this.ControllerContext = new HttpControllerContext(
-                                            httpConfiguration,
-                                            new HttpRouteData(new HttpRoute("api/{controller}/{action}")),
-                                            request
+                                            new HttpConfiguration(new HttpRouteCollection()),
+                                            new HttpRouteData(new HttpRoute(routeTemplate)),
+                                            new HttpRequestMessage(httpMethod, requestUri)
                                       );
-            @this.Request = request;
+            HttpContext.Current = MockHttpContextHelper.FakeHttpContext(requestUri);
             return @this;
         }
 
