@@ -62,6 +62,12 @@ namespace TestBase.Shoulds
             return @this;
         }
 
+        public static T ShouldNotBe<T>(this T @this, T obj, [Optional] string message, params object[] args)
+        {
+            Assert.AreNotEqual(obj, @this, message, args);
+            return @this;
+        }
+
         public static T ShouldBeBetween<T>(this T @this, T left, T right, [Optional] string message, params object[] args)
                         where T : IComparable<T>
         {
