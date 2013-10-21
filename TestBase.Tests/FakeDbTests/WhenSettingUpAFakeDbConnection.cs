@@ -33,7 +33,7 @@ namespace TestBase.Tests.FakeDbTests
             fakeConnection.Query<IdAndName>("").ShouldEqualByValue(dataToReturn);
         }
 
-        [Test, Ignore("WIP - doesn't yet handle nested classes")]
+        [Test]
         public void Should_return_the_setup_data__Given_an_array_of_fakedata_with_joins()
         {
             //A
@@ -48,7 +48,10 @@ namespace TestBase.Tests.FakeDbTests
 
             //A 
             //Dapper -- the easy way to read a DbDataReader.
-            fakeConnection.Query<WithJoin>("").ShouldEqualByValue(dataToReturn);
+            fakeConnection.Query<WithJoin,IdAndName,WithJoin>(
+                "",
+                (w, i) => { w.IdAndName = i; return w; }
+                ).ShouldEqualByValue(dataToReturn);
         }
 
         [Test]

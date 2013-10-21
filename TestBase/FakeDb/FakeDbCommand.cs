@@ -52,7 +52,7 @@ namespace TestBase.FakeDb
                 var propertyName = propertyNames[j];
                 var propertyInfo = GetPropertyInfo(propertyName, typeof(T)); ;
                 EnsurePropertyOrThrow<T>(propertyInfo, propertyNames[j]);
-                newCaseRefDbDataReader.metaData[j] = new FakeDbResultSet.MetaData(propertyName, propertyInfo.PropertyType);
+                newCaseRefDbDataReader.metaData[j] = new FakeDbResultSet.MetaData(propertyInfo.Name, propertyInfo.PropertyType);
             }
 
             fakeDbCommand.ExecuteQueryResultDbDataReader = newCaseRefDbDataReader;
