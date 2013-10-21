@@ -6,7 +6,7 @@ using TestBase;
 
 namespace Example.Dapper.Tests.IntegrationTests
 {
-    public class IntegrationTestBaseForExampleDapper : IntegrationTestBaseForSqlDb<Repository>
+    public class ExampleIntegrationTestBase : IntegrationTestBaseForSqlDb<Repository>
     {
         protected static string ConnectionString = "Server=.;Trusted_Connection=True;Database=IntegrationTestsForExampleDapper";
         protected static SqlConnection SqlConnection = new SqlConnection(ConnectionString);

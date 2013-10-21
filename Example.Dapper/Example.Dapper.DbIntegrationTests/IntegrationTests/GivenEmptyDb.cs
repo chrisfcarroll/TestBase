@@ -5,7 +5,7 @@ using TestBase.Shoulds;
 namespace Example.Dapper.Tests.IntegrationTests
 {
     [TestClass]
-    public class GivenEmptyDb : IntegrationTestBaseForExampleDapper
+    public class GivenEmptyDb : ExampleIntegrationTestBase
     {
 
         [TestInitialize]
@@ -44,9 +44,9 @@ namespace Example.Dapper.Tests.IntegrationTests
         }
 
         [ClassCleanup]
-        new public static void TryDropExampleDapperTestsDb()
+        public static void TryDropExampleDapperTestsDb()
         {
-            IntegrationTestBaseForExampleDapper.TryDropDbAndDisposeConnection(); 
+            TryDropDbAndDisposeConnection(); 
         }
        
     }

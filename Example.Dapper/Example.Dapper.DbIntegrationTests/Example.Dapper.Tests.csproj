@@ -59,8 +59,8 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="IntegrationTests\GivenExampleDapperConnectionToLocalDb.cs" />
-    <Compile Include="IntegrationTests\IntegrationTestBaseForExampleDapper.cs" />
+    <Compile Include="IntegrationTests\GivenEmptyDb.cs" />
+    <Compile Include="IntegrationTests\ExampleIntegrationTestBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WhenReadingandWritingData.cs" />
     <Compile Include="WhyNotUseMocksWhenReadingAndWritingDataInsteadOfFakeDbConnection.cs" />

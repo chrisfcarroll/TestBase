@@ -79,6 +79,7 @@
     <Compile Include="Attributes\NotCurrentlyTestableInCode.cs" />
     <Compile Include="BoolWithString.cs" />
     <Compile Include="EqualsByValueConstraint.cs" />
+    <Compile Include="EqualsByValueExceptForConstraint.cs" />
     <Compile Include="FakeDb\DbCommandExtensions.cs" />
     <Compile Include="FakeDb\DbCommandInvocationList.cs" />
     <Compile Include="FakeDb\DbConnectionVerifyExtensions.cs" />

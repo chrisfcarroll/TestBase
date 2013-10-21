@@ -66,6 +66,11 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="ComparerEqualsByValueTests\WhenComparingAnonymousClassesByValue.cs" />
+    <Compile Include="ComparerEqualsByValueTests\WhenComparingAnonymousClassesByValueWithExclusions.cs" />
+    <Compile Include="ComparerEqualsByValueTests\WhenComparingClassesByValueWithExclusions.cs" />
+    <Compile Include="ComparerEqualsByValueTests\WhenComparingClassesByValue.cs" />
+    <Compile Include="ComparerEqualsByValueTests\WhenComparingPrimitivesByValue.cs" />
     <Compile Include="DictionaryTests\When_using_a_FakesDictionary.cs" />
     <Compile Include="FakeDbTests\WhenSettingUpAFakeDbConnection.cs" />
     <Compile Include="FakeDbTests\WhenVerifyingAFakeDbConnectionInvocation.cs" />
