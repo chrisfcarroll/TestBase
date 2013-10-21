@@ -19,6 +19,12 @@ namespace TestBase.FakeDb
             return fakeDbConnection;
         }
 
+        public static FakeDbConnection SetUpForQueryScalar<T>(this FakeDbConnection fakeDbConnection, T dataToReturn)
+        {
+            fakeDbConnection.SetUpForQuery(new[] {dataToReturn});
+            return fakeDbConnection;
+        }
+
         public static FakeDbConnection SetUpForQuery<T>(this FakeDbConnection fakeDbConnection, IEnumerable<T> dataToReturn)
         {
             fakeDbConnection.QueueCommand( FakeDbCommand.ForExecuteQuery(dataToReturn) );

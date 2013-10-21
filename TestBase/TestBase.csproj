@@ -97,6 +97,8 @@
     <Compile Include="FakeXmlExceptionFormatter.cs" />
     <Compile Include="IEnumerableExtensions.cs" />
     <Compile Include="MockDbCommandExtensions.cs" />
+    <Compile Include="RegularExpressionValidation.cs" />
+    <Compile Include="RequiredValidation.cs" />
     <Compile Include="Shoulds\IEnumerableShoulds.cs" />
     <Compile Include="Shoulds\MoqVerificationShoulds.cs" />
     <Compile Include="Shoulds\ShouldsForEqualByValue.cs" />

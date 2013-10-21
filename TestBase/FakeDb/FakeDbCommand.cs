@@ -37,9 +37,10 @@ namespace TestBase.FakeDb
             {
                 for (int j = 0; j < propertyNames.Length; j++)
                 {
-                    var propertyInfo = typeof (T).GetProperty(propertyNames[j], BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
-                    EnsurePropertyOrThrow<T>(propertyInfo, propertyNames[j]);
-                    newCaseRefDbDataReader.Data[i, j] = propertyInfo.GetValue(row, null);
+                    var propertyName = propertyNames[j];
+                    var propertyInfo = GetPropertyInfo(propertyName, typeof(T));
+                    EnsurePropertyOrThrow<T>(propertyInfo, propertyName);
+                    newCaseRefDbDataReader.Data[i, j] = GetPropertyValue(propertyInfo, row, propertyName);
                 }
                 i++;
             }
@@ -48,13 +49,57 @@ namespace TestBase.FakeDb
 
             for (int j = 0; j < propertyNames.Length; j++)
             {
-                var propertyInfo = typeof(T).GetProperty(propertyNames[j], BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+                var propertyName = propertyNames[j];
+                var propertyInfo = GetPropertyInfo(propertyName, typeof(T)); ;
                 EnsurePropertyOrThrow<T>(propertyInfo, propertyNames[j]);
-                newCaseRefDbDataReader.metaData[j] = new FakeDbResultSet.MetaData(propertyNames[j], propertyInfo.PropertyType);
+                newCaseRefDbDataReader.metaData[j] = new FakeDbResultSet.MetaData(propertyName, propertyInfo.PropertyType);
             }
 
             fakeDbCommand.ExecuteQueryResultDbDataReader = newCaseRefDbDataReader;
             return fakeDbCommand;
+        }
+
+        private static object GetPropertyValue<T>(PropertyInfo propertyInfo, T obj, string propertyName)
+        {
+            var nestedPropertyInfo = propertyInfo;
+            object nestedObject=obj;
+            var nestedPropertyName = propertyName;
+
+            while (nestedPropertyName.Contains("."))
+            {
+                var nameBeforeDot = nestedPropertyName.Substring(0, propertyName.IndexOf('.'));
+                var beforeDot = GetPropertyInfo(nameBeforeDot, nestedObject.GetType());
+                var typeBeforeDot = beforeDot.PropertyType;
+                var nameAfterDot = nestedPropertyName.Substring(1 + nestedPropertyName.IndexOf('.'));
+                var afterDot = GetPropertyInfo(nameAfterDot, typeBeforeDot);
+
+                nestedPropertyInfo=afterDot;
+                nestedObject = beforeDot.GetValue(nestedObject, null);
+                nestedPropertyName = nameAfterDot;
+            }
+
+            return nestedPropertyInfo.GetValue(nestedObject, null);
+        }
+
+        private static PropertyInfo GetPropertyInfo(string propertyName, Type objectType)
+        {
+            if (propertyName.Contains("."))
+            {
+                var nameBeforeDot = propertyName.Substring(0, propertyName.IndexOf('.'));
+                var beforeDot = GetPropertyInfo(nameBeforeDot, objectType);
+                var typeBeforeDot = beforeDot.PropertyType;
+                var nameAfterDot = propertyName.Substring(1 + propertyName.IndexOf('.'));
+                var afterDot = GetPropertyInfo(nameAfterDot, typeBeforeDot);
+                return afterDot;
+            }
+            else
+            {
+                var propertyInfo = objectType.GetProperty(propertyName,
+                                                          BindingFlags.IgnoreCase | BindingFlags.Public |
+                                                          BindingFlags.Instance);
+                return propertyInfo;
+                
+            }
         }
 
         private static void EnsurePropertyOrThrow<T>(PropertyInfo propertyInfo, string propertyName)

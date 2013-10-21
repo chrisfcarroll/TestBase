@@ -38,10 +38,9 @@ namespace TestBase.Shoulds
 
         public static T ShouldHaveAttribute<T>(this PropertyInfo @this)
         {
-            var annotation = AttributeExtensions.PropertyAttributeOn<T>(@this);
-            annotation.ShouldNotBeNull();
+            @this.PropertyAttributeOn<T>().ShouldNotBeNull();
 
-            return annotation;
+            return @this.PropertyAttributeOn<T>();
         }
 
         public static Type ShouldHaveAttribute<T>(this Type @this)
@@ -63,7 +62,7 @@ namespace TestBase.Shoulds
         {
             ShouldHaveAttribute<T>(@this);
 
-            var attribute = AttributeExtensions.PropertyAttributeOn<T>(@this);
+            var attribute = @this.PropertyAttributeOn<T>();
 
             foreach(var assert in assertions)
             {
@@ -74,7 +73,7 @@ namespace TestBase.Shoulds
 
         public static PropertyInfo ShouldNotHaveAttribute<T>(this PropertyInfo @this)
         {
-            AttributeExtensions.PropertyAttributeOn<T>(@this).ShouldBeNull();
+            @this.PropertyAttributeOn<T>().ShouldBeNull();
             return @this;
         }
     }
