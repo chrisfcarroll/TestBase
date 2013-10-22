@@ -64,21 +64,24 @@ namespace TestBase.FakeDb
             var nestedPropertyInfo = propertyInfo;
             object nestedObject=obj;
             var nestedPropertyName = propertyName;
+            object nullOrDefault = default(T);
 
-            while (nestedPropertyName.Contains("."))
+            while (!Equals(nestedObject, nullOrDefault) && nestedPropertyName.Contains("."))
             {
                 var nameBeforeDot = nestedPropertyName.Substring(0, propertyName.IndexOf('.'));
                 var beforeDot = GetPropertyInfo(nameBeforeDot, nestedObject.GetType());
                 var typeBeforeDot = beforeDot.PropertyType;
                 var nameAfterDot = nestedPropertyName.Substring(1 + nestedPropertyName.IndexOf('.'));
-                var afterDot = GetPropertyInfo(nameAfterDot, typeBeforeDot);
-
-                nestedPropertyInfo=afterDot;
+                //var afterDot = GetPropertyInfo(nameAfterDot, typeBeforeDot);
+                //nestedPropertyInfo=afterDot;
                 nestedObject = beforeDot.GetValue(nestedObject, null);
                 nestedPropertyName = nameAfterDot;
+                nullOrDefault = typeBeforeDot.IsValueType ? Activator.CreateInstance(typeBeforeDot) : null;
             }
 
-            return nestedPropertyInfo.GetValue(nestedObject, null);
+            return Equals(nestedObject, nullOrDefault)
+                        ? nestedPropertyInfo.PropertyType.IsValueType ? Activator.CreateInstance(nestedPropertyInfo.PropertyType) : null
+                        : nestedPropertyInfo.GetValue(nestedObject, null);
         }
 
         private static PropertyInfo GetPropertyInfo(string propertyName, Type objectType)
