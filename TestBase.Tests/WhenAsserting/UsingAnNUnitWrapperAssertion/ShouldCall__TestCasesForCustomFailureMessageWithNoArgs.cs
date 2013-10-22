@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NUnit.Framework;
 using TestBase.Shoulds;
 
@@ -8,7 +7,7 @@ namespace TestBase.Tests.WhenAsserting.UsingAnNUnitWrapperAssertion
 {
     public partial class Should_call_the_right_NUnitAssertThat_overload__Given_AssertionFail
     {
-        [TestMethod]
+        [Test]
         public void Given_custom_fail_message_with_no_args()
         {
             foreach (var assertion in TestCasesForCustomFailureMessageWithNoArgs.AssertionsWithCustomMessage)

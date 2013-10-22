@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>Chris F Carroll</authors>
+    <owners>Chris F Carroll</owners>
+    <projectUrl>http://github.com/xcarroll/TestBase</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <summary>*TestBase* for a flying start to unit testing. A rich extensible set of fluent assertions such as ShouldNotBeEmpty().ShouldEqualByValue() etc, and a set of Fake Ado.Net components, with 1 line setup and verification.</summary>
+    <releaseNotes>Version 1. Unpolished but in use for over a year</releaseNotes>
+    <copyright>Copyright Chris F Carroll, 2013</copyright>
+    <tags>nunit tdd fluent assertions mock ado.net</tags>
+  </metadata>
+</package>

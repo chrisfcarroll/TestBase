@@ -5,12 +5,35 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("OncTestbase")]
-[assembly: AssemblyDescription("Fluent assertions for .Net and MVC")]
+[assembly: AssemblyTitle("TestBase")]
+[assembly: AssemblyDescription(@"*TestBase* gets you off to a flying start when unit testing projects with dependencies.
+It offers a rich extensible set of fluent assertions and a set of verifiable Fake Ado.Net components, with easy setup and verification.
+
+TestBase.Shoulds
+------------------
+Chainable fluent assertions get you to the point concisely
+UnitUnderTest.Action()
+  .ShouldNotBeNull()
+  .ShouldContain(expected);
+UnitUnderTest.OtherAction()
+  .ShouldEqualByValue( 
+    new {Id=1, Payload=expectedPayload, Additional=new[]{ expected1, expected2 }}
+);
+* ShouldBe(), ShouldMatch(), ShouldNotBe(), ShouldContain(), ShouldNotContain(), ShouldBeEmpty(), ShouldNotBeEmpty(), ShouldAll() and many more
+* ShouldEqualByValue() works with all kinds of object and collections
+* Stream assertions include ShouldContain() and ShouldEqualByValue()
+
+TestBase.FakeDb
+------------------
+Works with Ado.Net and technologies on top of it, including Dapper.
+* fakeDbConnection.SetupForQuery(fakeData, new[] {""FieldName1"", FieldName2""})
+* fakeDbConnection.SetupForExecuteNonQuery(rowsAffected)
+* fakeDbConnection.Verify(x=>x.CommandText.Matches(""Insert [case] .*"") &amp;&amp; x.Parameters[""id""].Value==1)
+")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("OncTestbase")]
-[assembly: AssemblyCopyright("")]
+[assembly: AssemblyCompany("Warrington Software Ltd")]
+[assembly: AssemblyProduct("TestBase")]
+[assembly: AssemblyCopyright("(c) Chris F Carroll 2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -32,5 +55,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyVersion("1.0.2.0")]
+[assembly: AssemblyFileVersion("1.0.2.0")]

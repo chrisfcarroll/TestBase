@@ -1,19 +1,19 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using TestBase.Shoulds;
 
 namespace TestBase.Tests.WhenRunningTests
 {
-    [TestClass]
+    [TestFixture]
     public class Given_Initialize_has_not_been_overridden : TestBase<object>
     {
-        [TestMethod]
+        [Test]
         public void For_the_first_test()
         {
             Mocks.ShouldNotBeNull().ShouldBeEmpty();
             Mocks.Add<object>();
         }
 
-        [TestMethod]
+        [Test]
         public void For_the_second_test()
         {
             Mocks.ShouldNotBeNull().ShouldBeEmpty();
@@ -21,22 +21,22 @@ namespace TestBase.Tests.WhenRunningTests
         }
     }
 
-    [TestClass]
+    [TestFixture]
     public class Given_Initialize_has_been_overriden : TestBase<object>
     {
-        [TestInitialize]
+        [SetUp]
         public override void SetUp()
         {
             Mocks.Add<object>();
         }
 
-        [TestMethod]
+        [Test]
         public void For_the_first_test()
         {
             Mocks.Count().ShouldEqual(1);
         }
 
-        [TestMethod]
+        [Test]
         public void For_the_second_test()
         {
             Mocks.Count().ShouldEqual(1);

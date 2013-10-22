@@ -2,33 +2,29 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using TestBase.Shoulds;
 
 namespace TestBase.Tests.DictionaryTests
 {
-    [TestClass]
+    [TestFixture]
     public class When_using_a_FakesDictionary : TestBase<FakesDictionary>
     {
-        [TestMethod]
+        [Test]
         public void Get_should_be_strongly_typed()
         {
             UnitUnderTest.Add("", "");
             UnitUnderTest.Get<string>("").ShouldEqual("");
 
-            try
-            {
-                UnitUnderTest.Add("1", 1);
-                UnitUnderTest.Get<string>("1").ShouldEqual(1);
-                Assert.Fail("Method should have thrown on the line above");
-            }
-            catch (InvalidCastException e)
-            {
-                //test pass
-            }
+            Assert.Throws<InvalidCastException>(
+                ()=>{
+                        UnitUnderTest.Add("1", 1);
+                        UnitUnderTest.Get<string>("1").ShouldEqual(1);
+                        Assert.Fail("Method should have thrown on the line above");
+                    });
         }
 
-        [TestMethod]
+        [Test]
         public void Add_followed_by_Get_Should_return_Original()
         {
             UnitUnderTest.Add("", "");
@@ -38,7 +34,7 @@ namespace TestBase.Tests.DictionaryTests
             UnitUnderTest.Get<int>("1").ShouldEqual(1);
         }
 
-        [TestMethod]
+        [Test]
         [ExpectedException(typeof(KeyNotFoundException))]
         public void Add_followed_by_Remove_followed_by_Get_Should_Throw()
         {

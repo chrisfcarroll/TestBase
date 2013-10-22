@@ -1,21 +1,21 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Moq;
 using TestBase.Shoulds;
 
 namespace TestBase.Tests.WhenAsserting
 {
-    [TestClass]
+    [TestFixture]
     public class Using_Moq_verification
     {
-        [TestMethod]
+        [Test]
         public void The_ShouldCall_method_shouldnt_throw__Given_mocked_method_was_called()
         {
             var dependencyMock = new Mock<SomeMockableClass>();
             Action actionUnderTest = () => dependencyMock.Object.SomeMockableMethod();
             actionUnderTest.ShouldCall(dependencyMock, x=>x.SomeMockableMethod());
         }
-        [TestMethod]
+        [Test]
         [ExpectedException(typeof(MockException))]
         public void The_ShouldCall_method_should_throw_a_Moq_Exception__Given_mocked_method_wasnt_called()
         {

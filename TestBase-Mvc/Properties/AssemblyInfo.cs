@@ -5,12 +5,36 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("OncTestbase")]
-[assembly: AssemblyDescription("Fluent assertions for .Net and MVC")]
+[assembly: AssemblyTitle("TestBase-Mvc")]
+[assembly: AssemblyDescription(@"*TestBase* gets you off to a flying start when unit testing projects with dependencies.
+TestBase-Mvc adds a rich extensible set of fluent assertions for verifying Mvc ActionResults and for easy setup of ControllerContext and HttpContext for both Mvc and WebApi
+TestBase.Shoulds
+-------------------
+Chainable fluent assertions get you to the point concisely
+ControllerUnderTest.Action()
+  .ShouldbeViewResult()
+  .ShouldHaveModel&lt;TModel&gt;()
+  .ShouldEqualByValue(expected)
+ControllerUnderTest.Action()
+  .ShouldBeRedirectToRouteResult()
+  .ShouldHaveRouteValue(""expectedKey"", [Optional] ""expectedValue"");
+
+ShouldHaveViewDataContaining(), ShouldBeJsonResult() etc.
+
+TestBase
+----------
+Controller extensions to fake the http request &amp; context:
+ControllerUnderTest
+  .WithMvcHttpContext([Optional] requestUrl, [Optional] query, [Optional] appVirtualDir), 
+  .WithHttpHeader(""headerName"",headerLines), 
+
+WithWebApiHttpContext(httpMethod,[Optional] requestUri)"
+
+)]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("OncTestbase")]
-[assembly: AssemblyCopyright("")]
+[assembly: AssemblyCompany("Warrington Software Ltd")]
+[assembly: AssemblyProduct("TestBase")]
+[assembly: AssemblyCopyright("(c) Chris F Carroll 2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -32,5 +56,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyVersion("1.0.2.0")]
+[assembly: AssemblyFileVersion("1.0.2.0")]
