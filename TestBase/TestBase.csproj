@@ -73,6 +73,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\AssemblyInfoShared.cs">
+      <Link>Properties\AssemblyInfoShared.cs</Link>
+    </Compile>
     <Compile Include="AttributeExtensions.cs" />
     <Compile Include="Attributes\EnvironmentalDependencyCheckAttribute.cs" />
     <Compile Include="Attributes\ExpectedUseInFitnesseAttribute.cs" />

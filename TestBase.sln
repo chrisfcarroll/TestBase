@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestBase", "TestBase\TestBase.csproj", "{19B1A0D5-D812-4CC1-A129-012616C83FF2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestBase.Tests", "TestBase.Tests\TestBase.Tests.csproj", "{049B3FF8-4A83-45A5-88ED-CAA21A89D171}"
@@ -15,6 +15,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.WebApi.Tests", "Exa
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{815E49A4-7D44-4F74-AC0A-F3356939F23F}"
 	ProjectSection(SolutionItems) = preProject
+		AssemblyInfoShared.cs = AssemblyInfoShared.cs
 		README.md = README.md
 	EndProjectSection
 EndProject

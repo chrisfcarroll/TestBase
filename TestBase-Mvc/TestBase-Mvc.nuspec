@@ -6,7 +6,7 @@
     <title>$title$</title>
     <authors>Chris F Carroll</authors>
     <owners>Chris F Carroll</owners>
-    <projectUrl>http://github.com/xcarroll/TestBase</projectUrl>
+    <projectUrl>http://github.com/chrisfcarroll/TestBase</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
     <summary>*TestBase* for a flying start to unit testing. TestBase-Mvc adds rich extensible fluent assertions such as ShouldBeViewResult().ShouldHaveModel&lt;TModel&gt;() for ActionResults and easy setup of ControllerContext &amp; HttpContext</summary>

@@ -6,7 +6,7 @@
     <title>$title$</title>
     <authors>Chris F Carroll</authors>
     <owners>Chris F Carroll</owners>
-    <projectUrl>http://github.com/xcarroll/TestBase</projectUrl>
+    <projectUrl>http://github.com/chrisfcarroll/TestBase</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
     <summary>*TestBase* for a flying start to unit testing. A rich extensible set of fluent assertions such as ShouldNotBeEmpty().ShouldEqualByValue() etc, and a set of Fake Ado.Net components, with 1 line setup and verification.</summary>
