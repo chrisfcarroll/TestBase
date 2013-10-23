@@ -15,6 +15,8 @@ namespace TestBase
 {
     public abstract class TestBase<TClass> where TClass : class
     {
+        const string DefaultAutoFakePrefix = "fake-";
+        public virtual string AutoFakePrefix { get; set; }
         public MocksDictionary Mocks { get; private set; }
 
         public FakesDictionary Fakes { get; private set; }
@@ -23,6 +25,7 @@ namespace TestBase
 
         protected void InitMocksAndFakes()
         {
+            AutoFakePrefix = DefaultAutoFakePrefix;
             Fakes = new FakesDictionary();
             Mocks = new MocksDictionary();
         }
@@ -75,10 +78,17 @@ namespace TestBase
                 {
                     result.Add(Fakes.Get<object>(paramInfo.Name));
                 }
-
+                else if (paramInfo.ParameterType== typeof(string))
+                {
+                    var newFake = AutoFakePrefix + paramInfo.Name;
+                    Fakes.Add(paramInfo.Name,newFake);
+                    result.Add(newFake);
+                }
                 else if (paramInfo.ParameterType.IsSealed || paramInfo.ParameterType.IsValueType)
                 {
-                    result.Add(ConstructDefaultInstanceElseThrow(paramInfo.ParameterType));
+                    var newFake = ConstructDefaultInstanceElseThrow(paramInfo.ParameterType);
+                    Fakes.Add(paramInfo.Name, newFake);
+                    result.Add(newFake);
                 }
                 else
                 {

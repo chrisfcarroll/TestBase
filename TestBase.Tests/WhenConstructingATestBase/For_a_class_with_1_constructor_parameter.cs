@@ -13,6 +13,13 @@ namespace TestBase.Tests.WhenConstructingATestBase
         }
 
         [Test]
+        public void Testbase_should_add_nonmockable_parameter_to_fakes_dictionary()
+        {
+            Fakes.Keys.ShouldContain("dummy");
+            Fakes["dummy"].ShouldEqual(AutoFakePrefix + "dummy");
+        }
+
+        [Test]
         public void Testbase_init_should_have_created_no_mocks()
         {
             Mocks.Count().ShouldEqual(0);
