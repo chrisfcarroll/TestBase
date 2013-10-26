@@ -48,18 +48,28 @@ namespace TestBase
         [NUnit.Framework.SetUp]
         public virtual void SetUp()
         {
-            var ctorInfoForClassUnderTest = typeof(TClass).GetConstructors().OrderByDescending(c => c.GetParameters().Length).FirstOrDefault();
-            ctorInfoForClassUnderTest.ShouldNotBeNull(
-                "The TestBase<{0}>.Init() base method couldn't create a UnitUnderTest of type {0} because no constructor was found for {0}." +
-                "To test classes without a constructor, override the Initialize() method to construct your UnitUnderTest.",
-                typeof(TClass).FullName);
-
-            var tClassCtorParameters = CreateMocksOrFakesForConstructor(ctorInfoForClassUnderTest);
-
-            UnitUnderTest = (TClass)ctorInfoForClassUnderTest.Invoke(tClassCtorParameters);
+            UnitUnderTest = (TClass)ConstructInstanceFromFieldsFakesAndMocks(typeof(TClass));
         }
 
-        private object[] CreateMocksOrFakesForConstructor(ConstructorInfo constructorInfo)
+        object ConstructInstanceFromFieldsFakesAndMocks(Type typeToConstruct)
+        {
+            var constructor = GetConstructorToUseForUnitUnderTest(typeToConstruct);
+            var dependencies = FindOrCreateFakesOrMocksForConstructorDependencies(constructor);
+            return constructor.Invoke(dependencies);
+        }
+
+        static ConstructorInfo GetConstructorToUseForUnitUnderTest(Type typeToConstruct)
+        {
+            var ctorInfoForClassUnderTest =
+                    typeToConstruct.GetConstructors().OrderByDescending(c => c.GetParameters().Length).FirstOrDefault();
+            ctorInfoForClassUnderTest.ShouldNotBeNull(
+                                                      "The TestBase<{0}>.Init() base method couldn't create a UnitUnderTest of type {0} because no constructor was found for {0}." +
+                                                      "To test classes without a constructor, override the Initialize() method to construct your UnitUnderTest.",
+                                                      typeToConstruct.FullName);
+            return ctorInfoForClassUnderTest;
+        }
+
+        private object[] FindOrCreateFakesOrMocksForConstructorDependencies(ConstructorInfo constructorInfo)
         {
             var ctorParameters = constructorInfo.GetParameters();
             if (ctorParameters.Length == 0)
@@ -70,9 +80,19 @@ namespace TestBase
             var result = new List<object>();
             foreach (var paramInfo in constructorInfo.GetParameters())
             {
+                ParameterInfo info = paramInfo;
+                FieldInfo foundField;
                 if (Fakes.ContainsKey(paramInfo.ParameterType.Name))
                 {
                     result.Add(Fakes.Get<object>(paramInfo.ParameterType.Name));
+                }
+                else if (null!= (foundField = this.GetType()
+                                                   .GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static)
+                                                   .FirstOrDefault(x => x.Name == info.Name && x.FieldType == info.ParameterType)))
+                {
+
+                    Fakes.Add(paramInfo.Name, foundField.GetValue(this));
+                    result.Add(foundField.GetValue(this));
                 }
                 else if (Fakes.ContainsKey(paramInfo.Name))
                 {
@@ -84,6 +104,13 @@ namespace TestBase
                     Fakes.Add(paramInfo.Name,newFake);
                     result.Add(newFake);
                 }
+                //else if (paramInfo.ParameterType.GetConstructor(Type.EmptyTypes) == null)
+                //{
+                //    var newRealObject = ConstructInstanceFromFieldsFakesAndMocks(paramInfo.ParameterType);
+                //    Fakes.Add(paramInfo.Name, newRealObject);
+                //    result.Add(newRealObject);
+
+                //}
                 else if (paramInfo.ParameterType.IsSealed || paramInfo.ParameterType.IsValueType)
                 {
                     var newFake = ConstructDefaultInstanceElseThrow(paramInfo.ParameterType);

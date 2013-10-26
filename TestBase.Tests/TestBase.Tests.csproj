@@ -76,9 +76,11 @@
     <Compile Include="WhenAsserting\UsingAnNUnitWrapperAssertion\ShouldCall__TestCasesForCustomMessageWithArgs.cs" />
     <Compile Include="WhenAsserting\UsingAnNUnitWrapperAssertion\ShouldCall__TestCasesForNoCustomMessage.cs" />
     <Compile Include="WhenAsserting\Using_Moq_verification.cs" />
-    <Compile Include="WhenConstructingATestBase\For_a_class_with_1_constructor_parameter.cs" />
+    <Compile Include="WhenConstructingATestBase\Given_a__recursive_constructor_dependency_is_provided_as_a_field_of_the_testclass.cs" />
+    <Compile Include="WhenConstructingATestBase\Given_a_constructor_dependency_is_provided_as_a_field_of_the_testclass.cs" />
+    <Compile Include="WhenConstructingATestBase\For_a_class_with_a_nonmockable_constructor_parameter.cs" />
     <Compile Include="WhenConstructingATestBase\For_a_class_with_no_constructor_parameters.cs" />
-    <Compile Include="WhenConstructingATestBase\For_a_class_with_4_constructor_parameters_of_which_2_mockable.cs" />
+    <Compile Include="WhenConstructingATestBase\For_a_class_with_mockable_and_non_mockable_constructor_depdeparameters_of_which_2_mockable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WhenRunningTests\MockDependencies_Should_be_initialized_to_empty_for_each_test.cs" />
   </ItemGroup>

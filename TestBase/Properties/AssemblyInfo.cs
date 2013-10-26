@@ -29,6 +29,8 @@ Works with Ado.Net and technologies on top of it, including Dapper.
 * fakeDbConnection.SetupForQuery(fakeData, new[] {""FieldName1"", FieldName2""})
 * fakeDbConnection.SetupForExecuteNonQuery(rowsAffected)
 * fakeDbConnection.Verify(x=>x.CommandText.Matches(""Insert [case] .*"") &amp;&amp; x.Parameters[""id""].Value==1)
+
+TestBase.TestBase<T> : Automocking is in development and currently works for the simple case
 ")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
