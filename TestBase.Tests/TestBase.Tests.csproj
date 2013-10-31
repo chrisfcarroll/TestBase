@@ -51,6 +51,10 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Web.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.4.0.20710.0\lib\net40\System.Web.Http.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
   </ItemGroup>
   <Choose>
@@ -71,10 +75,11 @@
     <Compile Include="FakeDbTests\WhenSettingUpAFakeDbConnectionForQuery.cs" />
     <Compile Include="FakeDbTests\WhenSettingUpAFakeDbConnectionForExecute.cs" />
     <Compile Include="FakeDbTests\WhenVerifyingAFakeDbConnectionInvocation.cs" />
-    <Compile Include="WhenAsserting\UsingAnNUnitWrapperAssertion\AssertionFailureMessageVerifier.cs" />
-    <Compile Include="WhenAsserting\UsingAnNUnitWrapperAssertion\ShouldCall__TestCasesForCustomFailureMessageWithNoArgs.cs" />
-    <Compile Include="WhenAsserting\UsingAnNUnitWrapperAssertion\ShouldCall__TestCasesForCustomMessageWithArgs.cs" />
-    <Compile Include="WhenAsserting\UsingAnNUnitWrapperAssertion\ShouldCall__TestCasesForNoCustomMessage.cs" />
+    <Compile Include="WhenAsserting\ShouldCallTheRightNUnitAssertThatOverload__GivenAssertionFail\AssertionFailureMessageVerifier.cs" />
+    <Compile Include="WhenAsserting\ShouldCallTheRightNUnitAssertThatOverload__GivenAssertionFail\ShouldCall__TestCasesForCustomFailureMessageWithNoArgs.cs" />
+    <Compile Include="WhenAsserting\ShouldCallTheRightNUnitAssertThatOverload__GivenAssertionFail\ShouldCall__TestCasesForCustomMessageWithArgs.cs" />
+    <Compile Include="WhenAsserting\ShouldCallTheRightNUnitAssertThatOverload__GivenAssertionFail\ShouldCall__TestCasesForNoCustomMessage.cs" />
+    <Compile Include="WhenAsserting\ShouldReturnTheActualBeingAsserted__Given_AssertionPass\ShouldReturn__TestCases_MvcActionResults.cs" />
     <Compile Include="WhenAsserting\Using_Moq_verification.cs" />
     <Compile Include="WhenConstructingATestBase\Given_a__recursive_constructor_dependency_is_provided_as_a_field_of_the_testclass.cs" />
     <Compile Include="WhenConstructingATestBase\Given_a_constructor_dependency_is_provided_as_a_field_of_the_testclass.cs" />
@@ -88,10 +93,17 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\TestBase-Mvc\TestBase-Mvc.csproj">
+      <Project>{8E0B6D7F-5703-4B48-AF07-FFD6104995E2}</Project>
+      <Name>TestBase-Mvc</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TestBase\TestBase.csproj">
       <Project>{19b1a0d5-d812-4cc1-a129-012616c83ff2}</Project>
       <Name>TestBase</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ShouldsCorrectnessTests\" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

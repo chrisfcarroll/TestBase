@@ -73,7 +73,10 @@
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.20710.0\lib\net40\System.Web.Helpers.dll</HintPath>
     </Reference>
-    <Reference Include="System.Web.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Web.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.4.0.20710.0\lib\net40\System.Web.Http.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.AspNet.Mvc.4.0.20710.0\lib\net40\System.Web.Mvc.dll</HintPath>
@@ -108,10 +111,10 @@
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
     <Compile Include="MockApiHttpContextHelper.cs" />
-    <Compile Include="MockHttpContextHelper.cs" />
-    <Compile Include="MockMvcHttpContextHelper.cs" />
+    <Compile Include="MockHttpContextHelperV2.cs" />
     <Compile Include="MvcExtensions.cs" />
     <Compile Include="Shoulds\MvcActionResultShoulds.cs" />
+    <Compile Include="Shoulds\MvcFileResultShoulds.cs" />
     <Compile Include="Shoulds\MvcRouteResultShoulds.cs" />
     <Compile Include="Shoulds\MvcViewResultShoulds.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

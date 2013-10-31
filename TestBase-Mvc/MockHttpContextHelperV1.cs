@@ -8,7 +8,7 @@ using Moq;
 
 namespace TestBase
 {
-    public static class MockHttpContextHelper
+    public static class MockHttpContextHelperV1
     {
         public static HttpContextBase MockHttpContextBase(string requestUrl, string query = "", string appVirtualDir = "/")
         {
@@ -73,7 +73,7 @@ namespace TestBase
         /// <summary>
         /// The problem with this approach is that I haven't found where to inject ServerUtility, so MapPath() etc don't work.
         /// </summary>
-        internal static HttpContext FakeHttpContext(string requestUrl, string query = "", string appVirtualDir = "/")
+        public static HttpContext FakeHttpContext(string requestUrl, string query = "", string appVirtualDir = "/")
         {
             var httpRequest = new HttpRequest("", new UriBuilder("http","http://localhost",80, appVirtualDir + requestUrl).Uri.ToString(), query);
             var httpResponse = new HttpResponse(new StringWriter());

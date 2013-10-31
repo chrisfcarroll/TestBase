@@ -19,7 +19,7 @@ namespace TestBase
                                             new HttpRouteData(new HttpRoute(routeTemplate)),
                                             new HttpRequestMessage(httpMethod, requestUri)
                                       );
-            HttpContext.Current = MockHttpContextHelper.FakeHttpContext(requestUri);
+            HttpContext.Current = MockHttpContextHelper.FakeHttpContext(requestUri,"","/",new HttpApplication());
             return @this;
         }
 

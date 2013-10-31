@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Web.Mvc;
 using NUnit.Framework;
 using TestBase.Shoulds;
 
@@ -51,6 +52,9 @@ namespace TestBase.Tests.WhenAsserting.UsingAnNUnitWrapperAssertion
             { "ShouldStartWith",        () => "20".ShouldStartWith("x20", TestCasesForCustomFailureMessageWithArgs.FailureMessage ) }, 
             { "ShouldEndWith",          () => "21".ShouldEndWith("21x", TestCasesForCustomFailureMessageWithArgs.FailureMessage ) }, 
             { "ShouldSatisfy",          () => 22.ShouldSatisfy(i => i.ToString(), Is.True, TestCasesForCustomFailureMessageWithArgs.FailureMessage ) }, 
-            { "ShouldContainInOrder",   () => (new List<int>{23,24}).ShouldContainInOrder(24,23, TestCasesForCustomFailureMessageWithArgs.FailureMessage ) },             };
+            { "ShouldContainInOrder",   () => (new List<int>{23,24}).ShouldContainInOrder(24,23, TestCasesForCustomFailureMessageWithArgs.FailureMessage ) },
+
+            { "ShouldBeFileResult",   () => (new RedirectResult("/")).ShouldBeFileResult(null,TestCasesForCustomFailureMessageWithArgs.FailureMessage ) },
+        };
     }
 }
