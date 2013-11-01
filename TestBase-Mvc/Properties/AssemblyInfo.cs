@@ -23,13 +23,21 @@ ShouldHaveViewDataContaining(), ShouldBeJsonResult() etc.
 
 TestBase
 ----------
-Controller extensions to fake the http request &amp; context:
+Controller extensions to fake the http request &amp; context. By injecting the RegisterRoutes method of your
+MvcApplication, you can use and test Controller.Url with your application's configured routes.
+
 ControllerUnderTest
-  .WithMvcHttpContext([Optional] requestUrl, [Optional] query, [Optional] appVirtualDir), 
-  .WithHttpHeader(""headerName"",headerLines), 
+  .WithHttpContextAndRoutes(
+    [Optional] Action&lt;RouteCollection&gt; mvcApplicationRoutesRegistration, 
+    [optional] string requestUrl,
+    [Optional] string query = """",
+    [Optional] string appVirtualPath = ""/"",
+    [Optional] HttpApplication applicationInstance)
 
-WithWebApiHttpContext(httpMethod,[Optional] requestUri)"
-
+ApiControllerUnderTest.WithWebApiHttpContext&lt;T&gt;(
+    HttpMethod httpMethod, 
+    [Optional] string requestUri,
+    [Optional] string routeTemplate)"
 )]
 
 // Setting ComVisible to false makes the types in this assembly not visible 

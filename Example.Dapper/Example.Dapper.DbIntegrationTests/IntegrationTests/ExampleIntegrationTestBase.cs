@@ -48,13 +48,14 @@ namespace Example.Dapper.Tests.IntegrationTests
         {
             try
             {
+                dbConnection.Close();
+                dbConnection.Dispose();
                 RunDbCommands(DatabaseTeardownCommands);
             }
             catch (Exception e)
             {
                 Console.WriteLine("TestCleanup TryDropExampleDapperTestsDb failed with exception: ", e);
             }
-            dbConnection.Dispose();
         }
     }
 

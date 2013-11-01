@@ -15,7 +15,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.WebApi.Tests", "Exa
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{815E49A4-7D44-4F74-AC0A-F3356939F23F}"
 	ProjectSection(SolutionItems) = preProject
-		AssemblyInfoShared.cs = AssemblyInfoShared.cs
 		README.md = README.md
 	EndProjectSection
 EndProject

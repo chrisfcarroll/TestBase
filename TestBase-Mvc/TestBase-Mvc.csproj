@@ -122,6 +122,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="TestBase-Mvc.nuspec" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TestBase\TestBase.csproj">
