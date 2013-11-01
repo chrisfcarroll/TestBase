@@ -90,6 +90,7 @@ namespace TestBase.FakeDb
             {
                 var nameBeforeDot = propertyName.Substring(0, propertyName.IndexOf('.'));
                 var beforeDot = GetPropertyInfo(nameBeforeDot, objectType);
+                EnsurePropertyOrThrow(beforeDot, nameBeforeDot, objectType);
                 var typeBeforeDot = beforeDot.PropertyType;
                 var nameAfterDot = propertyName.Substring(1 + propertyName.IndexOf('.'));
                 var afterDot = GetPropertyInfo(nameAfterDot, typeBeforeDot);
@@ -105,13 +106,18 @@ namespace TestBase.FakeDb
             }
         }
 
-        private static void EnsurePropertyOrThrow<T>(PropertyInfo propertyInfo, string propertyName)
+        static void EnsurePropertyOrThrow<T>(PropertyInfo propertyInfo, string propertyName)
+        {
+            EnsurePropertyOrThrow(propertyInfo, propertyName, typeof(T));
+        }
+
+        static void EnsurePropertyOrThrow(PropertyInfo propertyInfo, string propertyName, Type type)
         {
             if (propertyInfo == null)
             {
                 throw new ArgumentException(
-                    string.Format("Didn't find a public property \"{1}\" of type {0} which has properties ({2}).", 
-                                    typeof (T), propertyName, string.Join(", ", typeof(T).GetProperties().Cast<PropertyInfo>() )),
+                    string.Format("Didn't find a public property \"{1}\" of type {0} which has properties ({2}).",
+                                  type, propertyName, string.Join(", ", type.GetProperties().Cast<PropertyInfo>())),
                     "propertyName");
             }
         }
