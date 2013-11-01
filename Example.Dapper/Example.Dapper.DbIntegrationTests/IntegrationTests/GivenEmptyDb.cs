@@ -9,10 +9,8 @@ namespace Example.Dapper.Tests.IntegrationTests
     {
 
         [TestInitialize]
-        public override void SetUp()
-        {
-            UnitUnderTest= new Repository(SqlConnection);
-        }
+        public override void SetUp() { base.SetUp(); }
+
 
         [TestMethod]
         public void GetSomeData_should_not_throw_and_should_not_return_null()

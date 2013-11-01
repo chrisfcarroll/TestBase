@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestBase;
@@ -9,7 +10,10 @@ namespace Example.Dapper.Tests.IntegrationTests
     public class ExampleIntegrationTestBase : IntegrationTestBaseForSqlDb<Repository>
     {
         protected static string ConnectionString = "Server=.;Trusted_Connection=True;Database=IntegrationTestsForExampleDapper";
-        protected static SqlConnection SqlConnection = new SqlConnection(ConnectionString);
+        // ReSharper disable InconsistentNaming
+        // TODO: testbase parameter matching should be supple enough for resharper/fxcop naming rules
+        protected static IDbConnection dbConnection = new SqlConnection(ConnectionString);
+        // ReSharper restore InconsistentNaming
 
         protected static string[] DatabaseSetupCommands = new[]
                                     {
@@ -50,7 +54,7 @@ namespace Example.Dapper.Tests.IntegrationTests
             {
                 Console.WriteLine("TestCleanup TryDropExampleDapperTestsDb failed with exception: ", e);
             }
-            SqlConnection.Dispose();
+            dbConnection.Dispose();
         }
     }
 

@@ -18,30 +18,30 @@ namespace TestBase
 {
     public static class MockHttpContextHelper
     {
-        public static T WithHttpContextAndRoutes<T>(this T @this, string requestUrl = null, string query = "", string appVirtualDir = "/", HttpApplication applicationInstance = null, Action<RouteCollection> mvcApplicationRoutesRegistration = null) where T : Controller
+        public static T WithHttpContextAndRoutes<T>(this T @this, Action<RouteCollection> mvcApplicationRoutesRegistration = null, string requestUrl = null, string query = "", string appVirtualPath = "/", HttpApplication applicationInstance = null) where T : Controller
         {
+            string requestUrl1 = requestUrl ?? @this.GetType().Name;
+            HttpApplication applicationInstance1 = applicationInstance??new HttpApplication();
             return @this.WithHttpContextAndRoutes(
-                            MockHttpContextBase(appVirtualDir: appVirtualDir, requestUrl: requestUrl ?? @this.GetType().Name, query: query, applicationInstance: applicationInstance??new HttpApplication()),
+                            MockHttpContextBase(
+                                FakeHttpContextCurrent(appVirtualPath, requestUrl1, query, applicationInstance1), 
+                                appVirtualPath),
                             mvcApplicationRoutesRegistration);
         }
 
         public static T WithHttpContextAndRoutes<T>(this T @this, HttpContextBase httpContextBase, Action<RouteCollection> mvcApplicationRoutesRegistration) where T : Controller
         {
-            var routes = RouteTable.Routes;
+            var routes = new RouteCollection();
             var routeData = routes.GetRouteData(httpContextBase) ?? new RouteData();
-            if (mvcApplicationRoutesRegistration != null)
-            {
-                mvcApplicationRoutesRegistration(routes);
-            }
+            mvcApplicationRoutesRegistration = mvcApplicationRoutesRegistration ?? TypicalMvcRouteConfig.RegisterRoutes;
+            mvcApplicationRoutesRegistration(routes);
             @this.Url = new UrlHelper(new RequestContext(httpContextBase, routeData), routes);
             @this.ControllerContext = new ControllerContext(httpContextBase, routeData, @this);
             return @this;
         }
 
-        public static HttpContextBase MockHttpContextBase(string appVirtualDir = "/", string requestUrl = "FakeUrl", string query = "", HttpApplication applicationInstance = null)
+        public static HttpContextBase MockHttpContextBase(HttpContext httpContext, string appVirtualDir = "/")
         {
-            var httpContext = FakeHttpContext(requestUrl, query, appVirtualDir, applicationInstance??new HttpApplication());
-
             var context = new Mock<HttpContextBase>();
             context.Setup(ctx => ctx.Request).Returns(new HttpRequestWrapper(httpContext.Request));
             context.Setup(ctx => ctx.Response).Returns(new HttpResponseWrapper(httpContext.Response));
@@ -51,6 +51,14 @@ namespace TestBase
             context.Setup(ctx => ctx.Server).Returns(MockServerUtility(appVirtualDir).Object);
             context.Setup(ctx => ctx.Application).Returns(new Mock<HttpApplicationStateBase>().Object);
             return context.Object;
+        }
+
+        static HttpContext FakeHttpContextCurrent(string appVirtualPath, string requestUrl, string query,
+                                                  HttpApplication applicationInstance)
+        {
+            var httpContext = FakeHttpContext(requestUrl, query, appVirtualPath, applicationInstance ?? new HttpApplication());
+            HttpContext.Current = httpContext;
+            return httpContext;
         }
 
         public static Mock<HttpServerUtilityBase> MockServerUtility(string appVirtualDir)

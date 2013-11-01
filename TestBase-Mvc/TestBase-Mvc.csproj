@@ -118,6 +118,7 @@
     <Compile Include="Shoulds\MvcRouteResultShoulds.cs" />
     <Compile Include="Shoulds\MvcViewResultShoulds.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TypicalMvcRouteConfig.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

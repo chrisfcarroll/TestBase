@@ -51,6 +51,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Web.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.4.0.20710.0\lib\net40\System.Web.Http.dll</HintPath>
@@ -75,6 +76,7 @@
     <Compile Include="FakeDbTests\WhenSettingUpAFakeDbConnectionForQuery.cs" />
     <Compile Include="FakeDbTests\WhenSettingUpAFakeDbConnectionForExecute.cs" />
     <Compile Include="FakeDbTests\WhenVerifyingAFakeDbConnectionInvocation.cs" />
+    <Compile Include="HttpContextTests\WhenMockingAndFakingHttpContextForAController.cs" />
     <Compile Include="WhenAsserting\ShouldCallTheRightNUnitAssertThatOverload__GivenAssertionFail\AssertionFailureMessageVerifier.cs" />
     <Compile Include="WhenAsserting\ShouldCallTheRightNUnitAssertThatOverload__GivenAssertionFail\ShouldCall__TestCasesForCustomFailureMessageWithNoArgs.cs" />
     <Compile Include="WhenAsserting\ShouldCallTheRightNUnitAssertThatOverload__GivenAssertionFail\ShouldCall__TestCasesForCustomMessageWithArgs.cs" />
