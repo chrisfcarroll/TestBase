@@ -30,7 +30,13 @@ Works with Ado.Net and technologies on top of it, including Dapper.
 * fakeDbConnection.SetupForExecuteNonQuery(rowsAffected)
 * fakeDbConnection.Verify(x=>x.CommandText.Matches(""Insert [case] .*"") &amp;&amp; x.Parameters[""id""].Value==1)
 
-TestBase.TestBase<T> : Automocking is in development and currently works for the simple case
+TestBase.TestBase&lt;T&gt; Automocking
+--------------------------------
+is in development and currently works for easy cases:
+Identifies constructor dependencies by name and type and looks in the following places:
+First, fields in the TestFixture class 
+Second, entries in the Mocks[] or Fake[] dictionaries
+Third, mocks or defaults anything that's missing
 ")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 

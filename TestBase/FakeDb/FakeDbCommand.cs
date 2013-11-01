@@ -112,7 +112,7 @@ namespace TestBase.FakeDb
                 throw new ArgumentException(
                     string.Format("Didn't find a public property \"{1}\" of type {0} which has properties ({2}).", 
                                     typeof (T), propertyName, string.Join(", ", typeof(T).GetProperties().Cast<PropertyInfo>() )),
-                    "propertyNames");
+                    "propertyName");
             }
         }
 

@@ -25,10 +25,7 @@ namespace TestBase.Tests.WhenRunningTests
     public class Given_Initialize_has_been_overriden : TestBase<object>
     {
         [SetUp]
-        public override void SetUp()
-        {
-            Mocks.Add<object>();
-        }
+        public override void SetUp() { Mocks.Add<object>(); }
 
         [Test]
         public void For_the_first_test()

@@ -7,6 +7,9 @@ namespace TestBase.ExampleMvc.Tests.ExampleMvc4.Controllers
     [TestClass]
     public class When_navigating_to_home_controller : TestBase<HomeController>
     {
+        [TestInitializeAttribute]
+        public override void SetUp(){ base.SetUp(); }
+
         [TestMethod]
         public void Index_action_should_show_index_page()
         {
