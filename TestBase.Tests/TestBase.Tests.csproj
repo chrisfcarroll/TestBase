@@ -73,9 +73,10 @@
     <Compile Include="ComparerEqualsByValueTests\WhenComparingClassesByValue.cs" />
     <Compile Include="ComparerEqualsByValueTests\WhenComparingPrimitivesByValue.cs" />
     <Compile Include="DictionaryTests\When_using_a_FakesDictionary.cs" />
-    <Compile Include="FakeDbTests\WhenSettingUpAFakeDbConnectionForQuery.cs" />
-    <Compile Include="FakeDbTests\WhenSettingUpAFakeDbConnectionForExecute.cs" />
-    <Compile Include="FakeDbTests\WhenVerifyingAFakeDbConnectionInvocation.cs" />
+    <Compile Include="WhenSettingUpAFakeDbConnection\ForQueryUsingObjectArrayFakeData.cs" />
+    <Compile Include="WhenSettingUpAFakeDbConnection\ForQueryUsingStronglyTypedFakeData.cs" />
+    <Compile Include="WhenSettingUpAFakeDbConnection\ForExecute.cs" />
+    <Compile Include="WhenSettingUpAFakeDbConnection\WhenVerifyingInvocations.cs" />
     <Compile Include="HttpContextTests\WhenMockingAndFakingHttpContextForAController.cs" />
     <Compile Include="WhenAsserting\ShouldCallTheRightNUnitAssertThatOverload__GivenAssertionFail\AssertionFailureMessageVerifier.cs" />
     <Compile Include="WhenAsserting\ShouldCallTheRightNUnitAssertThatOverload__GivenAssertionFail\ShouldCall__TestCasesForCustomFailureMessageWithNoArgs.cs" />

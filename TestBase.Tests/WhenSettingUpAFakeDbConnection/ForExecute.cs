@@ -2,10 +2,10 @@
 using TestBase.FakeDb;
 using TestBase.Shoulds;
 
-namespace TestBase.Tests.FakeDbTests
+namespace TestBase.Tests.WhenSettingUpAFakeDbConnection
 {
     [TestFixture]
-    public class WhenSettingUpAFakeDbConnectionForExecute
+    public class ForExecute
     {
         [Test]
         public void When_SetupForExecuteNonQuery__Should_return_an_int()

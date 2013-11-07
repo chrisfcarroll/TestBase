@@ -27,13 +27,25 @@ namespace TestBase.FakeDb
 
         public static FakeDbConnection SetUpForQuery<T>(this FakeDbConnection fakeDbConnection, IEnumerable<T> dataToReturn)
         {
-            fakeDbConnection.QueueCommand( FakeDbCommand.ForExecuteQuery(dataToReturn) );
+            fakeDbConnection.QueueCommand( FakeDbCommand.ForExecuteSingleColumnQuery(dataToReturn) );
             return fakeDbConnection;
         }
 
         public static FakeDbConnection SetUpForQuery<T>(this FakeDbConnection fakeDbConnection, IEnumerable<T> dataToReturn, string[] propertyNames)
         {
             fakeDbConnection.QueueCommand( FakeDbCommand.ForExecuteQuery(dataToReturn,propertyNames) );
+            return fakeDbConnection;
+        }
+
+        public static FakeDbConnection SetUpForQuery(this FakeDbConnection fakeDbConnection, IEnumerable<object[]> dataToReturn, params string[] propertyNames)
+        {
+            fakeDbConnection.QueueCommand(FakeDbCommand.ForExecuteQuery(dataToReturn, propertyNames));
+            return fakeDbConnection;
+        }
+
+        public static FakeDbConnection SetUpForQuery(this FakeDbConnection fakeDbConnection, IEnumerable<object[]> dataToReturn, FakeDbResultSet.MetaData[] metaData)
+        {
+            fakeDbConnection.QueueCommand(FakeDbCommand.ForExecuteQuery(dataToReturn, metaData));
             return fakeDbConnection;
         }
     }

@@ -1,20 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using Dapper;
 using NUnit.Framework;
 using TestBase.FakeDb;
 using TestBase.Shoulds;
 
-namespace TestBase.Tests.FakeDbTests
+namespace TestBase.Tests.WhenSettingUpAFakeDbConnection
 {
-    [TestFixture]
-    public class WhenSettingUpAFakeDbConnectionForQuery
-    {
-        internal class IdAndName { public int Id { get; set; } public string Name { get; set; } }
-        internal class WithJoin { public int Id { get; set; } public IdAndName IdAndName { get; set; } }
+    class IdAndName { public int Id { get; set; } public string Name { get; set; } }
+    class WithJoin { public int Id { get; set; } public IdAndName IdAndName { get; set; } }
 
+    [TestFixture]
+    public class ForQueryUsingStronglyTypedFakeData
+    {
         [Test]
         public void Should_return_the_setup_data__Given_an_array_of_fakedata()
         {

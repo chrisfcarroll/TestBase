@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Dapper;
+﻿using Dapper;
 using NUnit.Framework;
 using TestBase.FakeDb;
 using TestBase.Shoulds;
 
-namespace TestBase.Tests.FakeDbTests
+namespace TestBase.Tests.WhenSettingUpAFakeDbConnection
 {
     [TestFixture]
-    public class WhenVerifyingAFakeDbConnectionInvocation
+    public class WhenVerifyingInvocations
     {
         readonly IdAndName[] fakeData = new[]
             {

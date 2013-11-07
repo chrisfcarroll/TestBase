@@ -9,18 +9,45 @@ namespace TestBase.FakeDb
 {
     public class FakeDbCommand : DbCommand
     {
-        public static FakeDbCommand ForExecuteQuery<T>(IEnumerable<T> dataToReturn)
+        public static FakeDbCommand ForExecuteSingleColumnQuery<T>(IEnumerable<T> dataToReturn)
+        {
+            return ForExecuteQuery(dataToReturn.Select(x=>new object[]{x}), "col1");
+        }
+
+        public static FakeDbCommand ForExecuteQuery(IEnumerable<object[]> dataToReturn, params string[] columnNames)
+        {
+            var rowToDeduceMetaData = dataToReturn.FirstOrDefault();
+            var metaData = new FakeDbResultSet.MetaData[rowToDeduceMetaData.Length];
+
+            for (int j = 0; j < metaData.Length; j++)
+            {
+                if (columnNames.Length > j)
+                {
+                    var columnName = columnNames[j];
+                    var itemToDeduceMetaData = rowToDeduceMetaData[j]??new object();
+                    metaData[j] = new FakeDbResultSet.MetaData(columnName, itemToDeduceMetaData.GetType());
+                }
+            }
+            return ForExecuteQuery(dataToReturn, metaData);
+        }
+
+        public static FakeDbCommand ForExecuteQuery(IEnumerable<object[]> dataToReturn, FakeDbResultSet.MetaData[] columns)
         {
             var rows = dataToReturn.Count();
             var fakeDbCommand = new FakeDbCommand();
             var newCaseRefDbDataReader = new FakeDbResultSet();
-            newCaseRefDbDataReader.Data = new object[rows, 1];
+            newCaseRefDbDataReader.Data = new object[rows, dataToReturn.FirstOrDefault().Length];
             int i = 0;
-            foreach (var item in dataToReturn)
+            foreach (var row in dataToReturn)
             {
-                newCaseRefDbDataReader.Data[i, 0] = item;
+                for (int j = 0; j < row.Length; j++)
+                {
+                    newCaseRefDbDataReader.Data[i, j] = row[j];
+                }
+                i++;
             }
-            newCaseRefDbDataReader.metaData = new[] { new FakeDbResultSet.MetaData("col1", typeof(T)) };
+
+            newCaseRefDbDataReader.metaData = columns;
 
             fakeDbCommand.ExecuteQueryResultDbDataReader = newCaseRefDbDataReader;
             return fakeDbCommand;
