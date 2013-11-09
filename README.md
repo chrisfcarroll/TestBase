@@ -1,17 +1,48 @@
 TestBase
 ========
-Aims to get you off to a flying start when unit testing projects with many dependencies by 
-(1) reducing the amount of boilerplate mock management code you write
-and (2) providing a rich extensible set of fluent assertions including
-* ShouldEqualByValue assertion for all kinds of types and collections
-* Stream assertions include ShouldContain and ShouldEqualByValue
-* Moq ShouldCall assertions
-* Mvc ActionResult, RedirectToRouteResult,ViewResult and Model assertions
-* String Assertions
+*TestBase* gives you a jump-start when unit testing projects with dependencies, offering 
+* a rich extensible set of fluent assertions 
+* a set of Fake Ado.Net components, with easy setup and verification.
 
-Works for both NUnit & MS UnitTestFramework test projects.
+TestBase.Shoulds
+------------------
+Chainable fluent assertions get you to the point concisely.
 
-Work with Mono -- see below for how to build on Mono
+    UnitUnderTest.Action()
+      .ShouldNotBeNull()
+      .ShouldContain(expected);
+    UnitUnderTest.OtherAction()
+      .ShouldEqualByValue(new {Id=1, Payload=new[]{ expected1, expected2 }});
+
+* ShouldBe(), ShouldMatch(), ShouldNotBe(), ShouldContain(), ShouldNotContain(), ShouldBeEmpty(), ShouldNotBeEmpty(), ShouldAll() and many more
+* ShouldEqualByValue() works with all kinds of object and collections
+* Stream assertions include ShouldContain() and ShouldEqualByValue()
+
+TestBase.FakeDb
+------------------
+Works with Ado.Net and technologies on top of it, including Dapper.
+
+    fakeDbConnection.SetupForQuery(fakeData, new[] {"ColumnName1", ...})
+    fakeDbConnection.SetupForExecuteNonQuery()
+    fakeDbConnection.Verify(x=>x.CommandText.Matches("Insert .*") && x.Parameters["id"].Value==1)
+
+TestBase-Mvc
+------------
+
+    ControllerUnderTest.Action()
+      .ShouldbeViewResult()
+      .ShouldHaveModel<TModel>()
+      .ShouldEqualByValue(expected)
+    ControllerUnderTest.Action()
+      .ShouldBeRedirectToRouteResult()
+      .ShouldHaveRouteValue("expectedKey", [Optional] "expectedValue");
+
+* ShouldHaveViewDataContaining(), ShouldBeJsonResult() etc.
+
+Can be used in both NUnit & MS UnitTestFramework test projects.
+
+Building on Mono : define compile symbol NoMSTest to remove dependency on 
+Microsoft.VisualStudio.QualityTools.UnitTestFramework)
 
 Examples included:
 -----------------
@@ -27,7 +58,6 @@ Dependencies in this version
 ------------
 * .Net 4
 * Moq for .Net 4
-* Optional (see below) Microsoft.VisualStudio.QualityTools.UnitTestFramework v4 
 * NUnit.framework
 * TestBase-Mvc targets System.Web.Mvc v4.0.0.0
 

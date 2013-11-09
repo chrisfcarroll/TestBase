@@ -1,17 +1,16 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.Data.SqlClient;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestBase.Shoulds;
 
-namespace Example.Dapper.DbIntegrationTests
+namespace Example.Dapper.Tests.IntegrationTests
 {
     [TestClass]
-    public class GivenEmptyDb : IntegrationTestBaseForExampleDapper
+    public class GivenEmptyDb : ExampleIntegrationTestBase
     {
-        [TestInitialize]
-        public override void SetUp()
-        {
-            Init(() => new Program(ConnectionString));
 
-        }
+        [TestInitialize]
+        public override void SetUp() { base.SetUp(); }
+
 
         [TestMethod]
         public void GetSomeData_should_not_throw_and_should_not_return_null()
@@ -39,13 +38,13 @@ namespace Example.Dapper.DbIntegrationTests
         [ClassInitialize]
         public static void CreateExampleDapperTestsDb(TestContext context)
         {
-            CreateExampleDapperTestsDb();
+            TryCreateDb();
         }
 
         [ClassCleanup]
-        new public static void TryDropExampleDapperTestsDb()
+        public static void TryDropExampleDapperTestsDb()
         {
-            IntegrationTestBaseForExampleDapper.TryDropExampleDapperTestsDb(); 
+            TryDropDbAndDisposeConnection(); 
         }
        
     }

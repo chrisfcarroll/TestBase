@@ -52,6 +52,11 @@ namespace TestBase.Shoulds
             return @this;
         }
 
+        public static IEnumerable<T> ShouldNotBeNullOrEmpty<T>(this IEnumerable<T> @this, [Optional] string message, params object[] args)
+        {
+            return @this.ShouldNotBeNull(message, args).ShouldNotBeEmpty(message, args);
+        }
+
         public static List<T> ShouldContainInOrder<T>(this List<T> @this, T expectedFirst, T expectedAfter, [Optional] string message, params object[] args)
         {
             @this

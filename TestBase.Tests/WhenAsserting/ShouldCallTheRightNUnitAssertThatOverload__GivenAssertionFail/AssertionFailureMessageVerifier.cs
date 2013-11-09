@@ -1,5 +1,5 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using TestBase.Shoulds;
 
 namespace TestBase.Tests.WhenAsserting.UsingAnNUnitWrapperAssertion

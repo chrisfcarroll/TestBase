@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
+using TestBase.Shoulds;
 
 namespace TestBase.FakeDb
 {
@@ -105,7 +106,9 @@ namespace TestBase.FakeDb
 
         protected override DbParameter GetParameter(string parameterName)
         {
-            return parameters.First(x => x.ParameterName.ToLower() == parameterName.ToLower());
+            var parameter = parameters.FirstOrDefault(x => x.ParameterName.ToLower() == parameterName.ToLower());
+            parameter.ShouldNotBeNull("Attempted to get parameter {0} from DbParameters, but there wasn't a parameter with that name",parameterName);
+            return parameter;
         }
 
         public override bool Contains(string value)

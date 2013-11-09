@@ -5,6 +5,21 @@ namespace TestBase.Shoulds
 {
     public static class MvcActionResultShoulds
     {
+        public static RedirectResult ShouldBeRedirectResult(this ActionResult actionResult, string url = null, bool? permanent = null)
+        {
+            var result = actionResult.ShouldBeOfType<RedirectResult>();
+            if (url != null)
+            {
+                result.Url.ShouldEqual(url, "Expected the RedirectResult.Url to be {0}", url);
+            }
+            if (permanent.HasValue)
+            {
+                result.Permanent.ShouldEqual(permanent, "Expected the RedirectResult to {0} be permanent",
+                                             permanent.Value ? "" : "not ");
+            }
+            return result;
+        }
+
         public static RedirectToRouteResult ShouldBeRedirectToRouteResult(this ActionResult @this)
         {
             return @this.ShouldBeOfType<RedirectToRouteResult>();

@@ -38,6 +38,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Dapper">
+      <HintPath>..\packages\Dapper.1.13\lib\net40\Dapper.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="Moq">
       <HintPath>..\packages\Moq.4.0.10827\lib\NET40\Moq.dll</HintPath>
     </Reference>
@@ -46,6 +50,12 @@
       <HintPath>..\packages\NUnit.2.6.2\lib\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.4.0.20710.0\lib\net40\System.Web.Http.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
   </ItemGroup>
   <Choose>
@@ -54,22 +64,31 @@
         <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
       </ItemGroup>
     </When>
-    <Otherwise>
-      <ItemGroup>
-        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
-      </ItemGroup>
-    </Otherwise>
+    <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="ComparerEqualsByValueTests\WhenComparingAnonymousClassesByValue.cs" />
+    <Compile Include="ComparerEqualsByValueTests\WhenComparingAnonymousClassesByValueWithExclusions.cs" />
+    <Compile Include="ComparerEqualsByValueTests\WhenComparingClassesByValueWithExclusions.cs" />
+    <Compile Include="ComparerEqualsByValueTests\WhenComparingClassesByValue.cs" />
+    <Compile Include="ComparerEqualsByValueTests\WhenComparingPrimitivesByValue.cs" />
     <Compile Include="DictionaryTests\When_using_a_FakesDictionary.cs" />
-    <Compile Include="WhenAsserting\UsingAnNUnitWrapperAssertion\AssertionFailureMessageVerifier.cs" />
-    <Compile Include="WhenAsserting\UsingAnNUnitWrapperAssertion\ShouldCall__TestCasesForCustomFailureMessageWithNoArgs.cs" />
-    <Compile Include="WhenAsserting\UsingAnNUnitWrapperAssertion\ShouldCall__TestCasesForCustomMessageWithArgs.cs" />
-    <Compile Include="WhenAsserting\UsingAnNUnitWrapperAssertion\ShouldCall__TestCasesForNoCustomMessage.cs" />
+    <Compile Include="WhenSettingUpAFakeDbConnection\ForQueryUsingObjectArrayFakeData.cs" />
+    <Compile Include="WhenSettingUpAFakeDbConnection\ForQueryUsingStronglyTypedFakeData.cs" />
+    <Compile Include="WhenSettingUpAFakeDbConnection\ForExecute.cs" />
+    <Compile Include="WhenSettingUpAFakeDbConnection\WhenVerifyingInvocations.cs" />
+    <Compile Include="HttpContextTests\WhenMockingAndFakingHttpContextForAController.cs" />
+    <Compile Include="WhenAsserting\ShouldCallTheRightNUnitAssertThatOverload__GivenAssertionFail\AssertionFailureMessageVerifier.cs" />
+    <Compile Include="WhenAsserting\ShouldCallTheRightNUnitAssertThatOverload__GivenAssertionFail\ShouldCall__TestCasesForCustomFailureMessageWithNoArgs.cs" />
+    <Compile Include="WhenAsserting\ShouldCallTheRightNUnitAssertThatOverload__GivenAssertionFail\ShouldCall__TestCasesForCustomMessageWithArgs.cs" />
+    <Compile Include="WhenAsserting\ShouldCallTheRightNUnitAssertThatOverload__GivenAssertionFail\ShouldCall__TestCasesForNoCustomMessage.cs" />
+    <Compile Include="WhenAsserting\ShouldReturnTheActualBeingAsserted__Given_AssertionPass\ShouldReturn__TestCases_MvcActionResults.cs" />
     <Compile Include="WhenAsserting\Using_Moq_verification.cs" />
-    <Compile Include="WhenConstructingATestBase\For_a_class_with_1_constructor_parameter.cs" />
+    <Compile Include="WhenConstructingATestBase\Given_a__recursive_constructor_dependency_is_provided_as_a_field_of_the_testclass.cs" />
+    <Compile Include="WhenConstructingATestBase\Given_a_constructor_dependency_is_provided_as_a_field_of_the_testclass.cs" />
+    <Compile Include="WhenConstructingATestBase\For_a_class_with_a_nonmockable_constructor_parameter.cs" />
     <Compile Include="WhenConstructingATestBase\For_a_class_with_no_constructor_parameters.cs" />
-    <Compile Include="WhenConstructingATestBase\For_a_class_with_4_constructor_parameters_of_which_2_mockable.cs" />
+    <Compile Include="WhenConstructingATestBase\For_a_class_with_mockable_and_non_mockable_constructor_depdeparameters_of_which_2_mockable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WhenRunningTests\MockDependencies_Should_be_initialized_to_empty_for_each_test.cs" />
   </ItemGroup>
@@ -77,10 +96,17 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\TestBase-Mvc\TestBase-Mvc.csproj">
+      <Project>{8E0B6D7F-5703-4B48-AF07-FFD6104995E2}</Project>
+      <Name>TestBase-Mvc</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TestBase\TestBase.csproj">
       <Project>{19b1a0d5-d812-4cc1-a129-012616c83ff2}</Project>
       <Name>TestBase</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ShouldsCorrectnessTests\" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

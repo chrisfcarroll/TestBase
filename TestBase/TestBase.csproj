@@ -34,6 +34,7 @@
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE;NoMSTest</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NoMSTest</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
@@ -69,32 +70,44 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework">
+      <HintPath>..\..\..\..\..\..\..\Program Files\Microsoft Visual Studio 11.0\Common7\IDE\PublicAssemblies\Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll</HintPath>
+    </Reference>
     <Reference Include="Moq">
       <HintPath>..\packages\Moq.4.0.10827\lib\NET40\Moq.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\AssemblyInfoShared.cs">
+      <Link>Properties\AssemblyInfoShared.cs</Link>
+    </Compile>
     <Compile Include="AttributeExtensions.cs" />
     <Compile Include="Attributes\EnvironmentalDependencyCheckAttribute.cs" />
     <Compile Include="Attributes\ExpectedUseInFitnesseAttribute.cs" />
     <Compile Include="Attributes\NotCurrentlyTestableInCode.cs" />
     <Compile Include="BoolWithString.cs" />
     <Compile Include="EqualsByValueConstraint.cs" />
+    <Compile Include="EqualsByValueExceptForConstraint.cs" />
     <Compile Include="FakeDb\DbCommandExtensions.cs" />
     <Compile Include="FakeDb\DbCommandInvocationList.cs" />
+    <Compile Include="FakeDb\DbConnectionVerifyExtensions.cs" />
     <Compile Include="FakeDb\FakeDbCommand.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="FakeDb\FakeDbConnection.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="FakeDb\FakeDbConnectionExtensions.cs" />
     <Compile Include="FakeDb\FakeDbDataReader.cs" />
     <Compile Include="FakeDb\FakeDbParameter.cs" />
     <Compile Include="FakeDb\FakeDbParameterCollection.cs" />
+    <Compile Include="FakeDb\FakeDbTransaction.cs" />
     <Compile Include="FakesDictionary.cs" />
     <Compile Include="FakeXmlExceptionFormatter.cs" />
     <Compile Include="IEnumerableExtensions.cs" />
     <Compile Include="MockDbCommandExtensions.cs" />
+    <Compile Include="RegularExpressionValidation.cs" />
+    <Compile Include="RequiredValidation.cs" />
     <Compile Include="Shoulds\IEnumerableShoulds.cs" />
     <Compile Include="Shoulds\MoqVerificationShoulds.cs" />
     <Compile Include="Shoulds\ShouldsForEqualByValue.cs" />
@@ -120,6 +133,7 @@
     <None Include="MiniPdf.pdf" />
     <None Include="MiniPdf2.pdf" />
     <None Include="packages.config" />
+    <None Include="TestBase.nuspec" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 //Credits. ToDo. Credit the blogger who wrote & posted v1 of MemberCompare() in about 2009
@@ -17,9 +18,19 @@ namespace TestBase
             return MemberCompare(left, right, new List<object>());
         }
 
+        public static BoolWithString EqualsByValueOrDiffersExceptFor(this object left, object right, List<string> exclusionList)
+        {
+            return MemberCompare(left, right, new List<object>(), exclusionList);
+        }
+
         public static bool EqualsByValue(this object left, object right)
         {
             return MemberCompare(left, right, new List<object>());
+        }
+
+        public static bool EqualsByValueExceptFor(this object left, object right, List<string> exclusionList)
+        {
+            return MemberCompare(left, right, new List<object>(), exclusionList);
         }
 
         public static bool AreEqual(object left, object right)
@@ -34,9 +45,15 @@ namespace TestBase
         /// </summary>
         /// <param name="left"></param>
         /// <param name="right"></param>
+        /// <param name="exclusionList">An array of dotted member "paths" to members to ignore for the purposes of this comparison, Eg. Property1.Member2.MemberToIgnore</param>
         /// <param name="done"></param>
         /// <returns></returns>
-        public static BoolWithString MemberCompare(object left, object right, List<object> done)
+        public static BoolWithString MemberCompare(object left, object right, List<object> done = null, List<string> exclusionList = null)
+        {
+            var breadCrumb = new List<string>();
+            return MemberCompare(left, right, done??new List<object>(), ref breadCrumb, exclusionList ?? new List<string>());
+        }
+        static BoolWithString MemberCompare(object left, object right, List<object> done, ref List<string> breadcrumb, List<string> exclusionList)
         {
             // avoid cyclic references
             if (done.Contains(left))
@@ -135,7 +152,7 @@ namespace TestBase
                     {
                         return BoolWithString.False(string.Format("Left has {0} at index {1} but Right is only {2} items long", leftItem, lefti, lefti - 1));
                     }
-                    var currentCompare = MemberCompare(leftItem, rightEnumerator.Current, done);
+                    var currentCompare = MemberCompare(leftItem, rightEnumerator.Current, done, ref breadcrumb, exclusionList);
                     if (!currentCompare)
                     {
                         return BoolWithString.False(string.Format("Mismatch at item {0} ", lefti)).Because(currentCompare);
@@ -153,9 +170,9 @@ namespace TestBase
                 BindingFlags.Instance |
                 BindingFlags.GetProperty))
             {
-                if (leftInfo.Name == "Version")
+                var breadCrumbAsDottedMember = string.Join(".", breadcrumb.Union(new[]{leftInfo.Name}));
+                if (exclusionList.Contains(breadCrumbAsDottedMember))
                 {
-                    // Ignore the version property as Nhibernate can increment version as it needs to when persisting objects.
                     continue;
                 }
                 try
@@ -163,10 +180,18 @@ namespace TestBase
                     var rightInfo = rightType.GetProperty(leftInfo.Name,
                                                           BindingFlags.Public | BindingFlags.NonPublic |
                                                           BindingFlags.Instance | BindingFlags.GetProperty);
-                    var memberCompare = MemberCompare(leftInfo.GetValue(left, null), rightInfo.GetValue(right, null), done);
-                    if (!memberCompare)
+                    try
                     {
-                        return BoolWithString.False(string.Format("Mismatch at member {0}", leftInfo.Name)).Because(memberCompare);
+                        breadcrumb.Add( rightInfo.Name );
+                        var memberCompare = MemberCompare(leftInfo.GetValue(left, null), rightInfo.GetValue(right, null), done, ref breadcrumb, exclusionList);
+                        if (!memberCompare)
+                        {
+                            return BoolWithString.False(string.Format("Mismatch at member {0}", leftInfo.Name)).Because(memberCompare);
+                        }
+                    }
+                    finally
+                    {
+                        breadcrumb.RemoveAt(breadcrumb.Count-1);
                     }
                 }
                 catch(Exception)
@@ -182,6 +207,11 @@ namespace TestBase
                 BindingFlags.Instance |
                 BindingFlags.GetProperty))
             {
+                var breadCrumbAsDottedMember = string.Join(".", breadcrumb.Union(new[] { rightInfo.Name }));
+                if (exclusionList.Contains(breadCrumbAsDottedMember))
+                {
+                    continue;
+                }
                 try
                 {
                     var leftInfo = leftType.GetProperty(rightInfo.Name,

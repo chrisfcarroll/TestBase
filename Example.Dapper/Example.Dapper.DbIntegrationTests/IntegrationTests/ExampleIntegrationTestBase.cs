@@ -1,14 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestBase;
 
-namespace Example.Dapper.DbIntegrationTests
+namespace Example.Dapper.Tests.IntegrationTests
 {
-    public class IntegrationTestBaseForExampleDapper : IntegrationTestBaseForSqlDb<Program>
+    public class ExampleIntegrationTestBase : IntegrationTestBaseForSqlDb<Repository>
     {
-        protected string ConnectionString = "Server=.;Trusted_Connection=True;Database=IntegrationTestsForExampleDapper";
+        protected static string ConnectionString = "Server=.;Trusted_Connection=True;Database=IntegrationTestsForExampleDapper";
+        // ReSharper disable InconsistentNaming
+        // TODO: testbase parameter matching should be supple enough for resharper/fxcop naming rules
+        protected static IDbConnection dbConnection = new SqlConnection(ConnectionString);
+        // ReSharper restore InconsistentNaming
 
         protected static string[] DatabaseSetupCommands = new[]
                                     {
@@ -25,7 +30,7 @@ namespace Example.Dapper.DbIntegrationTests
                                         "Drop Database IntegrationTestsForExampleDapper",
                                     };
         [ClassInitialize]
-        public static void CreateExampleDapperTestsDb()
+        public static void TryCreateDb()
         {
             try
             {
@@ -33,16 +38,18 @@ namespace Example.Dapper.DbIntegrationTests
             }
             catch (Exception e)
             {
-                TryDropExampleDapperTestsDb();
+                TryDropDbAndDisposeConnection();
                 throw new ApplicationException("Exception was thrown when trying to initialise DB", e);
             }
         }
 
         [ClassCleanup]
-        public static void TryDropExampleDapperTestsDb()
+        public static void TryDropDbAndDisposeConnection()
         {
             try
             {
+                dbConnection.Close();
+                dbConnection.Dispose();
                 RunDbCommands(DatabaseTeardownCommands);
             }
             catch (Exception e)

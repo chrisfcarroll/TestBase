@@ -54,11 +54,17 @@ namespace TestBase.Shoulds
 
         public static T ShouldBe<T>(this T @this, T expectedValue, [Optional] string message, params object[] args)
         {
-            Assert.AreEqual(@this,expectedValue,message,args);
+            Assert.AreEqual(expectedValue, @this, message, args);
             return @this;
         }
 
         public static T ShouldNotEqual<T>(this T @this, T obj, [Optional] string message, params object[] args)
+        {
+            Assert.AreNotEqual(obj, @this, message, args);
+            return @this;
+        }
+
+        public static T ShouldNotBe<T>(this T @this, T obj, [Optional] string message, params object[] args)
         {
             Assert.AreNotEqual(obj, @this, message, args);
             return @this;

@@ -1,4 +1,4 @@
-﻿<Properties>
+<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.Workbench ActiveDocument="TestBase-Mvc.Tests/WhenTestingAControllerWithATestBaseFakeHttpContext.cs">
     <Files>
@@ -8,13 +8,7 @@
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
-          <Node name="Example.Mvc4" expanded="True" />
-          <Node name="TestBase-Mvc" expanded="True">
-            <Node name="References" expanded="True" />
-          </Node>
-          <Node name="TestBase-Mvc.Tests" expanded="True">
-            <Node name="References" expanded="True" selected="True" />
-          </Node>
+          <Node name="TestBase" expanded="True" selected="True" />
         </State>
       </Pad>
       <Pad Id="ClassPad">

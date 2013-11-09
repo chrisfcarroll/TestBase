@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Specialized;
+using System.Globalization;
 using System.IO;
 using System.Web.Mvc;
 using TestBase.Shoulds;
@@ -32,7 +34,7 @@ namespace TestBase
             return ((ViewResult)actionResult).ViewName.Equals(expectedViewName);
         }
 
-        public static TController MakeModelStateInvalid<TController>(this TController @this)
+        public static TController WithModelStateIsInvalid<TController>(this TController @this)
             where TController : Controller
         {
             @this.ModelState.AddModelError("SomeKey", @"Some error message");
@@ -40,7 +42,24 @@ namespace TestBase
             return @this;
         }
 
-        public static string ViewFile( this Controller controller, ViewResultBase viewResult, string namespacePathToMvcRoot)
+        public static TController WithValidationforModel<TController,TModel>(this TController @this, TModel model, IValueProvider valueProvider= null)
+            where TController : Controller
+        {
+            var modelBinder = new ModelBindingContext()
+            {
+                ModelMetadata = ModelMetadataProviders.Current.GetMetadataForType(() => model, typeof(TModel)),
+                ValueProvider = valueProvider??new NameValueCollectionValueProvider(
+                                                        new NameValueCollection(), 
+                                                        CultureInfo.InvariantCulture)
+            };
+            new DefaultModelBinder().BindModel(new ControllerContext(), modelBinder);
+
+            @this.ModelState.Clear();
+            @this.ModelState.Merge(modelBinder.ModelState);
+            return @this;
+        }
+
+        public static string ViewFile(this Controller controller, ViewResultBase viewResult, string namespacePathToMvcRoot)
         {
             return ViewFile( controller, viewResult.ViewName + ".aspx", namespacePathToMvcRoot);
         }

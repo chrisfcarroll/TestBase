@@ -28,7 +28,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Example.DapperNet", "Exampl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.Dapper", "Example.Dapper\Example.Dapper\Example.Dapper.csproj", "{EB2A9CC3-BB63-4893-BF51-A4D484B1155B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.Dapper.DbIntegrationTests", "Example.Dapper\Example.Dapper.DbIntegrationTests\Example.Dapper.DbIntegrationTests.csproj", "{0D3918A9-6158-4F8B-9517-9A11CFFDC06A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.Dapper.Tests", "Example.Dapper\Example.Dapper.DbIntegrationTests\Example.Dapper.Tests.csproj", "{0D3918A9-6158-4F8B-9517-9A11CFFDC06A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{4610848A-5B19-4C69-B338-A8680B46E2F3}"
 	ProjectSection(SolutionItems) = preProject
