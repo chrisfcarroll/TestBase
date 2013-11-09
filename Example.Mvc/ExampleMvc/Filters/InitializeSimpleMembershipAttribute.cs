@@ -37,6 +37,7 @@ namespace TestBase.ExampleMvc4.Filters
                             throw new InvalidOperationException("EntityFramework CreateDatabase() is not support on Mono");
                             #else 
                             // Create the SimpleMembership database without Entity Framework migration schema
+                            #if !MONO
                             ((IObjectContextAdapter)context).ObjectContext.CreateDatabase();
                             #endif
                         }
