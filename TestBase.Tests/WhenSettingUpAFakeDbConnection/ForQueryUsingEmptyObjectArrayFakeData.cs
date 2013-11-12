@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Dapper;
 using NUnit.Framework;
@@ -33,6 +34,16 @@ namespace TestBase.Tests.WhenSettingUpAFakeDbConnection
             var uut = new FakeDbConnection().SetUpForQuery(new object[][] { }, metaData);
             //A
             uut.Query<KeyValuePair<int, string>>("").ShouldEqualByValue(new KeyValuePair<int, string>[] { });
+
+        }
+
+        [Test]
+        public void Should_throw_helpfully__Given__not_enough_metadata()
+        {
+            //A
+            Assert.Throws<InvalidOperationException>(
+                () => new FakeDbConnection().SetUpForQuery(new object[][] {})
+                ).Message.ShouldMatch("[Cc]an't .* metadata");
 
         }
     }
