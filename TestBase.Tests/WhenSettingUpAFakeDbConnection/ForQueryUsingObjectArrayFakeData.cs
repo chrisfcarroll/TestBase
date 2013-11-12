@@ -9,6 +9,7 @@ namespace TestBase.Tests.WhenSettingUpAFakeDbConnection
     [TestFixture]
     public class ForQueryUsingObjectArrayFakeData
     {
+
         [Test]
         public void Should_return_the_setup_data__Given_an_array_of_fakedata()
         {

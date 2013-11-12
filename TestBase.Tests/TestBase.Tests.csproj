@@ -67,12 +67,18 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="..\AssemblyInfoShared.cs">
+      <Link>Properties\AssemblyInfoShared.cs</Link>
+    </Compile>
+    <Compile Include="ComparerEqualsByValueTests\Example\SearchBox.cs" />
+    <Compile Include="ComparerEqualsByValueTests\Example\WhenComparingExampleClass.cs" />
     <Compile Include="ComparerEqualsByValueTests\WhenComparingAnonymousClassesByValue.cs" />
     <Compile Include="ComparerEqualsByValueTests\WhenComparingAnonymousClassesByValueWithExclusions.cs" />
     <Compile Include="ComparerEqualsByValueTests\WhenComparingClassesByValueWithExclusions.cs" />
     <Compile Include="ComparerEqualsByValueTests\WhenComparingClassesByValue.cs" />
     <Compile Include="ComparerEqualsByValueTests\WhenComparingPrimitivesByValue.cs" />
     <Compile Include="DictionaryTests\When_using_a_FakesDictionary.cs" />
+    <Compile Include="WhenSettingUpAFakeDbConnection\ForQueryUsingEmptyObjectArrayFakeData.cs" />
     <Compile Include="WhenSettingUpAFakeDbConnection\ForQueryUsingObjectArrayFakeData.cs" />
     <Compile Include="WhenSettingUpAFakeDbConnection\ForQueryUsingStronglyTypedFakeData.cs" />
     <Compile Include="WhenSettingUpAFakeDbConnection\ForExecute.cs" />
