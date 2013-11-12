@@ -4,11 +4,11 @@ pushd %~p0
 .nuget\NuGet.exe setApiKey %1
 
 cd TestBase
-..\.nuget\NuGet.exe Pack TestBase.csproj
+..\.nuget\NuGet.exe Pack TestBase.csproj  -Symbols
 if errorlevel 1 goto Error
 
 cd ..\TestBase-Mvc
-..\.nuget\NuGet.exe Pack TestBase-Mvc.csproj -IncludeReferencedProjects
+..\.nuget\NuGet.exe Pack TestBase-Mvc.csproj -IncludeReferencedProjects 
 if errorlevel 1 goto Error
 
 popd
@@ -18,5 +18,6 @@ popd
 goto :eof
 :Error
 echo Aborted due to error whilst packing.
+popd
 :Usage
 Echo PackAndPush ^<NugetApiKey^> ^<VersionToPush^>

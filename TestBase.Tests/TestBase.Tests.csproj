@@ -78,6 +78,7 @@
     <Compile Include="ComparerEqualsByValueTests\WhenComparingClassesByValue.cs" />
     <Compile Include="ComparerEqualsByValueTests\WhenComparingPrimitivesByValue.cs" />
     <Compile Include="DictionaryTests\When_using_a_FakesDictionary.cs" />
+    <Compile Include="ShouldsCorrectnessTests\ShouldEqualByValueExceptForValueTests.cs" />
     <Compile Include="WhenSettingUpAFakeDbConnection\ForQueryUsingEmptyObjectArrayFakeData.cs" />
     <Compile Include="WhenSettingUpAFakeDbConnection\ForQueryUsingObjectArrayFakeData.cs" />
     <Compile Include="WhenSettingUpAFakeDbConnection\ForQueryUsingStronglyTypedFakeData.cs" />
@@ -111,9 +112,7 @@
       <Name>TestBase</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="ShouldsCorrectnessTests\" />
-  </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>
