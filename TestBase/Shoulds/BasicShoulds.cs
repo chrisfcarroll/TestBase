@@ -34,16 +34,14 @@ namespace TestBase.Shoulds
             Assert.That(@this, Is.Empty, message, args);
         }
 
-        public static T ShouldBeNullOrEmptyOrWhitespace<T>(this T @this, [Optional] string message, params object[] args) where T : class 
+        public static void ShouldBeNullOrEmptyOrWhitespace(this object @this, [Optional] string message, params object[] args)
         {
             Assert.That(@this == null || @this.ToString().Trim().Length == 0, message??"ShouldBeNullOrWhitespace", args);
-            return @this;
         }
 
-        public static T ShouldNotBeNullOrEmptyOrWhitespace<T>(this T @this, [Optional] string message, params object[] args) where T : class
+        public static void ShouldNotBeNullOrEmptyOrWhitespace(this object @this, [Optional] string message, params object[] args)
         {
             Assert.That(@this != null && @this.ToString().Trim().Length != 0, message ?? "ShouldNotBeNullOrWhitespace", args);
-            return @this;
         }
 
         public static T ShouldEqual<T>(this T @this, object expectedValue, [Optional] string message, params object[] args)
