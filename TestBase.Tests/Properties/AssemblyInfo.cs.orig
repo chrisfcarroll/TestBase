@@ -5,7 +5,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("TestBase.Tests")]
+<<<<<<< HEAD
+[assembly: AssemblyDescription("Tests for TestBase & TestBase-Mvc")]
+=======
 [assembly: AssemblyDescription("")]
+>>>>>>> 0a105a784a5b90c0c468ab057555278cab8427c3
 
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 

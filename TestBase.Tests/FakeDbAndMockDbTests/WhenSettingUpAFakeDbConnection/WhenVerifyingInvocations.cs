@@ -3,7 +3,7 @@ using NUnit.Framework;
 using TestBase.FakeDb;
 using TestBase.Shoulds;
 
-namespace TestBase.Tests.WhenSettingUpAFakeDbConnection
+namespace TestBase.Tests.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection
 {
     [TestFixture]
     public class WhenVerifyingInvocations

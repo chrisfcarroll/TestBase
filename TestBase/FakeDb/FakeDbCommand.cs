@@ -17,16 +17,34 @@ namespace TestBase.FakeDb
         public static FakeDbCommand ForExecuteQuery(IEnumerable<object[]> dataToReturn, params string[] columnNames)
         {
             var rowToDeduceMetaData = dataToReturn.FirstOrDefault();
-            var metaData = new FakeDbResultSet.MetaData[rowToDeduceMetaData.Length];
-
-            for (int j = 0; j < metaData.Length; j++)
+            FakeDbResultSet.MetaData[] metaData;
+            if (rowToDeduceMetaData != null)
             {
-                if (columnNames.Length > j)
+                metaData = new FakeDbResultSet.MetaData[rowToDeduceMetaData.Length];
+
+                for (int j = 0; j < metaData.Length; j++)
                 {
-                    var columnName = columnNames[j];
-                    var itemToDeduceMetaData = rowToDeduceMetaData[j]??new object();
-                    metaData[j] = new FakeDbResultSet.MetaData(columnName, itemToDeduceMetaData.GetType());
+                    if (columnNames.Length > j)
+                    {
+                        var columnName = columnNames[j];
+                        var itemToDeduceMetaData = rowToDeduceMetaData[j] ?? new object();
+                        metaData[j] = new FakeDbResultSet.MetaData(columnName, itemToDeduceMetaData.GetType());
+                    }
                 }
+            }
+            else if(columnNames.Length>0)
+            {
+                
+                metaData = Enumerable.Range(1, columnNames.Length)
+                              .Select(x => new FakeDbResultSet.MetaData("", typeof (object)))
+                              .ToArray();
+
+            }
+            else
+            {
+                throw new InvalidOperationException("To set up a Query response you must either pass MetaData for the result set " +
+                                                    "or pass data from which the metadata can be deduced. Can't deduce metadata from" +
+                                                    "an empty dataset and no column names.");
             }
             return ForExecuteQuery(dataToReturn, metaData);
         }
@@ -36,7 +54,7 @@ namespace TestBase.FakeDb
             var rows = dataToReturn.Count();
             var fakeDbCommand = new FakeDbCommand();
             var newCaseRefDbDataReader = new FakeDbResultSet();
-            newCaseRefDbDataReader.Data = new object[rows, dataToReturn.FirstOrDefault().Length];
+            newCaseRefDbDataReader.Data = new object[rows, columns.Length];
             int i = 0;
             foreach (var row in dataToReturn)
             {

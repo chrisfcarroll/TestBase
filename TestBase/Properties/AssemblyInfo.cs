@@ -37,6 +37,10 @@ It identifies constructor dependencies by name and type, looking in the followin
 1) Fields in the TestFixture class 
 2) Entries in the Mocks[] or Fake[] dictionaries
 3) Finally it creates a Mock (if it's a mockable type) or a default instance (if its sealed, or value type) for anything that's missing
+
+ChangeLog
+---------
+2.0.5.0 adds some intellisense and FakeDbConnection.Verify(..., message,args) overload
 ")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 

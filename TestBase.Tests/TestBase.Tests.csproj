@@ -73,6 +73,8 @@
     </Compile>
     <Compile Include="AClass.cs" />
     <Compile Include="ComparerEqualsByValueTests\WhenComparingStructsByValue.cs" />
+    <Compile Include="ComparerEqualsByValueTests\Example\SearchBox.cs" />
+    <Compile Include="ComparerEqualsByValueTests\Example\WhenComparingExampleClass.cs" />
     <Compile Include="ComparerEqualsByValueTests\WhenComparingAnonymousClassesByValue.cs" />
     <Compile Include="ComparerEqualsByValueTests\WhenComparingAnonymousClassesByValueWithExclusions.cs" />
     <Compile Include="ComparerEqualsByValueTests\WhenComparingClassesByValueWithExclusions.cs" />
@@ -84,6 +86,8 @@
     <Compile Include="FakeDbAndMockDbTests\WhenSettingUpAFakeDbConnection\ForQueryUsingStronglyTypedFakeData.cs" />
     <Compile Include="FakeDbAndMockDbTests\WhenSettingUpAFakeDbConnection\ForExecute.cs" />
     <Compile Include="FakeDbAndMockDbTests\WhenSettingUpAFakeDbConnection\WhenVerifyingInvocations.cs" />
+    <Compile Include="ShouldsCorrectnessTests\ShouldEqualByValueExceptForValueTests.cs" />
+    <Compile Include="FakeDbAndMockDbTests\WhenSettingUpAFakeDbConnection\ForQueryUsingEmptyObjectArrayFakeData.cs" />
     <Compile Include="HttpContextTests\WhenMockingAndFakingHttpContextForAController.cs" />
     <Compile Include="WhenAsserting\ShouldCallTheRightNUnitAssertThatOverload__GivenAssertionFail\AssertionFailureMessageVerifier.cs" />
     <Compile Include="WhenAsserting\ShouldCallTheRightNUnitAssertThatOverload__GivenAssertionFail\ShouldCall__TestCasesForCustomFailureMessageWithNoArgs.cs" />

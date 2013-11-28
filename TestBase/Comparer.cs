@@ -59,8 +59,11 @@ namespace TestBase
         }
         static BoolWithString MemberCompare(object left, object right, List<object> done, ref List<string> breadcrumb, List<string> exclusionList)
         {
+            // null checking
+            if (left == null && right == null) return true;
+
             // avoid cyclic references
-            if (done.Contains(left) && !left.GetType().IsValueType)
+            if (done.Contains(left) && left!=null && !left.GetType().IsValueType)
             {
                 return true;
             }
@@ -71,9 +74,6 @@ namespace TestBase
             {
                 return true;
             }
-
-            // null checking
-            if (left == null && right == null) return true;
 
             if (left == null)
             {
