@@ -4,21 +4,32 @@ using TestBase.Shoulds;
 namespace TestBase.Tests.ComparerEqualsByValueTests
 {
     [TestFixture]
-    public class WhenComparingClassesByValue
+    public class WhenComparingStructsByValue
     {
+        public struct AClass
+        {
+            public int Id { get; set; }
+            public string Name { get; set; }
+            public BClass More { get; set; }
+        }
+        public struct BClass 
+        {
+            public int More        { get; set; }
+            public string EvenMore { get; set; }
+        }
 
         static readonly AClass object1 = new AClass
-        {
-            Id = 1,
-            Name = "1",
-            More = new BClass { More = 1, EvenMore = "Evenmore1" }
-        };
+            {
+                    Id=1,
+                    Name = "1",
+                    More = new BClass{More=1, EvenMore = "Evenmore1"}
+            };
         static readonly AClass object1again = new AClass
-        {
-            Id = 1,
-            Name = "1",
-            More = new BClass { More = 1, EvenMore = "Evenmore1" }
-        };
+            {
+                    Id=1,
+                    Name = "1",
+                    More = new BClass{ More=1, EvenMore = "Evenmore1"}
+            };
         static readonly AClass object2 = new AClass
         {
             Id = 1,

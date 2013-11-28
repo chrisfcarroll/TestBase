@@ -24,9 +24,11 @@
         }
         public override string ToString()
         {
-            if (string.IsNullOrEmpty(message)) return value.ToString();
-            return value + " : " + message;
+            return string.IsNullOrEmpty(message) 
+                ? value.ToString() 
+                : value + " : " + message;
         }
+
         public static implicit operator bool(BoolWithString value) { return value.value; }
         public static implicit operator BoolWithString(bool value) { return new BoolWithString(value, ""); }
 

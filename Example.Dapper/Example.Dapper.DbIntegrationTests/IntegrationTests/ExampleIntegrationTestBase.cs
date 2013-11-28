@@ -19,7 +19,7 @@ namespace Example.Dapper.Tests.IntegrationTests
                                     {
                                         "Use tempdb",
                                         "If DB_ID('IntegrationTestsForExampleDapper') is not null " +
-                                        "Begin Drop Database IntegrationTestsForExampleDapper End",
+                                        "Begin Drop Database IntegrationTestsForExampleDapper WaitFor Delay '00:00:02.000' End",
                                         "Create Database IntegrationTestsForExampleDapper",
                                         "Use IntegrationTestsForExampleDapper",
                                         "Create Table Products ( Id int not null identity, Description nvarchar(200) not null)",

@@ -39,15 +39,19 @@ namespace TestBase
         }
 
         /// <summary>
-        /// Check to see if 2 given objects are same by comparing their properties.
+        /// Compare two objects by recursively iterating over their elements (if they are Enumerable) 
+        /// and properties. 
+        /// Recursion stops at value types and at types (including string) which override Equals()
         /// Following properties are ignored:-
         ///   Version
         /// </summary>
         /// <param name="left"></param>
         /// <param name="right"></param>
-        /// <param name="exclusionList">An array of dotted member "paths" to members to ignore for the purposes of this comparison, Eg. Property1.Member2.MemberToIgnore</param>
-        /// <param name="done"></param>
-        /// <returns></returns>
+        /// <param name="exclusionList">a possibly empty list of field names to exclude for the purposes of this 
+        /// comparison. To exclude fields of fields, provide the full dotted 'breadcrumb' to the property 
+        /// to exclude, e.g. new List&lt;string&gt;{"Id","SomeProperty.SomePropertyOfThat.FieldName"} 
+        /// </param>
+        /// <returns>a <see cref="BoolWithString"/>. In case of failure, the reason for failure is returned.</exception>
         public static BoolWithString MemberCompare(object left, object right, List<object> done = null, List<string> exclusionList = null)
         {
             var breadCrumb = new List<string>();
@@ -56,7 +60,7 @@ namespace TestBase
         static BoolWithString MemberCompare(object left, object right, List<object> done, ref List<string> breadcrumb, List<string> exclusionList)
         {
             // avoid cyclic references
-            if (done.Contains(left))
+            if (done.Contains(left) && !left.GetType().IsValueType)
             {
                 return true;
             }

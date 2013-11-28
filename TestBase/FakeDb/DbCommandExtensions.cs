@@ -16,7 +16,7 @@ namespace TestBase.FakeDb
         public static DataTable ToDataTable(this IEnumerable<object> fakeData, Type pocoTypeToReturn)
         {
             var t = new DataTable();
-            var propertyInfos = pocoTypeToReturn.GetProperties(BindingFlags.Public | BindingFlags.GetProperty | BindingFlags.SetProperty | BindingFlags.Instance);
+            var propertyInfos = pocoTypeToReturn.GetDbRehydratableProperties().ToArray();
 
             foreach (var property in propertyInfos)
             {

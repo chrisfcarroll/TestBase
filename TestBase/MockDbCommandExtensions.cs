@@ -11,7 +11,7 @@ namespace TestBase
     {
         public static Mock<DbCommand> SetupExecuteReaderToReturnDataSetWithFieldNamesForType(this Mock<DbCommand> mock, Type pocoTypeToReturn, IEnumerable<object> resultToReturn)
         {
-            mock.Setup(x => x.ExecuteReader()).Returns(new DataTableReader(DbCommandExtensions.ToDataTable(resultToReturn, pocoTypeToReturn)));
+            mock.Setup(x => x.ExecuteReader()).Returns(new DataTableReader(resultToReturn.ToDataTable(pocoTypeToReturn)));
             return mock;
         }
     }

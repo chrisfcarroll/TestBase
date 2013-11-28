@@ -8,13 +8,23 @@ namespace TestBase.Tests.WhenSettingUpAFakeDbConnection
     public class ForExecute
     {
         [Test]
-        public void When_SetupForExecuteNonQuery__Should_return_an_int()
+        public void When_SetupForExecuteNonQuery__Should_return_the_setup_int()
         {
             //A
             var fakeConnection = new FakeDbConnection().SetUpForExecuteNonQuery(123);
 
             //A 
             fakeConnection.CreateCommand().ExecuteNonQuery().ShouldEqual(123);
+        }
+
+        [Test]
+        public void When_SetupForExecuteNonQuery__Given__Using_Dapper__Should_return_the_setup_int()
+        {
+            //A
+            var fakeConnection = new FakeDbConnection().SetUpForExecuteNonQuery(123);
+
+            //A 
+            Dapper.SqlMapper.Execute(fakeConnection,"").ShouldEqual(123);
         }
 
         [Test]
