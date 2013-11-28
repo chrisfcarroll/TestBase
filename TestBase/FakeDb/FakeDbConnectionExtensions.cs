@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Data.Common;
+using System.Linq;
 using System.Reflection;
 
 namespace TestBase.FakeDb
@@ -48,7 +49,7 @@ namespace TestBase.FakeDb
         /// <returns>Itself, for chaining</returns>
         public static FakeDbConnection SetUpForQueryScalar<T>(this FakeDbConnection fakeDbConnection, T dataToReturn)
         {
-            fakeDbConnection.SetUpForQuery(new[] {dataToReturn});
+            fakeDbConnection.QueueCommand( FakeDbCommand.ForExecuteSingleColumnQuery(new[]{dataToReturn}) );
             return fakeDbConnection;
         }
 
@@ -57,7 +58,8 @@ namespace TestBase.FakeDb
         /// either the protected <see cref="DbCommand.ExecuteDbDataReader"/> or the public 
         /// <see cref="DbCommand.ExecuteReader()"/> is called on it.
         /// 
-        /// This overload will return a result set with just 1 column and <see cref="dataToReturn"/>.Count() rows.
+        /// This overload will return a result set with a column per public read-writeable property of typeof(T) 
+        /// and with <see cref="dataToReturn"/>.Count() rows.
         /// 
         /// The FakeDbCommands are (in the current version) queued and must be invoked in the order they were setup.
         /// </summary>
@@ -65,8 +67,7 @@ namespace TestBase.FakeDb
         /// <returns>Itself, for chaining</returns>
         public static FakeDbConnection SetUpForQuery<T>(this FakeDbConnection fakeDbConnection, IEnumerable<T> dataToReturn)
         {
-            fakeDbConnection.QueueCommand( FakeDbCommand.ForExecuteSingleColumnQuery(dataToReturn) );
-            return fakeDbConnection;
+            return fakeDbConnection.SetUpForQuery(dataToReturn, typeof (T).GetDbRehydratablePropertyNames().ToArray());
         }
 
         /// <summary>
