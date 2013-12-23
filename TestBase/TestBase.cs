@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-#if NoMSTest
-#else
+#if MSTest
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+#else
 #endif
 
 using Moq;
@@ -34,16 +34,16 @@ namespace TestBase
         {
             return Mocks.Get<T>();
         }
-#if NoMSTest
-#else
+#if MSTest
         [TestCleanup]
+#else
 #endif
-		[NUnit.Framework.TearDown]
+        [NUnit.Framework.TearDown]
         public virtual void Cleanup()  { InitMocksAndFakes(); }
 
-#if NoMSTest
-#else
+#if MSTest
         [TestInitialize]
+#else
 #endif
         [NUnit.Framework.SetUp]
         public virtual void SetUp() { SetUpUnitUnderTest(); }
