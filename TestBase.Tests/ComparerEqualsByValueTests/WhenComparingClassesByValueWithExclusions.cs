@@ -24,12 +24,6 @@ namespace TestBase.Tests.ComparerEqualsByValueTests
                     Name = "1",
                     More = new BClass{EvenMore = "Evenmore1"}
             };
-        readonly AClass object1again = new AClass
-            {
-                    Id=1,
-                    Name = "1",
-                    More = new BClass{EvenMore = "Evenmore1"}
-            };
         readonly AClass object2 = new AClass
         {
             Id = 1,

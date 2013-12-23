@@ -46,7 +46,7 @@ namespace TestBase
             context.Setup(ctx => ctx.Request).Returns(new HttpRequestWrapper(httpContext.Request));
             context.Setup(ctx => ctx.Response).Returns(new HttpResponseWrapper(httpContext.Response));
             context.Setup(ctx => ctx.User).Returns(httpContext.User);
-            context.Setup(ctx => ctx.Session).Returns(new HttpSessionStateWrapper(httpContext.Session));
+            context.Setup(ctx => ctx.Session).Returns(new HttpSessionStateWrapper(httpContext.Items["AspSession"] as HttpSessionState));
             context.Setup(ctx => ctx.Items).Returns(httpContext.Items);
             context.Setup(ctx => ctx.Server).Returns(MockServerUtility(appVirtualDir).Object);
             context.Setup(ctx => ctx.Application).Returns(new Mock<HttpApplicationStateBase>().Object);

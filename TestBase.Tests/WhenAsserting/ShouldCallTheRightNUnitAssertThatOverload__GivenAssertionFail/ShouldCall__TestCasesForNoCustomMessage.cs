@@ -15,7 +15,8 @@ namespace TestBase.Tests.WhenAsserting.UsingAnNUnitWrapperAssertion
             foreach (var assertionWithMessage in TestCasesForNoCustomFailureMessage.AssertionsWithNoCustomFailureMessage)
             {
                 var assertion = assertionWithMessage.Value.Key;
-                var expectedExceptionMessage = nunitFailureMessageIndent + assertionWithMessage.Value.Value;
+                var expectedExceptionMessage = nunitFailureMessageIndent + 
+                                               assertionWithMessage.Value.Value.Replace("\r\n",Environment.NewLine);
 
                 assertion.FailureShouldResultInAssertionExceptionWithErrorMessage(assertionWithMessage.Key, expectedExceptionMessage);
             }

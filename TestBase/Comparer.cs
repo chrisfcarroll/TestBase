@@ -218,7 +218,7 @@ namespace TestBase
                 }
                 try
                 {
-                    var leftInfo = leftType.GetProperty(rightInfo.Name,
+                    leftType.GetProperty(rightInfo.Name,
                                                           BindingFlags.Public | BindingFlags.NonPublic |
                                                           BindingFlags.Instance | BindingFlags.GetProperty);
                 }
@@ -248,7 +248,8 @@ namespace TestBase
             if (type == null) throw new ArgumentNullException("type");
 
             return Attribute.IsDefined(type, typeof(CompilerGeneratedAttribute), false)
-                && type.IsGenericType && type.Name.Contains("AnonymousType")
+                && type.IsGenericType 
+                && (type.Name.Contains("AnonymousType") || /* for Mono: */ type.Name.Contains("AnonType"))
                 && (type.Name.StartsWith("<>") || type.Name.StartsWith("VB$"))
                 && (type.Attributes & TypeAttributes.NotPublic) == TypeAttributes.NotPublic;
         }
