@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-//Credits. ToDo. Credit the blogger who wrote & posted v1 of MemberCompare() in about 2009
 
 namespace TestBase
 {
