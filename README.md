@@ -15,7 +15,7 @@ Chainable fluent assertions get you to the point concisely.
       .ShouldEqualByValue(new {Id=1, Payload=new[]{ expected1, expected2 }});
 
 * ShouldBe(), ShouldMatch(), ShouldNotBe(), ShouldContain(), ShouldNotContain(), ShouldBeEmpty(), ShouldNotBeEmpty(), ShouldAll() and many more
-* ShouldEqualByValue() works with all kinds of object and collections
+* ShouldEqualByValue() works with all kinds of object and collections and points to the location of the mismatch in large objects
 * Stream assertions include ShouldContain() and ShouldEqualByValue()
 
 TestBase.FakeDb
