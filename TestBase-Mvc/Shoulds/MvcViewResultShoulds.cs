@@ -9,6 +9,11 @@ namespace TestBase.Shoulds
 {
     public static class MvcViewResultShoulds
     {
+        public static T ShouldBeViewWithModel<T>(this ActionResult @this)
+        {
+            return @this.ShouldBeViewResult().ViewData.Model.ShouldBeOfType<T>();
+        }
+
         public static ViewResultBase ShouldBeViewNamed(this ViewResultBase @this, string viewName)
         {
             @this.ViewName.ToLower().ShouldEqual(viewName.ToLower());

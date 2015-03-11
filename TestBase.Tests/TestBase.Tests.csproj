@@ -88,6 +88,7 @@
     <Compile Include="FakeDbAndMockDbTests\WhenSettingUpAFakeDbConnection\ForQueryUsingObjectArrayFakeData.cs" />
     <Compile Include="FakeDbAndMockDbTests\WhenSettingUpAFakeDbConnection\ForQueryUsingStronglyTypedFakeData.cs" />
     <Compile Include="FakeDbAndMockDbTests\WhenSettingUpAFakeDbConnection\WhenVerifyingInvocations.cs" />
+    <Compile Include="ShouldsCorrectnessTests\DictionaryShoulds.cs" />
     <Compile Include="ShouldsCorrectnessTests\ShouldEqualByValueExceptForValueTests.cs" />
     <Compile Include="HttpContextTests\WhenMockingAndFakingHttpContextForAController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -117,7 +118,9 @@
       <Name>TestBase</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

@@ -1,18 +1,12 @@
 ﻿using System;
 using System.IO;
-using System.Net.Http;
 using System.Reflection;
 using System.Security.Principal;
 using System.Web;
-using System.Web.Http;
-using System.Web.Http.Controllers;
-using System.Web.Http.Routing;
 using System.Web.Mvc;
 using System.Web.Routing;
 using System.Web.SessionState;
 using Moq;
-using TestBase.Shoulds;
-using UrlHelper = System.Web.Mvc.UrlHelper;
 
 namespace TestBase
 {

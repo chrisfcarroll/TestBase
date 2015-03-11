@@ -10,6 +10,20 @@ namespace TestBase.Shoulds
     // ReSharper disable PossibleMultipleEnumeration
     public static class IEnumerableShoulds
     {
+        public static IDictionary<TKey,TValue> ShouldContainKey<TKey,TValue>(this IDictionary<TKey,TValue> @this, TKey key, [Optional] string message, params object[] args)
+        {
+            message = message ?? string.Format("Expected IDictionary to contain key {0}", key);
+            Assert.True(@this.ContainsKey(key), message, args);
+            return @this;
+        }
+
+        public static IDictionary<TKey, TValue> ShouldNotContainKey<TKey, TValue>(this IDictionary<TKey, TValue> @this, TKey key, [Optional] string message, params object[] args)
+        {
+            message = message ?? string.Format("Expected IDictionary to not contain key {0}", key);
+            Assert.False(@this.ContainsKey(key), message, args);
+            return @this;
+        }
+
         public static IEnumerable<T> ShouldContain<T>(this IEnumerable<T> @this, T item, [Optional] string message, params object[] args)
         {
             Assert.That(@this, Contains.Item(item), message, args);
