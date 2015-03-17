@@ -1,7 +1,7 @@
 TestBase
 ========
 *TestBase* gives you a jump-start when unit testing projects with dependencies, offering 
-* a rich extensible set of fluent assertions 
+* a rich, extensible set of fluent assertions 
 * a set of Fake Ado.Net components, with easy setup and verification.
 
 TestBase.Shoulds
@@ -63,4 +63,4 @@ Dependencies in this version
 
 Less useful if
 ----------------
-You don't need mocks and you already have a full fluent assertions library 
+You don't need mocks and you already have a full fluent assertions library.
