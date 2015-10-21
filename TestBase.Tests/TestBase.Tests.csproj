@@ -83,6 +83,7 @@
     <Compile Include="DictionaryTests\When_using_a_FakesDictionary.cs" />
     <Compile Include="FakeDbAndMockDbTests\DapperSqlMapper.cs" />
     <Compile Include="FakeDbAndMockDbTests\WhenMockingADbCommandExecuteReader.cs" />
+    <Compile Include="FakeDbAndMockDbTests\WhenSettingUpAFakeDbConnection\ForQueryUsingStronglyTypedTuplesOfFakeData.cs" />
     <Compile Include="FakeDbAndMockDbTests\WhenSettingUpAFakeDbConnection\ForExecute.cs" />
     <Compile Include="FakeDbAndMockDbTests\WhenSettingUpAFakeDbConnection\ForQueryUsingEmptyObjectArrayFakeData.cs" />
     <Compile Include="FakeDbAndMockDbTests\WhenSettingUpAFakeDbConnection\ForQueryUsingObjectArrayFakeData.cs" />

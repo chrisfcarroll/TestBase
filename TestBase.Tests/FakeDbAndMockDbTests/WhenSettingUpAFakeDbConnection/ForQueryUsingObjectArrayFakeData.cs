@@ -60,7 +60,7 @@ namespace TestBase.Tests.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection
                                    {
                                        new FakeDbResultSet.MetaData("Id", typeof(int)),
                                        new FakeDbResultSet.MetaData("Id", typeof(int)),
-                                       new FakeDbResultSet.MetaData("Id", typeof(string)),
+                                       new FakeDbResultSet.MetaData("Name", typeof(string)),
                                    });
 
             //A 

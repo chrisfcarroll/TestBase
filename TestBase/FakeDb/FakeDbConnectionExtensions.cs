@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
 using System.Reflection;
@@ -69,6 +70,26 @@ namespace TestBase.FakeDb
         {
             return fakeDbConnection.SetUpForQuery(dataToReturn, typeof (T).GetDbRehydratablePropertyNames().ToArray());
         }
+
+        /// <summary>
+        /// Sets up the Fake DbConnection to return a FakeDbCommand which is itself set up to return <see cref="dataToReturn"/> when 
+        /// either the protected <see cref="DbCommand.ExecuteDbDataReader"/> or the public 
+        /// <see cref="DbCommand.ExecuteReader()"/> is called on it.
+        /// 
+        /// This overload will return a result set with a column per public read-writeable property of typeof(T1) 
+        /// followed by a column per public read-writeable property of typeof(T2)
+        /// and with <see cref="dataToReturn"/>.Count() rows.
+        /// 
+        /// The FakeDbCommands are (in the current version) queued and must be invoked in the order they were setup.
+        /// </summary>
+        /// <param name="dataToReturn">A scalar data item</param>
+        /// <returns>Itself, for chaining</returns>
+        public static FakeDbConnection SetUpForQuery<T1,T2>(this FakeDbConnection fakeDbConnection, IEnumerable<Tuple<T1,T2>> dataToReturn)
+        {
+            fakeDbConnection.QueueCommand(FakeDbCommand.ForExecuteQuery(dataToReturn));
+            return fakeDbConnection;
+        }
+
 
         /// <summary>
         /// Sets up the Fake DbConnection to return a FakeDbCommand which is itself set up to return <see cref="dataToReturn"/> when 

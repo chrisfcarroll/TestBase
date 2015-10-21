@@ -71,6 +71,15 @@ namespace TestBase.FakeDb
             return fakeDbCommand;
         }
 
+        /// <summary>
+        /// Creates a FakeDbCommand which, when executeQuery is called on it, will return a data reader 
+        /// having rows of data populated from <paramref name="dataToReturn"/>
+        /// and MetaData (i.e. column properties) taken from <paramref name="propertyNames"/>,
+        /// </summary>
+        /// <typeparam name="T">The properties of T named by <paramref name="propertyNames"/> should be compatible with your database, e.g. int, string, DateTime ... </typeparam>
+        /// <param name="dataToReturn"></param>
+        /// <param name="propertyNames">Will be used as the column names for the returned DataReader</param>
+        /// <returns>A <see cref="FakeDbCommand"/> which will yield a DataReader containing the given <paramref name="dataToReturn"/></returns>
         public static FakeDbCommand ForExecuteQuery<T>(IEnumerable<T> dataToReturn, string[] propertyNames)
         {
             var rows = dataToReturn.Count();
@@ -101,6 +110,74 @@ namespace TestBase.FakeDb
             }
 
             fakeDbCommand.ExecuteQueryResultDbDataReader = newCaseRefDbDataReader;
+            return fakeDbCommand;
+        }
+        /// <summary>
+        /// Creates a FakeDbCommand which, when executeQuery is called on it, will return a DataReader 
+        /// having rows of data populated from <paramref name="dataToReturn"/>.
+        /// Each <see cref="Tuple"/> <paramref name="dataToReturn"/> will be "flattened" in the resulting DataReader so that 
+        /// the columns of the DataReader contain first the values of the properties of <paramref name="dataToReturn"/>.Item1, followed 
+        /// by <paramref name="dataToReturn"/>.Item2, and MetaData (i.e. column properties) from first the reflected Properties 
+        /// of <paramref name="dataToReturn"/>.Item1, followed by <paramref name="dataToReturn"/>.Item2
+        /// 
+        /// Only writeable ValueTypes and strings will be used: See <see cref="FakeDbRehydrationExtensions.GetDbRehydratableProperties"/> and https://github.com/chrisfcarroll/TestBase/blob/master/TestBase/FakeDb/FakeDbRehydrationExtensions.cs
+        /// 
+        /// </summary>
+        /// <typeparam name="T">The properties of T named by <paramref name="propertyNames"/> should be compatible with your database, e.g. int, string, DateTime ... </typeparam>
+        /// <param name="dataToReturn"></param>
+        /// <param name="propertyNames">Will be used as the column names for the returned DataReader</param>
+        /// <returns>A <see cref="FakeDbCommand"/> which will yield a DataReader containing the given <paramref name="dataToReturn"/></returns>
+        public static FakeDbCommand ForExecuteQuery<T1, T2>(IEnumerable<Tuple<T1, T2>> dataToReturn)
+        {
+            var propertyNames1 = typeof(T1).GetDbRehydratablePropertyNames().ToArray();
+            var propertyNames2 = typeof(T2).GetDbRehydratablePropertyNames().ToArray();
+            var rowCount = dataToReturn.Count();
+            var ColumnCount = propertyNames1.Length + propertyNames2.Length;
+            var fakeDbCommand = new FakeDbCommand();
+            var newDbDataReader = new FakeDbResultSet
+            {
+                Data = new object[rowCount, ColumnCount]
+            };
+            int i = 0;
+            foreach (var row in dataToReturn)
+            {
+                int j = 0;
+                for (j = 0; j < propertyNames1.Length; j++)
+                {
+                    var propertyName = propertyNames1[j];
+                    var propertyInfo = GetPropertyInfo(propertyName, typeof(T1));
+                    EnsurePropertyOrThrow<T1>(propertyInfo, propertyName);
+                    newDbDataReader.Data[i, j] = GetPropertyValue(propertyInfo, row.Item1, propertyName);
+                }
+                for (int k = 0; k < propertyNames2.Length; k++)
+                {
+                    var propertyName = propertyNames2[k];
+                    var propertyInfo = GetPropertyInfo(propertyName, typeof(T2));
+                    EnsurePropertyOrThrow<T2>(propertyInfo, propertyName);
+                    newDbDataReader.Data[i, j + k] = GetPropertyValue(propertyInfo, row.Item2, propertyName);
+                }
+                i++;
+            }
+
+            newDbDataReader.metaData = new FakeDbResultSet.MetaData[ColumnCount];
+
+            for (int j = 0; j < propertyNames1.Length; j++)
+            {
+                var propertyName = propertyNames1[j];
+                var propertyInfo = GetPropertyInfo(propertyName, typeof(T1)); ;
+                EnsurePropertyOrThrow<T1>(propertyInfo, propertyNames1[j]);
+                newDbDataReader.metaData[j] = new FakeDbResultSet.MetaData(propertyInfo.Name, propertyInfo.PropertyType);
+            }
+            for (int k = 0; k < propertyNames2.Length; k++)
+            {
+                var propertyName = propertyNames2[k];
+                var propertyInfo = GetPropertyInfo(propertyName, typeof(T2)); ;
+                EnsurePropertyOrThrow<T2>(propertyInfo, propertyNames2[k]);
+                newDbDataReader.metaData[propertyNames1.Length + k] = new FakeDbResultSet.MetaData(propertyInfo.Name, propertyInfo.PropertyType);
+            }
+
+
+            fakeDbCommand.ExecuteQueryResultDbDataReader = newDbDataReader;
             return fakeDbCommand;
         }
 
