@@ -20,9 +20,14 @@ namespace TestBase.FakeDb
     /// </summary>
     public class DbCommandInvocation : Tuple<DbCommand, DbParameterCollection>
     {
-        public DbCommandInvocation(DbCommand command,DbParameterCollection parameterCollection) : base(command,parameterCollection){}
-
+        public DbCommandInvocation(DbCommand command,DbParameterCollection parameterCollection) : base(command,parameterCollection)
+        {
+            InvokedAtTime=DateTime.Now;
+        }
         public DbCommand             Command    { get { return Item1; } }
         public DbParameterCollection Parameters { get { return Item2; } }
+        public DateTime InvokedAtTime { get; set; }
+        public DateTime? CancelledAtTime { get; set; }
+        public bool WasCancelled { get { return CancelledAtTime != null; }}
     }
 }

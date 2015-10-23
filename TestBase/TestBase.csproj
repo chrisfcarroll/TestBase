@@ -87,6 +87,7 @@
     <Compile Include="Shoulds\AttributeShoulds.cs" />
     <Compile Include="Shoulds\BasicShoulds.cs" />
     <Compile Include="Shoulds\EqualsByValueShoulds.cs" />
+    <Compile Include="Shoulds\FakeDbShoulds.cs" />
     <Compile Include="Shoulds\IEnumerableShoulds.cs" />
     <Compile Include="Shoulds\MoqVerificationShoulds.cs" />
     <Compile Include="Shoulds\StreamShoulds.cs" />
@@ -97,6 +98,7 @@
     <Compile Include="TestBase.cs" />
     <Compile Include="TestLogger.cs" />
     <Compile Include="TransformExtension.cs" />
+    <Compile Include="TypeAndReflectionExtensions.cs" />
     <Compile Include="WindsorExtensions.cs" />
   </ItemGroup>
   <ItemGroup />
