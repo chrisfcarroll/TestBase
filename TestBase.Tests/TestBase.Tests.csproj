@@ -90,9 +90,11 @@
     <Compile Include="FakeDbAndMockDbTests\WhenSettingUpAFakeDbConnection\ForQueryUsingStronglyTypedFakeData.cs" />
     <Compile Include="FakeDbAndMockDbTests\WhenSettingUpAFakeDbConnection\WhenVerifyingInvocations.cs" />
     <Compile Include="ShouldsCorrectnessTests\DictionaryShoulds.cs" />
+    <Compile Include="ShouldsCorrectnessTests\IEnumerableExtensionsTests.cs" />
     <Compile Include="ShouldsCorrectnessTests\ShouldEqualByValueExceptForValueTests.cs" />
     <Compile Include="HttpContextTests\WhenMockingAndFakingHttpContextForAController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ShouldsCorrectnessTests\StringShouldMatchRegexTests.cs" />
     <Compile Include="WhenAsserting\ShouldCallTheRightNUnitAssertThatOverload__GivenAssertionFail\AssertionFailureMessageVerifier.cs" />
     <Compile Include="WhenAsserting\ShouldCallTheRightNUnitAssertThatOverload__GivenAssertionFail\ShouldCall__TestCasesForCustomFailureMessageWithNoArgs.cs" />
     <Compile Include="WhenAsserting\ShouldCallTheRightNUnitAssertThatOverload__GivenAssertionFail\ShouldCall__TestCasesForCustomMessageWithArgs.cs" />

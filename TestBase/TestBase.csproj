@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <NoWarn>1573</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -88,7 +89,6 @@
     <Compile Include="Shoulds\EqualsByValueShoulds.cs" />
     <Compile Include="Shoulds\IEnumerableShoulds.cs" />
     <Compile Include="Shoulds\MoqVerificationShoulds.cs" />
-    <Compile Include="Shoulds\ShouldsForEqualByValue.cs" />
     <Compile Include="Shoulds\StreamShoulds.cs" />
     <Compile Include="Shoulds\StringShoulds.cs" />
     <Compile Include="StreamContainsConstraint.cs" />

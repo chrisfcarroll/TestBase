@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 using NUnit.Framework;
 
 namespace TestBase.Shoulds
@@ -43,9 +44,22 @@ namespace TestBase.Shoulds
             return @this;
         }
 
-        public static string ShouldNotContain(this string @this, string expected, [Optional] string message, params object[] args)
+        public static string ShouldMatchIgnoringCase(this string @this, string expectedRegexPattern, string message = null, params object[] args)
         {
-            Assert.That(@this, Is.Not.StringContaining(expected), message, args);
+            Assert.That(@this, Is.StringMatching(expectedRegexPattern).IgnoreCase, message, args);
+            return @this;
+        }
+
+        public static string ShouldMatch(this string @this, string expectedRegexPattern, RegexOptions regexOptions, string message = null, params object[] args)
+        {
+            var result = Regex.IsMatch(@this, expectedRegexPattern, regexOptions);
+            Assert.That(result, Is.True, message ?? string.Format("{0} didn't match Regex {1} with Options {2}", @this, expectedRegexPattern, regexOptions), args);
+            return @this;
+        }
+
+        public static string ShouldNotContain(this string @this, string notExpected, [Optional] string message, params object[] args)
+        {
+            Assert.That(@this, Is.Not.StringContaining(notExpected), message, args);
             return @this;
         }
 
