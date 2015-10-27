@@ -10,8 +10,18 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
     <summary>*TestBase* for a flying start to unit testing. A rich extensible set of fluent assertions such as ShouldNotBeEmpty().ShouldEqualByValue() etc, and a set of Fake Ado.Net components, with 1 line setup and verification.</summary>
-    <releaseNotes>Version 1. Unpolished but in use for over a year</releaseNotes>
-    <copyright>Copyright Chris F Carroll, 2013</copyright>
+    <releaseNotes>
+      <![CDATA[3.0.2: 
+    Added 
+    * FakeDbConnection.SetUpForQuery<T1,T2>() overload which allows you to provide dummy data as Tuples. Which is sometimes easier way to setup fake data for Select joins.
+    * FakeDbConnection.ShouldHaveUpdated() which verifies an "update <tablename> set .... where .... " command.
+    * String.ShouldMatch(regex, RegexOptions) overload
+    * String.ShouldMatchIgnoringCase(regex) overload
+    * IEnumerable.SingeOrAssertFail() which you can give a better error message than just the Exception thrown by .Single()
+    
+    Still unpolished, but in use for over four years.]]>
+    </releaseNotes>
+    <copyright>Copyright Chris F Carroll, 2013-15</copyright>
     <tags>nunit tdd fluent assertions mock ado.net</tags>
   </metadata>
 </package>

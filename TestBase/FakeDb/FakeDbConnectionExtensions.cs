@@ -84,9 +84,68 @@ namespace TestBase.FakeDb
         /// </summary>
         /// <param name="dataToReturn">A scalar data item</param>
         /// <returns>Itself, for chaining</returns>
-        public static FakeDbConnection SetUpForQuery<T1,T2>(this FakeDbConnection fakeDbConnection, IEnumerable<Tuple<T1,T2>> dataToReturn)
+        public static FakeDbConnection SetUpForQuery<T1, T2>(this FakeDbConnection fakeDbConnection, IEnumerable<Tuple<T1, T2>> dataToReturn)
         {
-            fakeDbConnection.QueueCommand(FakeDbCommand.ForExecuteQuery(dataToReturn));
+            var itemTypes = new[]
+            {
+                new Tuple<Type,PropertyInfo>(typeof (T1), typeof(Tuple<T1, T2>).GetProperty("Item1")),
+                new Tuple<Type,PropertyInfo>(typeof (T2), typeof(Tuple<T1, T2>).GetProperty("Item2")),
+            };
+            fakeDbConnection.QueueCommand(FakeDbCommand.ForExecuteQueryReturningDataFromTuples(dataToReturn, itemTypes));
+            return fakeDbConnection;
+        }
+
+        /// <summary>
+        /// Sets up the Fake DbConnection to return a FakeDbCommand which is itself set up to return <see cref="dataToReturn"/> when 
+        /// either the protected <see cref="DbCommand.ExecuteDbDataReader"/> or the public 
+        /// <see cref="DbCommand.ExecuteReader()"/> is called on it.
+        /// 
+        /// This overload will return a result set with a column per public read-writeable property of typeof(T1) 
+        /// followed by a column per public read-writeable property of typeof(T2)
+        /// followed by a column per public read-writeable property of typeof(T3)
+        /// and with <see cref="dataToReturn"/>.Count() rows.
+        /// 
+        /// The FakeDbCommands are (in the current version) queued and must be invoked in the order they were setup.
+        /// </summary>
+        /// <param name="dataToReturn">A scalar data item</param>
+        /// <returns>Itself, for chaining</returns>
+        public static FakeDbConnection SetUpForQuery<T1, T2, T3>(this FakeDbConnection fakeDbConnection, IEnumerable<Tuple<T1, T2, T3>> dataToReturn)
+        {
+            var itemTypes = new[]
+            {
+                new Tuple<Type,PropertyInfo>(typeof (T1), typeof(Tuple<T1, T2,T3>).GetProperty("Item1")),
+                new Tuple<Type,PropertyInfo>(typeof (T2), typeof(Tuple<T1, T2,T3>).GetProperty("Item2")),
+                new Tuple<Type,PropertyInfo>(typeof (T3), typeof(Tuple<T1, T2,T3>).GetProperty("Item3")),
+            };
+            fakeDbConnection.QueueCommand(FakeDbCommand.ForExecuteQueryReturningDataFromTuples(dataToReturn, itemTypes));
+            return fakeDbConnection;
+        }
+
+        /// <summary>
+        /// Sets up the Fake DbConnection to return a FakeDbCommand which is itself set up to return <see cref="dataToReturn"/> when 
+        /// either the protected <see cref="DbCommand.ExecuteDbDataReader"/> or the public 
+        /// <see cref="DbCommand.ExecuteReader()"/> is called on it.
+        /// 
+        /// This overload will return a result set with a column per public read-writeable property of typeof(T1) 
+        /// followed by a column per public read-writeable property of typeof(T2)
+        /// followed by a column per public read-writeable property of typeof(T3)
+        /// followed by a column per public read-writeable property of typeof(T4)
+        /// and with <see cref="dataToReturn"/>.Count() rows.
+        /// 
+        /// The FakeDbCommands are (in the current version) queued and must be invoked in the order they were setup.
+        /// </summary>
+        /// <param name="dataToReturn">A scalar data item</param>
+        /// <returns>Itself, for chaining</returns>
+        public static FakeDbConnection SetUpForQuery<T1, T2, T3, T4>(this FakeDbConnection fakeDbConnection, IEnumerable<Tuple<T1, T2, T3, T4>> dataToReturn)
+        {
+            var itemTypes = new[]
+            {
+                new Tuple<Type,PropertyInfo>(typeof (T1), typeof(Tuple<T1, T2,T3>).GetProperty("Item1")),
+                new Tuple<Type,PropertyInfo>(typeof (T2), typeof(Tuple<T1, T2,T3>).GetProperty("Item2")),
+                new Tuple<Type,PropertyInfo>(typeof (T3), typeof(Tuple<T1, T2,T3>).GetProperty("Item3")),
+                new Tuple<Type,PropertyInfo>(typeof (T4), typeof(Tuple<T1, T2,T3,T4>).GetProperty("Item4")),
+            };
+            fakeDbConnection.QueueCommand(FakeDbCommand.ForExecuteQueryReturningDataFromTuples(dataToReturn, itemTypes));
             return fakeDbConnection;
         }
 
