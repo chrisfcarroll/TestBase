@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Runtime.InteropServices;
 using Moq;
@@ -47,7 +48,7 @@ namespace TestBase.FakeDb
 
         protected override DbCommand CreateDbCommand()
         {
-            var result = DbCommandsQueued.Dequeue();
+            var result =  DbCommandsQueued.Any() ? DbCommandsQueued.Dequeue() : new FakeDbCommand();
             result.ParameterCollectionToReturn= new FakeDbParameterCollection();
             Invocations.Add(result);
             return result;
