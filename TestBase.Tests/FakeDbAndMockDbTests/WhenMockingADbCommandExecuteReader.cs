@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Data.Common;
-using System.Linq;
-using System.Text;
+﻿using System.Data;
 using Moq;
 using NUnit.Framework;
 using TestBase.FakeDb;
@@ -38,7 +32,6 @@ namespace TestBase.Tests.FakeDbAndMockDbTests
                 reader.GetString(1).ShouldEqualByValue(fakeData[i].Name);
                 i++;
             }
-
         }
     }
 }
