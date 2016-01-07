@@ -12,7 +12,7 @@ namespace TestBase.Tests.FakeDbAndMockDbTests
         [SetUp]
         public void SetUp() { UnitUnderTest = new FakeDbConnection(); }
 
-        [Test, Ignore("Should be equalbyvalue but not reference equal")]
+        [Test]
         public void Should_record_DbCommand()
         {
             var text = "Command 1";
@@ -25,7 +25,7 @@ namespace TestBase.Tests.FakeDbAndMockDbTests
             UnitUnderTest.Invocations[0].CommandText.ShouldBe(text);
         }
 
-        [Test,Ignore("Should be equalbyvalue but not reference equal")]
+        [Test]
         public void Should_record_DbParameters()
         {
             var text = "Command 1";
@@ -38,11 +38,11 @@ namespace TestBase.Tests.FakeDbAndMockDbTests
             cmd.ExecuteNonQuery();
             //
             UnitUnderTest.Invocations[0].CommandText.ShouldBe(text);
-            UnitUnderTest.Invocations[0].Parameters[0].ShouldBe(p);
-
+            UnitUnderTest.Invocations[0].Parameters[0].ShouldEqualByValue(p);
+            UnitUnderTest.Invocations[0].Parameters[0].ShouldNotBe(p);
         }
 
-        [Test,Ignore("WIP")]
+        [Test]
         public void Should_DistinguishMultipleInvocationsOfOneCommand()
         {
             var text1 = "Command 1";
@@ -54,13 +54,15 @@ namespace TestBase.Tests.FakeDbAndMockDbTests
             cmd.CommandText = text1;
             cmd.Parameters.Add(p1);
             cmd.ExecuteNonQuery();
+
             cmd.Parameters.Clear();
             cmd.Parameters.Add(p2);
+            cmd.ExecuteNonQuery();
             //
             UnitUnderTest.Invocations[0].CommandText.ShouldBe(text1);
-            UnitUnderTest.Invocations[0].Parameters[0].ShouldBe(p1);
+            UnitUnderTest.Invocations[0].Parameters[0].ShouldEqualByValue(p1);
             UnitUnderTest.Invocations[1].CommandText.ShouldBe(text1);
-            UnitUnderTest.Invocations[1].Parameters[0].ShouldBe(p2);
+            UnitUnderTest.Invocations[1].Parameters[0].ShouldEqualByValue(p2);
         }
 
 

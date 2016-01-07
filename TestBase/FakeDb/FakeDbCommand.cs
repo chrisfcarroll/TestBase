@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 
@@ -9,6 +10,14 @@ namespace TestBase.FakeDb
 {
     public class FakeDbCommand : DbCommand
     {
+        public FakeDbCommand(){}
+
+        public FakeDbCommand(DbConnection connection)
+        {
+            Debug.Assert(connection!=null);
+            Connection = connection;
+        }
+
         public static FakeDbCommand ForExecuteSingleColumnQuery<T>(IEnumerable<T> dataToReturn)
         {
             return ForExecuteQuery(dataToReturn.Select(x=>new object[]{x}), "col1");
@@ -313,11 +322,25 @@ namespace TestBase.FakeDb
 
         private void RecordInvocation()
         {
+            var copiedParameters = new FakeDbParameterCollection().WithAddRange(ParameterCollectionToReturn.Cast<FakeDbParameter>());
+
             Invocations.Add(new FakeDbCommand{
                                 CommandText = CommandText,
                                 CommandType = CommandType,
                             },
-                            ParameterCollectionToReturn);
+                            copiedParameters);
+
+            if (Connection is FakeDbConnection)
+            {
+                (Connection as FakeDbConnection).Invocations.Add(new FakeDbCommand
+                {
+                    CommandText = CommandText,
+                    CommandTimeout = CommandTimeout,
+                    CommandType = CommandType,
+                    DbConnection = DbConnection,
+
+                }.With(c=> c.ParameterCollectionToReturn=copiedParameters));
+            }
         }
     }
 }

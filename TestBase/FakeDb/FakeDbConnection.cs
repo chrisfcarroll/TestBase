@@ -16,6 +16,7 @@ namespace TestBase.FakeDb
 
         public FakeDbConnection QueueCommand(FakeDbCommand command)
         {
+            command.Connection = this;
             DbCommandsQueued.Enqueue(command);
             return this;
         }
@@ -48,9 +49,8 @@ namespace TestBase.FakeDb
 
         protected override DbCommand CreateDbCommand()
         {
-            var result =  DbCommandsQueued.Any() ? DbCommandsQueued.Dequeue() : new FakeDbCommand();
+            var result =  DbCommandsQueued.Any() ? DbCommandsQueued.Dequeue() : new FakeDbCommand{Connection = this};
             result.ParameterCollectionToReturn= new FakeDbParameterCollection();
-            Invocations.Add(result);
             return result;
         }
     }

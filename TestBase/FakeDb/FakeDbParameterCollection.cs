@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.Diagnostics;
 using System.Linq;
 using TestBase.Shoulds;
 
@@ -124,8 +125,39 @@ namespace TestBase.FakeDb
 
         public override void AddRange(Array values)
         {
-            throw new NotImplementedException();
+            foreach (var p in values)
+            {
+                if (p == null) { throw new ArgumentNullException("values","values contained a null element");}
+                if (!(p is FakeDbParameter))
+                {
+                    throw new ArgumentException(string.Format("values must be an Array of FakeDbParameter but contained an element of Type {0}", p.GetType()));
+                }
+            }
+            // ReSharper disable once SuspiciousTypeConversion.Global
+            WithAddRange( (IEnumerable<FakeDbParameter>) values);
         }
+
+        public FakeDbParameterCollection WithAddRange(IEnumerable<FakeDbParameter> values)
+        {
+            foreach (var p in values) 
+            { 
+                Add(new FakeDbParameter
+                {
+                    
+                    DbType = p.DbType,                    
+                    Direction = p.Direction,
+                    IsNullable = p.IsNullable,
+                    ParameterName = p.ParameterName,
+                    Size = p.Size,
+                    SourceColumn = p.SourceColumn,
+                    SourceColumnNullMapping = p.SourceColumnNullMapping,
+                    SourceVersion = p.SourceVersion,
+                    Value = p.Value,
+                }); 
+            }
+            return this;
+        }
+
 
         private static DbParameter AsDbParameterOrThrow(object value)
         {
