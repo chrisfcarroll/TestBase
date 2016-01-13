@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -54,9 +55,21 @@ namespace TestBase.Shoulds
             return @this;
         }
 
+        public static T ShouldBeEmpty<T>(this T @this, [Optional] string message, params object[] args) where T : IEnumerable
+        {
+            Assert.That(@this, Is.Empty, message, args);
+            return @this;
+        }
+
         public static IEnumerable<T> ShouldBeEmpty<T>(this IEnumerable<T> @this, [Optional] string message, params object[] args)
         {
             Assert.That(@this, Is.Empty, message, args);
+            return @this;
+        }
+
+        public static T ShouldNotBeEmpty<T>(this T @this, [Optional] string message, params object[] args) where T : IEnumerable
+        {
+            Assert.That(@this, Is.Not.Empty, message, args);
             return @this;
         }
 

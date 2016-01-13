@@ -92,6 +92,7 @@
     <Compile Include="FakeDbAndMockDbTests\WhenSettingUpAFakeDbConnection\WhenVerifyingInvocations.cs" />
     <Compile Include="ShouldsCorrectnessTests\DictionaryShoulds.cs" />
     <Compile Include="ShouldsCorrectnessTests\IEnumerableExtensionsTests.cs" />
+    <Compile Include="ShouldsCorrectnessTests\IEnumerableShouldsTests.cs" />
     <Compile Include="ShouldsCorrectnessTests\ShouldEqualByValueExceptForValueTests.cs" />
     <Compile Include="HttpContextTests\WhenMockingAndFakingHttpContextForAController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -26,6 +26,8 @@ UnitUnderTest.OtherAction()
 TestBase.FakeDb
 ------------------
 Works with Ado.Net and technologies on top of it, including Dapper.
+* fakeDbConnection.SetupForQuery(IEnumerable&lt;TFakeData&gt; )
+* fakeDbConnection.SetupForQuery(IEnumerable&lt;Tuple&lt;TFakeDataForTable1,TFakeDataForTable2&gt;&gt; )
 * fakeDbConnection.SetupForQuery(fakeData, new[] {""FieldName1"", FieldName2""})
 * fakeDbConnection.SetupForExecuteNonQuery(rowsAffected)
 * fakeDbConnection.Verify(x=>x.CommandText.Matches(""Insert [case] .*"") &amp;&amp; x.Parameters[""id""].Value==1)
@@ -40,6 +42,8 @@ It identifies constructor dependencies by name and type, looking in the followin
 
 ChangeLog
 ---------
+3.0.3.0 Improves FakeDb setup
+3.0.x.0 adds and/or corrects missing Shoulds()
 2.0.5.0 adds some intellisense and FakeDbConnection.Verify(..., message,args) overload
 ")]
 
