@@ -4,7 +4,7 @@ using System.Web.Mvc;
 using NUnit.Framework;
 using TestBase.Shoulds;
 
-namespace TestBase.Tests.WhenAsserting.UsingAnNUnitWrapperAssertion
+namespace TestBase.Tests.WhenAsserting.ShouldCallTheRightNUnitAssertThatOverload__GivenAssertionFail
 {
     public partial class Should_call_the_right_NUnitAssertThat_overload__Given_AssertionFail
     {

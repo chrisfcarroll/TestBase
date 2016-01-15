@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using NUnit.Framework;
 using TestBase.Shoulds;
 
-namespace TestBase.Tests.ShouldsCorrectnessTests
+namespace TestBase.Tests.ShouldsCorrectnessAndVerbosityTests
 {
     [TestFixture]
     public class StringShouldMatchRegexTests

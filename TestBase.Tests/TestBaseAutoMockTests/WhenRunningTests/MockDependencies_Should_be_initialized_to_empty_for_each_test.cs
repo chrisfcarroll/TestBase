@@ -1,7 +1,7 @@
 using NUnit.Framework;
 using TestBase.Shoulds;
 
-namespace TestBase.Tests.WhenRunningTests
+namespace TestBase.Tests.TestBaseAutoMockTests.WhenRunningTests
 {
     [TestFixture]
     public class Given_Initialize_has_not_been_overridden : TestBase<object>

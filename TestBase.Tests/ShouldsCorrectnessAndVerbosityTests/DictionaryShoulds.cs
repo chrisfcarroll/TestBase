@@ -2,7 +2,7 @@
 using NUnit.Framework;
 using TestBase.Shoulds;
 
-namespace TestBase.Tests.ShouldsCorrectnessTests
+namespace TestBase.Tests.ShouldsCorrectnessAndVerbosityTests
 {
     [TestFixture]
     public class DictionaryShoulds

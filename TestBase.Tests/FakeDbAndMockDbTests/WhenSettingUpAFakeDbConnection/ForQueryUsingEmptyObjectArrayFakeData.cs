@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Dapper;
 using NUnit.Framework;
 using TestBase.FakeDb;
 using TestBase.Shoulds;

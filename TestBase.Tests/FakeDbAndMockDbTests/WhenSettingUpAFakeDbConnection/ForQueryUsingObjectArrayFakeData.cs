@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using Dapper;
 using NUnit.Framework;
 using TestBase.FakeDb;
 using TestBase.Shoulds;

@@ -2,7 +2,7 @@
 using NUnit.Framework;
 using TestBase.Shoulds;
 
-namespace TestBase.Tests.WhenAsserting.UsingAnNUnitWrapperAssertion
+namespace TestBase.Tests.WhenAsserting.ShouldCallTheRightNUnitAssertThatOverload__GivenAssertionFail
 {
     public static class AssertionFailureMessageVerifier
     {

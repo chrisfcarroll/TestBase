@@ -19,7 +19,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 
-namespace Dapper
+namespace TestBase.Tests.FakeDbAndMockDbTests
 {
     [AssemblyNeutral, AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface | AttributeTargets.Struct, AllowMultiple = false, Inherited = false)]
     internal sealed class AssemblyNeutralAttribute : Attribute { }

@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
 using TestBase.Shoulds;
 
-namespace TestBase.Tests.WhenConstructingATestBase
+namespace TestBase.Tests.TestBaseAutoMockTests.WhenConstructingATestBase
 {
     [TestFixture]
     public class For_a_class_with_a_nonmockable_constructor_parameter : TestBase<For_a_class_with_a_nonmockable_constructor_parameter.ClassWithANotMockableConstructorDependency>

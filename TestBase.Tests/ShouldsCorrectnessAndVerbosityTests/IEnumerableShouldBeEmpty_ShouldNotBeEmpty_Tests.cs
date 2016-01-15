@@ -1,16 +1,12 @@
-﻿using System;
-using System.CodeDom;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using NUnit.Framework;
 using TestBase.Shoulds;
 
-namespace TestBase.Tests.ShouldsCorrectnessTests
+namespace TestBase.Tests.ShouldsCorrectnessAndVerbosityTests
 {
     [TestFixture]
-    public class IEnumerableShouldsTests
+    public class IEnumerableShouldBeEmpty_ShouldNotBeEmpty_Tests
     {
         [TestCase( (new[] {1, 2, 3}))]
         public void IEnumerableGeneric_ShouldNotBeEmpty_ShouldPass(int[] value)

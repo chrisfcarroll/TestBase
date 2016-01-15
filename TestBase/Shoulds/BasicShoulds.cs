@@ -99,6 +99,19 @@ namespace TestBase.Shoulds
             return @this;
         }
 
+        public static T ShouldBeLessThan<T>(this T @this, object expected, [Optional] string message, params object[] args)
+        {
+            Assert.That(@this, Is.LessThanOrEqualTo(expected), message, args);
+            return @this;
+        }
+
+        public static T ShouldBeLessThanOrEqualTo<T>(this T @this, object expected, [Optional] string message, params object[] args)
+        {
+            Assert.That(@this, Is.LessThanOrEqualTo(expected), message, args);
+            return @this;
+        }
+
+
         public static T ShouldBeOfType<T>(this object @this, [Optional] string message, params object[] args) 
         {
             Assert.That(@this, Is.InstanceOf<T>(), message, args);

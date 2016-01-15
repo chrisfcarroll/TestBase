@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using NUnit.Framework;
 using TestBase.Shoulds;
 
-namespace TestBase.Tests.ShouldsCorrectnessTests
+namespace TestBase.Tests.ShouldsCorrectnessAndVerbosityTests
 {
     [TestFixture]
     public class ShouldEqualByValueExceptForValueTests

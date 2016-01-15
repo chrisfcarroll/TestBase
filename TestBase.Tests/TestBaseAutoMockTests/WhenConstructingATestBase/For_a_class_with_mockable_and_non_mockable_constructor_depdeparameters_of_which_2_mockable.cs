@@ -2,7 +2,7 @@
 using NUnit.Framework;
 using TestBase.Shoulds;
 
-namespace TestBase.Tests.WhenConstructingATestBase
+namespace TestBase.Tests.TestBaseAutoMockTests.WhenConstructingATestBase
 {
     [TestFixture]
     public class For_a_class_with_both_mockable_and_non_mockable_constructor_dependencies : TestBase<For_a_class_with_both_mockable_and_non_mockable_constructor_dependencies.ClassWith4ConstructorDependenciesOfWhich2AreMockable>

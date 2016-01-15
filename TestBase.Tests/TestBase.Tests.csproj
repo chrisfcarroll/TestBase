@@ -90,28 +90,40 @@
     <Compile Include="FakeDbAndMockDbTests\WhenSettingUpAFakeDbConnection\ForQueryUsingObjectArrayFakeData.cs" />
     <Compile Include="FakeDbAndMockDbTests\WhenSettingUpAFakeDbConnection\ForQueryUsingStronglyTypedFakeData.cs" />
     <Compile Include="FakeDbAndMockDbTests\WhenSettingUpAFakeDbConnection\WhenVerifyingInvocations.cs" />
-    <Compile Include="ShouldsCorrectnessTests\DictionaryShoulds.cs" />
-    <Compile Include="ShouldsCorrectnessTests\IEnumerableExtensionsTests.cs" />
-    <Compile Include="ShouldsCorrectnessTests\IEnumerableShouldsTests.cs" />
-    <Compile Include="ShouldsCorrectnessTests\ShouldEqualByValueExceptForValueTests.cs" />
+    <Compile Include="LoggingExtensions.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="ShouldsCorrectnessAndVerbosityTests\DictionaryShoulds.cs" />
+    <Compile Include="ShouldsCorrectnessAndVerbosityTests\IEnumerableExtensionsTests.cs" />
+    <Compile Include="ShouldsCorrectnessAndVerbosityTests\IEnumerableShouldAllXXX_Tests.cs" />
+    <Compile Include="ShouldsCorrectnessAndVerbosityTests\IEnumerableShouldBeEmpty_ShouldNotBeEmpty_Tests.cs" />
+    <Compile Include="ShouldsCorrectnessAndVerbosityTests\ShouldEqualByValueExceptForValueTests.cs" />
     <Compile Include="HttpContextTests\WhenMockingAndFakingHttpContextForAController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ShouldsCorrectnessTests\StringShouldMatchRegexTests.cs" />
+    <Compile Include="ShouldsCorrectnessAndVerbosityTests\StringShouldMatchRegexTests.cs" />
     <Compile Include="WhenAsserting\ShouldCallTheRightNUnitAssertThatOverload__GivenAssertionFail\AssertionFailureMessageVerifier.cs" />
     <Compile Include="WhenAsserting\ShouldCallTheRightNUnitAssertThatOverload__GivenAssertionFail\ShouldCall__TestCasesForCustomFailureMessageWithNoArgs.cs" />
     <Compile Include="WhenAsserting\ShouldCallTheRightNUnitAssertThatOverload__GivenAssertionFail\ShouldCall__TestCasesForCustomMessageWithArgs.cs" />
     <Compile Include="WhenAsserting\ShouldCallTheRightNUnitAssertThatOverload__GivenAssertionFail\ShouldCall__TestCasesForNoCustomMessage.cs" />
     <Compile Include="WhenAsserting\ShouldReturnTheActualBeingAsserted__Given_AssertionPass\ShouldReturn__TestCases_MvcActionResults.cs" />
     <Compile Include="WhenAsserting\Using_Moq_verification.cs" />
-    <Compile Include="WhenConstructingATestBase\For_a_class_with_a_nonmockable_constructor_parameter.cs" />
-    <Compile Include="WhenConstructingATestBase\For_a_class_with_mockable_and_non_mockable_constructor_depdeparameters_of_which_2_mockable.cs" />
-    <Compile Include="WhenConstructingATestBase\For_a_class_with_no_constructor_parameters.cs" />
-    <Compile Include="WhenConstructingATestBase\Given_a_constructor_dependency_is_provided_as_a_field_of_the_testclass.cs" />
-    <Compile Include="WhenConstructingATestBase\Given_a__recursive_constructor_dependency_is_provided_as_a_field_of_the_testclass.cs" />
-    <Compile Include="WhenRunningTests\MockDependencies_Should_be_initialized_to_empty_for_each_test.cs" />
+    <Compile Include="TestBaseAutoMockTests\WhenConstructingATestBase\For_a_class_with_a_nonmockable_constructor_parameter.cs" />
+    <Compile Include="TestBaseAutoMockTests\WhenConstructingATestBase\For_a_class_with_mockable_and_non_mockable_constructor_depdeparameters_of_which_2_mockable.cs" />
+    <Compile Include="TestBaseAutoMockTests\WhenConstructingATestBase\For_a_class_with_no_constructor_parameters.cs" />
+    <Compile Include="TestBaseAutoMockTests\WhenConstructingATestBase\Given_a_constructor_dependency_is_provided_as_a_field_of_the_testclass.cs" />
+    <Compile Include="TestBaseAutoMockTests\WhenConstructingATestBase\Given_a__recursive_constructor_dependency_is_provided_as_a_field_of_the_testclass.cs" />
+    <Compile Include="TestBaseAutoMockTests\WhenRunningTests\MockDependencies_Should_be_initialized_to_empty_for_each_test.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>PublicSettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TestBase-Mvc\TestBase-Mvc.csproj">

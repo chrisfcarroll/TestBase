@@ -24,7 +24,7 @@ namespace TestBase.Tests.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection
             var fakeConnection = new FakeDbConnection().SetUpForExecuteNonQuery(123);
 
             //A 
-            Dapper.SqlMapper.Execute(fakeConnection,"").ShouldEqual(123);
+            SqlMapper.Execute(fakeConnection,"").ShouldEqual(123);
         }
 
         [Test]

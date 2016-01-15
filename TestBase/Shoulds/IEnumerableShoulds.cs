@@ -104,23 +104,28 @@ namespace TestBase.Shoulds
             return @this;
         }
 
-        public static IEnumerable<T> ShouldAllSatisfy<T, TResult>(this IEnumerable<T> @this, Func<T, TResult> function, IResolveConstraint expression, [Optional] string message, params object[] args)
+        public static IEnumerable<T> ShouldAllSatisfy<T, TResult>(this IEnumerable<T> @this, Func<T, TResult> function, IResolveConstraint constraintPerItem, [Optional] string message, params object[] args)
         {
             foreach (var item in @this)
             {
-                var result = function(item);
-                Assert.That(result, expression, message, item);
+                var r = function(item);
+                try { Assert.That(r, constraintPerItem); }
+                catch (AssertionException e)
+                {
+                    var innerMessage = e.Message;
+                    Assert.That(
+                            item,
+                            new PredicateConstraint<T>(i => false),
+                            message + " : " + innerMessage,
+                            args);
+                }
             }
             return @this;
         }
 
         public static IEnumerable<T> ShouldAllBeSuchThat<T>(this IEnumerable<T> @this, Func<T, bool> function, [Optional] string message, params object[] args)
         {
-            foreach (var item in @this)
-            {
-                var result = function(item);
-                Assert.IsTrue(result, message, item);
-            }
+            Assert.That(@this,  Has.All.Matches(new PredicateConstraint<T>(i => function(i))), message, args);
             return @this;
         }
 

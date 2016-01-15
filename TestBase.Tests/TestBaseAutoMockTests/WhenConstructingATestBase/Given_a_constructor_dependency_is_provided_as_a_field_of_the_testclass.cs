@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
 using TestBase.Shoulds;
 
-namespace TestBase.Tests.WhenConstructingATestBase
+namespace TestBase.Tests.TestBaseAutoMockTests.WhenConstructingATestBase
 {
     [TestFixture]
     public class Given_a_constructor_dependency_is_provided_as_a_field_of_the_testclass : TestBase<Given_a_constructor_dependency_is_provided_as_a_field_of_the_testclass.ClassWithANotMockableConstructorDependency>
