@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Web.Mvc;
 using NUnit.Framework;
 
@@ -9,6 +7,10 @@ namespace TestBase.Shoulds
 {
     public static class MvcViewResultShoulds
     {
+        public static T ShouldBeViewWithModel<T>(this ActionResult @this, string viewName)
+        {
+            return @this.ShouldBeViewResultNamed(viewName).ViewData.Model.ShouldBeOfType<T>();
+        }
         public static T ShouldBeViewWithModel<T>(this ActionResult @this)
         {
             return @this.ShouldBeViewResult().ViewData.Model.ShouldBeOfType<T>();
