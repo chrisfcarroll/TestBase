@@ -33,7 +33,7 @@ namespace TestBase.Shoulds
 
         public static IEnumerable<T> ShouldContain<T>(this IEnumerable<T> @this, Func<T,bool> itemPredicate, [Optional] string message, params object[] args)
         {
-            @this.Where(itemPredicate).ShouldNotBeEmpty(message??"No item was found satisfying the predicate.");
+            @this.Where(itemPredicate).ShouldNotBeEmpty(message?? string.Format("No item was found satisfying the predicate {0}",itemPredicate.ToString()));
             return @this;
         }
 
@@ -123,9 +123,12 @@ namespace TestBase.Shoulds
             return @this;
         }
 
-        public static IEnumerable<T> ShouldAllBeSuchThat<T>(this IEnumerable<T> @this, Func<T, bool> function, [Optional] string message, params object[] args)
+        public static IEnumerable<T> ShouldAllBeSuchThat<T>(this IEnumerable<T> @this, Predicate<T> function, [Optional] string message, params object[] args)
         {
-            Assert.That(@this,  Has.All.Matches(new PredicateConstraint<T>(i => function(i))), message, args);
+            foreach (var item in @this)
+            {
+                Assert.That(item, new PredicateConstraint<T>(function), message, args);
+            }
             return @this;
         }
 

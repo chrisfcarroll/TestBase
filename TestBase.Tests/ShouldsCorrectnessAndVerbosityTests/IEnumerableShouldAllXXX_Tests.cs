@@ -16,7 +16,7 @@ namespace TestBase.Tests.ShouldsCorrectnessAndVerbosityTests
             }
             catch (AssertionException e)
             {
-                e.Message.LogIf().ShouldContain("999");
+                e.Message.LogIf().ShouldContain("999").ShouldNotContain("1");
             }
         }
 
@@ -29,7 +29,7 @@ namespace TestBase.Tests.ShouldsCorrectnessAndVerbosityTests
             }
             catch (AssertionException e)
             {
-                e.Message.LogIf().ShouldContain("999");
+                e.Message.LogIf().ShouldContain("999").ShouldNotContain("1");
                 e.Message.ShouldContain("Custom Message And Params");
             }
         }
@@ -43,7 +43,7 @@ namespace TestBase.Tests.ShouldsCorrectnessAndVerbosityTests
             }
             catch (AssertionException e) 
             {
-                e.Message.LogIf().ShouldContain("999");
+                e.Message.LogIf().ShouldContain("999").ShouldNotContain("2");
             }
         }
 
@@ -56,7 +56,7 @@ namespace TestBase.Tests.ShouldsCorrectnessAndVerbosityTests
             }
             catch (AssertionException e)
             {
-                e.Message.LogIf().ShouldContain("999");
+                e.Message.LogIf().ShouldContain("999").ShouldNotContain("2");
                 e.Message.ShouldContain("Custom Message And Params");
             }
         }
