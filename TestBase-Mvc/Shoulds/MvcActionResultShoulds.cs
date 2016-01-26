@@ -102,6 +102,11 @@ namespace TestBase.Shoulds
             return @this.ShouldBeOfType<ViewResult>();
         }
 
+        public static ViewResultBase ShouldBeViewResult(this ActionResult @this, string viewName)
+        {
+            return @this.ShouldBeOfType<ViewResult>().ShouldBeViewResultNamed(viewName);
+        }
+
         public static ViewResultBase ShouldBeViewResultNamed(this ActionResult @this, string viewName)
         {
             return @this.ShouldBeOfType<ViewResult>().ShouldBeViewNamed(viewName);
