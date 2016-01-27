@@ -22,8 +22,15 @@ TestBase.FakeDb
 ------------------
 Works with Ado.Net and technologies on top of it, including Dapper.
 
-    fakeDbConnection.SetupForQuery(fakeData, new[] {"ColumnName1", ...})
+    fakeDbConnection.SetupForQuery(fakeData, [Optional] new[] {"ColumnName1", ...})
+    fakeDbConnection.SetupForQuery(IEnumerable<Tuple<TFakeDataForTable1,TFakeDataForTable2>> )
     fakeDbConnection.SetupForExecuteNonQuery()
+    fakeDbConnection.ShouldHaveUpdated(""tableName"", [Optional] fieldList, whereClauseField)
+    fakeDbConnection.ShouldHaveSelected(""tableName"", [Optional] fieldList, whereClauseField)
+    fakeDbConnection.ShouldHaveUpdated(""tableName"", [Optional] fieldList, whereClauseField)
+    fakeDbConnection.ShouldHaveDeleted(""tableName"", whereClauseField)
+    fakeDbConnection.ShouldHaveInvoked(cmd => predicate(cmd))
+    fakeDbConnection.ShouldHaveXXX().ShouldHaveParameter(""name"", value)
     fakeDbConnection.Verify(x=>x.CommandText.Matches("Insert .*") && x.Parameters["id"].Value==1)
 
 TestBase-Mvc

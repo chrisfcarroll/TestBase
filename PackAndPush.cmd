@@ -9,7 +9,7 @@ NuGet.exe Pack TestBase.csproj  -Symbols
 if errorlevel 1 goto Error
 
 cd ..\TestBase-Mvc
-NuGet.exe Pack TestBase-Mvc.csproj -IncludeReferencedProjects 
+NuGet.exe Pack TestBase-Mvc.csproj -IncludeReferencedProjects -Symbols
 if errorlevel 1 goto Error
 
 popd
