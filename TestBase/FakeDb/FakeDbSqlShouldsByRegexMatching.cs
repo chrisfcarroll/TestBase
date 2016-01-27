@@ -185,12 +185,12 @@ namespace TestBase.FakeDb
             return invocation;
         }
 
-        public static DbCommand ShouldHaveParameter<T>(this DbCommand invocation, string parameterName, T expectedValue)
+        public static DbCommand ShouldHaveParameter(this DbCommand invocation, string parameterName, object expectedValue)
         {
             var found = invocation.Parameters.Cast<DbParameter>()
                 .Any(
                     p => p.ParameterName.Equals(parameterName, StringComparison.InvariantCultureIgnoreCase)
-                         && p.Value.Equals(expectedValue)
+                         && p.Value.Equals(expectedValue ?? DBNull.Value)
                 );
             if (!found)
             {
