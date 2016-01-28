@@ -2,9 +2,7 @@
 using System.Data;
 using System.Data.Common;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Runtime.InteropServices;
-using Moq;
 
 namespace TestBase.FakeDb
 {
@@ -12,7 +10,7 @@ namespace TestBase.FakeDb
     {
         public Queue<FakeDbCommand> DbCommandsQueued = new Queue<FakeDbCommand>();
         public List<FakeDbCommand> Invocations = new List<FakeDbCommand>();
-        private ConnectionState _state= ConnectionState.Closed;
+        ConnectionState _state= ConnectionState.Closed;
 
         public FakeDbConnection QueueCommand(FakeDbCommand command)
         {

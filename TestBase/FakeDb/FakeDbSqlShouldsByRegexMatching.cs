@@ -21,7 +21,8 @@ namespace TestBase.FakeDb
         public const string comma = @"\s*,\s*";
         public const string set = @"\s+Set\s+";
         public const string restofline = ".*";
-        public const string @select = @"Select\s+";
+        public const string select = @"Select\s+";
+        public const string fromOrJoin = @"(From|Join)\s+";
 
         /// <summary>
         /// Verifies that a command was invoked on <paramref name="fakeDbConnection"/> which satisfied <paramref name="predicate"/>
@@ -54,8 +55,8 @@ namespace TestBase.FakeDb
                                                 IEnumerable<string> fieldList = null,
                                                 string whereClauseField = null, object expectedWhereClauseValue = null)
         {
-            var verbpattern = @select;
-            var frompattern = @"(From|Join)\s+" + optPrefix + optDelim + tableName;
+            var verbpattern = select;
+            var frompattern = fromOrJoin + optPrefix + optDelim + tableName;
             var invocation = fakeDbConnection.ShouldHaveInvoked(
                         i => i.CommandText.Matches(verbpattern, sqlRegexOpts)
                           && i.CommandText.Matches(frompattern, sqlRegexOpts),

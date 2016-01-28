@@ -22,7 +22,7 @@ namespace TestBase.Tests.ShouldsCorrectnessAndVerbosityTests
             {
                 testInput.ShouldMatch(testPattern);
             }
-            catch (AssertionException e)
+            catch (AssertionException)
             {
                 return;
             }

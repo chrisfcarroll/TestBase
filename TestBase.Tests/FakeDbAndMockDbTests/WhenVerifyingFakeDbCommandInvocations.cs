@@ -124,21 +124,44 @@ namespace TestBase.Tests.FakeDbAndMockDbTests
             }
         }
         [Test]
-        public void Should_Catch_Some_Typos()
+        public void Should_CatchSomeTyposInTheCommand()
         {
-            using (var conn = new FakeDbConnection().SetUpForQuery(GivenFakeDataInFakeDb()))
+            using (var conn = new FakeDbConnection().SetUpForExecuteNonQuery(0).SetUpForQuery(GivenFakeDataInFakeDb()).SetUpForExecuteNonQuery(0))
             {
-                using (var cmd = conn.CreateCommand())
-                {
-                    cmd.CommandText = "Delete ATableName Id=@Id ";
-                    var param1 = cmd.CreateParameter();
-                    param1.ParameterName = "Id";
-                    param1.Value = 111;
-                    cmd.Parameters.Add(param1);
-                    cmd.ExecuteReader();
-                }
-
+                ExecuteNonQuery(conn, "Delete ATableName Id=@Id ");
                 Assert.Throws<AssertionException>(() => { conn.ShouldHaveDeleted("ATableName", "Id", 111); });
+
+                ExecuteReader(conn, "Select ATableName Id=@Id ");
+                Assert.Throws<AssertionException>(() => { conn.ShouldHaveSelected("ATableName",whereClauseField:"Id"); });
+
+                ExecuteNonQuery(conn, "Insert Int ATableName Id=@Id ");
+                Assert.Throws<AssertionException>(() => { conn.ShouldHaveInserted("ATableName", new {Id=111}); });
+            }
+        }
+
+        static void ExecuteReader(FakeDbConnection conn, string commandText)
+        {
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = commandText;
+                var param1 = cmd.CreateParameter();
+                param1.ParameterName = "Id";
+                param1.Value = 111;
+                cmd.Parameters.Add(param1);
+                cmd.ExecuteReader();
+            }
+        }
+
+        static void ExecuteNonQuery(FakeDbConnection conn, string commandText)
+        {
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = commandText;
+                var param1 = cmd.CreateParameter();
+                param1.ParameterName = "Id";
+                param1.Value = 111;
+                cmd.Parameters.Add(param1);
+                cmd.ExecuteNonQuery();
             }
         }
 

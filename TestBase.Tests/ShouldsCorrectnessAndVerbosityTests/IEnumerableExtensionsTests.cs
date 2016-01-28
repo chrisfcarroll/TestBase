@@ -19,7 +19,7 @@ namespace TestBase.Tests.ShouldsCorrectnessAndVerbosityTests
             {
                 testCase.SingleOrAssertFail();
             }
-            catch (AssertionException e)
+            catch (AssertionException)
             {
                 return;
             }
