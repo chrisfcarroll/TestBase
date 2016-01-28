@@ -22,8 +22,8 @@ namespace TestBase.Tests.FakeDbAndMockDbTests
             //A
             mockCommand
                     .Setup(x => x.ExecuteReader())
-                    .Returns(new DataTableReader(fakeData.ToDataTable(typeof (AClass))));
-                
+                    .Returns(new DataTableReader(fakeData.ToDataTable(typeof(AClass))));
+
             var reader = mockCommand.Object.ExecuteReader();
             int i = 0;
             while (reader.Read())

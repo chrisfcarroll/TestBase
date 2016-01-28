@@ -1,6 +1,5 @@
 using System.Linq;
 using System.Reflection;
-using TestBase.Shoulds;
 
 namespace TestBase
 {
@@ -12,6 +11,5 @@ namespace TestBase
                                .Cast<T>()
                                .FirstOrDefault();
         }
-
     }
 }

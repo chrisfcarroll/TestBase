@@ -6,23 +6,25 @@ using System.Text;
 
 namespace TestBase.FakeDb
 {
-    public static class FakeDbToStrings
+    public static class DbParameterToStringExtensions
     {
-        public static StringBuilder PrintInvocations(this IEnumerable<DbCommand> invocations, int printMaxRows = 9)
+       public static string DbParameterFormatString = "{{{2}:@{0}='{1}'}}";
+
+        public static string PrintInvocations(this IEnumerable<DbCommand> invocations, string header="\n\nInvocations:\n", int printMaxRows = 9)
         {
-            var sb = new StringBuilder("Invocations:\n");
+            var sb = new StringBuilder(header??"");
             foreach (var inv in invocations.Take(printMaxRows))
             {
                 sb.AppendLine(inv.ToStringTextAndParams());
             }
-            return sb;
+            return sb.ToString();
         }
 
         public static string ToString1Line(this DbParameterCollection dbParameters)
         {
             var str = String.Join(", ",
                         dbParameters.Cast<DbParameter>().Select(
-                                    p => String.Format("{{{2}:@{0}='{1}'}}", p.ParameterName, p.Value ?? "null", p.DbType)
+                                    p => String.Format(DbParameterFormatString, p.ParameterName, p.Value ?? "null", p.DbType)
                                     ).ToList());
             return str;
         }
@@ -31,7 +33,7 @@ namespace TestBase.FakeDb
         {
             var str = String.Join("\n",
                         dbParameters.Cast<DbParameter>().Select(
-                                    p => String.Format("{{{2}:@{0}='{1}'}}", p.ParameterName, p.Value ?? "null", p.DbType)
+                                    p => String.Format(DbParameterFormatString, p.ParameterName, p.Value ?? "null", p.DbType)
                                     ).ToList());
             return str;
         }

@@ -32,6 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Mono.Linq.Expressions">
+      <HintPath>..\packages\Mono.Linq.Expressions.1.2.0.0\lib\Mono.Linq.Expressions.dll</HintPath>
+    </Reference>
     <Reference Include="Moq">
       <HintPath>..\packages\Moq.4.0.10827\lib\NET40\Moq.dll</HintPath>
     </Reference>
@@ -74,7 +77,7 @@
     <Compile Include="FakeDb\FakeDbParameterCollection.cs" />
     <Compile Include="FakeDb\FakeDbRehydrationExtensions.cs" />
     <Compile Include="FakeDb\FakeDbSqlShouldsByRegexMatching.cs" />
-    <Compile Include="FakeDb\FakeDbToStrings.cs" />
+    <Compile Include="FakeDb\DbParameterToStringExtensions.cs" />
     <Compile Include="FakeDb\FakeDbTransaction.cs" />
     <Compile Include="FakesDictionary.cs" />
     <Compile Include="FakeXmlExceptionFormatter.cs" />
@@ -89,7 +92,6 @@
     <Compile Include="Shoulds\AttributeShoulds.cs" />
     <Compile Include="Shoulds\BasicShoulds.cs" />
     <Compile Include="Shoulds\EqualsByValueShoulds.cs" />
-    <Compile Include="Shoulds\FakeDbShoulds.cs" />
     <Compile Include="Shoulds\IEnumerableShoulds.cs" />
     <Compile Include="Shoulds\MoqVerificationShoulds.cs" />
     <Compile Include="Shoulds\StreamShoulds.cs" />

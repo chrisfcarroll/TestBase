@@ -102,7 +102,7 @@ namespace TestBase.FakeDb
                     var propertyName = propertyNames[j];
                     var propertyInfo = TypeAndReflectionExtensions.GetPropertyInfo(typeof(T), propertyName);
                     TypeAndReflectionExtensions.EnsurePropertyOrThrow<T>(propertyInfo, propertyName);
-                    newCaseRefDbDataReader.Data[i, j] = TypeAndReflectionExtensions.GetPropertyValue(propertyInfo, row, propertyName);
+                    newCaseRefDbDataReader.Data[i, j] = propertyInfo.GetPropertyValue(row, propertyName);
                 }
                 i++;
             }
