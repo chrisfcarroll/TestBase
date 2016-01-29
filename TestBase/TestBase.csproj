@@ -87,6 +87,14 @@
     <Compile Include="MockVerifyPassthroughExtensions.cs" />
     <Compile Include="PatternHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RecordingDb\RecordingDbCommand.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="RecordingDb\RecordingDbConnection.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="RecordingDb\RecordingDbConnectionVerifyExtensions.cs" />
+    <Compile Include="RecordingDb\RecordingDbSqlShouldsByRegexMatching.cs" />
     <Compile Include="RegularExpressionValidation.cs" />
     <Compile Include="RequiredValidation.cs" />
     <Compile Include="Shoulds\AttributeShoulds.cs" />

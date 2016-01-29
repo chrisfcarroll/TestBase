@@ -137,7 +137,7 @@ namespace TestBase.FakeDb
             WithAddRange( (IEnumerable<FakeDbParameter>) values);
         }
 
-        public FakeDbParameterCollection WithAddRange(IEnumerable<FakeDbParameter> values)
+        public FakeDbParameterCollection WithAddRange(IEnumerable<DbParameter> values)
         {
             foreach (var p in values) 
             { 
