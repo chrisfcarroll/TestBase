@@ -88,65 +88,55 @@ namespace TestBase.FakeDb
         /// And the Parameters are {Name="PropertyName1", Value=updateSource.PropertyName1} [, {Name="PropertyNameN", Value=updateSource.PropertyNameN} ...] 
         /// </summary>
         /// <returns>The matching command</returns>
-        public static DbCommand ShouldHaveInserted<T>(this FakeDbConnection fakeDbConnection, string tableName, T updateSource)
+        public static DbCommand ShouldHaveInserted<T>(this FakeDbConnection fakeDbConnection, string tableName, T updateSource, IEnumerable<string> exceptProperties=null)
         {
-            if (updateSource is IEnumerable<string>)
+            if (updateSource is IEnumerable<string> && exceptProperties==null)
             {
-                return ShouldHaveInserted(fakeDbConnection, tableName, ((IEnumerable<string>)updateSource).ToList(), null);
+                return ShouldHaveInsertedColumns(fakeDbConnection,tableName, updateSource as IEnumerable<string>);
             }
-            var dbParameterisablePropertyNames = typeof(T).GetDbParameterisablePropertyNames().Where(s => !s.EndsWith("id", true, null));
+            exceptProperties = exceptProperties ?? new string[0];
+            var dbParameterisablePropertyNames = 
+                typeof(T).GetDbRehydratablePropertyNames().Where(s => !exceptProperties.Contains(s, StringComparer.InvariantCultureIgnoreCase));
             return ShouldHaveInserted(fakeDbConnection, tableName, dbParameterisablePropertyNames, updateSource);
-        }
-        /// <summary>
-        /// Verifies that an Insert command was invoked on <paramref name="fakeDbConnection"/> on table <paramref name="tableName"/>.
-        /// 
-        /// Verifies that the column names in <paramref name="fieldList"/> were all updated
-        /// i.e. that the command is something like 
-        /// "Insert tableName Set PropertyName1 = _ [, PropertyNameN = _ ...]"
-        /// And the Parameters also have names Name="PropertyName1" [, Name="PropertyNameN" ...] 
-        /// </summary>
-        /// <returns>The matching command</returns>
-        public static DbCommand ShouldHaveInserted(this FakeDbConnection fakeDbConnection, string tableName, string[] fieldList)
-        {
-            return ShouldHaveInserted(fakeDbConnection, tableName, fieldList, null);
-        }
-        /// <summary>
-        /// Verifies that an Insert command was invoked on <paramref name="fakeDbConnection"/> on table <paramref name="tableName"/>.
-        /// 
-        /// Verifies that the column names in <paramref name="fieldList"/> were all updated
-        /// i.e. that the command is something like 
-        /// "Insert tableName Set PropertyName1 = _ [, PropertyNameN = _ ...]"
-        /// And the Parameters also have names Name="PropertyName1" [, Name="PropertyNameN" ...] 
-        /// </summary>
-        /// <returns>The matching command</returns>
-        public static DbCommand ShouldHaveInserted(this FakeDbConnection fakeDbConnection, string tableName, List<string> fieldList)
-        {
-            return ShouldHaveInserted(fakeDbConnection, tableName, fieldList, null);
         }
 
         /// <summary>
         /// Verifies that an Insert command was invoked on <paramref name="fakeDbConnection"/> on table <paramref name="tableName"/>.
         /// 
-        /// Verifies that the column names in <paramref name="fieldList"/> were all updated
+        /// Verifies that the column names in <paramref name="columnList"/> were all updated
+        /// i.e. that the command is something like 
+        /// "Insert tableName Set PropertyName1 = _ [, PropertyNameN = _ ...]"
+        /// And the Parameters also have names Name="PropertyName1" [, Name="PropertyNameN" ...] 
+        /// </summary>
+        /// <returns>The matching command</returns>
+        public static DbCommand ShouldHaveInsertedColumns(this FakeDbConnection fakeDbConnection, string tableName, IEnumerable<string> columnList)
+        {
+            return ShouldHaveInserted(fakeDbConnection, tableName, columnList, updateSource:null);
+        }
+
+        /// <summary>
+        /// Verifies that an Insert command was invoked on <paramref name="fakeDbConnection"/> on table <paramref name="tableName"/>.
+        /// 
+        /// Verifies that the column names in <paramref name="columnList"/> were all updated
         /// Optionally verifies that the parameter names and values matche the Property names and values of <paramref name="updateSource"/>,
         /// i.e. that the command is something like 
         /// "Insert tableName Set PropertyName1 = updateSource.PropertyName1 [, PropertyNameN = updateSource.PropertyNameN ...]"
         /// And the Parameters are {Name="PropertyName1", Value=updateSource.PropertyName1} [, {Name="PropertyNameN", Value=updateSource.PropertyNameN} ...] 
         /// </summary>
-        /// <param name="fieldList">This should be a subset of the names of Properties of <paramref name="updateSource"/></param>
+        /// <param name="columnList">This should be a subset of the names of Properties of <paramref name="updateSource"/></param>
         /// <returns>The matching command</returns>
-        public static DbCommand ShouldHaveInserted(this FakeDbConnection fakeDbConnection, string tableName, IEnumerable<string> fieldList, object updateSource)
+        public static DbCommand ShouldHaveInserted(this FakeDbConnection fakeDbConnection, string tableName, IEnumerable<string> columnList, object updateSource)
         {
             var verbandtablepattern = "Insert" + @"\s+" + @"(Into\s+)?" + optPrefix + optDelim + tableName;
             var cmd = fakeDbConnection.ShouldHaveInvoked(c => c.CommandText.Matches(verbandtablepattern, sqlRegexOpts));
             cmd.CommandText.ShouldMatch(verbandtablepattern + optDelim + openBracket, sqlRegexOpts);
-            var columnList = new Regex(openBracket + restofline, sqlRegexOpts).Matches(cmd.CommandText)[0].Value;
+            var foundColumnList = new Regex(openBracket + restofline, sqlRegexOpts).Matches(cmd.CommandText)[0].Value;
             var valuesList = new Regex(closeBracket + @"Values" + openBracket + restofline, sqlRegexOpts).Matches(cmd.CommandText)[0].Value;
-            foreach (var field in fieldList)
+            foreach (var field in columnList)
             {
                 var fieldName = field;
                 var fieldOrQuotedField = string.Format(@"({0}|\[{0}\]|""{0}"")", fieldName);
-                columnList.ShouldMatch(string.Format(@"({0}|{1}){2}", openBracket, comma, fieldOrQuotedField),
+                foundColumnList.ShouldMatch(string.Format(@"({0}|{1}){2}", openBracket, comma, fieldOrQuotedField),
                     sqlRegexOpts,
                     "Expected to Insert column {0} but didn't see it", field);
                 valuesList.ShouldMatch(string.Format(@"(\(\s*|,\s*)@{0}\s*", field),
@@ -258,7 +248,7 @@ namespace TestBase.FakeDb
         public static DbCommand ShouldHaveUpdated<T>(this FakeDbConnection fakeDbConnection, string tableName, T updateSource, string whereClauseProperty)
         {
             var dbParameterisablePropertyNamesExWhereClause =
-                    updateSource.GetType().GetDbParameterisablePropertyNames().Where(s => s != whereClauseProperty);
+                    updateSource.GetType().GetDbRehydratablePropertyNames().Where(s => s != whereClauseProperty);
 
             var whereClausePropInfo = updateSource.GetType().GetProperty(whereClauseProperty);
             var expectedWhereValue = (whereClausePropInfo != null) ? whereClausePropInfo.GetPropertyValue(updateSource, whereClauseProperty) : null;
