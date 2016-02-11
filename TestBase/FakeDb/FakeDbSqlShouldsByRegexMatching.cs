@@ -23,6 +23,8 @@ namespace TestBase.FakeDb
         public const string restofline = ".*";
         public const string select = @"Select\s+";
         public const string fromOrJoin = @"(From|Join)\s+";
+        const string optInto = @"(Into\s+)?";
+        const string optFrom = @"(From\s+)?";
 
         /// <summary>
         /// Verifies that a command was invoked on <paramref name="fakeDbConnection"/> which satisfied <paramref name="predicate"/>
@@ -127,7 +129,7 @@ namespace TestBase.FakeDb
         /// <returns>The matching command</returns>
         public static DbCommand ShouldHaveInserted(this FakeDbConnection fakeDbConnection, string tableName, IEnumerable<string> columnList, object updateSource)
         {
-            var verbandtablepattern = "Insert" + @"\s+" + @"(Into\s+)?" + optPrefix + optDelim + tableName;
+            var verbandtablepattern = @"Insert\s+" + optInto + optPrefix + optDelim + tableName;
             var cmd = fakeDbConnection.ShouldHaveInvoked(c => c.CommandText.Matches(verbandtablepattern, sqlRegexOpts));
             cmd.CommandText.ShouldMatch(verbandtablepattern + optDelim + openBracket, sqlRegexOpts);
             var foundColumnList = new Regex(openBracket + restofline, sqlRegexOpts).Matches(cmd.CommandText)[0].Value;
@@ -165,7 +167,7 @@ namespace TestBase.FakeDb
         /// <returns>The matching command</returns>
         public static DbCommand ShouldHaveDeleted(this FakeDbConnection fakeDbConnection, string tableName)
         {
-            var verbandtablepattern = "Delete" + @"\s+" + optPrefix + optDelim + tableName;
+            var verbandtablepattern = @"Delete\s+" + optFrom + optPrefix + optDelim + tableName;
 
             return fakeDbConnection
                     .ShouldHaveInvoked(
@@ -181,7 +183,7 @@ namespace TestBase.FakeDb
         /// <returns>The matching command</returns>
         public static DbCommand ShouldHaveDeleted(this FakeDbConnection fakeDbConnection, string tableName, string whereClauseFieldName, object expectedWhereClauseValue)
         {
-            var verbandtablepattern = "Delete" + @"\s+" + optPrefix + optDelim + tableName;
+            var verbandtablepattern = @"Delete\s+" + optFrom + optPrefix + optDelim + tableName;
 
             var invocation = fakeDbConnection.ShouldHaveInvoked(
                         ii => ii.CommandText.Matches(verbandtablepattern, sqlRegexOpts)
@@ -218,7 +220,7 @@ namespace TestBase.FakeDb
         public static FakeDbCommand ShouldHaveUpdatedNRows(
                             this FakeDbConnection fakeDbConnection, string tableName, IEnumerable<string> fieldList, int times = 1)
         {
-            var verbandtablepattern = "Update" + @"\s+" + optPrefix + optDelim + tableName;
+            var verbandtablepattern = @"Update\s+" + optPrefix + optDelim + tableName;
             var cmd = fakeDbConnection.Invocations.First(c => c.CommandText.Matches(verbandtablepattern, sqlRegexOpts));
             var commandText = cmd.CommandText;
             cmd.CommandText.ShouldMatch(verbandtablepattern + optDelim + set, sqlRegexOpts);

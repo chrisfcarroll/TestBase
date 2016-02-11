@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Data;
 using NUnit.Framework;
 using TestBase.FakeDb;
 
@@ -8,14 +6,17 @@ namespace TestBase.Tests.FakeDbAndMockDbTests
     [TestFixture]
     public class WhenVerifyingFakeDbCommandInvocations
     {
-        [Test]
-        public void Should_Recognise_Select() 
+        [TestCase("ATableName")]
+        [TestCase("namespaceisignored.ATableName")]
+        [TestCase("namespace.isignored.ATableName")]
+        [TestCase("otherTable o join ATableName a on o.something = a.something")]
+        public void Should_Recognise_Select(string atablename) 
         {
             using (var conn = new FakeDbConnection().SetUpForQuery(GivenFakeDataInFakeDb()))
             {
                 using (var cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = "Select * from ATableName";
+                    cmd.CommandText = string.Format("Select * from {0}", atablename);
                     var param = cmd.CreateParameter();
                     param.ParameterName = "PName";
                     param.Value = "Boo";
@@ -31,14 +32,18 @@ namespace TestBase.Tests.FakeDbAndMockDbTests
             }
         }
 
-        [Test]
-        public void Should_Recognise_Insert()
+        [TestCase("ATableName")]
+        [TestCase("namespaceisignored.ATableName")]
+        [TestCase("namespace.isignored.ATableName")]
+        [TestCase("into ATableName")]
+        [TestCase("into namespace.isignored.ATableName")]
+        public void Should_Recognise_Insert(string atablename)
         {
             using (var conn = new FakeDbConnection().SetUpForQuery(GivenFakeDataInFakeDb()))
             {
                 using (var cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = "Insert ATableName (Id, Name) Values(@id, @name)";
+                    cmd.CommandText = string.Format("Insert {0} (Id, Name) Values(@id, @name)", atablename);
                     var param1 = cmd.CreateParameter();
                     param1.ParameterName = "Id";
                     param1.Value = 1;
@@ -65,15 +70,17 @@ namespace TestBase.Tests.FakeDbAndMockDbTests
             }
         }
 
-        [Test]
-        public void Should_Recognise_Update()
+        [TestCase("ATableName")]
+        [TestCase("namespaceisignored.ATableName")]
+        [TestCase("namespace.isignored.ATableName")]
+        public void Should_Recognise_Update(string atablename)
         {
             var source = new AClass {Name = "Boo1", Id = 111};
             using (var conn = new FakeDbConnection().SetUpForQuery(GivenFakeDataInFakeDb()))
             {
                 using (var cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = "Update ATableName Set Name= @Name Where Id=@Id";
+                    cmd.CommandText = string.Format("Update {0} Set Name= @Name Where Id=@Id", atablename);
                     var param1 = cmd.CreateParameter();
                     param1.ParameterName = "Name";
                     param1.Value = "Boo1";
@@ -101,14 +108,18 @@ namespace TestBase.Tests.FakeDbAndMockDbTests
             }
         }
 
-        [Test]
-        public void Should_Recognise_Delete()
+        [TestCase("ATableName")]
+        [TestCase("namespaceisignored.ATableName")]
+        [TestCase("namespace.isignored.ATableName")]
+        [TestCase("from ATableName")]
+        [TestCase("from namespace.isignored.ATableName")]
+        public void Should_Recognise_Delete(string tablename)
         {
             using (var conn = new FakeDbConnection().SetUpForQuery(GivenFakeDataInFakeDb()))
             {
                 using (var cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = "Delete ATableName Where Id=@Id";
+                    cmd.CommandText = string.Format("Delete {0} Where Id=@Id", tablename);
                     var param1 = cmd.CreateParameter();
                     param1.ParameterName = "Id";
                     param1.Value = 111;
