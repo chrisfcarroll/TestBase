@@ -1,9 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace TestBase
 {
     public static class WithExtensions
     {
+        public static IEnumerable<T> Each<T>(this IEnumerable<T> ienumerable, Action<T> applyToEach) 
+        {
+            foreach (var i in ienumerable) { applyToEach(i); }
+            return ienumerable;
+        }
+
         public static T With<T>(this T @this, Action<T> with)
         {
             with(@this);

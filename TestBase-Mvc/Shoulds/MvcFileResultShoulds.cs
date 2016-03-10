@@ -18,5 +18,25 @@ namespace TestBase.Shoulds
                         message?? string.Format("Expected FileResult with FileDownloadName {0}", fileDownloadName),
                         args);
         }
+
+        public static FileContentResult ShouldBeFileContentResult(this ActionResult result, string fileDownloadName = null, string message = null, params object[] args)
+        {
+            return result
+                .ShouldBeAssignableTo<FileContentResult>(message, args)
+                .ShouldHave(
+                        x => (fileDownloadName == null) || x.FileDownloadName == fileDownloadName,
+                        message ?? string.Format("Expected FileResult with FileDownloadName {0}", fileDownloadName),
+                        args);
+        }
+
+        public static FileStreamResult ShouldBeFileStreamResult(this ActionResult result, string fileDownloadName = null, string message = null, params object[] args)
+        {
+            return result
+                .ShouldBeAssignableTo<FileStreamResult>(message, args)
+                .ShouldHave(
+                        x => (fileDownloadName == null) || x.FileDownloadName == fileDownloadName,
+                        message ?? string.Format("Expected FileResult with FileDownloadName {0}", fileDownloadName),
+                        args);
+        }
     }
 }

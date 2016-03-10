@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.IO;
 using System.Web.Mvc;
 using NUnit.Framework;
 using TestBase.Shoulds;
@@ -19,6 +16,26 @@ namespace TestBase.Tests.WhenAsserting.ShouldReturnTheActualBeingAsserted__Given
             fileResult.FileDownloadName = fileDownloadName;
 
             fileResult.ShouldBeFileResult(fileDownloadName).ShouldEqual(fileResult);
+        }
+
+        [Test]
+        public void ShouldBeFileContentResult_Should_return_fileresult()
+        {
+            var fileContentResult = new FileContentResult(new byte[] { 1 }, "fake/type");
+            var fileDownloadName = "FakeDownloadName";
+            fileContentResult.FileDownloadName = fileDownloadName;
+
+            fileContentResult.ShouldBeFileContentResult(fileDownloadName).ShouldEqual(fileContentResult);
+        }
+
+        [Test]
+        public void ShouldBeFileStreamResult_Should_return_filestreamresult()
+        {
+            var fileStreamResult = new FileStreamResult(new MemoryStream(new byte[] { 1 }), "fake/type");
+            var fileDownloadName = "FakeDownloadName";
+            fileStreamResult.FileDownloadName = fileDownloadName;
+
+            fileStreamResult.ShouldBeFileStreamResult(fileDownloadName).ShouldEqual(fileStreamResult);
         }
     }
 }
