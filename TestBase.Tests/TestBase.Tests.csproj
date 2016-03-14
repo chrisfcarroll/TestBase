@@ -85,6 +85,7 @@
     <Compile Include="ComparerEqualsByValueTests\WhenComparingPrimitivesByValue.cs" />
     <Compile Include="DictionaryTests\When_using_a_FakesDictionary.cs" />
     <Compile Include="FakeDbAndMockDbTests\DapperSqlMapper.cs" />
+    <Compile Include="FakeDbAndMockDbTests\FakeData.cs" />
     <Compile Include="FakeDbAndMockDbTests\WhenMockingADbCommandExecuteReader.cs" />
     <Compile Include="FakeDbAndMockDbTests\WhenRecordingInvocations.cs" />
     <Compile Include="FakeDbAndMockDbTests\WhenSettingUpAFakeDbConnection\ForQueryUsingStronglyTypedTuplesOfFakeData.cs" />
@@ -93,7 +94,12 @@
     <Compile Include="FakeDbAndMockDbTests\WhenSettingUpAFakeDbConnection\ForQueryUsingObjectArrayFakeData.cs" />
     <Compile Include="FakeDbAndMockDbTests\WhenSettingUpAFakeDbConnection\ForQueryUsingStronglyTypedFakeData.cs" />
     <Compile Include="FakeDbAndMockDbTests\WhenSettingUpAFakeDbConnection\WhenVerifyingInvocations.cs" />
+    <Compile Include="FakeDbAndMockDbTests\WhenVerifyingFakeDbCommandInvocationMultiples.cs" />
     <Compile Include="FakeDbAndMockDbTests\WhenVerifyingFakeDbCommandInvocations.cs" />
+    <Compile Include="FakeDbAndMockDbTests\WhenVerifyingFakeDbDelete.cs" />
+    <Compile Include="FakeDbAndMockDbTests\WhenVerifyingFakeDbInsert.cs" />
+    <Compile Include="FakeDbAndMockDbTests\WhenVerifyingFakeDbSelect.cs" />
+    <Compile Include="FakeDbAndMockDbTests\WhenVerifyingFakeDbUpdate.cs" />
     <Compile Include="LoggingExtensions.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>

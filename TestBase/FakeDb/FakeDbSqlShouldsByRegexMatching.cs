@@ -30,8 +30,8 @@ namespace TestBase.FakeDb
         /// Verifies that a command was invoked on <paramref name="fakeDbConnection"/> which satisfied <paramref name="predicate"/>
         /// </summary>
         /// <returns>The matching command</returns>
-        public static DbCommand ShouldHaveInvoked(
-            this FakeDbConnection fakeDbConnection, Expression<Func<DbCommand, bool>> predicate, string message=null, params object[] args)
+        public static DbCommand ShouldHaveInvoked(this FakeDbConnection fakeDbConnection, 
+                                                    Expression<Func<DbCommand, bool>> predicate, string message=null, params object[] args)
         {
             var invocations = fakeDbConnection.Invocations;
             var invocation = invocations.FirstOrDefault(predicate.Compile());
@@ -90,7 +90,8 @@ namespace TestBase.FakeDb
         /// And the Parameters are {Name="PropertyName1", Value=updateSource.PropertyName1} [, {Name="PropertyNameN", Value=updateSource.PropertyNameN} ...] 
         /// </summary>
         /// <returns>The matching command</returns>
-        public static DbCommand ShouldHaveInserted<T>(this FakeDbConnection fakeDbConnection, string tableName, T updateSource, IEnumerable<string> exceptProperties=null)
+        public static DbCommand ShouldHaveInserted<T>(this FakeDbConnection fakeDbConnection, 
+                                                        string tableName, T updateSource, IEnumerable<string> exceptProperties=null)
         {
             if (updateSource is IEnumerable<string> && exceptProperties==null)
             {
@@ -209,34 +210,74 @@ namespace TestBase.FakeDb
         /// Or by using <see cref="ShouldHaveUpdated{T}(TestBase.FakeDb.FakeDbConnection,string,T,string)"/> instead.
         /// </summary>
         /// <returns>The matching command</returns>
-        public static FakeDbCommand ShouldHaveUpdatedNRows<T>(this FakeDbConnection fakeDbConnection, string tableName, T updateSource, int times = 1)
+        public static FakeDbCommand ShouldHaveExecutedNTimes<T>(this FakeDbConnection fakeDbConnection, 
+                                                                        string verb, string tableName, T updateSource, int times = 1)
         {
             var dbRehydratablePropertyNamesExIdFields =
                 updateSource.GetType().GetDbRehydratablePropertyNames().Where(s => !s.EndsWith("id", true, null));
 
-            return ShouldHaveUpdatedNRows(fakeDbConnection, tableName, dbRehydratablePropertyNamesExIdFields, times);
+            return ShouldHaveExecutedNTimes(fakeDbConnection, verb, tableName, dbRehydratablePropertyNamesExIdFields, times);
         }
 
-        public static FakeDbCommand ShouldHaveUpdatedNRows(
-                            this FakeDbConnection fakeDbConnection, string tableName, IEnumerable<string> fieldList, int times = 1)
+        /// <summary>
+        /// Verifies that an Update command was invoked on <paramref name="fakeDbConnection"/> on table <paramref name="tableName"/>.
+        /// 
+        /// Verifies that the column names and parameter names match the Property names and values of <paramref name="updateSource"/>,
+        /// i.e. that the command is something like 
+        /// "Update tableName Set PropertyName1 = _ [, PropertyNameN = _ ...]"
+        /// 
+        /// Verifies that the update command was called <paramref name="times"/> 
+        /// (i.e. the same command called with <paramref name="times"/>) different sets of parameters)
+        /// 
+        /// NOTE This overload does not verify parameter values
+        /// You can do that with the <see cref="DbCommand.DbParameterCollection"/> property of the returned <see cref="FakeDbCommand.Invocations"/>
+        /// Or by using <see cref="ShouldHaveUpdated{T}(TestBase.FakeDb.FakeDbConnection,string,T,string)"/> instead.
+        /// </summary>
+        /// <returns>The matching command</returns>
+        public static FakeDbCommand ShouldHaveExecutedNTimes(this FakeDbConnection fakeDbConnection, 
+                                            string verb, string tableName, IEnumerable<string> fieldList, int times = 1)
         {
-            var verbandtablepattern = @"Update\s+" + optPrefix + optDelim + tableName;
-            var cmd = fakeDbConnection.Invocations.First(c => c.CommandText.Matches(verbandtablepattern, sqlRegexOpts));
-            var commandText = cmd.CommandText;
-            cmd.CommandText.ShouldMatch(verbandtablepattern + optDelim + set, sqlRegexOpts);
-            var afterSet = new Regex(set + restofline, sqlRegexOpts).Matches(commandText)[0].Value;
-            foreach (var field in fieldList)
+            var verbandtablepattern = verb + @"\s+" + optPrefix + optDelim + tableName;
+
+            var possiblyRelevantCommands = fakeDbConnection.Invocations.Where(c => c.CommandText.Matches(verbandtablepattern + optDelim , sqlRegexOpts));
+
+            var matches = 0;
+
+            foreach (var cmd in possiblyRelevantCommands)
             {
-                var field_ = field;
-                var fieldOrQuotedField = string.Format(@"({0}|\[{0}\]|""{0}"")", field_);
-                afterSet.ShouldMatch(
-                    string.Format(@"({0}|{1}){2}\s*=\s*\@{3}", set, comma, fieldOrQuotedField, field),
-                    sqlRegexOpts,
-                    "Expected to Update field {0} but didn't see it", field);
-                cmd.Parameters.Cast<DbParameter>().SingleOrAssertFail(p => p.ParameterName == field_);
+                try
+                {
+                    var afterSet = new Regex(set + restofline, sqlRegexOpts).Matches(cmd.CommandText)[0].Value;
+                    foreach (var field in fieldList)
+                    {
+                        var field_ = field;
+                        var fieldOrQuotedField = string.Format(@"({0}|\[{0}\]|""{0}"")", field_);
+                        afterSet.ShouldMatch(
+                                    string.Format(@"({0}|{1}){2}\s*=\s*\@{3}", set, comma, fieldOrQuotedField, field),
+                                    sqlRegexOpts,
+                                    "Expected to {0} field {1} but didn't see it", verb, field);
+                        cmd.Parameters.Cast<DbParameter>().SingleOrAssertFail(p => p.ParameterName == field_);
+                    }
+                    matches++;
+                }
+                catch (AssertionException ae)
+                {
+                    //swallow and don't increment matches count;
+                }
             }
-            cmd.Invocations.Count.ShouldBe(times);
-            return cmd;
+            matches.ShouldBe(times,"Expected to invoke {0} update commands against table {1} but got {2}", times, tableName, matches);
+            return possiblyRelevantCommands.FirstOrDefault();
+        }
+
+        public static DbCommand ShouldHaveExecutedNTimes(this DbCommand dbCommand, int times = 1)
+        {
+            if (times != 1)
+            {
+                (dbCommand as FakeDbCommand)
+                            .ShouldNotBeNull("ShouldHaveUpdatedNRows(times != 1) can only be asserted against a {0}", typeof(FakeDbCommand))
+                            .Invocations.Count.ShouldBe(times);
+            }
+            return dbCommand;
         }
 
         /// <summary>

@@ -1,0 +1,39 @@
+using NUnit.Framework;
+using TestBase.FakeDb;
+
+namespace TestBase.Tests.FakeDbAndMockDbTests
+{
+    [TestFixture]
+    public class WhenVerifyingFakeDbDelete
+    {
+
+        [TestCase("ATableName")]
+        [TestCase("namespaceisignored.ATableName")]
+        [TestCase("namespace.isignored.ATableName")]
+        [TestCase("from ATableName")]
+        [TestCase("from namespace.isignored.ATableName")]
+        public void Should_Recognise_Delete(string tablename)
+        {
+            using (var conn = new FakeDbConnection().SetUpForQuery(FakeData.GivenFakeDataInFakeDb()))
+            {
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = string.Format("Delete {0} Where Id=@Id", tablename);
+                    var param1 = cmd.CreateParameter();
+                    param1.ParameterName = "Id";
+                    param1.Value = 111;
+                    cmd.Parameters.Add(param1);
+                    cmd.ExecuteReader();
+                }
+
+                conn.ShouldHaveDeleted("ATableName");
+                conn.ShouldHaveDeleted("ATableName", "Id", 111);
+                Assert.Throws<AssertionException>(() => { conn.ShouldHaveDeleted("ATableName", "Id", 222222); });
+                Assert.Throws<AssertionException>(() => { conn.ShouldHaveDeleted("ATableName", "Id2", 111); });
+                Assert.Throws<AssertionException>(() => { conn.ShouldHaveDeleted("WrongTableName", "Id", 111); });
+                Assert.Throws<AssertionException>(() => { conn.ShouldHaveInserted("ATableName", ""); });
+                Assert.Throws<AssertionException>(() => { conn.ShouldHaveSelected("ATableName"); });
+            }
+        }
+    }
+}
