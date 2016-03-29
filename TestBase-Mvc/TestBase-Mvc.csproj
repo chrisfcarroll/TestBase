@@ -97,7 +97,7 @@
     </Compile>
     <Compile Include="MockApiHttpContextHelper.cs" />
     <Compile Include="MockHttpContextHelperV1.cs" />
-    <Compile Include="MockHttpContextHelperV2.cs" />
+    <Compile Include="MockHttpContextHelperV3.cs" />
     <Compile Include="MvcExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Shoulds\MvcActionResultShoulds.cs" />
