@@ -76,6 +76,7 @@
     <Compile Include="FakeDb\FakeDbParameter.cs" />
     <Compile Include="FakeDb\FakeDbParameterCollection.cs" />
     <Compile Include="FakeDb\FakeDbRehydrationExtensions.cs" />
+    <Compile Include="FakeDb\FakeDbSqlShouldsByRegexMatchingV2.cs" />
     <Compile Include="FakeDb\FakeDbSqlShouldsByRegexMatching.cs" />
     <Compile Include="FakeDb\DbParameterToStringExtensions.cs" />
     <Compile Include="FakeDb\FakeDbTransaction.cs" />
