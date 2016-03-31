@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
@@ -247,12 +246,12 @@ namespace TestBase.FakeDb
             {
                 try
                 {
-                    var afterSet = new Regex(set + restofline, sqlRegexOpts).Matches(cmd.CommandText)[0].Value;
+                    var afterVerbAndTable = new Regex(@"(?<=" + @verbandtablepattern + ")" + restofline, sqlRegexOpts).Matches(cmd.CommandText)[0].Value;
                     foreach (var field in fieldList)
                     {
                         var field_ = field;
                         var fieldOrQuotedField = string.Format(@"({0}|\[{0}\]|""{0}"")", field_);
-                        afterSet.ShouldMatch(
+                        afterVerbAndTable.ShouldMatch(
                                     string.Format(@"({0}|{1}){2}\s*=\s*\@{3}", set, comma, fieldOrQuotedField, field),
                                     sqlRegexOpts,
                                     "Expected to {0} field {1} but didn't see it", verb, field);
@@ -265,7 +264,7 @@ namespace TestBase.FakeDb
                     //swallow and don't increment matches count;
                 }
             }
-            matches.ShouldBe(times,"Expected to invoke {0} update commands against table {1} but got {2}", times, tableName, matches);
+            matches.ShouldBe(times,"Expected to invoke {0} {1} commands against table {2} but got {3}", times, verb, tableName, matches);
             return possiblyRelevantCommands.FirstOrDefault();
         }
 
