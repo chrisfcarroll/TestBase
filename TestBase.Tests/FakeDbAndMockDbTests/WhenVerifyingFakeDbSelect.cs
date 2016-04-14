@@ -31,6 +31,5 @@ namespace TestBase.Tests.FakeDbAndMockDbTests
                 Assert.Throws<AssertionException>(() => { conn.ShouldHaveInserted("ATableName", ""); });
             }
         }
-
     }
 }

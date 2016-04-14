@@ -338,7 +338,7 @@ namespace TestBase.FakeDb
 
         public static DbCommand ShouldHaveWhereClauseWithFieldEqualsExpected<T>(this DbCommand invocation, string columnName, T expectedValue)
         {
-            invocation.CommandText.ShouldMatch(@"Where " + optPrefix + optDelim + columnName + optDelim + @"\s*\=\s*@" + columnName, sqlRegexOpts);
+            invocation.CommandText.ShouldMatch(@"Where\s+.*" + optPrefix + optDelim + columnName + optDelim + @"\s*\=\s*@" + columnName, sqlRegexOpts);
             invocation.ShouldHaveParameter(columnName, expectedValue);
             return invocation;
         }
