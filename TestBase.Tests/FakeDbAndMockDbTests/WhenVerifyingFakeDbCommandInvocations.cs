@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Data;
 using NUnit.Framework;
 using TestBase.FakeDb;
 

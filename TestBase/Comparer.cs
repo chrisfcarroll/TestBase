@@ -205,6 +205,8 @@ namespace TestBase
                 }
                 try
                 {
+                    if(leftInfo.GetGetMethod().GetParameters().Length != 0) { continue;} /*skip indexer properties which require arguments*/
+
                     var rightInfo = rightType.GetProperty(leftInfo.Name,
                                                           BindingFlags.Public | BindingFlags.NonPublic |
                                                           BindingFlags.Instance | BindingFlags.GetProperty);

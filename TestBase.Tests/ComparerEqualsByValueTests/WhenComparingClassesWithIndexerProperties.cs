@@ -4,43 +4,37 @@ using TestBase.Shoulds;
 namespace TestBase.Tests.ComparerEqualsByValueTests
 {
     [TestFixture]
-    public class WhenComparingStructsByValue
+    public class WhenComparingClassesWithIndexerProperties
     {
-        public struct AStruct
+        public class AClass
         {
+            public string this[string key]
+            {
+                get { return key; }
+            }
             public int Id { get; set; }
             public string Name { get; set; }
-            public BStruct More { get; set; }
-        }
-        public struct BStruct 
-        {
-            public int More        { get; set; }
-            public string EvenMore { get; set; }
         }
 
-        static readonly AStruct object1 = new AStruct
+        static readonly AClass object1 = new AClass
             {
                     Id=1,
                     Name = "1",
-                    More = new BStruct{More=1, EvenMore = "Evenmore1"}
             };
-        static readonly AStruct object1again = new AStruct
+        static readonly AClass object1again = new AClass
             {
                     Id=1,
                     Name = "1",
-                    More = new BStruct{ More=1, EvenMore = "Evenmore1"}
             };
-        static readonly AStruct object2 = new AStruct
+        static readonly AClass object2 = new AClass
         {
             Id = 1,
-            Name = "1",
-            More = new BStruct { EvenMore = "Evenmore2" }
+            Name = "2",
         };
-        static readonly AStruct object3 = new AStruct
+        static readonly AClass object3 = new AClass
         {
             Id = 1,
-            Name = "1",
-            More = new BStruct { More = 2, EvenMore = "Evenmore1" }
+            Name = "2",
         };
 
         [Test]
