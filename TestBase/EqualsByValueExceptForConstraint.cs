@@ -6,10 +6,10 @@ namespace TestBase
     public class EqualsByValueExceptForConstraint : Constraint
     {
         private readonly object expected;
-        readonly List<string> exclusions;
+        readonly IEnumerable<string> exclusions;
         private BoolWithString compareResult;
 
-        public EqualsByValueExceptForConstraint(object expected, List<string> exclusions)
+        public EqualsByValueExceptForConstraint(object expected, IEnumerable<string> exclusions)
         {
             this.expected = expected;
             this.exclusions = exclusions;

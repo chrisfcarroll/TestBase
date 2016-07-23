@@ -46,6 +46,11 @@ TestBase-Mvc
 
 * ShouldHaveViewDataContaining(), ShouldBeJsonResult() etc.
 
+* Includes mocking of HttpConttextBase and parsing of RouteConfig so that Controllers have a working Controller.Url when under test:
+
+    uut = new MyController().WithHttpContextAndRoutes(RouteConfig.RegisterRoutes);
+    uut.Url.Action("MyAction", "MyOtherController").ShouldEqual("/MyOtherController/MyAction");
+
 Can be used in both NUnit & MS UnitTestFramework test projects.
 
 Building on Mono : define compile symbol NoMSTest to remove dependency on 

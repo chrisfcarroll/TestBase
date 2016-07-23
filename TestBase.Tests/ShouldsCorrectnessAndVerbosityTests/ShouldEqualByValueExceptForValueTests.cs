@@ -17,7 +17,7 @@ namespace TestBase.Tests.ShouldsCorrectnessAndVerbosityTests
             var expected = testcase.Skip(2 + leftCount).Take(rightCount);
             var exceptions = testcase.Skip(2 + leftCount + rightCount);
 
-            actual.ShouldEqualByValueExpectForValuesIgnoringOrder(expected, exceptions);
+            actual.ShouldEqualByValueExceptForValuesIgnoringOrder(expected, exceptions);
 
         }
 

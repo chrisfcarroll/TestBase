@@ -119,7 +119,7 @@ namespace TestBase.FakeDb
 
         public override void CopyTo(Array array, int index)
         {
-            if( array as DbParameter[] == null) throw new ArgumentException("array must be a DbParameter array","array");
+            if( !(array is DbParameter[])) throw new ArgumentException("array must be a DbParameter array","array");
             parameters.CopyTo((DbParameter[]) array, index);
         }
 
@@ -137,7 +137,7 @@ namespace TestBase.FakeDb
             WithAddRange( (IEnumerable<FakeDbParameter>) values);
         }
 
-        public FakeDbParameterCollection WithAddRange(IEnumerable<FakeDbParameter> values)
+        public FakeDbParameterCollection WithAddRange(IEnumerable<DbParameter> values)
         {
             foreach (var p in values) 
             { 
@@ -159,7 +159,7 @@ namespace TestBase.FakeDb
         }
 
 
-        private static DbParameter AsDbParameterOrThrow(object value)
+        static DbParameter AsDbParameterOrThrow(object value)
         {
             var param = value as DbParameter;
             if (param == null)

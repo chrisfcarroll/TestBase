@@ -59,7 +59,12 @@ namespace TestBase.Tests.WhenAsserting.ShouldCallTheRightNUnitAssertThatOverload
             { "ShouldSatisfy",          new KeyValuePair<Action,string>(()=> 21.ShouldSatisfy(i => i.ToString(), Is.True)         , "Expected: ") }, 
             { "ShouldContainInOrder",   new KeyValuePair<Action,string>(()=> (new List<int>{22,222}).ShouldContainInOrder(222,22) , "Expected: ") },
 
-            { "ShouldBeFileResult",     new KeyValuePair<Action,string>(() => (new RedirectResult("/")).ShouldBeFileResult(TestCasesForCustomFailureMessageWithArgs.FailureMessage ) , "Expected")},
+            { "ShouldBeFileResult",     new KeyValuePair<Action,string>(
+                    () => new RedirectResult("/").ShouldBeFileResult(TestCasesForCustomFailureMessageWithArgs.FailureMessage ) , "Expected")},
+            { "ShouldBeFileContentResult",     new KeyValuePair<Action,string>(
+                    () => new RedirectResult("/").ShouldBeFileContentResult(TestCasesForCustomFailureMessageWithArgs.FailureMessage ) , "Expected")},
+            { "ShouldBeFileStreamResult",     new KeyValuePair<Action,string>(
+                    () => new RedirectResult("/").ShouldBeFileStreamResult(TestCasesForCustomFailureMessageWithArgs.FailureMessage ) , "Expected")},
         };
     };
 

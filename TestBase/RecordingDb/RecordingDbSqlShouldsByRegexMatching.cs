@@ -6,11 +6,12 @@ using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 using Mono.Linq.Expressions;
 using NUnit.Framework;
+using TestBase.FakeDb;
 using TestBase.Shoulds;
 
-namespace TestBase.FakeDb
+namespace TestBase.RecordingDb
 {
-    public static class FakeDbSqlShouldsByRegexMatching
+    public static class RecordingDbSqlShouldsByRegexMatching
     {
         static readonly RegexOptions sqlRegexOpts = RegexOptions.IgnoreCase | RegexOptions.Singleline;
         public const string optDelim = @"(\[|\]|"")?";
@@ -22,17 +23,14 @@ namespace TestBase.FakeDb
         public const string restofline = ".*";
         public const string select = @"Select\s+";
         public const string fromOrJoin = @"(From|Join)\s+";
-        const string optInto = @"(Into\s+)?";
-        const string optFrom = @"(From\s+)?";
 
         /// <summary>
-        /// Verifies that a command was invoked on <paramref name="fakeDbConnection"/> which satisfied <paramref name="predicate"/>
+        /// Verifies that a command was invoked on <paramref name="recordingDbConnection"/> which satisfied <paramref name="predicate"/>
         /// </summary>
         /// <returns>The matching command</returns>
-        public static DbCommand ShouldHaveInvoked(this FakeDbConnection fakeDbConnection, 
-                                                    Expression<Func<DbCommand, bool>> predicate, string message=null, params object[] args)
+        public static DbCommand ShouldHaveInvoked(this RecordingDbConnection recordingDbConnection, Expression<Func<DbCommand, bool>> predicate, string message=null, params object[] args)
         {
-            var invocations = fakeDbConnection.Invocations;
+            var invocations = recordingDbConnection.Invocations;
             var invocation = invocations.FirstOrDefault(predicate.Compile());
             if (invocation != null) { return invocation; }
             //
@@ -44,21 +42,21 @@ namespace TestBase.FakeDb
         }
 
         /// <summary>
-        /// Verifies that a Select command was invoked on <paramref name="fakeDbConnection"/> which
+        /// Verifies that a Select command was invoked on <paramref name="recordingDbConnection"/> which
         /// selected from table <paramref name="tableName"/>.
         /// 
         /// Optionally verifies that columns named in <paramref name="fieldList"/> were selected
         /// Optionally verifies that the where clause included "<paramref name="whereClauseField"/> =  <paramref name="expectedWhereClauseValue"/>"
         /// </summary>
         /// <returns>The matching command</returns>
-        public static DbCommand ShouldHaveSelected(this FakeDbConnection fakeDbConnection,
+        public static DbCommand ShouldHaveSelected(this RecordingDbConnection recordingDbConnection,
                                                 string tableName,
                                                 IEnumerable<string> fieldList = null,
                                                 string whereClauseField = null, object expectedWhereClauseValue = null)
         {
             var verbpattern = select;
             var frompattern = fromOrJoin + optPrefix + optDelim + tableName;
-            var invocation = fakeDbConnection.ShouldHaveInvoked(
+            var invocation = recordingDbConnection.ShouldHaveInvoked(
                         i => i.CommandText.Matches(verbpattern, sqlRegexOpts)
                           && i.CommandText.Matches(frompattern, sqlRegexOpts),
                       "Expected to Select from table {0} but didn't see it.", tableName);
@@ -80,7 +78,7 @@ namespace TestBase.FakeDb
         }
 
         /// <summary>
-        /// Verifies that an Insert command was invoked on <paramref name="fakeDbConnection"/> on table <paramref name="tableName"/>.
+        /// Verifies that an Insert command was invoked on <paramref name="recordingDbConnection"/> on table <paramref name="tableName"/>.
         /// 
         /// Verifies that the column names, parameter names, and parameter values matche the Property names and values of <paramref name="updateSource"/>,
         /// i.e. that the command is something like 
@@ -89,21 +87,20 @@ namespace TestBase.FakeDb
         /// And the Parameters are {Name="PropertyName1", Value=updateSource.PropertyName1} [, {Name="PropertyNameN", Value=updateSource.PropertyNameN} ...] 
         /// </summary>
         /// <returns>The matching command</returns>
-        public static DbCommand ShouldHaveInserted<T>(this FakeDbConnection fakeDbConnection, 
-                                                        string tableName, T updateSource, IEnumerable<string> exceptProperties=null)
+        public static DbCommand ShouldHaveInserted<T>(this RecordingDbConnection recordingDbConnection, string tableName, T updateSource, IEnumerable<string> exceptProperties = null)
         {
-            if (updateSource is IEnumerable<string> && exceptProperties==null)
+            if (updateSource is IEnumerable<string> && exceptProperties == null)
             {
-                return ShouldHaveInsertedColumns(fakeDbConnection,tableName, updateSource as IEnumerable<string>);
+                return ShouldHaveInsertedColumns(recordingDbConnection, tableName, updateSource as IEnumerable<string>);
             }
             exceptProperties = exceptProperties ?? new string[0];
-            var dbParameterisablePropertyNames = 
+            var dbParameterisablePropertyNames =
                 typeof(T).GetDbRehydratablePropertyNames().Where(s => !exceptProperties.Contains(s, StringComparer.InvariantCultureIgnoreCase));
-            return ShouldHaveInserted(fakeDbConnection, tableName, dbParameterisablePropertyNames, updateSource);
+            return ShouldHaveInserted(recordingDbConnection, tableName, dbParameterisablePropertyNames, updateSource);
         }
 
         /// <summary>
-        /// Verifies that an Insert command was invoked on <paramref name="fakeDbConnection"/> on table <paramref name="tableName"/>.
+        /// Verifies that an Insert command was invoked on <paramref name="recordingDbConnection"/> on table <paramref name="tableName"/>.
         /// 
         /// Verifies that the column names in <paramref name="columnList"/> were all updated
         /// i.e. that the command is something like 
@@ -111,13 +108,13 @@ namespace TestBase.FakeDb
         /// And the Parameters also have names Name="PropertyName1" [, Name="PropertyNameN" ...] 
         /// </summary>
         /// <returns>The matching command</returns>
-        public static DbCommand ShouldHaveInsertedColumns(this FakeDbConnection fakeDbConnection, string tableName, IEnumerable<string> columnList)
+        public static DbCommand ShouldHaveInsertedColumns(this RecordingDbConnection recordingDbConnection, string tableName, IEnumerable<string> columnList)
         {
-            return ShouldHaveInserted(fakeDbConnection, tableName, columnList, updateSource:null);
+            return ShouldHaveInserted(recordingDbConnection, tableName, columnList, updateSource: null);
         }
 
         /// <summary>
-        /// Verifies that an Insert command was invoked on <paramref name="fakeDbConnection"/> on table <paramref name="tableName"/>.
+        /// Verifies that an Insert command was invoked on <paramref name="recordingDbConnection"/> on table <paramref name="tableName"/>.
         /// 
         /// Verifies that the column names in <paramref name="columnList"/> were all updated
         /// Optionally verifies that the parameter names and values matche the Property names and values of <paramref name="updateSource"/>,
@@ -127,10 +124,10 @@ namespace TestBase.FakeDb
         /// </summary>
         /// <param name="columnList">This should be a subset of the names of Properties of <paramref name="updateSource"/></param>
         /// <returns>The matching command</returns>
-        public static DbCommand ShouldHaveInserted(this FakeDbConnection fakeDbConnection, string tableName, IEnumerable<string> columnList, object updateSource)
+        public static DbCommand ShouldHaveInserted(this RecordingDbConnection recordingDbConnection, string tableName, IEnumerable<string> columnList, object updateSource)
         {
-            var verbandtablepattern = @"Insert\s+" + optInto + optPrefix + optDelim + tableName;
-            var cmd = fakeDbConnection.ShouldHaveInvoked(c => c.CommandText.Matches(verbandtablepattern, sqlRegexOpts),"Expected to Insert table {0} but didn't see it",tableName);
+            var verbandtablepattern = "Insert" + @"\s+" + @"(Into\s+)?" + optPrefix + optDelim + tableName;
+            var cmd = recordingDbConnection.ShouldHaveInvoked(c => c.CommandText.Matches(verbandtablepattern, sqlRegexOpts));
             cmd.CommandText.ShouldMatch(verbandtablepattern + optDelim + openBracket, sqlRegexOpts);
             var foundColumnList = new Regex(openBracket + restofline, sqlRegexOpts).Matches(cmd.CommandText)[0].Value;
             var valuesList = new Regex(closeBracket + @"Values" + openBracket + restofline, sqlRegexOpts).Matches(cmd.CommandText)[0].Value;
@@ -144,32 +141,34 @@ namespace TestBase.FakeDb
                 valuesList.ShouldMatch(string.Format(@"(\(\s*|,\s*)@{0}\s*", field),
                     sqlRegexOpts,
                     "Expected to Insert value {0} but didn't see it", field);
-                if (updateSource != null) {
+                if (updateSource != null)
+                {
                     cmd.ShouldHaveParameter(fieldName, updateSource.GetType().GetProperty(fieldName).GetValue(updateSource, null));
                 }
                 else
                 {
                     cmd.Parameters
                         .Cast<FakeDbParameter>()
-                        .SingleOrAssertFail(p => p.ParameterName.Equals(fieldName,StringComparison.InvariantCultureIgnoreCase),
+                        .SingleOrAssertFail(p => p.ParameterName.Equals(fieldName, StringComparison.InvariantCultureIgnoreCase),
                                 "Found Insert command {0} but with parameters\n:{1}\n\nExpected: Parameter named {2}",
                                 cmd.CommandText,
-                                cmd.Parameters.ToStringPerLine(), 
+                                cmd.Parameters.ToStringPerLine(),
                             fieldName);
                 }
             }
             return cmd;
         }
 
+
         ///<summary>
-        /// Verifies that a Delete command was invoked on <paramref name="fakeDbConnection"/> on table <paramref name="tableName"/>.
+        /// Verifies that a Delete command was invoked on <paramref name="recordingDbConnection"/> on table <paramref name="tableName"/>.
         /// </summary>
         /// <returns>The matching command</returns>
-        public static DbCommand ShouldHaveDeleted(this FakeDbConnection fakeDbConnection, string tableName)
+        public static DbCommand ShouldHaveDeleted(this RecordingDbConnection recordingDbConnection, string tableName)
         {
-            var verbandtablepattern = @"Delete\s+" + optFrom + optPrefix + optDelim + tableName;
+            var verbandtablepattern = "Delete" + @"\s+" + optPrefix + optDelim + tableName;
 
-            return fakeDbConnection
+            return recordingDbConnection
                     .ShouldHaveInvoked(
                             ii => ii.CommandText.Matches(verbandtablepattern, sqlRegexOpts),
                             "Expected to Delete {0} but found no matching Delete command.",
@@ -177,17 +176,17 @@ namespace TestBase.FakeDb
         }
 
         /// <summary>
-        /// Verifies that a Delete command was invoked on <paramref name="fakeDbConnection"/> on table <paramref name="tableName"/>.
+        /// Verifies that a Delete command was invoked on <paramref name="recordingDbConnection"/> on table <paramref name="tableName"/>.
         /// Verifies that the where clause of the Delete command includes <paramref name="whereClauseFieldName"/> = <paramref name="expectedWhereClauseValue"/>
         /// </summary>
         /// <returns>The matching command</returns>
-        public static DbCommand ShouldHaveDeleted(this FakeDbConnection fakeDbConnection, string tableName, string whereClauseFieldName, object expectedWhereClauseValue)
+        public static DbCommand ShouldHaveDeleted(this RecordingDbConnection recordingDbConnection, string tableName, string whereClauseFieldName, object expectedWhereClauseValue)
         {
-            var verbandtablepattern = @"Delete\s+" + optFrom + optPrefix + optDelim + tableName;
+            var verbandtablepattern = "Delete" + @"\s+" + optPrefix + optDelim + tableName;
 
-            var invocation = fakeDbConnection.ShouldHaveInvoked(
+            var invocation = recordingDbConnection.ShouldHaveInvoked(
                         ii => ii.CommandText.Matches(verbandtablepattern, sqlRegexOpts)
-                              && ii.Parameters.Cast<FakeDbParameter>().Any(p => p.ParameterName == whereClauseFieldName && p.Value.Equals(expectedWhereClauseValue)),
+                              && ii.Parameters.Cast<DbParameter>().Any(p => p.ParameterName == whereClauseFieldName && p.Value.Equals(expectedWhereClauseValue)),
                         "Expected to Delete {0} but found no matching Delete command.",
                         tableName);
             ShouldHaveWhereClauseWithFieldEqualsExpected(invocation, whereClauseFieldName, expectedWhereClauseValue);
@@ -195,7 +194,7 @@ namespace TestBase.FakeDb
         }
 
         /// <summary>
-        /// Verifies that an Update command was invoked on <paramref name="fakeDbConnection"/> on table <paramref name="tableName"/>.
+        /// Verifies that an Update command was invoked on <paramref name="recordingDbConnection"/> on table <paramref name="tableName"/>.
         /// 
         /// Verifies that the column names and parameter names match the Property names and values of <paramref name="updateSource"/>,
         /// i.e. that the command is something like 
@@ -205,89 +204,50 @@ namespace TestBase.FakeDb
         /// (i.e. the same command called with <paramref name="times"/>) different sets of parameters)
         /// 
         /// NOTE This overload does not verify parameter values
-        /// You can do that with the <see cref="DbCommand.DbParameterCollection"/> property of the returned <see cref="FakeDbCommand.Invocations"/>
-        /// Or by using <see cref="ShouldHaveUpdated{T}(TestBase.FakeDb.FakeDbConnection,string,T,string)"/> instead.
+        /// You can do that with the <see cref="DbCommand.DbParameterCollection"/> property of the returned <see cref="RecordingDbCommand.Invocations"/>
+        /// Or by using <see cref="ShouldHaveUpdated{T}(RecordingDbConnection,string,T,string)"/> instead.
         /// </summary>
         /// <returns>The matching command</returns>
-        public static FakeDbCommand ShouldHaveExecutedNTimes<T>(this FakeDbConnection fakeDbConnection, 
-                                                                        string verb, string tableName, T updateSource, int times = 1)
+        public static DbCommand ShouldHaveUpdatedNRows<T>(this RecordingDbConnection recordingDbConnection, string tableName, T updateSource, int times = 1)
         {
             var dbRehydratablePropertyNamesExIdFields =
                 updateSource.GetType().GetDbRehydratablePropertyNames().Where(s => !s.EndsWith("id", true, null));
 
-            return ShouldHaveExecutedNTimes(fakeDbConnection, verb, tableName, dbRehydratablePropertyNamesExIdFields, times);
+            return ShouldHaveUpdatedNRows(recordingDbConnection, tableName, dbRehydratablePropertyNamesExIdFields, times);
+        }
+
+        public static DbCommand ShouldHaveUpdatedNRows(
+                            this RecordingDbConnection recordingDbConnection, string tableName, IEnumerable<string> fieldList, int times = 1)
+        {
+            var verbandtablepattern = "Update" + @"\s+" + optPrefix + optDelim + tableName;
+            var invocations = recordingDbConnection.Invocations.Where(i => i.CommandText.Matches(verbandtablepattern, sqlRegexOpts));
+            var cmd = invocations.First();
+            var commandText = cmd.CommandText;
+            cmd.CommandText.ShouldMatch(verbandtablepattern + optDelim + set, sqlRegexOpts);
+            var afterSet = new Regex(set + restofline, sqlRegexOpts).Matches(commandText)[0].Value;
+            foreach (var field in fieldList)
+            {
+                var field_ = field;
+                var fieldOrQuotedField = string.Format(@"({0}|\[{0}\]|""{0}"")", field_);
+                afterSet.ShouldMatch(
+                    string.Format(@"({0}|{1}){2}\s*=\s*\@{3}", set, comma, fieldOrQuotedField, field),
+                    sqlRegexOpts,
+                    "Expected to Update field {0} but didn't see it", field);
+                cmd.Parameters.Cast<DbParameter>().SingleOrAssertFail(p => p.ParameterName == field_);
+            }
+            cmd.Invocations.Count().ShouldBe(times);
+            return cmd;
         }
 
         /// <summary>
-        /// Verifies that an Update command was invoked on <paramref name="fakeDbConnection"/> on table <paramref name="tableName"/>.
-        /// 
-        /// Verifies that the column names and parameter names match the Property names and values of <paramref name="updateSource"/>,
-        /// i.e. that the command is something like 
-        /// "Update tableName Set PropertyName1 = _ [, PropertyNameN = _ ...]"
-        /// 
-        /// Verifies that the update command was called <paramref name="times"/> 
-        /// (i.e. the same command called with <paramref name="times"/>) different sets of parameters)
-        /// 
-        /// NOTE This overload does not verify parameter values
-        /// You can do that with the <see cref="DbCommand.DbParameterCollection"/> property of the returned <see cref="FakeDbCommand.Invocations"/>
-        /// Or by using <see cref="ShouldHaveUpdated{T}(TestBase.FakeDb.FakeDbConnection,string,T,string)"/> instead.
-        /// </summary>
-        /// <returns>The matching command</returns>
-        public static FakeDbCommand ShouldHaveExecutedNTimes(this FakeDbConnection fakeDbConnection, 
-                                            string verb, string tableName, IEnumerable<string> fieldList, int times = 1)
-        {
-            var verbandtablepattern = verb + @"\s+" + optPrefix + optDelim + tableName;
-
-            var possiblyRelevantCommands = fakeDbConnection.Invocations.Where(c => c.CommandText.Matches(verbandtablepattern + optDelim , sqlRegexOpts));
-
-            var matches = 0;
-
-            foreach (var cmd in possiblyRelevantCommands)
-            {
-                try
-                {
-                    var afterVerbAndTable = new Regex(@"(?<=" + @verbandtablepattern + ")" + restofline, sqlRegexOpts).Matches(cmd.CommandText)[0].Value;
-                    foreach (var field in fieldList)
-                    {
-                        var field_ = field;
-                        var fieldOrQuotedField = string.Format(@"({0}|\[{0}\]|""{0}"")", field_);
-                        afterVerbAndTable.ShouldMatch(
-                                    string.Format(@"({0}|{1}){2}\s*=\s*\@{3}", set, comma, fieldOrQuotedField, field),
-                                    sqlRegexOpts,
-                                    "Expected to {0} field {1} but didn't see it", verb, field);
-                        cmd.Parameters.Cast<DbParameter>().SingleOrAssertFail(p => p.ParameterName == field_);
-                    }
-                    matches++;
-                }
-                catch (AssertionException ae)
-                {
-                    //swallow and don't increment matches count;
-                }
-            }
-            matches.ShouldBe(times,"Expected to invoke {0} {1} commands against table {2} but got {3}", times, verb, tableName, matches);
-            return possiblyRelevantCommands.FirstOrDefault();
-        }
-
-        public static DbCommand ShouldHaveExecutedNTimes(this DbCommand dbCommand, int times = 1)
-        {
-            if (times != 1)
-            {
-                (dbCommand as FakeDbCommand)
-                            .ShouldNotBeNull("ShouldHaveUpdatedNRows(times != 1) can only be asserted against a {0}", typeof(FakeDbCommand))
-                            .Invocations.Count.ShouldBe(times);
-            }
-            return dbCommand;
-        }
-
-        /// <summary>
-        /// Verifies that an Update command was invoked on <paramref name="fakeDbConnection"/> on table <paramref name="tableName"/>.
+        /// Verifies that an Update command was invoked on <paramref name="recordingDbConnection"/> on table <paramref name="tableName"/>.
         /// 
         /// Verifies that the column names, parameter names and property values match the Property names and values of <paramref name="updateSource"/>,
         /// i.e. that the command is something like 
         /// "Update tableName Set PropertyName1 = updateSource.PropertyName1 [, PropertyNameN = updateSource.PropertyNameN ...]"
         /// </summary>
         /// <returns>The matching command</returns>
-        public static DbCommand ShouldHaveUpdated<T>(this FakeDbConnection fakeDbConnection, string tableName, T updateSource, string whereClauseProperty)
+        public static DbCommand ShouldHaveUpdated<T>(this RecordingDbConnection recordingDbConnection, string tableName, T updateSource, string whereClauseProperty)
         {
             var dbParameterisablePropertyNamesExWhereClause =
                     updateSource.GetType().GetDbRehydratablePropertyNames().Where(s => s != whereClauseProperty);
@@ -295,11 +255,11 @@ namespace TestBase.FakeDb
             var whereClausePropInfo = updateSource.GetType().GetProperty(whereClauseProperty);
             var expectedWhereValue = (whereClausePropInfo != null) ? whereClausePropInfo.GetPropertyValue(updateSource, whereClauseProperty) : null;
 
-            return ShouldHaveUpdated(fakeDbConnection, tableName, dbParameterisablePropertyNamesExWhereClause, whereClauseProperty, expectedWhereValue);
+            return ShouldHaveUpdated(recordingDbConnection, tableName, dbParameterisablePropertyNamesExWhereClause, whereClauseProperty, expectedWhereValue);
         }
 
         /// <summary>
-        /// Verifies that an Update command was invoked on <paramref name="fakeDbConnection"/> on table <paramref name="tableName"/>.
+        /// Verifies that an Update command was invoked on <paramref name="recordingDbConnection"/> on table <paramref name="tableName"/>.
         /// 
         /// Verifies that the column names, parameter names and property values match the Property names and values of <paramref name="updateSource"/>,
         /// i.e. that the command is something like 
@@ -310,11 +270,11 @@ namespace TestBase.FakeDb
         /// </summary>
         /// <returns>The matching command</returns>
         public static DbCommand ShouldHaveUpdated<T>(
-            this FakeDbConnection fakeDbConnection, string tableName, IEnumerable<string> fieldList, string whereClauseProperty, T whereClausePropertyExpectedValue)
+            this RecordingDbConnection recordingDbConnection, string tableName, IEnumerable<string> fieldList, string whereClauseProperty, T whereClausePropertyExpectedValue)
         {
             var verbandtablepattern = "Update" + @"\s+" + optPrefix + optDelim + tableName;
 
-            var invocation = fakeDbConnection.ShouldHaveInvoked(
+            var invocation = recordingDbConnection.ShouldHaveInvoked(
                     ii => ii.CommandText.Matches(verbandtablepattern, sqlRegexOpts)
                        && ii.Parameters.Cast<FakeDbParameter>().Any(p => p.ParameterName == whereClauseProperty && p.Value.Equals(whereClausePropertyExpectedValue)),
                     "Expected to Update {0} but found no matching update command.", tableName);
@@ -338,7 +298,7 @@ namespace TestBase.FakeDb
 
         public static DbCommand ShouldHaveWhereClauseWithFieldEqualsExpected<T>(this DbCommand invocation, string columnName, T expectedValue)
         {
-            invocation.CommandText.ShouldMatch(@"Where\s+.*" + optPrefix + optDelim + columnName + optDelim + @"\s*\=\s*@" + columnName, sqlRegexOpts);
+            invocation.CommandText.ShouldMatch(@"Where " + optPrefix + optDelim + columnName + optDelim + @"\s*\=\s*@" + columnName, sqlRegexOpts);
             invocation.ShouldHaveParameter(columnName, expectedValue);
             return invocation;
         }

@@ -55,6 +55,8 @@ namespace TestBase.Tests.WhenAsserting.ShouldCallTheRightNUnitAssertThatOverload
             { "ShouldContainInOrder",   () => (new List<int>{23,24}).ShouldContainInOrder(24,23, TestCasesForCustomFailureMessageWithArgs.FailureMessage ) },
 
             { "ShouldBeFileResult",   () => (new RedirectResult("/")).ShouldBeFileResult(null,TestCasesForCustomFailureMessageWithArgs.FailureMessage ) },
+            { "ShouldBeFileContentResult",   () => (new RedirectResult("/")).ShouldBeFileContentResult(null,TestCasesForCustomFailureMessageWithArgs.FailureMessage ) },
+            { "ShouldBeFileStreamResult",   () => (new RedirectResult("/")).ShouldBeFileStreamResult(null,TestCasesForCustomFailureMessageWithArgs.FailureMessage ) },
         };
     }
 }

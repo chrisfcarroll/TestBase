@@ -42,7 +42,7 @@ namespace TestBase
             return MemberCompare(left, right, new List<object>());
         }
 
-        public static BoolWithString EqualsByValueOrDiffersExceptFor(this object left, object right, List<string> exclusionList)
+        public static BoolWithString EqualsByValueOrDiffersExceptFor(this object left, object right, IEnumerable<string> exclusionList)
         {
             return MemberCompare(left, right, new List<object>(), exclusionList);
         }
@@ -75,16 +75,21 @@ namespace TestBase
         /// comparison. To exclude fields of fields, provide the full dotted 'breadcrumb' to the property 
         /// to exclude, e.g. new List&lt;string&gt;{"Id","SomeProperty.SomePropertyOfThat.FieldName"} 
         /// </param>
-        /// <returns>a <see cref="BoolWithString"/>. In case of failure, the reason for failure is returned.</exception>
-        public static BoolWithString MemberCompare(object left, object right, List<object> done = null, List<string> exclusionList = null)
+        /// <returns>a <see cref="BoolWithString"/>. In case of failure, the reason for failure is returned.</returns>
+        public static BoolWithString MemberCompare(object left, object right, List<object> done = null, IEnumerable<string> exclusionList = null)
         {
             var breadCrumb = new List<string>();
-            return MemberCompare(left, right, done??new List<object>(), ref breadCrumb, exclusionList ?? new List<string>());
+            return MemberCompare(left, right, done??new List<object>(), ref breadCrumb, exclusionList ?? new string[0]);
         }
-        static BoolWithString MemberCompare(object left, object right, List<object> done, ref List<string> breadcrumb, List<string> exclusionList)
+        static BoolWithString MemberCompare(object left, object right, List<object> done, ref List<string> breadcrumb, IEnumerable<string> exclusionList)
         {
             // null checking
-            if (left == null && right == null) return true;
+            if (left == null && right == null
+                || left == DBNull.Value && right == null
+                || left == null && right == DBNull.Value)
+            {
+                return true;
+            }
 
             // avoid cyclic references
             if (done.Contains(left) && left!=null && !left.GetType().IsValueType)

@@ -76,6 +76,7 @@
     <Compile Include="FakeDb\FakeDbParameter.cs" />
     <Compile Include="FakeDb\FakeDbParameterCollection.cs" />
     <Compile Include="FakeDb\FakeDbRehydrationExtensions.cs" />
+    <Compile Include="FakeDb\FakeDbSqlShouldsByRegexMatchingV2.cs" />
     <Compile Include="FakeDb\FakeDbSqlShouldsByRegexMatching.cs" />
     <Compile Include="FakeDb\DbParameterToStringExtensions.cs" />
     <Compile Include="FakeDb\FakeDbTransaction.cs" />
@@ -87,6 +88,14 @@
     <Compile Include="MockVerifyPassthroughExtensions.cs" />
     <Compile Include="PatternHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RecordingDb\RecordingDbCommand.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="RecordingDb\RecordingDbConnection.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="RecordingDb\RecordingDbConnectionVerifyExtensions.cs" />
+    <Compile Include="RecordingDb\RecordingDbSqlShouldsByRegexMatching.cs" />
     <Compile Include="RegularExpressionValidation.cs" />
     <Compile Include="RequiredValidation.cs" />
     <Compile Include="Shoulds\AttributeShoulds.cs" />

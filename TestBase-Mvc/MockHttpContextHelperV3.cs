@@ -10,15 +10,27 @@ using Moq;
 
 namespace TestBase
 {
+    public partial class HttpRequestOverridableWrapper : HttpRequestWrapper
+    {
+        readonly string appVirtualDir;
+        public HttpRequestOverridableWrapper(HttpRequest httpRequest, string appVirtualDir)
+            : base(httpRequest)
+        {
+            this.appVirtualDir = appVirtualDir;
+        }
+
+        public override string ApplicationPath { get { return appVirtualDir; } }
+    }
+
     public static class MockHttpContextHelper
     {
         public static T WithHttpContextAndRoutes<T>(this T @this, Action<RouteCollection> mvcApplicationRoutesRegistration = null, string requestUrl = null, string query = "", string appVirtualPath = "/", HttpApplication applicationInstance = null) where T : Controller
         {
             string requestUrl1 = requestUrl ?? @this.GetType().Name;
-            HttpApplication applicationInstance1 = applicationInstance??new HttpApplication();
+            HttpApplication applicationInstance1 = applicationInstance ?? new HttpApplication();
             return @this.WithHttpContextAndRoutes(
                             MockHttpContextBase(
-                                FakeHttpContextCurrent(appVirtualPath, requestUrl1, query, applicationInstance1), 
+                                FakeHttpContextCurrent(appVirtualPath, requestUrl1, query, applicationInstance1),
                                 appVirtualPath),
                             mvcApplicationRoutesRegistration);
         }
@@ -37,7 +49,7 @@ namespace TestBase
         public static HttpContextBase MockHttpContextBase(HttpContext httpContext, string appVirtualDir = "/")
         {
             var context = new Mock<HttpContextBase>();
-            context.Setup(ctx => ctx.Request).Returns(new HttpRequestWrapper(httpContext.Request));
+            context.Setup(ctx => ctx.Request).Returns(new HttpRequestOverridableWrapper(httpContext.Request, appVirtualDir));
             context.Setup(ctx => ctx.Response).Returns(new HttpResponseWrapper(httpContext.Response));
             context.Setup(ctx => ctx.User).Returns(httpContext.User);
             context.Setup(ctx => ctx.Session).Returns(new HttpSessionStateWrapper(httpContext.Items["AspSession"] as HttpSessionState));
@@ -61,14 +73,14 @@ namespace TestBase
             server.Setup(s => s.MachineName).Returns(Environment.MachineName);
             server.Setup(s => s.MapPath(It.IsAny<string>()))
                   .Returns((string s) =>
-                      {
-                          var s1 = s.StartsWith("~")
-                                       ? ".\\" + s.Substring(1)
-                                       : s.StartsWith(appVirtualDir)
-                                             ? ".\\" + s.Substring(appVirtualDir.Length)
-                                             : s;
-                          return s1.Replace('/', '\\');
-                      });
+                  {
+                      var s1 = s.StartsWith("~")
+                                   ? ".\\" + s.Substring(1)
+                                   : s.StartsWith(appVirtualDir)
+                                         ? ".\\" + s.Substring(appVirtualDir.Length)
+                                         : s;
+                      return s1.Replace('/', '\\');
+                  });
             return server;
         }
 
@@ -85,7 +97,7 @@ namespace TestBase
             httpContext.User = new WindowsPrincipal(WindowsIdentity.GetCurrent() ?? new WindowsIdentity("FakeWindowsIdentity"));
             var session = CreateSession();
             httpContext.Items["AspSession"] = session;
-            httpContext.ApplicationInstance=applicationInstance;
+            httpContext.ApplicationInstance = applicationInstance;
             return httpContext;
         }
 
