@@ -33,7 +33,7 @@ using System.Runtime.CompilerServices;
 namespace TestBase
 {
     /// <summary>
-    /// Compares objects memberwise by value
+    /// Compares objects memberwise by value. All Properties (public or not), and public Fields, are considered in the comparison.
     /// </summary>
     public static class Comparer
     {
@@ -64,10 +64,8 @@ namespace TestBase
 
         /// <summary>
         /// Compare two objects by recursively iterating over their elements (if they are Enumerable) 
-        /// and properties. 
+        /// and properties (public or private) and public fields.
         /// Recursion stops at value types and at types (including string) which override Equals()
-        /// Following properties are ignored:-
-        ///   Version
         /// </summary>
         /// <param name="left"></param>
         /// <param name="right"></param>
@@ -235,6 +233,42 @@ namespace TestBase
                 }
             }
 
+            // and compare each Public field 
+            foreach (FieldInfo leftInfo in leftType.GetFields(
+                BindingFlags.Public |
+                BindingFlags.Instance |
+                BindingFlags.GetField))
+            {
+                var breadCrumbAsDottedMember = string.Join(".", breadcrumb.Union(new[] { leftInfo.Name }));
+                if (exclusionList.Contains(breadCrumbAsDottedMember))
+                {
+                    continue;
+                }
+                try
+                {
+                    var rightInfo = rightType.GetField(leftInfo.Name,
+                                                    BindingFlags.Public | BindingFlags.NonPublic |
+                                                    BindingFlags.Instance | BindingFlags.GetProperty);
+                    try
+                    {
+                        breadcrumb.Add(rightInfo.Name);
+                        var memberCompare = MemberCompare(leftInfo.GetValue(left), rightInfo.GetValue(right), done, ref breadcrumb, exclusionList);
+                        if (!memberCompare)
+                        {
+                            return BoolWithString.False(string.Format("Mismatch at member {0}", leftInfo.Name)).Because(memberCompare);
+                        }
+                    }
+                    finally
+                    {
+                        breadcrumb.RemoveAt(breadcrumb.Count - 1);
+                    }
+                }
+                catch (Exception)
+                {
+                    return BoolWithString.False(string.Format("Left has property {0} but Right doesn't.", leftInfo.Name));
+                }
+            }
+
             //Then check that there are no properties on RHS that LHS didn't have
             foreach (PropertyInfo rightInfo in rightType.GetProperties(
                 BindingFlags.Public |
@@ -250,8 +284,29 @@ namespace TestBase
                 try
                 {
                     leftType.GetProperty(rightInfo.Name,
-                                                          BindingFlags.Public | BindingFlags.NonPublic |
-                                                          BindingFlags.Instance | BindingFlags.GetProperty);
+                                        BindingFlags.Public | BindingFlags.NonPublic |
+                                        BindingFlags.Instance | BindingFlags.GetProperty);
+                }
+                catch (Exception)
+                {
+                    return BoolWithString.False(string.Format("Right has property {0} but Left doesn't.", rightInfo.Name));
+                }
+            }
+            //Then check that there are no public fields on RHS that LHS didn't have
+            foreach (var rightInfo in rightType.GetFields(
+                BindingFlags.Public |
+                BindingFlags.Instance))
+            {
+                var breadCrumbAsDottedMember = string.Join(".", breadcrumb.Union(new[] { rightInfo.Name }));
+                if (exclusionList.Contains(breadCrumbAsDottedMember))
+                {
+                    continue;
+                }
+                try
+                {
+                    leftType.GetField(rightInfo.Name,
+                                    BindingFlags.Public | BindingFlags.NonPublic |
+                                    BindingFlags.Instance | BindingFlags.GetProperty);
                 }
                 catch (Exception)
                 {
@@ -261,7 +316,7 @@ namespace TestBase
 
 
 
-            if(IsAnonymousType(leftType) && IsAnonymousType(rightType))
+            if (IsAnonymousType(leftType) && IsAnonymousType(rightType))
             {
                 return true;
             }

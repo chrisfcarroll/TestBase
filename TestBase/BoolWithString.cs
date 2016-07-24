@@ -37,9 +37,10 @@ namespace TestBase
             }
         }
 
-        private readonly bool value;
-        private readonly string message;
-        private BoolWithString(bool value, string message)
+        readonly bool value;
+        readonly string message;
+
+        BoolWithString(bool value, string message)
         {
             this.value = value;
             this.message = message;
@@ -51,11 +52,13 @@ namespace TestBase
                 : value + " : " + message;
         }
 
+        public bool AsBool {get { return value; } }
+
         public static implicit operator bool(BoolWithString value) { return value.value; }
         public static implicit operator BoolWithString(bool value) { return new BoolWithString(value, ""); }
 
-        public static BoolWithString False(string message) { return new BoolWithString(false, message); }
-        public static BoolWithString True(string message) { return new BoolWithString(true, message); }
+        public static BoolWithString False(string message="") { return new BoolWithString(false, message); }
+        public static BoolWithString True(string message="") { return new BoolWithString(true, message); }
 
         public static bool operator ==(BoolWithString left, BoolWithString right)
         {

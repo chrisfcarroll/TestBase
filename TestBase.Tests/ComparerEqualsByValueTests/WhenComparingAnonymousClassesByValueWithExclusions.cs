@@ -16,9 +16,9 @@ namespace TestBase.Tests.ComparerEqualsByValueTests
             var exclusionList = new List<string> {"IrrelevantExclusion", "Nested.NestedName"};
 
             //A & A
-            objectL.EqualsByValueExceptFor(objectR, exclusionList).ShouldBeTrue();
+            objectL.EqualsByValueOrDiffersExceptFor(objectR, exclusionList).AsBool.ShouldBeTrue();
             objectL.ShouldEqualByValueExceptFor(objectR, exclusionList);
-
+            objectL.EqualsByValueExceptFor(objectR, exclusionList).ShouldBeTrue();
         }
 
         [Test]
@@ -29,10 +29,11 @@ namespace TestBase.Tests.ComparerEqualsByValueTests
             var exclusionList = new List<string> {"Nested.NestedName"};
 
             //A&A
-            objectL.EqualsByValueExceptFor(objectR, exclusionList).ShouldBeFalse();
+            objectL.EqualsByValueOrDiffersExceptFor(objectR, exclusionList).AsBool.ShouldBeFalse();
             Assert.Throws<AssertionException>(
                       () => objectL.ShouldEqualByValueExceptFor(objectR, exclusionList)
                     );
+            objectL.EqualsByValueExceptFor(objectR, exclusionList).ShouldBeFalse();
         }
     }
 }

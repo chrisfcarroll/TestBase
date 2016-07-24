@@ -6,13 +6,5 @@
 [assembly: AssemblyCopyright("(c) Chris F Carroll 2013-2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-
-// Version information for an assembly consists of the following four values:
-//
-//      Major Version
-//      Minor Version 
-//      Build Number
-//      Revision
-//
-[assembly: AssemblyVersion("3.0.8.5")]
-[assembly: AssemblyFileVersion("3.0.8.5")]
+[assembly: AssemblyVersion("3.1.0.0")]
+[assembly: AssemblyFileVersion("3.1.0.0")]
