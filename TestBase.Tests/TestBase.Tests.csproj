@@ -76,6 +76,7 @@
     </Compile>
     <Compile Include="AClass.cs" />
     <Compile Include="ComparerEqualsByValueTests\WhenComparingClassesWithIndexerProperties.cs" />
+    <Compile Include="ComparerEqualsByValueTests\WhenComparingObjectsWithPublicFieldsByValue.cs" />
     <Compile Include="ComparerEqualsByValueTests\WhenComparingStructsByValue.cs" />
     <Compile Include="ComparerEqualsByValueTests\Example\SearchBox.cs" />
     <Compile Include="ComparerEqualsByValueTests\Example\WhenComparingExampleClass.cs" />

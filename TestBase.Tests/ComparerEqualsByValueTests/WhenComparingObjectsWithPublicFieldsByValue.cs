@@ -1,40 +1,47 @@
-﻿using NUnit.Framework;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using NUnit.Framework;
 using TestBase.Shoulds;
 
 namespace TestBase.Tests.ComparerEqualsByValueTests
 {
     [TestFixture]
-    public class WhenComparingClassesByValue
+    public class WhenComparingObjectsWithPublicFieldsByValue
     {
-        static readonly AClass object1 = new AClass
+        public class FieldsClass
+        {
+            public int Id;
+            public string Name;
+        }
+
+        readonly FieldsClass object1 = new FieldsClass
         {
             Id = 1,
             Name = "1",
-            More = new BClass { More = 1, EvenMore = "Evenmore1" }
         };
-        static readonly AClass object1again = new AClass
+        readonly FieldsClass object1again = new FieldsClass
         {
             Id = 1,
             Name = "1",
-            More = new BClass { More = 1, EvenMore = "Evenmore1" }
         };
-        static readonly AClass object2 = new AClass
+        readonly FieldsClass object2 = new FieldsClass
         {
-            Id = 1,
-            Name = "1",
-            More = new BClass { EvenMore = "Evenmore2" }
+            Id = 2,
+            Name = "2",
         };
-        static readonly AClass object3 = new AClass
+        readonly FieldsClass object3 = new FieldsClass
         {
             Id = 1,
-            Name = "1",
-            More = new BClass { More = 2, EvenMore = "Evenmore1" }
+            Name = "1B",
         };
 
         [Test]
         public void Should_return_true_when_the_same()
         {
             object1.EqualsByValue(object1again).ShouldBeTrue();
+            object1.EqualsByValueOrDiffersExceptFor(object1again, new[] {""}).AsBool.ShouldBeTrue();
         }
 
         [Test]
