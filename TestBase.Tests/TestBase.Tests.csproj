@@ -75,11 +75,11 @@
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
     <Compile Include="AClass.cs" />
+    <Compile Include="ComparerEqualsByValueTests\WhenComparingAnonymousClassesByValueWithTolerance.cs" />
     <Compile Include="ComparerEqualsByValueTests\WhenComparingClassesWithIndexerProperties.cs" />
     <Compile Include="ComparerEqualsByValueTests\WhenComparingObjectsWithPublicFieldsByValue.cs" />
+    <Compile Include="ShouldsCorrectnessAndVerbosityTests\WhenComparingNumbersWithTolerance.cs" />
     <Compile Include="ComparerEqualsByValueTests\WhenComparingStructsByValue.cs" />
-    <Compile Include="ComparerEqualsByValueTests\Example\SearchBox.cs" />
-    <Compile Include="ComparerEqualsByValueTests\Example\WhenComparingExampleClass.cs" />
     <Compile Include="ComparerEqualsByValueTests\WhenComparingAnonymousClassesByValue.cs" />
     <Compile Include="ComparerEqualsByValueTests\WhenComparingAnonymousClassesByValueWithExclusions.cs" />
     <Compile Include="ComparerEqualsByValueTests\WhenComparingClassesByValue.cs" />

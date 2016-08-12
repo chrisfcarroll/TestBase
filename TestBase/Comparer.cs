@@ -37,29 +37,29 @@ namespace TestBase
     /// </summary>
     public static class Comparer
     {
-        public static BoolWithString EqualsByValueOrDiffers(this object left, object right)
+        public static BoolWithString EqualsByValueOrDiffers(this object left, object right, double floatTolerance=1e-15d)
+        {
+            return MemberCompare(left, right, null, null, floatTolerance);
+        }
+
+        public static BoolWithString EqualsByValueOrDiffersExceptFor(this object left, object right, IEnumerable<string> exclusionList, double floatTolerance = 1e-15d)
+        {
+            return MemberCompare(left, right, new List<object>(), exclusionList, floatTolerance);
+        }
+
+        public static bool EqualsByValue(this object left, object right, double floatTolerance=1e-14d)
         {
             return MemberCompare(left, right, new List<object>());
         }
 
-        public static BoolWithString EqualsByValueOrDiffersExceptFor(this object left, object right, IEnumerable<string> exclusionList)
+        public static bool EqualsByValueExceptFor(this object left, object right, List<string> exclusionList, double floatTolerance=1e-14d)
         {
-            return MemberCompare(left, right, new List<object>(), exclusionList);
+            return MemberCompare(left, right, new List<object>(), exclusionList, floatTolerance);
         }
 
-        public static bool EqualsByValue(this object left, object right)
+        public static bool AreEqual(object left, object right, double floatTolerance = 1e-14d)
         {
-            return MemberCompare(left, right, new List<object>());
-        }
-
-        public static bool EqualsByValueExceptFor(this object left, object right, List<string> exclusionList)
-        {
-            return MemberCompare(left, right, new List<object>(), exclusionList);
-        }
-
-        public static bool AreEqual(object left, object right)
-        {
-            return MemberCompare(left, right, new List<object>());
+            return MemberCompare(left, right, null,null, floatTolerance);
         }
 
         /// <summary>
@@ -73,13 +73,14 @@ namespace TestBase
         /// comparison. To exclude fields of fields, provide the full dotted 'breadcrumb' to the property 
         /// to exclude, e.g. new List&lt;string&gt;{"Id","SomeProperty.SomePropertyOfThat.FieldName"} 
         /// </param>
+        /// <param name="floatTolerance">The tolerance to apply to floating point equality comparison</param>
         /// <returns>a <see cref="BoolWithString"/>. In case of failure, the reason for failure is returned.</returns>
-        public static BoolWithString MemberCompare(object left, object right, List<object> done = null, IEnumerable<string> exclusionList = null)
+        public static BoolWithString MemberCompare(object left, object right, List<object> done = null, IEnumerable<string> exclusionList = null, double floatTolerance=1e-14d)
         {
             var breadCrumb = new List<string>();
-            return MemberCompare(left, right, done??new List<object>(), ref breadCrumb, exclusionList ?? new string[0]);
+            return MemberCompare(left, right, done??new List<object>(), ref breadCrumb, exclusionList ?? new string[0], floatTolerance);
         }
-        static BoolWithString MemberCompare(object left, object right, List<object> done, ref List<string> breadcrumb, IEnumerable<string> exclusionList)
+        static BoolWithString MemberCompare(object left, object right, List<object> done, ref List<string> breadcrumb, IEnumerable<string> exclusionList, double floatTolerance)
         {
             // null checking
             if (left == null && right == null
@@ -132,6 +133,18 @@ namespace TestBase
             Type leftType = left.GetType();
             Type rightType = right.GetType();
 
+            if (left is double || left is float || left is IComparable<double> || left is IComparable<float>)
+            {
+                try
+                {
+                    return ((double)left).EqualsOrDiffers( (double)right , floatTolerance);
+                }
+                catch (Exception e)
+                {
+                    //comparing as doubles failed, so swallow the exception and carry on
+                }
+            }
+
             if (left is ValueType)
             {
                 // do a field comparison, or use the override if Equals is implemented: 
@@ -183,7 +196,7 @@ namespace TestBase
                     {
                         return BoolWithString.False(string.Format("Left has {0} at index {1} but Right is only {2} items long", leftItem, lefti, lefti - 1));
                     }
-                    var currentCompare = MemberCompare(leftItem, rightEnumerator.Current, done, ref breadcrumb, exclusionList);
+                    var currentCompare = MemberCompare(leftItem, rightEnumerator.Current, done, ref breadcrumb, exclusionList, floatTolerance);
                     if (!currentCompare)
                     {
                         return BoolWithString.False(string.Format("Mismatch at item {0} ", lefti)).Because(currentCompare);
@@ -216,7 +229,7 @@ namespace TestBase
                     try
                     {
                         breadcrumb.Add( rightInfo.Name );
-                        var memberCompare = MemberCompare(leftInfo.GetValue(left, null), rightInfo.GetValue(right, null), done, ref breadcrumb, exclusionList);
+                        var memberCompare = MemberCompare(leftInfo.GetValue(left, null), rightInfo.GetValue(right, null), done, ref breadcrumb, exclusionList, floatTolerance);
                         if (!memberCompare)
                         {
                             return BoolWithString.False(string.Format("Mismatch at member {0}", leftInfo.Name)).Because(memberCompare);
@@ -252,7 +265,7 @@ namespace TestBase
                     try
                     {
                         breadcrumb.Add(rightInfo.Name);
-                        var memberCompare = MemberCompare(leftInfo.GetValue(left), rightInfo.GetValue(right), done, ref breadcrumb, exclusionList);
+                        var memberCompare = MemberCompare(leftInfo.GetValue(left), rightInfo.GetValue(right), done, ref breadcrumb, exclusionList, floatTolerance);
                         if (!memberCompare)
                         {
                             return BoolWithString.False(string.Format("Mismatch at member {0}", leftInfo.Name)).Because(memberCompare);
@@ -343,6 +356,16 @@ namespace TestBase
         internal static bool HasAnyElements(this IEnumerable enumerable)
         {
             return enumerable.GetEnumerator().MoveNext();
+        }
+
+        internal static BoolWithString EqualsOrDiffers(this double left, double right, double tolerance)
+        {
+            var @equals = left > right - tolerance && left < right + tolerance;
+            return @equals
+                       ? (BoolWithString)true
+                       : BoolWithString.False(
+                                    string.Format("Values are different {0} vs {1} (with tolerance {2})", left, right, tolerance)
+                                    );
         }
 
         internal static BoolWithString EqualsOrDiffers(this object left, object right)

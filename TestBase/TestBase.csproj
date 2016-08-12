@@ -99,6 +99,7 @@
     <Compile Include="RegularExpressionValidation.cs" />
     <Compile Include="RequiredValidation.cs" />
     <Compile Include="Shoulds\AttributeShoulds.cs" />
+    <Compile Include="Shoulds\NumericShouldsWithTolerance.cs" />
     <Compile Include="Shoulds\BasicShoulds.cs" />
     <Compile Include="Shoulds\EqualsByValueShoulds.cs" />
     <Compile Include="Shoulds\IEnumerableShoulds.cs" />
