@@ -95,6 +95,7 @@
     <Compile Include="..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
+    <Compile Include="DeSerializeExcludingFieldsContractResolver.cs" />
     <Compile Include="MockApiHttpContextHelper.cs" />
     <Compile Include="MockHttpContextHelperV1.cs" />
     <Compile Include="MockHttpContextHelperV3.cs" />
@@ -104,6 +105,7 @@
     <Compile Include="Shoulds\MvcFileResultShoulds.cs" />
     <Compile Include="Shoulds\MvcRouteResultShoulds.cs" />
     <Compile Include="Shoulds\MvcViewResultShoulds.cs" />
+    <Compile Include="TestableHttpListener.cs" />
     <Compile Include="TypicalMvcRouteConfig.cs" />
   </ItemGroup>
   <ItemGroup>
