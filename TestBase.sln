@@ -1,0 +1,35 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestBase.Tests", "TestBase.Tests\TestBase.Tests.csproj", "{E0A3157E-41C9-4E2A-8526-02B82537F868}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestBase", "TestBase\TestBase.csproj", "{719FB0AE-042D-42C0-8164-88BF0A52E7D6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestBase-Mvc", "TestBase-Mvc\TestBase-Mvc.csproj", "{3FC3D390-7128-4915-BDDA-8E8E79F6EBF4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestBase.AdoNet", "TestBase-AdoNet\TestBase.AdoNet.csproj", "{2BF6BF2C-4020-49C2-9D9C-B6C547C4ACA9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E0A3157E-41C9-4E2A-8526-02B82537F868}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E0A3157E-41C9-4E2A-8526-02B82537F868}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E0A3157E-41C9-4E2A-8526-02B82537F868}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E0A3157E-41C9-4E2A-8526-02B82537F868}.Release|Any CPU.Build.0 = Release|Any CPU
+		{719FB0AE-042D-42C0-8164-88BF0A52E7D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{719FB0AE-042D-42C0-8164-88BF0A52E7D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{719FB0AE-042D-42C0-8164-88BF0A52E7D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{719FB0AE-042D-42C0-8164-88BF0A52E7D6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3FC3D390-7128-4915-BDDA-8E8E79F6EBF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3FC3D390-7128-4915-BDDA-8E8E79F6EBF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3FC3D390-7128-4915-BDDA-8E8E79F6EBF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3FC3D390-7128-4915-BDDA-8E8E79F6EBF4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2BF6BF2C-4020-49C2-9D9C-B6C547C4ACA9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2BF6BF2C-4020-49C2-9D9C-B6C547C4ACA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2BF6BF2C-4020-49C2-9D9C-B6C547C4ACA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2BF6BF2C-4020-49C2-9D9C-B6C547C4ACA9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
