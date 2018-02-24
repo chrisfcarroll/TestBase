@@ -50,7 +50,7 @@ namespace TestBase.Tests.WhenAsserting.ShouldThrowWithUseableErrorMessage__Given
                 { "ShouldContain<IEnumerable>", () => (new[]{"19"}).ShouldContain("nineteen", FailureMessageWith, FakeDetailArg ) } ,
                 { "ShouldStartWith", () => "20".ShouldStartWith("x20", FailureMessageWith, FakeDetailArg) },
                 { "ShouldEndWith", () => "21".ShouldEndWith("21x", FailureMessageWith, FakeDetailArg ) } ,
-                { "ShouldSatisfy", () => 22.ShouldSatisfy(i => i.ToString(), x=>x is string, FailureMessageWith, FakeDetailArg ) } ,
+                { "ShouldSatisfy", () => 22.ShouldSatisfy(i => i.ToString(), x=>x.Equals("boo"), FailureMessageWith, FakeDetailArg ) } ,
                 { "ShouldContainInOrder", () => (new List<int>{23,24}).ShouldContainInOrder(24,23, FailureMessageWith, FakeDetailArg ) } ,
  
                 { "ShouldBeFileResult",   () => (new RedirectResult("/")).ShouldBeFileResult(null, FailureMessageWith, FakeDetailArg ) },

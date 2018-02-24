@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using NUnit.Framework;
 using TestBase.Shoulds;
@@ -10,15 +11,31 @@ namespace TestBase.Tests.WhenAsserting.ShouldThrowWithUseableErrorMessage__Given
     [TestFixture]
     public partial class GivenAssertionFail
     {
-        [Test]
+        [TestCase]
         public void And_Given_no_custom_failure_message()
         {
+            var failures = new List<Exception>();
             foreach (var assertionWithMessage in TestCasesForNoCustomFailureMessage.AssertionsWithNoCustomFailureMessage)
             {
-                var assertion = assertionWithMessage.Value.Key;
-                var expectedExceptionMessage = assertionWithMessage.Value.Value?.Replace("\r\n",Environment.NewLine);
+                try
+                {
+                    var assertion = assertionWithMessage.Value.Key;
+                    var expectedExceptionMessage =
+                        assertionWithMessage.Value.Value?.Replace("\r\n", Environment.NewLine);
 
-                assertion.FailureShouldResultInAssertionWithErrorMessage(assertionWithMessage.Key, expectedExceptionMessage??assertionWithMessage.Key);
+                    assertion.FailureShouldResultInAssertionWithErrorMessage(assertionWithMessage.Key,
+                                                                             expectedExceptionMessage
+                                                                          ?? assertionWithMessage.Key.Split('(')[0]);
+                }
+                catch (Exception e)
+                {
+                    failures.Add(e);
+                }
+            }
+
+            if (failures.Any())
+            {
+                throw new AggregateException(failures.ToList());
             }
         }
     }
@@ -35,7 +52,8 @@ namespace TestBase.Tests.WhenAsserting.ShouldThrowWithUseableErrorMessage__Given
             { "ShouldBeNullOrEmptyOrWhitespace", new KeyValuePair<Action,string>(()=> "4".ShouldBeNullOrEmptyOrWhitespace()           , null)}, 
             { "ShouldNotBeNullOrEmpty(null)", new KeyValuePair<Action,string>(()=> (null as string).ShouldNotBeNullOrEmpty(), null)}, 
             { "ShouldNotBeNullOrEmpty(stringempty)", new KeyValuePair<Action,string>(()=> "".ShouldNotBeNullOrEmpty()              , null)}, 
-            { "ShouldBeSuchThat",       new KeyValuePair<Action,string>(()=> "5".ShouldBe(x=>String.IsNullOrEmpty(x))       , null)}, 
+            { "ShouldNotBeNullOrEmptyOrWhitespace(null)", new KeyValuePair<Action,string>(()=> "".ShouldNotBeNullOrEmpty(), "ShouldNotBeNull")}, 
+            { "ShouldBeSuchThat",       new KeyValuePair<Action,string>(()=> "5".ShouldBe(x=>String.IsNullOrEmpty(x))     , null)}, 
             { "ShouldEqualIgnoringCase",new KeyValuePair<Action,string>(()=> "6".ShouldEqualIgnoringCase("66")        , null)}, 
             { "ShouldEqual",            new KeyValuePair<Action,string>(()=> 7.ShouldEqual(77)                        , null)}, 
             { "ShouldEqualByValue",     new KeyValuePair<Action,string>(()=> "8".ShouldEqualByValue(88)               , null)}, 

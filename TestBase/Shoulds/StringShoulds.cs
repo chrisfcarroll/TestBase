@@ -8,14 +8,14 @@ namespace TestBase.Shoulds
         public static string ShouldNotBeNullOrEmpty(this string @this, string message=null, params object[] args)
         {
             Assert.That(@this, Is.NotNull, message, args);
-            @this.ShouldNotBe("", message, args);
+            @this.ShouldNotBe("", message ?? $"{nameof(ShouldNotBeNullOrEmpty)}", args);
             return @this;
         }
 
-        public static string ShouldNotBeNullOrWhiteSpace(this string @this, string message=null, params object[] args)
+        public static string ShouldNotBeNullOrEmptyOrWhiteSpace(this string @this, string message=null, params object[] args)
         {
-            Assert.That(@this,        Is.NotNull, message, args);
-            Assert.That(@this.Trim(), Is.NotEmpty, message, args);
+            @this.ShouldNotBeNull(message, args);
+            @this.Trim().ShouldNotBeNullOrEmpty(message, args);
             return @this;
         }
 

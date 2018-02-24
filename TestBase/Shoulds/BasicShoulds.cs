@@ -54,7 +54,7 @@ namespace TestBase.Shoulds
         /// <summary>Tests whether !@this.Equals(expected)</summary>
         public static T ShouldNotBe<T>(this T @this, T notExpected, string message=null, params object[] args)
         {
-            Assert.That(@this, Is.EqualTo(notExpected),  message, args);
+            Assert.That(@this, Is.NotEqualTo(notExpected),  message, args);
             return @this;
         }
 

@@ -11,14 +11,25 @@ namespace TestBase.Tests.WhenAsserting.ShouldCallTheRightNUnitAssertThatOverload
             try
             {
                 assertion();
-                throw new Assertion(string.Format("{0} Should have thrown an exception before reaching this line: {1} {2}", name, assertion, expectedErrorMessage));
             }
             catch (Assertion e)
             {
-                e.Message.ShouldContain(expectedErrorMessage,
-                    "Expected {0} to fail assertion with error message containing:\r\n---------------\r\n{1}\r\n-----------\r\n but got\r\n------------\r\n{2}\r\n----------------------", 
-                    name, expectedErrorMessage, e.Message);
+                if (!e.Message.Contains(expectedErrorMessage))
+                {
+                    Console.WriteLine(@"{0}
+Warning: wrong error message. Expected failure message containing:
+------------
+{1}
+------------
+but got
+------------
+{2}
+------------",name, expectedErrorMessage, e.Message);
+                }
+
+                return;
             }
+            throw new Assertion(string.Format("{0} Should have thrown an exception before reaching this line: {1} {2}", name, assertion, expectedErrorMessage));
         }
     }
 }
