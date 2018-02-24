@@ -23,7 +23,7 @@
 
 using System;
 
-namespace TestBase.Shoulds
+namespace TestBase
 {
     /// <summary>
     /// The Numerics class contains common operations on numeric values.

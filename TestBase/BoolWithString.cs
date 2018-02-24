@@ -71,6 +71,7 @@ namespace TestBase
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
+            if (obj is bool actualbool) return actualbool == value;
             if (obj.GetType() != GetType()) return false;
             return Equals((BoolWithString) obj);
         }

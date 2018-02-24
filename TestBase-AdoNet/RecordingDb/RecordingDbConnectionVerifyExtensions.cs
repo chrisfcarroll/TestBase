@@ -24,19 +24,19 @@ namespace TestBase.AdoNet.RecordingDb
         {
             if (exactly)
             {
-                Shoulds.BasicShoulds.ShouldBe(@this.Invocations
-                                    .Count(commandInvocationPredicate),
-                               expectedInvocationsCount,
-                               message ?? "Expected to be called exactly {0} times",
-                               args.Length == 0 ? new object[] {expectedInvocationsCount} : args);
+                @this.Invocations
+                     .Count(commandInvocationPredicate)
+                     .ShouldBe(expectedInvocationsCount,
+                           message ?? "Expected to be called exactly {0} times",
+                           args.Length == 0 ? new object[] {expectedInvocationsCount} : args);
             }
             else
             {
-                Shoulds.BasicShoulds.ShouldBeGreaterThanOrEqualTo(@this.Invocations
-                                                        .Count(commandInvocationPredicate),
-                                                   expectedInvocationsCount,
-                                                   message ?? "Expected to be called at least {0} times",
-                                                   args.Length == 0 ? new object[] {expectedInvocationsCount} : args);
+                @this.Invocations
+                     .Count(commandInvocationPredicate)
+                     .ShouldBeGreaterThanOrEqualTo(expectedInvocationsCount,
+                           message ?? "Expected to be called at least {0} times",
+                           args.Length == 0 ? new object[] {expectedInvocationsCount} : args);
             }
             return @this;
         }

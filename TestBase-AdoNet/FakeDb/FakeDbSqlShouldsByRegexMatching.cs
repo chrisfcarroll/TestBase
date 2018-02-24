@@ -66,8 +66,7 @@ namespace TestBase.AdoNet.FakeDb
             {
                 var field_ = field;
                 var fieldOrQuotedField = string.Format(@"({0}|\[{0}\]|""{0}"")", field_);
-                Shoulds.StringShoulds.ShouldMatch(columnList,
-                                       string.Format(@"({0}|{1}){2}", openBracket, comma, fieldOrQuotedField),
+                columnList.ShouldMatch(string.Format(@"({0}|{1}){2}", openBracket, comma, fieldOrQuotedField),
                     sqlRegexOpts, "Expected to Select column {0} but didn't see it", field);
             }
             if (whereClauseField != null)
@@ -130,18 +129,18 @@ namespace TestBase.AdoNet.FakeDb
         {
             var verbandtablepattern = @"Insert\s+" + optInto + optPrefix + optDelim + tableName;
             var cmd = fakeDbConnection.ShouldHaveInvoked(c => c.CommandText.Matches(verbandtablepattern, sqlRegexOpts),"Expected to Insert table {0} but didn't see it",tableName);
-            Shoulds.StringShoulds.ShouldMatch(cmd.CommandText, verbandtablepattern + optDelim + openBracket, sqlRegexOpts);
+            StringShoulds.ShouldMatch(cmd.CommandText, verbandtablepattern + optDelim + openBracket, sqlRegexOpts);
             var foundColumnList = new Regex(openBracket + restofline, sqlRegexOpts).Matches(cmd.CommandText)[0].Value;
             var valuesList = new Regex(closeBracket + @"Values" + openBracket + restofline, sqlRegexOpts).Matches(cmd.CommandText)[0].Value;
             foreach (var field in columnList)
             {
                 var fieldName = field;
                 var fieldOrQuotedField = string.Format(@"({0}|\[{0}\]|""{0}"")", fieldName);
-                Shoulds.StringShoulds.ShouldMatch(foundColumnList,
+                StringShoulds.ShouldMatch(foundColumnList,
                                             string.Format(@"({0}|{1}){2}", openBracket, comma, fieldOrQuotedField),
                     sqlRegexOpts,
                     "Expected to Insert column {0} but didn't see it", field);
-                Shoulds.StringShoulds.ShouldMatch(valuesList,
+                StringShoulds.ShouldMatch(valuesList,
                                        string.Format(@"(\(\s*|,\s*)@{0}\s*", field),
                     sqlRegexOpts,
                     "Expected to Insert value {0} but didn't see it", field);
@@ -252,7 +251,7 @@ namespace TestBase.AdoNet.FakeDb
                     {
                         var field_ = field;
                         var fieldOrQuotedField = string.Format(@"({0}|\[{0}\]|""{0}"")", field_);
-                        Shoulds.StringShoulds.ShouldMatch(afterVerbAndTable,
+                        StringShoulds.ShouldMatch(afterVerbAndTable,
                                                       string.Format(@"({0}|{1}){2}\s*=\s*\@{3}", set, comma, fieldOrQuotedField, field),
                                     sqlRegexOpts,
                                     "Expected to {0} field {1} but didn't see it", verb, field);
@@ -265,7 +264,7 @@ namespace TestBase.AdoNet.FakeDb
                     //swallow and don't increment matches count;
                 }
             }
-            Shoulds.BasicShoulds.ShouldBe(matches, times,"Expected to invoke {0} {1} commands against table {2} but got {3}", times, verb, tableName, matches);
+            matches.ShouldBe(times,"Expected to invoke {0} {1} commands against table {2} but got {3}", times, verb, tableName, matches);
             return possiblyRelevantCommands.FirstOrDefault();
         }
 
@@ -273,8 +272,9 @@ namespace TestBase.AdoNet.FakeDb
         {
             if (times != 1)
             {
-                Shoulds.BasicShoulds.ShouldBe(Shoulds.BasicShoulds.ShouldNotBeNull((dbCommand as FakeDbCommand), "ShouldHaveUpdatedNRows(times != 1) can only be asserted against a {0}", typeof(FakeDbCommand))
-                                                               .Invocations.Count, times);
+                (dbCommand as FakeDbCommand)
+                   .ShouldNotBeNull("ShouldHaveUpdatedNRows(times != 1) can only be asserted against a {0}", typeof(FakeDbCommand))
+                   .Invocations.Count.ShouldBe(times);
             }
             return dbCommand;
         }
@@ -320,13 +320,13 @@ namespace TestBase.AdoNet.FakeDb
                     "Expected to Update {0} but found no matching update command.", tableName);
 
             var commandText = invocation.CommandText;
-            Shoulds.StringShoulds.ShouldMatch(invocation.CommandText, verbandtablepattern + optDelim + set, sqlRegexOpts);
+            StringShoulds.ShouldMatch(invocation.CommandText, verbandtablepattern + optDelim + set, sqlRegexOpts);
             var afterSet = new Regex(set + restofline, sqlRegexOpts).Matches(commandText)[0].Value;
             foreach (var field in fieldList)
             {
                 var fieldName = field;
                 var fieldOrQuotedField = string.Format(@"({0}|\[{0}\]|""{0}"")", fieldName);
-                Shoulds.StringShoulds.ShouldMatch(afterSet,
+                StringShoulds.ShouldMatch(afterSet,
                                      string.Format(@"({0}|{1}){2}\s*=\s*\@{3}", set, comma, fieldOrQuotedField, field),
                     sqlRegexOpts,
                     "Expected to update field {0} but didn't see it", field);
@@ -338,7 +338,7 @@ namespace TestBase.AdoNet.FakeDb
 
         public static DbCommand ShouldHaveWhereClauseWithFieldEqualsExpected<T>(this DbCommand invocation, string columnName, T expectedValue)
         {
-            Shoulds.StringShoulds.ShouldMatch(invocation.CommandText, @"Where\s+.*" + optPrefix + optDelim + columnName + optDelim + @"\s*\=\s*@" + columnName, sqlRegexOpts);
+            StringShoulds.ShouldMatch(invocation.CommandText, @"Where\s+.*" + optPrefix + optDelim + columnName + optDelim + @"\s*\=\s*@" + columnName, sqlRegexOpts);
             invocation.ShouldHaveParameter(columnName, expectedValue);
             return invocation;
         }

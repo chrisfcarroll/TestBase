@@ -67,7 +67,7 @@ namespace TestBase.AdoNet.RecordingDb
             {
                 var field_ = field;
                 var fieldOrQuotedField = string.Format(@"({0}|\[{0}\]|""{0}"")", field_);
-                Shoulds.StringShoulds.ShouldMatch(columnList,
+                StringShoulds.ShouldMatch(columnList,
                                        string.Format(@"({0}|{1}){2}", openBracket, comma, fieldOrQuotedField),
                     sqlRegexOpts, "Expected to Select column {0} but didn't see it", field);
             }
@@ -130,18 +130,18 @@ namespace TestBase.AdoNet.RecordingDb
         {
             var verbandtablepattern = "Insert" + @"\s+" + @"(Into\s+)?" + optPrefix + optDelim + tableName;
             var cmd = recordingDbConnection.ShouldHaveInvoked(c => c.CommandText.Matches(verbandtablepattern, sqlRegexOpts));
-            Shoulds.StringShoulds.ShouldMatch(cmd.CommandText, verbandtablepattern + optDelim + openBracket, sqlRegexOpts);
+            StringShoulds.ShouldMatch(cmd.CommandText, verbandtablepattern + optDelim + openBracket, sqlRegexOpts);
             var foundColumnList = new Regex(openBracket + restofline, sqlRegexOpts).Matches(cmd.CommandText)[0].Value;
             var valuesList = new Regex(closeBracket + @"Values" + openBracket + restofline, sqlRegexOpts).Matches(cmd.CommandText)[0].Value;
             foreach (var field in columnList)
             {
                 var fieldName = field;
                 var fieldOrQuotedField = string.Format(@"({0}|\[{0}\]|""{0}"")", fieldName);
-                Shoulds.StringShoulds.ShouldMatch(foundColumnList,
+                StringShoulds.ShouldMatch(foundColumnList,
                                             string.Format(@"({0}|{1}){2}", openBracket, comma, fieldOrQuotedField),
                     sqlRegexOpts,
                     "Expected to Insert column {0} but didn't see it", field);
-                Shoulds.StringShoulds.ShouldMatch(valuesList,
+                StringShoulds.ShouldMatch(valuesList,
                                        string.Format(@"(\(\s*|,\s*)@{0}\s*", field),
                     sqlRegexOpts,
                     "Expected to Insert value {0} but didn't see it", field);
@@ -227,19 +227,19 @@ namespace TestBase.AdoNet.RecordingDb
             var invocations = recordingDbConnection.Invocations.Where(i => i.CommandText.Matches(verbandtablepattern, sqlRegexOpts));
             var cmd = invocations.First();
             var commandText = cmd.CommandText;
-            Shoulds.StringShoulds.ShouldMatch(cmd.CommandText, verbandtablepattern + optDelim + set, sqlRegexOpts);
+            StringShoulds.ShouldMatch(cmd.CommandText, verbandtablepattern + optDelim + set, sqlRegexOpts);
             var afterSet = new Regex(set + restofline, sqlRegexOpts).Matches(commandText)[0].Value;
             foreach (var field in fieldList)
             {
                 var field_ = field;
                 var fieldOrQuotedField = string.Format(@"({0}|\[{0}\]|""{0}"")", field_);
-                Shoulds.StringShoulds.ShouldMatch(afterSet,
+                StringShoulds.ShouldMatch(afterSet,
                                      string.Format(@"({0}|{1}){2}\s*=\s*\@{3}", set, comma, fieldOrQuotedField, field),
                     sqlRegexOpts,
                     "Expected to Update field {0} but didn't see it", field);
                 cmd.Parameters.Cast<DbParameter>().SingleOrAssertFail(p => p.ParameterName == field_);
             }
-            Shoulds.BasicShoulds.ShouldBe(cmd.Invocations.Count(), times);
+            BasicShoulds.ShouldBe(cmd.Invocations.Count(), times);
             return cmd;
         }
 
@@ -284,13 +284,13 @@ namespace TestBase.AdoNet.RecordingDb
                     "Expected to Update {0} but found no matching update command.", tableName);
 
             var commandText = invocation.CommandText;
-            Shoulds.StringShoulds.ShouldMatch(invocation.CommandText, verbandtablepattern + optDelim + set, sqlRegexOpts);
+            StringShoulds.ShouldMatch(invocation.CommandText, verbandtablepattern + optDelim + set, sqlRegexOpts);
             var afterSet = new Regex(set + restofline, sqlRegexOpts).Matches(commandText)[0].Value;
             foreach (var field in fieldList)
             {
                 var fieldName = field;
                 var fieldOrQuotedField = string.Format(@"({0}|\[{0}\]|""{0}"")", fieldName);
-                Shoulds.StringShoulds.ShouldMatch(afterSet,
+                StringShoulds.ShouldMatch(afterSet,
                                      string.Format(@"({0}|{1}){2}\s*=\s*\@{3}", set, comma, fieldOrQuotedField, field),
                     sqlRegexOpts,
                     "Expected to update field {0} but didn't see it", field);
@@ -302,7 +302,7 @@ namespace TestBase.AdoNet.RecordingDb
 
         public static DbCommand ShouldHaveWhereClauseWithFieldEqualsExpected<T>(this DbCommand invocation, string columnName, T expectedValue)
         {
-            Shoulds.StringShoulds.ShouldMatch(invocation.CommandText, @"Where " + optPrefix + optDelim + columnName + optDelim + @"\s*\=\s*@" + columnName, sqlRegexOpts);
+            StringShoulds.ShouldMatch(invocation.CommandText, @"Where " + optPrefix + optDelim + columnName + optDelim + @"\s*\=\s*@" + columnName, sqlRegexOpts);
             invocation.ShouldHaveParameter(columnName, expectedValue);
             return invocation;
         }

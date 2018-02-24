@@ -8,7 +8,6 @@ namespace TestBase.AdoNet.FakeDb
 {
     public class FakeDbParameterCollection : DbParameterCollection
     {
-        private object syncRoot = new object();
         private List<DbParameter> parameters= new List<DbParameter>();
 
         public override int Add(object value)
@@ -63,30 +62,15 @@ namespace TestBase.AdoNet.FakeDb
             parameters[IndexOf(parameterName)] = value;
         }
 
-        public override int Count
-        {
-            get { return parameters.Count; }
-        }
+        public override int Count => parameters.Count;
 
-        public override object SyncRoot
-        {
-            get { return syncRoot; }
-        }
+        public override object SyncRoot { get; } = new object();
 
-        public override bool IsFixedSize
-        {
-            get { return false; }
-        }
+        public override bool IsFixedSize => false;
 
-        public override bool IsReadOnly
-        {
-            get { return false; }
-        }
+        public override bool IsReadOnly => false;
 
-        public override bool IsSynchronized
-        {
-            get { return false; }
-        }
+        public override bool IsSynchronized => false;
 
         public override int IndexOf(string parameterName)
         {
@@ -106,7 +90,7 @@ namespace TestBase.AdoNet.FakeDb
         protected override DbParameter GetParameter(string parameterName)
         {
             var parameter = parameters.FirstOrDefault(x => x.ParameterName.ToLower() == parameterName.ToLower());
-            Shoulds.BasicShoulds.ShouldNotBeNull(parameter, "Attempted to get parameter {0} from DbParameters, but there wasn't a parameter with that name",parameterName);
+            BasicShoulds.ShouldNotBeNull(parameter, "Attempted to get parameter {0} from DbParameters, but there wasn't a parameter with that name",parameterName);
             return parameter;
         }
 

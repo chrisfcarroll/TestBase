@@ -1,8 +1,7 @@
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Linq;
 
-namespace TestBase.Shoulds
+namespace TestBase
 {
     static internal class StreamShoulds
     {

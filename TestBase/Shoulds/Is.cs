@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq.Expressions;
 
-namespace TestBase.Shoulds
+namespace TestBase
 {
     public static class Is
     {

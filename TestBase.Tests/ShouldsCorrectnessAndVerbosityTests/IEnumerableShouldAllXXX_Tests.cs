@@ -1,6 +1,6 @@
 using NUnit.Framework;
 using TestBase.Shoulds;
-using Is=TestBase.Shoulds.Is;
+using Is=TestBase.Is;
 
 namespace TestBase.Tests.ShouldsCorrectnessAndVerbosityTests
 {

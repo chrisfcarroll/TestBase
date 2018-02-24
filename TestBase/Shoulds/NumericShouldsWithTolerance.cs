@@ -2,7 +2,7 @@
 using System.Linq.Expressions;
 using System.Runtime.InteropServices;
 
-namespace TestBase.Shoulds
+namespace TestBase
 {
     public static class NumericShouldsWithTolerance
     {
@@ -25,7 +25,7 @@ namespace TestBase.Shoulds
             return @this;
         }
 
-        /// <summary>Assert that <paramref name="@this"/> is between <paramref name="left"/>-<paramref name="tolerance"/> and <paramref name="right"/>+<paramref name="tolerance"/></summary>
+        /// <summary>Assert that <paramref name="this"/> is between <paramref name="left"/>-<paramref name="tolerance"/> and <paramref name="right"/>+<paramref name="tolerance"/></summary>
         public static T ShouldBeBetweenWithTolerance<T>(this T @this, double left, double right, double tolerance=1e-14d, string message=null, params object[] args)
                         where T : IComparable<T>
         {
@@ -33,28 +33,28 @@ namespace TestBase.Shoulds
             return @this;
         }
 
-        /// <summary>Assert that <paramref name="@this"/> is greater than <paramref name="expectedValue"/>-<paramref name="tolerance"/></summary>
+        /// <summary>Assert that <paramref name="this"/> is greater than <paramref name="expectedValue"/>-<paramref name="tolerance"/></summary>
         public static T ShouldBeGreaterThanWithTolerance<T>(this T @this, double expectedValue, double tolerance=1e-14d, string message=null, params object[] args)
         {
             Assert.That( @this, Is.GreaterThan( expectedValue-tolerance ), message, args );
             return @this;
         }
 
-        /// <summary>Assert that <paramref name="@this"/> is greater than or equal to <paramref name="expectedValue"/>-<paramref name="tolerance"/></summary>
+        /// <summary>Assert that <paramref name="this"/> is greater than or equal to <paramref name="expectedValue"/>-<paramref name="tolerance"/></summary>
         public static T ShouldBeGreaterThanOrEqualToWithTolerance<T>(this T @this, double expectedValue, double tolerance=1e-14d, string message=null, params object[] args)
         {
             Assert.That( @this, Is.GreaterThanOrEqualTo( expectedValue-tolerance ), message, args );
             return @this;
         }
 
-        /// <summary>Assert that <paramref name="@this"/> is less than <paramref name="expectedValue"/>+<paramref name="tolerance"/></summary>
+        /// <summary>Assert that <paramref name="this"/> is less than <paramref name="expectedValue"/>+<paramref name="tolerance"/></summary>
         public static T ShouldBeLessThanWithTolerance<T>(this T @this, double expectedValue, double tolerance=1e-14d, string message=null, params object[] args)
         {
             Assert.That(@this, Is.LessThanOrEqualTo(expectedValue+tolerance), message, args);
             return @this;
         }
 
-        /// <summary>Assert that <paramref name="@this"/> is less than or equal to <paramref name="expectedValue"/>+<paramref name="tolerance"/></summary>
+        /// <summary>Assert that <paramref name="this"/> is less than or equal to <paramref name="expectedValue"/>+<paramref name="tolerance"/></summary>
         public static T ShouldBeLessThanOrEqualToWithTolerance<T>(this T @this, double expectedValue, double tolerance=1e-14d, string message=null, params object[] args)
         {
             Assert.That(@this, Is.LessThanOrEqualTo(expectedValue + tolerance), message, args);

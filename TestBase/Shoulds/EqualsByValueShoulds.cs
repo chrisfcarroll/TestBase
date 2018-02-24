@@ -1,8 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace TestBase.Shoulds
+namespace TestBase
 {
     public static class EqualsByValueShoulds
     {
@@ -49,7 +48,7 @@ namespace TestBase.Shoulds
                                               string message = null,
                                               params object[] args)
         {
-            @this.Where(exceptions.DoesNotContain).ShouldEqualByValue(expected.Where(exceptions.DoesNotContain), message, args);
+            ShouldEqualByValue(@this.Where(exceptions.DoesNotContain), expected.Where(exceptions.DoesNotContain), message, args);
             return @this;
         }
         public static IEnumerable<T>
@@ -59,9 +58,7 @@ namespace TestBase.Shoulds
                                               string message = null,
                                               params object[] args)
         {
-            @this.Where(exceptions.DoesNotContain).OrderBy(x => x)
-                .ShouldEqualByValue(
-                    expected.Where(exceptions.DoesNotContain).OrderBy(x => x), message, args);
+            ShouldEqualByValue(@this.Where(exceptions.DoesNotContain).OrderBy(x => x), expected.Where(exceptions.DoesNotContain).OrderBy(x => x), message, args);
             return @this;
         }
     }

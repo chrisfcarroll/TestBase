@@ -1,7 +1,6 @@
-﻿using System.Runtime.InteropServices;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
-namespace TestBase.Shoulds
+namespace TestBase
 {
     public static class StringShoulds
     {

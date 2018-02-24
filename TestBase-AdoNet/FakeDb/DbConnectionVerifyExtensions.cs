@@ -23,19 +23,17 @@ namespace TestBase.AdoNet.FakeDb
         {
             if (exactly)
             {
-                Shoulds.BasicShoulds.ShouldBe(@this.Invocations
-                                    .Where(commandInvocationPredicate)
-                                    .Count(),
-                               expectedInvocationsCount,
+                @this.Invocations
+                     .Where(commandInvocationPredicate)
+                     .Count().ShouldBe(expectedInvocationsCount,
                                message ?? "Expected to be called exactly {0} times",
                                args.Length == 0 ? new object[] {expectedInvocationsCount} : args);
             }
             else
             {
-                Shoulds.BasicShoulds.ShouldBeGreaterThanOrEqualTo(@this.Invocations
-                                                        .Where(commandInvocationPredicate)
-                                                        .Count(),
-                                                   expectedInvocationsCount,
+                @this.Invocations
+                     .Where(commandInvocationPredicate)
+                     .Count().ShouldBeGreaterThanOrEqualTo(expectedInvocationsCount,
                                                    message ?? "Expected to be called at least {0} times",
                                                    args.Length == 0 ? new object[] {expectedInvocationsCount} : args);
             }

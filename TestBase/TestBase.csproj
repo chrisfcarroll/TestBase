@@ -27,7 +27,7 @@ UnitUnderTest.OtherAction()
 * TestBase.AdoNet adds a verifiable FakeDb and a RecordingDbConnection
 * TestBase-Mvc adds assertions for ActionResults
 ]]></Summary>
-  <ReleaseNotes>ChangeLog
+    <ReleaseNotes>ChangeLog
 ---------
 4.0.1.0 Port to NetCore
 3.0.3.0 Improves FakeDb setup
@@ -39,7 +39,7 @@ UnitUnderTest.OtherAction()
     <Owners>Chris F Carroll</Owners>
     <ProjectUrl>http://github.com/chrisfcarroll/TestBase</ProjectUrl>
     <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
-    <Tags>nunit test unittest tdd fluent assertions mock ado.net</Tags>    
+    <Tags>nunit test unittest tdd fluent assertions mock ado.net</Tags>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <NoWarn>1701;1702;1705;NU1701</NoWarn>

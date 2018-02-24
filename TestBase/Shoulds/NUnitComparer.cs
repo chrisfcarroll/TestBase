@@ -23,9 +23,8 @@
 
 using System;
 using System.Collections;
-using System.Reflection;
 
-namespace TestBase.Shoulds
+namespace TestBase
 {
     /// <summary>
     /// NUnitComparer encapsulates NUnit's default behavior
