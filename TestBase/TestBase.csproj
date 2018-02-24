@@ -1,6 +1,45 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyVersion>4.0.1.0</AssemblyVersion>
+    <AssemblyFileVersion>4.0.1.0</AssemblyFileVersion>
+    <PackageVersion>4.0.1.0</PackageVersion>
+  </PropertyGroup>
+  <PropertyGroup>
+    <Title>TestBase – Rich, fluent assertions and useful fakes for Mvc &amp; AdoNet.</Title>
+    <Summary><![CDATA[TestBase – Rich, fluent assertions and useful fakes for Mvc & AdoNet. For a flying start to Automated and Unit Testing.
+
+TestBase.Shoulds
+------------------
+Chainable fluent assertions get you to the point concisely
+```
+UnitUnderTest.Action()
+  .ShouldNotBeNull()
+  .ShouldContain(expected);
+UnitUnderTest.OtherAction()
+  .ShouldEqualByValue( 
+    new {Id=1, Payload=expectedPayload, Additional=new[]{ expected1, expected2 }}
+);
+```
+* `ShouldBe(), ShouldMatch(), ShouldNotBe(), ShouldContain(), ShouldNotContain(), ShouldBeEmpty(), ShouldNotBeEmpty(), ShouldAll()` and many more
+* `ShouldEqualByValue()` works with all kinds of object and collections
+
+* TestBase.AdoNet adds a verifiable FakeDb and a RecordingDbConnection
+* TestBase-Mvc adds assertions for ActionResults
+]]></Summary>
+  <ReleaseNotes>ChangeLog
+---------
+4.0.1.0 Port to NetCore
+3.0.3.0 Improves FakeDb setup
+3.0.x.0 adds and/or corrects missing Shoulds()
+2.0.5.0 adds some intellisense and FakeDbConnection.Verify(..., message,args) overload
+</ReleaseNotes>
+    <Copyright>(c) Chris F. Carroll, 2013-2018</Copyright>
+    <Authors>Chris F Carroll</Authors>
+    <Owners>Chris F Carroll</Owners>
+    <ProjectUrl>http://github.com/chrisfcarroll/TestBase</ProjectUrl>
+    <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
+    <Tags>nunit test unittest tdd fluent assertions mock ado.net</Tags>    
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <NoWarn>1701;1702;1705;NU1701</NoWarn>
