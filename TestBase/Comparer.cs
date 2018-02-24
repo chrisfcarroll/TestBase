@@ -107,7 +107,7 @@ namespace TestBase
             return MemberCompare(left, right, exclusionList: null,includeOnlyList: null, floatTolerance: floatTolerance, typesMustAlsoBeSame: false);
         }
 
-        public static BoolWithString EqualsByValueExceptFor(this object left, object right, List<string> exclusionList)
+        public static BoolWithString EqualsByValueExceptFor(this object left, object right, IEnumerable<string> exclusionList)
         {
             return MemberCompare(left, right, exclusionList: exclusionList, includeOnlyList: null, typesMustAlsoBeSame: false);
         }

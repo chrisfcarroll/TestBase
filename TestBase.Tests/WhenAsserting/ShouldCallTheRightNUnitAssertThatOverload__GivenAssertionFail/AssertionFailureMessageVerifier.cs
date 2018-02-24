@@ -11,9 +11,9 @@ namespace TestBase.Tests.WhenAsserting.ShouldCallTheRightNUnitAssertThatOverload
             try
             {
                 assertion();
-                Assert.Fail("{0} Should have thrown an exception before reaching this line: {1} {2}", name, assertion, expectedErrorMessage);
+                throw new AssertionException(string.Format("{0} Should have thrown an exception before reaching this line: {1} {2}", name, assertion, expectedErrorMessage));
             }
-            catch (NUnit.Framework.AssertionException e)
+            catch (AssertionException e)
             {
                 e.Message.ShouldStartWith(expectedErrorMessage,"Expected {0} to fail assertion with error message starting with {1}\r\n but got\r\n{2}", name, expectedErrorMessage, e.Message);
             }

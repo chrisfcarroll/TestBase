@@ -23,7 +23,7 @@ namespace TestBase.Tests.ShouldsCorrectnessAndVerbosityTests
             {
                 return;
             }
-            Assert.Fail("Should have thrown.");
+            throw new AssertionException("Should have thrown");
         }
     }
 }

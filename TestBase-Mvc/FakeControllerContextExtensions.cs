@@ -16,21 +16,21 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
-using Moq;
 using TestBase;
+using Moq;
 
 namespace Tests.WebApi.TestFwk
 {
     public static class FakeControllerContextExtensions
     {
-        public static T AddRequestHeader<T>(this T controller, string name, params string[] values) where T : Controller
+        public static T WithRequestHeader<T>(this T controller, string name, params string[] values) where T : Controller
         {
             controller.ControllerContext.HttpContext.Request.Headers.Add(name, values);
             return controller;
         }
 
 
-        public static T AddControllerContext<T>(this T controller, ClaimsPrincipal user) where T : Controller
+        public static T WithControllerContext<T>(this T controller, ClaimsPrincipal user) where T : Controller
         {
             // routes todo var actionContext = new ActionContext(httpContext, new RouteData(), new ActionDescriptor());
             var metadataProvider = TestModelMetadataProvider.CreateDefaultProvider();
@@ -58,10 +58,10 @@ namespace Tests.WebApi.TestFwk
             return controller;
         }
 
-        public static T AddControllerContext<T>(this T controller) where T : Controller
+        public static T WithControllerContext<T>(this T controller) where T : Controller
         {
             var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[0]));
-            return AddControllerContext(controller, user);
+            return WithControllerContext(controller, user);
         }
 
 

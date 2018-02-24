@@ -7,15 +7,15 @@ namespace TestBase.Shoulds
     {
         public static string ShouldNotBeNullOrEmpty(this string @this, string message=null, params object[] args)
         {
-            Assert.That(@this, Is.Not.Null, message, args);
-            Assert.That(@this, Is.Not.EqualTo(""), message, args);
+            Assert.That(@this, Is.NotNull, message, args);
+            @this.ShouldNotBe("", message, args);
             return @this;
         }
 
         public static string ShouldNotBeNullOrWhiteSpace(this string @this, string message=null, params object[] args)
         {
-            Assert.That(@this,        Is.Not.Null, message, args);
-            Assert.That(@this.Trim(), Is.Not.Empty, message, args);
+            Assert.That(@this,        Is.NotNull, message, args);
+            Assert.That(@this.Trim(), Is.NotEmpty, message, args);
             return @this;
         }
 
@@ -27,51 +27,50 @@ namespace TestBase.Shoulds
 
         public static string ShouldContain(this string @this, string expected, string message=null, params object[] args)
         {
-            Assert.That(@this, Is.StringContaining(expected), message, args);
+            Assert.That(@this, x=>x.Contains(expected), message, args);
             return @this;
         }
 
         public static string ShouldBeContainedIn(this string @this, string expected, string message=null, params object[] args)
         {
-            Assert.That(expected, Is.StringContaining(@this), message, args);
+            Assert.That(@this,  x=> expected.Contains(x), message, args);
             return @this;
         }
 
         public static string ShouldMatch(this string @this, string pattern, string message=null, params object[] args)
         {
-            Assert.That(@this, Is.StringMatching(pattern), message, args);
+            Assert.That(@this, x=>x.Matches(pattern,RegexOptions.None), message, args);
             return @this;
         }
 
         public static string ShouldMatchIgnoringCase(this string @this, string expectedRegexPattern, string message = null, params object[] args)
         {
-            Assert.That(@this, Is.StringMatching(expectedRegexPattern).IgnoreCase, message, args);
+            Assert.That(@this, x=>x.Matches(expectedRegexPattern,RegexOptions.IgnoreCase), message, args);
             return @this;
         }
 
         public static string ShouldMatch(this string @this, string expectedRegexPattern, RegexOptions regexOptions, string message = null, params object[] args)
         {
-            var result = Regex.IsMatch(@this, expectedRegexPattern, regexOptions);
-            Assert.That(result, Is.True, message ?? string.Format("{0} didn't match Regex {1} with Options {2}", @this, expectedRegexPattern, regexOptions), args);
+            Assert.That(@this, x=>Regex.IsMatch(@this, expectedRegexPattern, regexOptions), message ?? string.Format("{0} didn't match Regex {1} with Options {2}", @this, expectedRegexPattern, regexOptions), args);
             return @this;
         }
 
         public static string ShouldNotContain(this string @this, string notExpected, string message=null, params object[] args)
         {
-            Assert.That(@this, Is.Not.StringContaining(notExpected), message, args);
+            Assert.That(@this, x=>!x.Contains(notExpected), message, args);
             return @this;
         }
 
 
         public static string ShouldStartWith(this string @this, string expected, string message=null, params object[] args)
         {
-            Assert.That(@this, Is.StringStarting(expected), message, args);
+            Assert.That(@this, x=>x.StartsWith(expected), message, args);
             return @this;
         }
 
         public static string ShouldEndWith(this string @this, string expected, string message=null, params object[] args)
         {
-            Assert.That(@this, Is.StringEnding(expected), message, args);
+            Assert.That(@this, x=>x.EndsWith(expected), message, args);
             return @this;
         }
     }

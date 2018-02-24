@@ -27,6 +27,11 @@ namespace TestBase
             return Assert.That(actual, a => !a.Any(), comment, args);
         }
 
+        public static IEnumerable<T> ShouldNotHaveAny<T>(this IEnumerable<T> actual, Func<T,bool> predicate, string comment = null, params object[] args)
+        {
+            return Assert.That(actual, a => !a.Any(predicate), comment ??"ShouldNotHaveAny item satisfying", args);
+        }
+        
         public static IEnumerable<T> ShouldBeOfLength<T>(this IEnumerable<T> actual, int expected, string comment=null, params object[] args)
         {
             return Assert.That(actual, a => a.Count() == expected, comment, args);

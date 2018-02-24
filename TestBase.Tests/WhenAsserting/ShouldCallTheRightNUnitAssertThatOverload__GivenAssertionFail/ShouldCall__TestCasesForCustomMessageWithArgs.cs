@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using NUnit.Framework;
 using TestBase.Shoulds;
 
@@ -30,7 +30,7 @@ namespace TestBase.Tests.WhenAsserting.ShouldCallTheRightNUnitAssertThatOverload
                 { "ShouldBeNullOrEmptyOrWhitespace", () => "4".ShouldBeNullOrEmptyOrWhitespace(FailureMessageWith, FakeDetailArg ) } ,
                 { "ShouldNotBeNullOrEmpty(null)", () => (null as string).ShouldNotBeNullOrEmpty(FailureMessageWith, FakeDetailArg ) } ,
                 { "ShouldNotBeNullOrEmpty(emptystring)", () => "".ShouldNotBeNullOrEmpty(FailureMessageWith, FakeDetailArg ) } ,
-                { "ShouldBeSuchThat", () => "5".ShouldBeSuchThat(string.IsNullOrEmpty, FailureMessageWith, FakeDetailArg ) } ,
+                { "ShouldBeSuchThat", () => "5".ShouldBe(x=>string.IsNullOrEmpty(x), FailureMessageWith, FakeDetailArg ) } ,
                 { "ShouldEqualIgnoringCase", () => "6".ShouldEqualIgnoringCase("66", FailureMessageWith, FakeDetailArg ) } ,
                 { "ShouldEqual", () => 7.ShouldEqual(77, FailureMessageWith, FakeDetailArg ) } ,
                 { "ShouldEqualByValue", () => "8".ShouldEqualByValue(88, FailureMessageWith, FakeDetailArg) } ,
@@ -49,7 +49,7 @@ namespace TestBase.Tests.WhenAsserting.ShouldCallTheRightNUnitAssertThatOverload
                 { "ShouldContain<IEnumerable>", () => (new[]{"19"}).ShouldContain("nineteen", FailureMessageWith, FakeDetailArg ) } ,
                 { "ShouldStartWith", () => "20".ShouldStartWith("x20", FailureMessageWith, FakeDetailArg) },
                 { "ShouldEndWith", () => "21".ShouldEndWith("21x", FailureMessageWith, FakeDetailArg ) } ,
-                { "ShouldSatisfy", () => 22.ShouldSatisfy(i => i.ToString(), Is.True, FailureMessageWith, FakeDetailArg ) } ,
+                { "ShouldSatisfy", () => 22.ShouldSatisfy(i => i.ToString(), x=>x is string, FailureMessageWith, FakeDetailArg ) } ,
                 { "ShouldContainInOrder", () => (new List<int>{23,24}).ShouldContainInOrder(24,23, FailureMessageWith, FakeDetailArg ) } ,
  
                 { "ShouldBeFileResult",   () => (new RedirectResult("/")).ShouldBeFileResult(null, FailureMessageWith, FakeDetailArg ) },

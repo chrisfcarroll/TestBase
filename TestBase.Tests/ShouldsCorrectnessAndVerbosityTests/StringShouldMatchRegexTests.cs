@@ -26,7 +26,7 @@ namespace TestBase.Tests.ShouldsCorrectnessAndVerbosityTests
             {
                 return;
             }
-            Assert.Fail("input {0} should not have matched {1}", testInput, testPattern);
+            throw new AssertionException( $"input {testInput} should not have matched {testPattern}");
         }
 
         [TestCase("input pattern", "PATT")]

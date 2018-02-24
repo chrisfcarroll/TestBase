@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using NUnit.Framework;
 using TestBase.Shoulds;
 
@@ -37,7 +37,7 @@ namespace TestBase.Tests.WhenAsserting.ShouldCallTheRightNUnitAssertThatOverload
             { "ShouldBeNullOrEmptyOrWhitespace", new KeyValuePair<Action,string>(()=> "4".ShouldBeNullOrEmptyOrWhitespace()           , "ShouldBeNullOrWhitespace") }, 
             { "ShouldNotBeNullOrEmpty(null)", new KeyValuePair<Action,string>(()=> (null as string).ShouldNotBeNullOrEmpty(), "Expected: not null") }, 
             { "ShouldNotBeNullOrEmpty(stringempty)", new KeyValuePair<Action,string>(()=> "".ShouldNotBeNullOrEmpty()              , "Expected: not <string.Empty>") }, 
-            { "ShouldBeSuchThat",       new KeyValuePair<Action,string>(()=> "5".ShouldBeSuchThat(String.IsNullOrEmpty)       , "Expected: True") }, 
+            { "ShouldBeSuchThat",       new KeyValuePair<Action,string>(()=> "5".ShouldBe(x=>String.IsNullOrEmpty(x))       , "Expected: True") }, 
             { "ShouldEqualIgnoringCase",new KeyValuePair<Action,string>(()=> "6".ShouldEqualIgnoringCase("66")        , "Expected string length 2 but was 1.") }, 
             { "ShouldEqual",            new KeyValuePair<Action,string>(()=> 7.ShouldEqual(77)                        , "Expected: 77") }, 
             { "ShouldEqualByValue",     new KeyValuePair<Action,string>(()=> "8".ShouldEqualByValue(88)               , "Expected: 88") }, 
@@ -56,7 +56,7 @@ namespace TestBase.Tests.WhenAsserting.ShouldCallTheRightNUnitAssertThatOverload
             { "ShouldContain<IEnumerable>",          new KeyValuePair<Action,string>(()=> (new[]{"18"}).ShouldContain("188")       , "Expected: ") }, 
             { "ShouldStartWith",        new KeyValuePair<Action,string>(()=> "19".ShouldStartWith("x19")              , "Expected: ") }, 
             { "ShouldEndWith",          new KeyValuePair<Action,string>(()=> "20".ShouldEndWith("20x")                , "Expected: ") }, 
-            { "ShouldSatisfy",          new KeyValuePair<Action,string>(()=> 21.ShouldSatisfy(i => i.ToString(), Is.True)         , "Expected: ") }, 
+            { "ShouldSatisfy",          new KeyValuePair<Action,string>(()=> 21.ShouldSatisfy(i => i.ToString(), x=>x.Equals("boo"))         , "Expected: ") }, 
             { "ShouldContainInOrder",   new KeyValuePair<Action,string>(()=> (new List<int>{22,222}).ShouldContainInOrder(222,22) , "Expected: ") },
 
             { "ShouldBeFileResult",     new KeyValuePair<Action,string>(

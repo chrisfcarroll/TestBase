@@ -30,7 +30,7 @@ namespace TestBase.Tests.ComparerEqualsByValueTests
 
             //A&A
             objectL.EqualsByValueOrDiffersExceptFor(objectR, exclusionList).AsBool.ShouldBeFalse();
-            Assert.Throws<AssertionException>(
+            Assert.Throws<Assertion>(
                       () => objectL.ShouldEqualByValueExceptFor(objectR, exclusionList)
                     );
             objectL.EqualsByValueExceptFor(objectR, exclusionList).ShouldBeFalse();

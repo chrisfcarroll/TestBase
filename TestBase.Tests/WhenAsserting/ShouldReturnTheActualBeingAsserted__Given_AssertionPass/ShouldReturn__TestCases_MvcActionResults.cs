@@ -1,5 +1,5 @@
 ﻿using System.IO;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using NUnit.Framework;
 using TestBase.Shoulds;
 

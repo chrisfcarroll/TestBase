@@ -36,11 +36,11 @@ namespace TestBase.Shoulds
             return @this;
         }
 
-        public static T ShouldHaveAttribute<T>(this PropertyInfo @this)
+        public static T ShouldHaveAttribute<T>(this PropertyInfo @this) where T : Attribute
         {
-            @this.PropertyAttributeOn<T>().ShouldNotBeNull();
+            @this.GetCustomAttribute<T>().ShouldNotBeNull();
 
-            return @this.PropertyAttributeOn<T>();
+            return @this.GetCustomAttribute<T>();
         }
 
         public static Type ShouldHaveAttribute<T>(this Type @this)
@@ -58,11 +58,11 @@ namespace TestBase.Shoulds
             return @this;
         }
 
-        public static PropertyInfo ShouldHaveAttributeSatisfying<T>(this PropertyInfo @this, params Action<T>[] assertions)
+        public static PropertyInfo ShouldHaveAttributeSatisfying<T>(this PropertyInfo @this, params Action<T>[] assertions) where T : Attribute
         {
             ShouldHaveAttribute<T>(@this);
 
-            var attribute = @this.PropertyAttributeOn<T>();
+            var attribute = @this.GetCustomAttribute<T>();
 
             foreach(var assert in assertions)
             {
@@ -71,9 +71,9 @@ namespace TestBase.Shoulds
             return @this;
         }
 
-        public static PropertyInfo ShouldNotHaveAttribute<T>(this PropertyInfo @this)
+        public static PropertyInfo ShouldNotHaveAttribute<T>(this PropertyInfo @this) where T : Attribute
         {
-            @this.PropertyAttributeOn<T>().ShouldBeNull();
+            @this.GetCustomAttribute<T>().ShouldBeNull();
             return @this;
         }
     }

@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using TestBase.Shoulds;
+using Is=TestBase.Shoulds.Is;
 
 namespace TestBase.Tests.ShouldsCorrectnessAndVerbosityTests
 {
@@ -16,7 +17,7 @@ namespace TestBase.Tests.ShouldsCorrectnessAndVerbosityTests
             }
             catch (AssertionException e)
             {
-                e.Message.LogIf().ShouldContain("999").ShouldNotContain("1");
+                e.Message.ShouldContain("999").ShouldNotContain("1");
             }
         }
 
@@ -29,7 +30,7 @@ namespace TestBase.Tests.ShouldsCorrectnessAndVerbosityTests
             }
             catch (AssertionException e)
             {
-                e.Message.LogIf().ShouldContain("999").ShouldNotContain("1");
+                e.Message.ShouldContain("999").ShouldNotContain("1");
                 e.Message.ShouldContain("Custom Message And Params");
             }
         }
@@ -39,11 +40,11 @@ namespace TestBase.Tests.ShouldsCorrectnessAndVerbosityTests
         {
             try
             {
-                value.ShouldAllSatisfy(i => i*2, Is.LessThanOrEqualTo(5));
+                value.ShouldAllSatisfy(i => i*2, Is.LessThanOrEqualTo(5) );
             }
             catch (AssertionException e) 
             {
-                e.Message.LogIf().ShouldContain("999").ShouldNotContain("2");
+                e.Message.ShouldContain("999").ShouldNotContain("2");
             }
         }
 
@@ -56,7 +57,7 @@ namespace TestBase.Tests.ShouldsCorrectnessAndVerbosityTests
             }
             catch (AssertionException e)
             {
-                e.Message.LogIf().ShouldContain("999").ShouldNotContain("2");
+                e.Message.ShouldContain("999").ShouldNotContain("2");
                 e.Message.ShouldContain("Custom Message And Params");
             }
         }

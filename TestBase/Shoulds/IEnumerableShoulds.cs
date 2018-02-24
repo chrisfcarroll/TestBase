@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Runtime.InteropServices;
 
 namespace TestBase.Shoulds
@@ -12,20 +13,20 @@ namespace TestBase.Shoulds
         public static IDictionary<TKey,TValue> ShouldContainKey<TKey,TValue>(this IDictionary<TKey,TValue> @this, TKey key, string message=null, params object[] args)
         {
             message = message ?? string.Format("Expected IDictionary to contain key {0}", key);
-            Assert.True(@this.ContainsKey(key), message, args);
+            Assert.That(@this.ContainsKey(key), message, args);
             return @this;
         }
 
         public static IDictionary<TKey, TValue> ShouldNotContainKey<TKey, TValue>(this IDictionary<TKey, TValue> @this, TKey key, string message=null, params object[] args)
         {
             message = message ?? string.Format("Expected IDictionary to not contain key {0}", key);
-            Assert.False(@this.ContainsKey(key), message, args);
+            Assert.That(!@this.ContainsKey(key), message, args);
             return @this;
         }
 
         public static IEnumerable<T> ShouldContain<T>(this IEnumerable<T> @this, T item, string message=null, params object[] args)
         {
-            Assert.That(@this, Contains.Item(item), message, args);
+            Assert.That(@this, x=>x.Contains(item), message, args);
             return @this;
         }
 
@@ -35,12 +36,9 @@ namespace TestBase.Shoulds
             return @this;
         }
 
-        public static IEnumerable<T> ShouldNotContain<T>(this IEnumerable<T> @this, Func<T,bool> itemAssertion, string message=null, params object[] args)
+        public static IEnumerable<T> ShouldNotContain<T>(this IEnumerable<T> @this, Func<T,bool> itemPredicate, string message=null, params object[] args)
         {
-            foreach (var item in @this)
-            {
-                Assert.That(itemAssertion(item), Is.Not.True, message?? "Shouldn't contain an item satisfying the condition but did : {0}", args.Length>0?args:new object[]{item});
-            }
+            @this.Where(itemPredicate).ShouldBeEmpty(message ?? string.Format("Should not contain an item satisfying the predicate but did : {0}",itemPredicate.ToString()));
             return @this;
         }
 
@@ -48,7 +46,7 @@ namespace TestBase.Shoulds
         {
             foreach (var item in subset)
             {
-                Assert.That(@this, Contains.Item(item), message, args);
+                Assert.That(@this, x=>x.Contains(item), message, args);
             }
             return @this;
         }
@@ -67,13 +65,13 @@ namespace TestBase.Shoulds
 
         public static T ShouldNotBeEmpty<T>(this T @this, string message=null, params object[] args) where T : IEnumerable
         {
-            Assert.That(@this, Is.Not.Empty, message, args);
+            Assert.That(@this, x=>x.HasAnyElements(), message, args);
             return @this;
         }
 
         public static IEnumerable<T> ShouldNotBeEmpty<T>(this IEnumerable<T> @this, string message=null, params object[] args)
         {
-            Assert.That(@this, Is.Not.Empty, message, args);
+            Assert.That(@this, Is.NotEmpty, message, args);
             return @this;
         }
 
@@ -102,18 +100,18 @@ namespace TestBase.Shoulds
             return @this;
         }
 
-        public static IEnumerable<T> ShouldAllSatisfy<T, TResult>(this IEnumerable<T> @this, Func<T, TResult> function, IResolveConstraint constraintPerItem, string message=null, params object[] args)
+        public static IEnumerable<T> ShouldAllSatisfy<T, TResult>(this IEnumerable<T> @this, Func<T, TResult> function, Expression<Func<TResult,bool>> constraintPerItem, string message=null, params object[] args)
         {
             foreach (var item in @this)
             {
                 var r = function(item);
                 try { Assert.That(r, constraintPerItem); }
-                catch (AssertionException e)
+                catch (Exception e)
                 {
                     var innerMessage = e.Message;
                     Assert.That(
                             item,
-                            new PredicateConstraint<T>(i => false),
+                            i => false,
                             message + " : " + innerMessage,
                             args);
                 }
@@ -121,11 +119,11 @@ namespace TestBase.Shoulds
             return @this;
         }
 
-        public static IEnumerable<T> ShouldAllBeSuchThat<T>(this IEnumerable<T> @this, Predicate<T> function, string message=null, params object[] args)
+        public static IEnumerable<T> ShouldAllBeSuchThat<T>(this IEnumerable<T> @this, Func<T,bool> function, string message=null, params object[] args)
         {
             foreach (var item in @this)
             {
-                Assert.That(item, new PredicateConstraint<T>(function), message, args);
+                Assert.That(item, x=>function(x), message, args);
             }
             return @this;
         }

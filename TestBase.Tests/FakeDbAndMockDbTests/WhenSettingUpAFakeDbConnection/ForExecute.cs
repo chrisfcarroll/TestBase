@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using Dapper;
+using NUnit.Framework;
 using TestBase.AdoNet.FakeDb;
 using TestBase.Shoulds;
 
@@ -24,7 +25,7 @@ namespace TestBase.Tests.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection
             var fakeConnection = new FakeDbConnection().SetUpForExecuteNonQuery(123);
 
             //A 
-            SqlMapper.Execute(fakeConnection,"").ShouldEqual(123);
+            fakeConnection.Execute("").ShouldEqual(123);
         }
 
         [Test]

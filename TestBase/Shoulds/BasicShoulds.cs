@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Linq.Expressions;
 using System.Runtime.InteropServices;
 using TestBase;
 
@@ -43,27 +44,17 @@ namespace TestBase.Shoulds
             Assert.That(@this != null && @this.ToString().Trim().Length != 0, message ?? "ShouldNotBeNullOrWhitespace", args);
         }
 
-        public static T ShouldEqual<T>(this T @this, object expectedValue, string message=null, params object[] args)
-        {
-            Assert.That(@this, Is.EqualTo(expectedValue), message, args);
-            return @this;
-        }
-
+        /// <summary>Tests whether @this.Equals(expected)</summary>
         public static T ShouldBe<T>(this T @this, T expectedValue, string message=null, params object[] args)
         {
-            Assert.AreEqual(expectedValue, @this, message, args);
+            Assert.That(@this,  x=> (x==null && expectedValue==null) ||  x.Equals(expectedValue)  , message, args);
             return @this;
         }
 
-        public static T ShouldNotEqual<T>(this T @this, T obj, string message=null, params object[] args)
+        /// <summary>Tests whether !@this.Equals(expected)</summary>
+        public static T ShouldNotBe<T>(this T @this, T notExpected, string message=null, params object[] args)
         {
-            Assert.AreNotEqual(obj, @this, message, args);
-            return @this;
-        }
-
-        public static T ShouldNotBe<T>(this T @this, T obj, string message=null, params object[] args)
-        {
-            Assert.AreNotEqual(obj, @this, message, args);
+            Assert.That(@this, Is.EqualTo(notExpected),  message, args);
             return @this;
         }
 
@@ -76,13 +67,13 @@ namespace TestBase.Shoulds
 
         public static T ShouldBeTrue<T>(this T @this, string message=null, params object[] args)
         {
-            Assert.That(@this, Is.True, message, args);
+            Assert.That( @this, x=>x!=null&&x.Equals(true), message, args);
             return @this;
         }
 
         public static T ShouldBeFalse<T>( this T @this, string message=null, params object[] args )
         {
-            Assert.That(@this, Is.False, message, args);
+            Assert.That(@this, x=> x!=null&&x.Equals(false), message, args);
             return @this;
         }
 
@@ -113,8 +104,7 @@ namespace TestBase.Shoulds
 
         public static T ShouldBeOfType<T>(this object @this, string message=null, params object[] args) 
         {
-            Assert.That(@this, Is.InstanceOf<T>(), message, args);
-
+            Assert.That(@this, x=> x is T, message, args);
             return (T)@this;
         }
 
@@ -126,44 +116,28 @@ namespace TestBase.Shoulds
 
         public static T ShouldBeAssignableTo<T>(this object @this, string message=null, params object[] args) where T : class
         {
-            Assert.That(@this, Is.AssignableTo<T>(), message, args);
+            Assert.That(@this, x=>x is T, message, args);
 
             return @this as T;
         }
 
-        public static T ShouldHave<T>(this T @this, Func<T, bool> predicate, string message=null, params object[] args)
+        public static T ShouldBe<T>(this T @this, Expression<Func<T,bool>> expression, string message=null, params object[] args)
         {
-            ShouldSatisfy(@this, predicate, Is.True, message, args);
+            Assert.That(@this,expression, message, args);
+            return @this;
+        }
+        
+        public static T ShouldNotBe<T>(this T @this, Expression<Func<T,bool>> predicate, string message=null, params object[] args)
+        {
+            var notPredicate = Expression.IsFalse(predicate) as Expression<Func<T,bool>>;
+            Assert.That(@this, notPredicate, message, args);
             return @this;
         }
 
-        public static T ShouldHave<T>(this T @this, Action<T> assertion)
-        {
-            assertion(@this);
-            return @this;
-        }
-
-        public static T ShouldNotHave<T>(this T @this, Func<T, bool> predicate, string message=null, params object[] args)
-        {
-            ShouldSatisfy(@this, (t)=> !predicate(t), Is.True, message, args);
-            return @this;
-        }
-
-        public static T ShouldHave<T, TResult>(this T @this, Func<T, TResult> function, Predicate<TResult> expression, string message=null, params object[] args)
-        {
-            return ShouldSatisfy(@this, function, expression, message, args);
-        }
-
-        public static T ShouldSatisfy<T, TResult>(this T @this, Func<T, TResult> function, Predicate<TResult> expression, string message=null, params object[] args)
+        public static T ShouldSatisfy<T, TResult>(this T @this, Func<T, TResult> function, Expression<Func<TResult,bool>> expression, string message=null, params object[] args)
         {
             var result = function(@this);
-            Assert.That(result , expression(result), message, args);
-            return @this;
-        }
-        public static T ShouldBeSuchThat<T>(this T @this, Func<T, bool> function, string message=null, params object[] args)
-        {
-            var result = function(@this);
-            Assert.IsTrue(result, message, args);
+            Assert.That(result, expression, message, args);
             return @this;
         }
     }

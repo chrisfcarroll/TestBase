@@ -54,12 +54,11 @@ namespace TestBase.AdoNet
 
         public FakeDbCommand NextCommand()
         {
-            FakeDbCommand result;
-            if (!DbCommandsQueued.TryPeek(out result))
+            if (DbCommandsQueued.Count==0)
             {
                 QueueCommand(FakeDbCommand.ForExecuteQuery(new string[0]));
             }
-            result = DbCommandsQueued.Dequeue();
+            var result = DbCommandsQueued.Dequeue();
             result.ParameterCollectionToReturn = new FakeDbParameterCollection();
             return result;
         }

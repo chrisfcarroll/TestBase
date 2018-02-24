@@ -9,16 +9,17 @@ using Newtonsoft.Json;
 //
 namespace TestBase
 {
-    public static class IEnumerableExtensions
+    public static class EnumerableExtensions
     {
-        public static T Find<T>(this T[] items, Predicate<T> predicate)
+        public static T Find<T>(this T[] items, Func<T,bool> predicate)
         {
-            return Array.Find<T>(items, predicate);
+            
+            return Array.Find<T>(items, new Predicate<T>(predicate));
         }
 
-        public static T[] FindAll<T>(this T[] items, Predicate<T> predicate)
+        public static T[] FindAll<T>(this T[] items, Func<T,bool> predicate)
         {
-            return Array.FindAll<T>(items, predicate);
+            return Array.FindAll<T>(items, new Predicate<T>(predicate));
         }
 
         public static bool IsNullOrEmpty(this IEnumerable @this)

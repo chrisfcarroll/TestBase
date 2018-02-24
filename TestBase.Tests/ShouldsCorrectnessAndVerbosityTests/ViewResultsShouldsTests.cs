@@ -1,15 +1,17 @@
-﻿using System.Web.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using NUnit.Framework;
 using TestBase.Shoulds;
+using Tests.WebApi.TestFwk;
 
 namespace TestBase.Tests.ShouldsCorrectnessAndVerbosityTests
 {
     class AController : Controller
     {
-        public ActionResult ActionName()
+        public IActionResult ActionName()
         {
             var model= new AClass();
-            return View("ActionName",model);
+            var viewName = nameof(ActionName);
+            return View(viewName,model);
         }
     }
 
@@ -19,7 +21,7 @@ namespace TestBase.Tests.ShouldsCorrectnessAndVerbosityTests
         [Test]
         public void ShouldBeViewWithModel_ShouldAssertViewResultAndNameAndModel()
         {
-            var aController = new AController().WithHttpContextAndRoutes();
+            var aController = new AController().WithControllerContext();
             //
             var result= aController.ActionName().ShouldBeViewWithModel<AClass>("ActionName");
             //

@@ -38,7 +38,7 @@ namespace TestBase.AdoNet.FakeDb
                     ? "Expected to invoke a SQL command matching " + predicate.ToCSharpCode() 
                     : string.Format(message, args);
 
-            throw new AssertionException(message + invocations.PrintInvocations());
+            throw new Assertion<List<FakeDbCommand>>(invocations, i => i.Any(predicate.Compile()), message);
         }
 
         /// <summary>
@@ -260,7 +260,7 @@ namespace TestBase.AdoNet.FakeDb
                     }
                     matches++;
                 }
-                catch (AssertionException ae)
+                catch (Assertion)
                 {
                     //swallow and don't increment matches count;
                 }
@@ -350,18 +350,17 @@ namespace TestBase.AdoNet.FakeDb
         /// <returns><paramref name="dbCommand"/></returns>
         public static DbCommand ShouldHaveParameter(this DbCommand dbCommand, string parameterName, object expectedValue)
         {
-            var found = dbCommand.Parameters.Cast<DbParameter>()
-                .Any(
-                    p => p.ParameterName.Equals(parameterName, StringComparison.InvariantCultureIgnoreCase)
-                         && p.Value.Equals(expectedValue ?? DBNull.Value)
-                );
-            if (!found)
-            {
-                throw new AssertionException(
+            Assert.That(
+                    dbCommand,
+                    c=>c.Parameters.Cast<DbParameter>()
+                        .Any(
+                             p => p.ParameterName.Equals(parameterName, StringComparison.InvariantCultureIgnoreCase)
+                               && p.Value.Equals(expectedValue ?? DBNull.Value)
+                            ),
                     string.Format(
                     "\n\nExpected:\n\nclause: '{0} = @{0}'\n\nwith actual value: @{0}='{1}'\n\nBut was:\n\n{2}",
                     parameterName, expectedValue, dbCommand.ToStringTextAndParams()));
-            }
+            
             return dbCommand;
         }
     }

@@ -8,7 +8,7 @@ namespace TestBase.Shoulds
     {
         public static T ShouldEqualByValue<T>(this T @this, T expectedValue, string message=null, params object[] args)
         {
-            Assert.That(@this, new EqualsByValueConstraint(expectedValue), message, args);
+            Assert.That(@this, x=>x.EqualsByValue(expectedValue), message, args);
             return @this;
         }
         /// <summary>
@@ -20,7 +20,7 @@ namespace TestBase.Shoulds
         /// <exception cref="NUnit.Framework.AssertionException">Returns a message indicating where the comparision failed</exception>
         public static T ShouldEqualByValue<T>(this T actual, object expectedValue, string message=null, params object[] args)
         {
-            Assert.That(actual, new EqualsByValueConstraint(expectedValue), message, args);
+            Assert.That(actual, x=>x.EqualsByValue(expectedValue), message, args);
             return actual;
         }
 
@@ -38,7 +38,7 @@ namespace TestBase.Shoulds
         public static T ShouldEqualByValueExceptFor<T>(this T actual, 
                                 object expectedValue, IEnumerable<string> exclusions, string message=null, params object[] args)
         {
-            Assert.That(actual, new EqualsByValueExceptForConstraint(expectedValue, exclusions), message, args);
+            Assert.That(actual, x=>x.EqualsByValueExceptFor(expectedValue, exclusions), message, args);
             return actual;
         }
 
@@ -54,19 +54,6 @@ namespace TestBase.Shoulds
         }
         public static IEnumerable<T>
             ShouldEqualByValueExceptForValuesIgnoringOrder<T>(this IEnumerable<T> @this,
-                                              IEnumerable<T> expected,
-                                              IEnumerable<T> exceptions,
-                                              string message = null,
-                                              params object[] args)
-        {
-            @this.Where(exceptions.DoesNotContain).OrderBy(x => x)
-                .ShouldEqualByValue(
-                    expected.Where(exceptions.DoesNotContain).OrderBy(x => x), message, args);
-            return @this;
-        }
-        [Obsolete("Spell 'Except' correctly: ShouldEqualByValueExceptForValuesIgnoringOrder()")]
-        public static IEnumerable<T>
-            ShouldEqualByValueExpectForValuesIgnoringOrder<T>(this IEnumerable<T> @this,
                                               IEnumerable<T> expected,
                                               IEnumerable<T> exceptions,
                                               string message = null,

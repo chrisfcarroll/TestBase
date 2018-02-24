@@ -5,7 +5,6 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("TestBase")]
 [assembly: AssemblyDescription(@"*TestBase* gets you off to a flying start when unit testing projects with dependencies.
 It offers a rich extensible set of fluent assertions and a set of verifiable Fake Ado.Net components, with easy setup and verification.
 
@@ -48,15 +47,8 @@ It identifies constructor dependencies by name and type, looking in the followin
 
 ChangeLog
 ---------
+4.0.1.0 Port to NetCore
 3.0.3.0 Improves FakeDb setup
 3.0.x.0 adds and/or corrects missing Shoulds()
 2.0.5.0 adds some intellisense and FakeDbConnection.Verify(..., message,args) overload
 ")]
-
-// Setting ComVisible to false makes the types in this assembly not visible 
-// to COM components.  If you need to access a type in this assembly from 
-// COM, set the ComVisible attribute to true on that type.
-[assembly: ComVisible(false)]
-
-// The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("8640aff7-2dc9-4b70-92ed-d24a574e56bb")]

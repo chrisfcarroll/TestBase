@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using NUnit.Framework;
 using TestBase.Shoulds;
+using Is = TestBase.Shoulds.Is;
 
 namespace TestBase.Tests.WhenAsserting.ShouldCallTheRightNUnitAssertThatOverload__GivenAssertionFail
 {
@@ -32,7 +33,7 @@ namespace TestBase.Tests.WhenAsserting.ShouldCallTheRightNUnitAssertThatOverload
             { "ShouldBeNullOrEmptyOrWhitespace", () => "4".ShouldBeNullOrEmptyOrWhitespace(TestCasesForCustomFailureMessageWithArgs.FailureMessage ) }, 
             { "ShouldNotBeNullOrEmpty(null)", () => (null as string).ShouldNotBeNullOrEmpty(TestCasesForCustomFailureMessageWithArgs.FailureMessage ) }, 
             { "ShouldNotBeNullOrEmpty(emptystring)", () => "".ShouldNotBeNullOrEmpty(TestCasesForCustomFailureMessageWithArgs.FailureMessage ) }, 
-            { "ShouldBeSuchThat",       () => "5".ShouldBeSuchThat(String.IsNullOrEmpty, TestCasesForCustomFailureMessageWithArgs.FailureMessage ) }, 
+            { "ShouldBeSuchThat",       () => "5".ShouldBe(x=>String.IsNullOrEmpty(x), TestCasesForCustomFailureMessageWithArgs.FailureMessage ) }, 
             { "ShouldEqualIgnoringCase",() => "6".ShouldEqualIgnoringCase("66", TestCasesForCustomFailureMessageWithArgs.FailureMessage ) }, 
             { "ShouldEqual",            () => 7.ShouldEqual(77, TestCasesForCustomFailureMessageWithArgs.FailureMessage ) }, 
             { "ShouldEqualByValue",     () => "8".ShouldEqualByValue(88, TestCasesForCustomFailureMessageWithArgs.FailureMessage) }, 
@@ -51,7 +52,7 @@ namespace TestBase.Tests.WhenAsserting.ShouldCallTheRightNUnitAssertThatOverload
             { "ShouldContain<IEnumerable>",          () => (new[]{"19"}).ShouldContain("nineteen", TestCasesForCustomFailureMessageWithArgs.FailureMessage ) }, 
             { "ShouldStartWith",        () => "20".ShouldStartWith("x20", TestCasesForCustomFailureMessageWithArgs.FailureMessage ) }, 
             { "ShouldEndWith",          () => "21".ShouldEndWith("21x", TestCasesForCustomFailureMessageWithArgs.FailureMessage ) }, 
-            { "ShouldSatisfy",          () => 22.ShouldSatisfy(i => i.ToString(), Is.True, TestCasesForCustomFailureMessageWithArgs.FailureMessage ) }, 
+            { "ShouldSatisfy",          () => 22.ShouldSatisfy(i => i.ToString(), x=>x.Equals("boo"), TestCasesForCustomFailureMessageWithArgs.FailureMessage ) }, 
             { "ShouldContainInOrder",   () => (new List<int>{23,24}).ShouldContainInOrder(24,23, TestCasesForCustomFailureMessageWithArgs.FailureMessage ) },
 
             { "ShouldBeFileResult",   () => (new RedirectResult("/")).ShouldBeFileResult(null,TestCasesForCustomFailureMessageWithArgs.FailureMessage ) },

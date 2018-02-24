@@ -1,4 +1,5 @@
 using System;
+using System.Data.Common;
 using System.Linq.Expressions;
 using System.Reflection;
 using Newtonsoft.Json;
@@ -34,7 +35,7 @@ namespace TestBase
         /// <param name="commentArgs"></param>
         /// <returns><paramref name="actual"/>, if the precondition succeeds</returns>
         /// <exception cref="Assertion{T}">thrown if the precondition fails.</exception>
-        public static T That<T>(T actual, Expression<Predicate<T>> predicate, string comment = null, params object[] commentArgs)
+        public static T That<T>(T actual, Expression<Func<T,bool>> predicate, string comment = null, params object[] commentArgs)
         {
             var result= new Assertion<T>(actual, predicate, comment, commentArgs);
             return result ? actual : throw result;
@@ -51,7 +52,7 @@ namespace TestBase
         /// <param name="commentArgs"></param>
         /// <returns><paramref name="actual"/>, if the assertion succeeds</returns>
         /// <exception cref="Precondition{T}">thrown if the assertion fails.</exception>
-        public static T Precondition<T>(T actual, Expression<Predicate<T>> predicate, string comment = null, params object[] commentArgs)
+        public static T Precondition<T>(T actual, Expression<Func<T,bool>> predicate, string comment = null, params object[] commentArgs)
         {
             var result = new Precondition<T>(actual, predicate, comment, commentArgs);
             return result ? actual : throw result;
@@ -91,21 +92,45 @@ namespace TestBase
             return result ? result : throw result;
         }
 
-        public static T Throws<T,TE>(T actual, Expression<Predicate<T>> predicate, TE dummyForTypeInference=null, string comment = null, params object[] commentArgs) where TE : Exception
+        public static TE Throws<TE>(Action action, string comment = null,params object[] commentArgs) where TE : Exception
+        {
+            try
+            {
+                action();
+            }
+            catch (TE ex) { return ex;}
+            catch (Exception ex)
+            {
+                throw That(ex, e => e is TE, $"Expected to throw a {typeof(TE)} but threw {ex}");
+            }
+            throw new ShouldHaveThrownException( action.ToString());
+        }
+
+        public static T Throws<T,TE>(T actual, Expression<Func<T,bool>> predicate, TE dummyForTypeInference=null, string comment = null, params object[] commentArgs) where TE : Exception
+        {
+            return Throws<T, TE>(actual, predicate, comment, commentArgs);
+        }
+
+        static T Throws<T, TE>(T actual, Expression<Func<T,bool>> predicate, string comment, object[] commentArgs) where TE : Exception
         {
             Assertion<T> a;
             try
             {
                 a = new Assertion<T>(actual, predicate, comment, commentArgs);
             }
-            catch (TE) { return actual;}
+            catch (TE)
+            {
+                return actual;
+            }
             catch (Exception ex)
             {
                 throw That(ex, e => e is TE, $"Expected to throw a {typeof(TE)} but threw {ex}");
             }
+
             throw new ShouldHaveThrownException(a.Message);
         }
-        public static T DoesNotThrow<T>(T actual, Expression<Predicate<T>> predicate, string comment = null, params object[] commentArgs)
+
+        public static T DoesNotThrow<T>(T actual, Expression<Func<T,bool>> predicate, string comment = null, params object[] commentArgs)
         {
             try
             {
@@ -164,6 +189,11 @@ namespace TestBase
                 }
             }
         }
+
+        public static void Fail(string format, params object[] args)
+        {
+            throw new Assertion(string.Format(format, args));
+        }
     }
 
     /// <summary>
@@ -178,7 +208,7 @@ namespace TestBase
             return new ShouldHaveThrownException(assertion.Message);
         }
 
-        public static ShouldHaveThrownException For<T>(T actual, Expression<Predicate<T>> predicate, string comment=null, params object[] args)
+        public static ShouldHaveThrownException For<T>(T actual, Expression<Func<T,bool>> predicate, string comment=null, params object[] args)
         {
             return new ShouldHaveThrownException( new Assertion<T>(actual, predicate, comment, args).Message );
         }
@@ -190,7 +220,7 @@ namespace TestBase
     {
         public ShouldNotThrowException(string message) : base(message) { }
         public ShouldNotThrowException(Exception a) : base(a.Message){}
-        public static ShouldNotThrowException For<T>(T actual, Expression<Predicate<T>> predicate, string comment = null, params object[] args)
+        public static ShouldNotThrowException For<T>(T actual, Expression<Func<T,bool>> predicate, string comment = null, params object[] args)
         {
             return new ShouldNotThrowException(new Assertion<T>(actual, predicate, comment, args).Message);
         }
@@ -200,12 +230,18 @@ namespace TestBase
     /// <typeparam name="T"></typeparam>
     public class Precondition<T> : Assertion<T>
     {
-        public Precondition(T actual, Expression<Predicate<T>> predicate, string comment = null, params object[] commentArgs) : base(actual, predicate, comment, commentArgs){}
+        public Precondition(T actual, Expression<Func<T,bool>> predicate, string comment = null, params object[] commentArgs) : base(actual, predicate, comment, commentArgs){}
+    }
+    
+    public class Assertion : Exception
+    {
+        protected Assertion():base() { }
+        public Assertion(string message):base(message) { }
     }
 
     /// <summary>An Assertion is throwable (it inherits from Exception) but need not indicate an assertion failure.</summary>
     /// <typeparam name="T"></typeparam>
-    public class Assertion<T> : Exception
+    public class Assertion<T> : Assertion
     {
         static readonly string nl = Environment.NewLine;
         public string Actual { get; }
@@ -224,7 +260,7 @@ namespace TestBase
         /// <param name="predicate">The predicate to apply</param>
         /// <param name="comment">Occurrences of "{{actual}}" in the comment string will be replace with <paramref name="actual"/>?.ToString()</param>
         /// <param name="commentArgs">will be inserted into <paramref name="comment"/> using string.Format()</param>
-        public Assertion(T actual, Expression<Predicate<T>> predicate, string comment, object[] commentArgs)
+        public Assertion(T actual, Expression<Func<T,bool>> predicate, string comment, object[] commentArgs)
         {
             try
             {
@@ -265,8 +301,7 @@ namespace TestBase
 
         string CommentFormatted(string actual, string comment, object[] commentArgs)
         {
-            string commentFormatted;
-            commentFormatted = comment?.Replace("{{actual}}", actual);
+            var commentFormatted = comment?.Replace("{{actual}}", actual);
             if (commentFormatted != null && commentArgs?.Length > 0) { commentFormatted = string.Format(commentFormatted, commentArgs); }
             return commentFormatted;
         }

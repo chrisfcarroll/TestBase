@@ -25,7 +25,7 @@ namespace TestBase
     //                     .ToArray();
     //    }
 
-    //    public static Type[] GetPublicClassesFromApplicationAssembly(this Assembly assembly, Predicate<Type> @where)
+    //    public static Type[] GetPublicClassesFromApplicationAssembly(this Assembly assembly, Func<Type,bool> @where)
     //    {
     //        return
     //            assembly.GetExportedTypes()

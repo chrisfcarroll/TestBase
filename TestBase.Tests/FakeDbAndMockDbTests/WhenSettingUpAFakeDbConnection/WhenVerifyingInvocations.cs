@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using Dapper;
+using NUnit.Framework;
 using TestBase.AdoNet.FakeDb;
 using TestBase.Shoulds;
 

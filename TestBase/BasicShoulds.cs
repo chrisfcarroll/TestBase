@@ -26,15 +26,6 @@ namespace TestBase
             return Assert.That(actual, a=>a.Length == 0, comment ?? "Should Be Empty", args);
         }
 
-        public static IEnumerable<T> ShouldBeEmpty<T>(this IEnumerable<T> actual, string comment=null, params object[] args)
-        {
-            return Assert.That(actual,  a=>!a.Any(), comment ?? "ShouldBeEmpty", args);
-        }
-        public static IEnumerable<T> ShouldNotHaveAny<T>(this IEnumerable<T> actual, Func<T,bool> predicate, string comment = null, params object[] args)
-        {
-            return Assert.That(actual, a => !a.Any(predicate), comment??"ShouldNotHaveAny item satisfying", args);
-        }
-
         public static T ShouldBeNullOrEmptyOrWhitespace<T>(this T actual, string comment=null, params object[] args)
         {
             return Assert.That(actual, a => a== null || a.ToString().Trim().Length == 0, comment ?? "ShouldBeNullOrWhitespace", args);
