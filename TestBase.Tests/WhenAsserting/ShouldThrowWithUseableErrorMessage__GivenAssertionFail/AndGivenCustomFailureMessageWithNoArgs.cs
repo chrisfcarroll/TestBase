@@ -3,18 +3,18 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using NUnit.Framework;
 using TestBase.Shoulds;
-using Is = TestBase.Shoulds.Is;
+using TestBase.Tests.WhenAsserting.ShouldCallTheRightNUnitAssertThatOverload__GivenAssertionFail;
 
-namespace TestBase.Tests.WhenAsserting.ShouldCallTheRightNUnitAssertThatOverload__GivenAssertionFail
+namespace TestBase.Tests.WhenAsserting.ShouldThrowWithUseableErrorMessage__GivenAssertionFail
 {
-    public partial class Should_call_the_right_NUnitAssertThat_overload__Given_AssertionFail
+    public partial class GivenAssertionFail
     {
         [Test]
-        public void Given_custom_fail_message_with_no_args()
+        public void And_Given_custom_failure_message_with_no_args()
         {
             foreach (var assertion in TestCasesForCustomFailureMessageWithNoArgs.AssertionsWithCustomMessage)
             {
-                assertion.Value.FailureShouldResultInAssertionExceptionWithErrorMessage(assertion.Key, nunitFailureMessageIndent + TestCasesForCustomFailureMessageWithArgs.FailureMessage);
+                assertion.Value.FailureShouldResultInAssertionWithErrorMessage(assertion.Key, TestCasesForCustomFailureMessageWithArgs.FailureMessage);
             }
         }
     }

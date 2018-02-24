@@ -18,13 +18,13 @@ namespace TestBase.Tests.ComparerEqualsByValueTests
             public string EvenMore { get; set; }
         }
 
-        readonly AClass object1 = new AClass
+        readonly AClass A11Evenmore1 = new AClass
             {
                     Id=1,
                     Name = "1",
                     More = new BClass{EvenMore = "Evenmore1"}
             };
-        readonly AClass object2 = new AClass
+        readonly AClass A11Evenmore2 = new AClass
         {
             Id = 1,
             Name = "1",
@@ -34,18 +34,24 @@ namespace TestBase.Tests.ComparerEqualsByValueTests
         [Test]
         public void Should_return_true_when_the_same_apart_from_exclusions()
         {
-            Comparer.MemberCompare(object1, object2, null, new List<string>{"More"}).ShouldEqual( (BoolWithString)true, "Failed to exclude More");
-            Comparer.MemberCompare(object1, object2, null, new List<string>{ "More.EvenMore" }).ShouldEqual((BoolWithString)true, "Failed to exclude More.EvenMore");
-            object1.ShouldEqualByValueExceptFor(object2, new List<string> {"More"});
+            Comparer.MemberCompare(A11Evenmore1, A11Evenmore2, new List<string>{"More"}).ShouldEqual( (BoolWithString)true, "Failed to exclude More");
+            Comparer.MemberCompare(A11Evenmore1, A11Evenmore2, new List<string>{ "More.EvenMore" }).ShouldEqual((BoolWithString)true, "Failed to exclude More.EvenMore");
+            A11Evenmore1.ShouldEqualByValueExceptFor(A11Evenmore2, new List<string> {"More"});
         }
 
         [Test]
-        public void Should_return_false_when_not_the_same()
+        public void MemberCompare_Should_return_false_when_not_the_same()
         {
-            var result = Comparer.MemberCompare(object1, object2, null, new List<string> { "IrrelevantExclusion" });
+            var result = Comparer.MemberCompare(A11Evenmore1, A11Evenmore2, new List<string> { "IrrelevantExclusion" });
             ((bool)result).ShouldEqual(false);
-            Assert.Throws<AssertionException>(
-                () => object1.ShouldEqualByValueExceptFor(object2, new List<string> { "IrrelevantExclusion" }));
+            Assert.Throws<Assertion>(() => A11Evenmore1.ShouldEqualByValueExceptFor(A11Evenmore2, new List<string> { "IrrelevantExclusion" }));
+        }
+        [Test]
+        public void ShouldEqual_Should_Throw_Assertion_when_not_the_same()
+        {
+            var result = Comparer.MemberCompare(A11Evenmore1, A11Evenmore2, new List<string> { "IrrelevantExclusion" });
+            ((bool)result).ShouldEqual(false);
+            Assert.Throws<Assertion>(() => A11Evenmore1.ShouldEqualByValueExceptFor(A11Evenmore2, new List<string> { "IrrelevantExclusion" }));
         }
     }
 }

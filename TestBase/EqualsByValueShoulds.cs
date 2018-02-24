@@ -17,7 +17,7 @@ namespace TestBase
         /// <see cref="TestBase.Comparer.MemberCompare"/>
         /// </summary>
         /// <returns><param name="this"></param></returns>
-        /// <exception cref="NUnit.Framework.AssertionException">Returns a message indicating where the comparision failed</exception>
+        /// <exception cref="Assertion">Returns a message indicating where the comparision failed</exception>
         public static T ShouldEqualByValue<T>(this T actual, object expectedValue, [Optional] string message, params object[] args)
         {
             var result = Comparer.EqualsByValueOrDiffers(actual, expectedValue);

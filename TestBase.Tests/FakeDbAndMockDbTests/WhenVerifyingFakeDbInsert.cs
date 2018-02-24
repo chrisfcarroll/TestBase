@@ -34,13 +34,13 @@ namespace TestBase.Tests.FakeDbAndMockDbTests
                 conn.ShouldHaveInserted("ATableName", new AClass {Name = "Boo1", Id = 1});
                 conn.ShouldHaveInserted("ATableName", new[] {"Name", "Id"});
                 conn.ShouldHaveInserted("ATableName", "");
-                Assert.Throws<AssertionException>(() => { conn.ShouldHaveInserted("ATableName", new AClass {Name = "Boo1", Id = 222}); });
-                Assert.Throws<AssertionException>(() => { conn.ShouldHaveInserted("ATableName", new[] {"WrongCol", "Name"}); });
-                Assert.Throws<AssertionException>(() => { conn.ShouldHaveInserted("WrongTableName", new AClass {Name = "Boo1", Id = 1}); });
+                Assert.Throws<Assertion>(() => { conn.ShouldHaveInserted("ATableName", new AClass {Name = "Boo1", Id = 222}); });
+                Assert.Throws<Assertion>(() => { conn.ShouldHaveInserted("ATableName", new[] {"WrongCol", "Name"}); });
+                Assert.Throws<Assertion>(() => { conn.ShouldHaveInserted("WrongTableName", new AClass {Name = "Boo1", Id = 1}); });
 
-                Assert.Throws<AssertionException>(() => { conn.ShouldHaveSelected("ATableName"); });
-                Assert.Throws<AssertionException>(() => { conn.ShouldHaveUpdated("ATableName", "", ""); });
-                Assert.Throws<AssertionException>(() => { conn.ShouldHaveDeleted("ATableName"); });
+                Assert.Throws<Assertion>(() => { conn.ShouldHaveSelected("ATableName"); });
+                Assert.Throws<Assertion>(() => { conn.ShouldHaveUpdated("ATableName", "", ""); });
+                Assert.Throws<Assertion>(() => { conn.ShouldHaveDeleted("ATableName"); });
             }
         }
     }

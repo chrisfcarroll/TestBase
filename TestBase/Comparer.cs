@@ -88,12 +88,12 @@ namespace TestBase
             return MemberCompare(left, right, exclusionList: null, includeOnlyList: propertiesToCompare, typesMustAlsoBeSame: false);
         }
 
-        public static BoolWithString EqualsByValueOrDiffers(this object left, object right, double floatTolerance=1e-15d)
+        public static BoolWithString EqualsByValueOrDiffers(this object left, object right, double floatTolerance=1e-14d)
         {
             return MemberCompare(left, right, exclusionList: null, includeOnlyList: null, floatTolerance: floatTolerance, typesMustAlsoBeSame: false);
         }
 
-        public static BoolWithString EqualsByValueOrDiffersExceptFor(this object left, object right, IEnumerable<string> exclusionList, double floatTolerance = 1e-15d)
+        public static BoolWithString EqualsByValueOrDiffersExceptFor(this object left, object right, IEnumerable<string> exclusionList, double floatTolerance = 1e-14d)
         {
             return MemberCompare(left, right, exclusionList: exclusionList, includeOnlyList: null, floatTolerance: floatTolerance, typesMustAlsoBeSame: false);
         }

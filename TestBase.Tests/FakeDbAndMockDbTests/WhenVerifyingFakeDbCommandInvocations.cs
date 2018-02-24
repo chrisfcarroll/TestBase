@@ -12,13 +12,13 @@ namespace TestBase.Tests.FakeDbAndMockDbTests
             using (var conn = new FakeDbConnection().SetUpForExecuteNonQuery(0).SetUpForQuery(FakeData.GivenFakeDataInFakeDb()).SetUpForExecuteNonQuery(0))
             {
                 ExecuteNonQuery(conn, "Delete ATableName Id=@Id ");
-                Assert.Throws<AssertionException>(() => { conn.ShouldHaveDeleted("ATableName", "Id", 111); });
+                Assert.Throws<Assertion>(() => { conn.ShouldHaveDeleted("ATableName", "Id", 111); });
 
                 ExecuteReader(conn, "Select ATableName Id=@Id ");
-                Assert.Throws<AssertionException>(() => { conn.ShouldHaveSelected("ATableName",whereClauseField:"Id"); });
+                Assert.Throws<Assertion>(() => { conn.ShouldHaveSelected("ATableName",whereClauseField:"Id"); });
 
                 ExecuteNonQuery(conn, "Insert Int ATableName Id=@Id ");
-                Assert.Throws<AssertionException>(() => { conn.ShouldHaveInserted("ATableName", new {Id=111}); });
+                Assert.Throws<Assertion>(() => { conn.ShouldHaveInserted("ATableName", new {Id=111}); });
             }
         }
 

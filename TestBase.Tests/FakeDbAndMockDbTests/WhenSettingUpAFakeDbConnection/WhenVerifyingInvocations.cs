@@ -29,10 +29,10 @@ namespace TestBase.Tests.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection
             fakeConnection.Verify(x => x.Parameters["id"].Value.Equals(1) && x.Parameters["name"].Value.Equals("pname"),expectedInvocationsCount: 1,exactly: true);
             fakeConnection.Verify(x => x.CommandText=="Query @id, @name");
 
-            Assert.Throws<AssertionException>(() => fakeConnection.Verify(x => x.Parameters["id"].Value.Equals(999)))
+            Assert.Throws<Assertion>(() => fakeConnection.Verify(x => x.Parameters["id"].Value.Equals(999)))
                   .Message.ShouldMatch("called .* times.*");
 
-            Assert.Throws<AssertionException>(() => fakeConnection.Verify(x=>x.CommandText == "WrongCommandText"))
+            Assert.Throws<Assertion>(() => fakeConnection.Verify(x=>x.CommandText == "WrongCommandText"))
                   .Message.ShouldMatch("called .* times.*");
         }
 
@@ -58,16 +58,16 @@ namespace TestBase.Tests.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection
             fakeConnection.Verify(x => x.Parameters["pname"].Value.ToString().StartsWith("pvalue"), expectedInvocationsCount: 2, exactly: true);
             fakeConnection.Verify(x => x.CommandText == "FakeCommandText");
 
-            Assert.Throws<AssertionException>(() => fakeConnection.Verify(x => x.Parameters["pname"].Value.Equals("pvalue"), expectedInvocationsCount: 999, exactly: true))
+            Assert.Throws<Assertion>(() => fakeConnection.Verify(x => x.Parameters["pname"].Value.Equals("pvalue"), expectedInvocationsCount: 999, exactly: true))
                   .Message.ShouldMatch("called .* times.*");
 
-            Assert.Throws<AssertionException>(() => fakeConnection.Verify(x => x.Parameters["pname"].Value.ToString().StartsWith("pvalue"), expectedInvocationsCount: 1, exactly: true))
+            Assert.Throws<Assertion>(() => fakeConnection.Verify(x => x.Parameters["pname"].Value.ToString().StartsWith("pvalue"), expectedInvocationsCount: 1, exactly: true))
                   .Message.ShouldMatch("called .* times.*");
 
-            Assert.Throws<AssertionException>(() => fakeConnection.Verify(x => x.Parameters["pname"].Value.Equals("wrongValue")))
+            Assert.Throws<Assertion>(() => fakeConnection.Verify(x => x.Parameters["pname"].Value.Equals("wrongValue")))
                   .Message.ShouldMatch("called .* times.*");
 
-            Assert.Throws<AssertionException>(() => fakeConnection.Verify(x => x.CommandText == "WrongCommandText"))
+            Assert.Throws<Assertion>(() => fakeConnection.Verify(x => x.CommandText == "WrongCommandText"))
                   .Message.ShouldMatch("called .* times.*");
         }
 
@@ -79,7 +79,7 @@ namespace TestBase.Tests.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection
             fakeConnection.Query<IdAndName>("Query @id, @name", new { id = 1, name = "pname" }).ShouldEqualByValue(fakeData);
 
             //A & A
-            Assert.Throws<AssertionException>(
+            Assert.Throws<Assertion>(
                    () => fakeConnection.Verify(x => x.Parameters["id"].Value.Equals(999),1,true,
                                               "SpecificErrorMessage {0}",
                                               "WithParam")

@@ -21,14 +21,14 @@ namespace TestBase.Tests.ShouldsCorrectnessAndVerbosityTests
         [TestCase((new int[0]))]
         public void IEnumerableGeneric_ShouldNotBeEmpty_ShouldFail(int[] value)
         {
-            Assert.Throws<AssertionException>(
+            Assert.Throws<Assertion>(
                 () => value.ShouldBeAssignableTo<IEnumerable<int>>().ShouldNotBeEmpty()
                 );
         }
         [TestCase((new int[0]))]
         public void IEnumerableNonGeneric_ShouldNotBeEmpty_ShouldFail(int[] value)
         {
-            Assert.Throws<AssertionException>(
+            Assert.Throws<Assertion>(
                 () => value.ShouldBeAssignableTo<IEnumerable>().ShouldNotBeEmpty()
                 );
         }
@@ -46,14 +46,14 @@ namespace TestBase.Tests.ShouldsCorrectnessAndVerbosityTests
         [TestCase((new[] { 1, 2, 3 }))]
         public void IEnumerableGeneric_ShouldBeEmpty_ShouldFail(int[] value)
         {
-            Assert.Throws<AssertionException>(
+            Assert.Throws<Assertion>(
                 () => value.ShouldBeAssignableTo<IEnumerable<int>>().ShouldBeEmpty()
                 );
         }
         [TestCase((new[] { 1, 2, 3 }))]
         public void IEnumerableNonGeneric_ShouldBeEmpty_ShouldFail(int[] value)
         {
-            Assert.Throws<AssertionException>(
+            Assert.Throws<Assertion>(
                 () => value.ShouldBeAssignableTo<IEnumerable>().ShouldBeEmpty()
                 );
         }

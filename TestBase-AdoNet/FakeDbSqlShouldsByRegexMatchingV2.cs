@@ -44,7 +44,7 @@
 //                    ? "Expected to invoke a SQL command matching " + predicate.ToCSharpCode() 
 //                    : string.Format(message, args);
 
-//            throw new AssertionException(message + invocations.PrintInvocations());
+//            throw new Assertion(message + invocations.PrintInvocations());
 //        }
 
 //        /// <summary>
@@ -287,7 +287,7 @@
 //                    }
 //                    matches++;
 //                }
-//                catch (AssertionException ae)
+//                catch (Assertion ae)
 //                {
 //                    //swallow and don't increment matches count;
 //                }
@@ -385,7 +385,7 @@
 //                );
 //            if (!found)
 //            {
-//                throw new AssertionException(
+//                throw new Assertion(
 //                    string.Format(
 //                    "\n\nExpected:\n\nclause: '{0} = @{0}'\n\nwith actual value: @{0}='{1}'\n\nBut was:\n\n{2}",
 //                    parameterName, expectedValue, dbCommand.ToStringTextAndParams()));

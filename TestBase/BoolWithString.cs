@@ -60,22 +60,21 @@ namespace TestBase
         public static BoolWithString False(string message="") { return new BoolWithString(false, message); }
         public static BoolWithString True(string message="") { return new BoolWithString(true, message); }
 
-        public static bool operator ==(BoolWithString left, BoolWithString right)
-        {
-            return left.Equals(right);
-        }
+        public static bool operator ==(BoolWithString left, BoolWithString right){return left.Equals(right);}
+        public static bool operator !=(BoolWithString left, BoolWithString right){return !(left == right);}
+        public static bool operator ==(BoolWithString left, bool right) {return left.Equals(right);}
+        public static bool operator !=(BoolWithString left, bool right) {return !(left == right);}
+        public static bool operator ==(bool left, BoolWithString right) {return left==right.AsBool;}
+        public static bool operator !=(bool left, BoolWithString right) {return left != right.AsBool;}
 
-        public static bool operator !=(BoolWithString left, BoolWithString right)
-        {
-            return !(left == right);
-        }
-
+        public bool Equals(bool obj) { return value.Equals(obj); }
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
             if (obj.GetType() != GetType()) return false;
             return Equals((BoolWithString) obj);
         }
+
 
         public BoolWithString Because(BoolWithString cause)
         {

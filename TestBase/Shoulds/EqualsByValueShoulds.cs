@@ -17,7 +17,7 @@ namespace TestBase.Shoulds
         /// <see cref="TestBase.Comparer.MemberCompare"/>
         /// </summary>
         /// <returns><param name="actual"></param></returns>
-        /// <exception cref="NUnit.Framework.AssertionException">Returns a message indicating where the comparision failed</exception>
+        /// <exception cref="Assertion">Returns a message indicating where the comparision failed</exception>
         public static T ShouldEqualByValue<T>(this T actual, object expectedValue, string message=null, params object[] args)
         {
             Assert.That(actual, x=>x.EqualsByValue(expectedValue), message, args);
@@ -34,7 +34,7 @@ namespace TestBase.Shoulds
         /// to exclude, e.g. new List&lt;string&gt;{"Id","SomeProperty.SomePropertyOfThat.FieldName"} 
         /// </param>
         /// <returns><param name="actual"></param></returns>
-        /// <exception cref="NUnit.Framework.AssertionException">Returns a message indicating where the comparision failed</exception>
+        /// <exception cref="Assertion">Returns a message indicating where the comparision failed</exception>
         public static T ShouldEqualByValueExceptFor<T>(this T actual, 
                                 object expectedValue, IEnumerable<string> exclusions, string message=null, params object[] args)
         {

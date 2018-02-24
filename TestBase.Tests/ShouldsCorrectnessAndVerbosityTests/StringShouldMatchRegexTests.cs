@@ -22,11 +22,11 @@ namespace TestBase.Tests.ShouldsCorrectnessAndVerbosityTests
             {
                 testInput.ShouldMatch(testPattern);
             }
-            catch (AssertionException)
+            catch (Assertion)
             {
                 return;
             }
-            throw new AssertionException( $"input {testInput} should not have matched {testPattern}");
+            throw new Assertion( $"input {testInput} should not have matched {testPattern}");
         }
 
         [TestCase("input pattern", "PATT")]

@@ -19,11 +19,11 @@ namespace TestBase.Tests.ShouldsCorrectnessAndVerbosityTests
             {
                 testCase.SingleOrAssertFail();
             }
-            catch (AssertionException)
+            catch (Assertion)
             {
                 return;
             }
-            throw new AssertionException("Should have thrown");
+            throw new Assertion("Should have thrown");
         }
     }
 }

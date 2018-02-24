@@ -24,8 +24,8 @@ namespace TestBase.Tests.ShouldsCorrectnessAndVerbosityTests
         {
             var right1 = left + tolerance * 1.001d;
             var right2 = left - tolerance * 1.001d;
-            Assert.Throws<AssertionException>(() => { left.ShouldEqualWithTolerance(right1, tolerance); });
-            Assert.Throws<AssertionException>(() => { left.ShouldEqualWithTolerance(right2, tolerance); });
+            Assert.Throws<Assertion>(() => { left.ShouldEqualWithTolerance(right1, tolerance); });
+            Assert.Throws<Assertion>(() => { left.ShouldEqualWithTolerance(right2, tolerance); });
         }
 
         [TestCase(1d, 1e-13d)]
@@ -46,8 +46,8 @@ namespace TestBase.Tests.ShouldsCorrectnessAndVerbosityTests
         {
             var right1 = left + tolerance * 0.999999999999d;
             var right2 = left - tolerance * 0.999999999999d;
-            Assert.Throws<AssertionException>(() => { left.ShouldNotEqualWithMargin(right1, tolerance); });
-            Assert.Throws<AssertionException>(() => { left.ShouldNotEqualWithMargin(right2, tolerance); });
+            Assert.Throws<Assertion>(() => { left.ShouldNotEqualWithMargin(right1, tolerance); });
+            Assert.Throws<Assertion>(() => { left.ShouldNotEqualWithMargin(right2, tolerance); });
         }
 
         [TestCase(1d, 1e-14d)]
@@ -70,8 +70,8 @@ namespace TestBase.Tests.ShouldsCorrectnessAndVerbosityTests
             var right = actual - tolerance * 1.001d;
             var left = actual + tolerance * 1.001d;
 
-            Assert.Throws<AssertionException>(() => right.ShouldBeGreaterThanOrEqualToWithTolerance(actual, tolerance));
-            Assert.Throws<AssertionException>(() => actual.ShouldBeGreaterThanOrEqualToWithTolerance(left, tolerance));
+            Assert.Throws<Assertion>(() => right.ShouldBeGreaterThanOrEqualToWithTolerance(actual, tolerance));
+            Assert.Throws<Assertion>(() => actual.ShouldBeGreaterThanOrEqualToWithTolerance(left, tolerance));
         }
 
         [TestCase(1d, 1e-14d)]
@@ -94,8 +94,8 @@ namespace TestBase.Tests.ShouldsCorrectnessAndVerbosityTests
             var right = actual - tolerance * 1.001d;
             var left = actual + tolerance * 1.001d;
 
-            Assert.Throws<AssertionException>(() => actual.ShouldBeLessThanOrEqualToWithTolerance(right, tolerance));
-            Assert.Throws<AssertionException>(() => left.ShouldBeLessThanOrEqualToWithTolerance(actual, tolerance));
+            Assert.Throws<Assertion>(() => actual.ShouldBeLessThanOrEqualToWithTolerance(right, tolerance));
+            Assert.Throws<Assertion>(() => left.ShouldBeLessThanOrEqualToWithTolerance(actual, tolerance));
         }
     }
 }

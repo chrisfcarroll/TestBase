@@ -27,11 +27,11 @@ namespace TestBase.Tests.FakeDbAndMockDbTests
 
                 conn.ShouldHaveDeleted("ATableName");
                 conn.ShouldHaveDeleted("ATableName", "Id", 111);
-                Assert.Throws<AssertionException>(() => { conn.ShouldHaveDeleted("ATableName", "Id", 222222); });
-                Assert.Throws<AssertionException>(() => { conn.ShouldHaveDeleted("ATableName", "Id2", 111); });
-                Assert.Throws<AssertionException>(() => { conn.ShouldHaveDeleted("WrongTableName", "Id", 111); });
-                Assert.Throws<AssertionException>(() => { conn.ShouldHaveInserted("ATableName", ""); });
-                Assert.Throws<AssertionException>(() => { conn.ShouldHaveSelected("ATableName"); });
+                Assert.Throws<Assertion>(() => { conn.ShouldHaveDeleted("ATableName", "Id", 222222); });
+                Assert.Throws<Assertion>(() => { conn.ShouldHaveDeleted("ATableName", "Id2", 111); });
+                Assert.Throws<Assertion>(() => { conn.ShouldHaveDeleted("WrongTableName", "Id", 111); });
+                Assert.Throws<Assertion>(() => { conn.ShouldHaveInserted("ATableName", ""); });
+                Assert.Throws<Assertion>(() => { conn.ShouldHaveSelected("ATableName"); });
             }
         }
 
@@ -55,11 +55,11 @@ namespace TestBase.Tests.FakeDbAndMockDbTests
 
                 conn.ShouldHaveDeleted("ATableName");
                 conn.ShouldHaveDeleted("ATableName", "Id", 111);
-                Assert.Throws<AssertionException>(() => { conn.ShouldHaveDeleted("ATableName", "Id", 222222); });
-                Assert.Throws<AssertionException>(() => { conn.ShouldHaveDeleted("ATableName", "Id2", 111); });
-                Assert.Throws<AssertionException>(() => { conn.ShouldHaveDeleted("WrongTableName", "Id", 111); });
-                Assert.Throws<AssertionException>(() => { conn.ShouldHaveInserted("ATableName", ""); });
-                Assert.Throws<AssertionException>(() => { conn.ShouldHaveSelected("ATableName"); });
+                Assert.Throws<Assertion>(() => { conn.ShouldHaveDeleted("ATableName", "Id", 222222); });
+                Assert.Throws<Assertion>(() => { conn.ShouldHaveDeleted("ATableName", "Id2", 111); });
+                Assert.Throws<Assertion>(() => { conn.ShouldHaveDeleted("WrongTableName", "Id", 111); });
+                Assert.Throws<Assertion>(() => { conn.ShouldHaveInserted("ATableName", ""); });
+                Assert.Throws<Assertion>(() => { conn.ShouldHaveSelected("ATableName"); });
             }
         }
     }

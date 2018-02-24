@@ -15,7 +15,7 @@ namespace TestBase.Tests.ShouldsCorrectnessAndVerbosityTests
             {
                 value.ShouldAllBeSuchThat(i => i < 3);
             }
-            catch (AssertionException e)
+            catch (Assertion e)
             {
                 e.Message.ShouldContain("999").ShouldNotContain("1");
             }
@@ -28,7 +28,7 @@ namespace TestBase.Tests.ShouldsCorrectnessAndVerbosityTests
             {
                 value.ShouldAllBeSuchThat(i => i < 3, "Custom Message {0}", "And Params");
             }
-            catch (AssertionException e)
+            catch (Assertion e)
             {
                 e.Message.ShouldContain("999").ShouldNotContain("1");
                 e.Message.ShouldContain("Custom Message And Params");
@@ -42,7 +42,7 @@ namespace TestBase.Tests.ShouldsCorrectnessAndVerbosityTests
             {
                 value.ShouldAllSatisfy(i => i*2, Is.LessThanOrEqualTo(5) );
             }
-            catch (AssertionException e) 
+            catch (Assertion e) 
             {
                 e.Message.ShouldContain("999").ShouldNotContain("2");
             }
@@ -55,7 +55,7 @@ namespace TestBase.Tests.ShouldsCorrectnessAndVerbosityTests
             {
                 value.ShouldAllSatisfy(i => i * 2, Is.LessThanOrEqualTo(5),"Custom Message {0}", "And Params");
             }
-            catch (AssertionException e)
+            catch (Assertion e)
             {
                 e.Message.ShouldContain("999").ShouldNotContain("2");
                 e.Message.ShouldContain("Custom Message And Params");
@@ -75,7 +75,7 @@ namespace TestBase.Tests.ShouldsCorrectnessAndVerbosityTests
         [TestCase(new[] { 1, 2, 3 })]
         public void IEnumerable_ShouldAll_ShouldFail(int[] value)
         {
-            Assert.Throws<AssertionException>(
+            Assert.Throws<Assertion>(
                         ()=>value.ShouldAll(i => { i.ShouldBeGreaterThan(2); })
                         );
         }
@@ -89,7 +89,7 @@ namespace TestBase.Tests.ShouldsCorrectnessAndVerbosityTests
         [TestCase(new[] { 1, 2, 3 })]
         public void IEnumerable_ShouldAllBeSuchThat_ShouldFail(int[] value)
         {
-            Assert.Throws<AssertionException>(
+            Assert.Throws<Assertion>(
                         () => value.ShouldAllBeSuchThat(i => i>2)
                         );
         }
@@ -103,7 +103,7 @@ namespace TestBase.Tests.ShouldsCorrectnessAndVerbosityTests
         [TestCase(new[] { 1, 2, 3 })]
         public void IEnumerable_ShouldAllSatisfy_ShouldFail(int[] value)
         {
-            Assert.Throws<AssertionException>(
+            Assert.Throws<Assertion>(
                         () => value.ShouldAllSatisfy(i => i * 2, Is.GreaterThan(4))
                         );
         }

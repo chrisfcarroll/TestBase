@@ -8,12 +8,12 @@ namespace TestBase
     {
         public static T ShouldNotBeNull<T>(this T actual, string comment=null, params object[] args)
         {
-            return Assert.That(actual, x=>x!=null, comment ?? "ShouldNotBeNull", args);
+            return Assert.That(actual, x=>x!=null, comment ?? nameof(ShouldNotBeNull), args);
         }
 
         public static T ShouldBeNull<T>(this T actual, string comment=null, params object[] args)
         {
-            return Assert.That(actual, x=>x==null, comment ?? "ShouldBeNull", args);
+            return Assert.That(actual, x=>x==null, comment ?? nameof(ShouldBeNull), args);
         }
 
         public static string ShouldBeNullOrEmpty(this string actual, string comment=null, params object[] args)
@@ -28,32 +28,32 @@ namespace TestBase
 
         public static T ShouldBeNullOrEmptyOrWhitespace<T>(this T actual, string comment=null, params object[] args)
         {
-            return Assert.That(actual, a => a== null || a.ToString().Trim().Length == 0, comment ?? "ShouldBeNullOrWhitespace", args);
+            return Assert.That(actual, a => a== null || a.ToString().Trim().Length == 0, comment ?? nameof(ShouldBeNullOrEmptyOrWhitespace), args);
         }
 
         public static T ShouldNotBeNullOrEmptyOrWhitespace<T>(this T actual, string comment=null, params object[] args)
         {
-            return Assert.That(actual, a=> a != null && a.ToString().Trim().Length != 0, comment ?? "ShouldNotBeNullOrWhitespace", args);
+            return Assert.That(actual, a=> a != null && a.ToString().Trim().Length != 0, comment ?? nameof(ShouldNotBeNullOrEmptyOrWhitespace), args);
         }
 
         public static T ShouldEqual<T>(this T actual, object expected, string comment=null, params object[] args)
         {
-            return Assert.That(actual, a=>a.Equals(expected), comment ?? $"ShouldEqual\n\n{expected}", args);
+            return Assert.That(actual, a=>a.Equals(expected), comment ?? $"{nameof(ShouldEqual)}\n\n{expected}", args);
         }
 
         public static T ShouldBe<T>(this T actual, T expected, string comment=null, params object[] args)
         {
-            return Assert.That(actual, a=>a.Equals(expected), comment ?? $"ShouldBe\n\n{expected}", args);
+            return Assert.That(actual, a=>a.Equals(expected), comment ?? $"{nameof(ShouldBe)}\n\n{expected}", args);
         }
 
         public static T ShouldNotEqual<T>(this T actual, T notExpected, string comment=null, params object[] args)
         {
-            return Assert.That(actual, a => !a.Equals(notExpected), comment ?? $"ShouldNotEqual\n\n{notExpected}", args);
+            return Assert.That(actual, a => !a.Equals(notExpected), comment ?? $"{nameof(ShouldNotEqual)}\n\n{notExpected}", args);
         }
 
         public static T ShouldNotBe<T>(this T actual, T notExpected, string comment=null, params object[] args)
         {
-            return Assert.That(actual, a => !a.Equals(notExpected), comment?? $"ShouldNotEqual\n\n{notExpected}", args);
+            return Assert.That(actual, a => !a.Equals(notExpected), comment?? $"{nameof(ShouldNotEqual)}\n\n{notExpected}", args);
         }
 
         public static T ShouldBeBetween<T>(this T actual, T left, T right, string comment=null, params object[] args) where T : IComparable<T>
@@ -66,12 +66,12 @@ namespace TestBase
 
         public static bool ShouldBeTrue(this bool actual, string comment = null, params object[] args)
         {
-            return Assert.That(actual, a => a, comment ?? "ShouldBeTrue", args);
+            return Assert.That(actual, a => a, comment ?? nameof(ShouldBeTrue), args);
         }
 
         public static BoolWithString ShouldBeTrue(this BoolWithString actual, string comment = null, params object[] args)
         {
-            return Assert.That(actual, a => a.Equals(true), comment ?? "ShouldBeTrue", args);
+            return Assert.That(actual, a => a.Equals(true), comment ?? nameof(ShouldBeTrue), args);
         }
 
         public static T ShouldBeTrue<T>(this T actual, string comment = null, params object[] args)
@@ -79,22 +79,22 @@ namespace TestBase
             try
             {
                 var actualAsBool = Convert.ToBoolean(actual);
-                return Assert.That(actual, a => actualAsBool, comment ?? "ShouldBeTrue", args); ;
+                return Assert.That(actual, a => actualAsBool, comment ?? nameof(ShouldBeTrue), args); ;
             }
             catch (Exception e)
             {
-                return Assert.That(actual, a => BoolWithString.False(e.Message), comment ?? "ShouldBeTrue", args);
+                return Assert.That(actual, a => BoolWithString.False(e.Message), comment ?? nameof(ShouldBeTrue), args);
             }
         }
 
         public static bool ShouldBeFalse(this bool actual, string comment = null, params object[] args)
         {
-            return Assert.That(actual, a => !a, comment ?? "ShouldBeFalse", args);
+            return Assert.That(actual, a => !a, comment ?? nameof(ShouldBeFalse), args);
         }
 
         public static BoolWithString ShouldBeFalse(this BoolWithString actual, string comment = null, params object[] args)
         {
-            return Assert.That(actual, a => a.Equals(false), comment ?? "ShouldBeFalse", args);
+            return Assert.That(actual, a => !a, comment ?? nameof(ShouldBeFalse), args);
         }
 
         public static T ShouldBeFalse<T>(this T actual, string comment=null, params object[] args)
@@ -106,28 +106,28 @@ namespace TestBase
             }
             catch (Exception e)
             {
-                return Assert.That(actual, a => BoolWithString.False(e.Message), comment ?? "ShouldBeFalse", args);
+                return Assert.That(actual, a => BoolWithString.False(e.Message), comment ?? nameof(ShouldBeFalse), args);
             }
         }
 
         public static T ShouldBeGreaterThan<T,T2>(this T actual, T2 threshold, string comment=null, params object[] args) where T : IComparable<T2>
         {
-            return Assert.That(actual, a => a.CompareTo(threshold) > 0, comment?? $"ShouldBeGreaterThan\n\n{threshold}", args);
+            return Assert.That(actual, a => a.CompareTo(threshold) > 0, comment?? $"{nameof(ShouldBeGreaterThan)}\n\n{threshold}", args);
         }
 
         public static T ShouldBeGreaterThanOrEqualTo<T,T2>(this T actual, T2 threshold, string comment=null, params object[] args) where T : IComparable<T2>
         {
-            return Assert.That(actual, a => a.CompareTo(threshold) >= 0, comment?? $"ShouldBeGreaterThanOrEqualTo\n\n{threshold}", args);
+            return Assert.That(actual, a => a.CompareTo(threshold) >= 0, comment?? $"{nameof(ShouldBeGreaterThanOrEqualTo)}\n\n{threshold}", args);
         }
 
         public static T ShouldBeLessThan<T, T2>(this T actual, T2 threshold, string comment = null, params object[] args) where T : IComparable<T2>
         {
-            return Assert.That(actual, a => a.CompareTo(threshold) < 0, comment?? $"ShouldBeLessThan\n\n{threshold}", args);
+            return Assert.That(actual, a => a.CompareTo(threshold) < 0, comment?? $"{nameof(ShouldBeLessThan)}\n\n{threshold}", args);
         }
 
         public static T ShouldBeLessThanOrEqualTo<T, T2>(this T actual, T2 threshold, string comment = null, params object[] args) where T : IComparable<T2>
         {
-            return Assert.That(actual, a => a.CompareTo(threshold) <= 0, comment?? $"ShouldBeLessThanOrEqualTo\n\n{threshold}", args);
+            return Assert.That(actual, a => a.CompareTo(threshold) <= 0, comment?? $"{nameof(ShouldBeLessThanOrEqualTo)}\n\n{threshold}", args);
         }
 
 
