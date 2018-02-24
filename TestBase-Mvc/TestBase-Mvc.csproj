@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <AssemblyVersion>4.0.1.0</AssemblyVersion>
-    <AssemblyFileVersion>4.0.1.0</AssemblyFileVersion>
-    <PackageVersion>4.0.1.0</PackageVersion>
+    <AssemblyVersion>4.0.2.0</AssemblyVersion>
+    <AssemblyFileVersion>4.0.2.0</AssemblyFileVersion>
+    <PackageVersion>4.0.2.0</PackageVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <NoWarn>1701;1702;1705;NU1701</NoWarn>
