@@ -35,12 +35,12 @@ namespace TestBase.Tests.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection
 
             //A 
             //Dapper -- the easy way to read a DbDataReader.
-            fakeConnection.Query<Source1, Source2, Source2>(
-                "",
-                (s1, s2) => { s2.HydratedSource1Parent = s1; return s2; },
-                splitOn:"Id"
-                ).ShouldEqualByValue(
-                    dataToReturn
+            EqualsByValueShoulds.ShouldEqualByValue(fakeConnection.Query<Source1, Source2, Source2>(
+                                                                                     "",
+                                                                                     (s1, s2) => { s2.HydratedSource1Parent = s1; return s2; },
+                                                                                     splitOn:"Id"
+                                                                                    ),
+                                     dataToReturn
                         .Select(
                             t => { t.Item2.HydratedSource1Parent = t.Item1; return t.Item2; }
                             )

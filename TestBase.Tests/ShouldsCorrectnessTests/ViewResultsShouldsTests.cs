@@ -3,7 +3,7 @@ using NUnit.Framework;
 using TestBase.Shoulds;
 using Tests.WebApi.TestFwk;
 
-namespace TestBase.Tests.ShouldsCorrectnessAndVerbosityTests
+namespace TestBase.Tests.ShouldsCorrectnessTests
 {
     class AController : Controller
     {

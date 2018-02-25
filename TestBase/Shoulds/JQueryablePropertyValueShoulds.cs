@@ -18,7 +18,7 @@ namespace TestBase
         /// <returns><paramref name="actual"/> if the assertion passes. Throws otherwise.</returns>
         public static T Property<T,TValue>(this T actual, string jsonexpression, TValue expected,string comment = null, params object[] commentArgs)
         {
-            actual.ToJQueryable().SelectToken(jsonexpression).ToObject<TValue>().ShouldEqualByValue(expected);
+            EqualsByValueShoulds.ShouldEqualByValue(actual.ToJQueryable().SelectToken(jsonexpression).ToObject<TValue>(), expected);
             return actual;
         }
         /// <summary>

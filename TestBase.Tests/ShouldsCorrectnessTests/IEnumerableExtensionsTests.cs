@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using NUnit.Framework;
 
-namespace TestBase.Tests.ShouldsCorrectnessAndVerbosityTests
+namespace TestBase.Tests.ShouldsCorrectnessTests
 {
     [TestFixture]
     public class IEnumerableExtensionsTests

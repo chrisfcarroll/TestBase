@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
 using NUnit.Framework;
-using TestBase.Shoulds;
 
-namespace TestBase.Tests.ShouldsCorrectnessAndVerbosityTests
+namespace TestBase.Tests.ShouldsCorrectnessTests
 {
     [TestFixture]
-    public class DictionaryShoulds
+    public class DictionariesShould
     {
         [TestCase(1, "1", 2, "2")]
         public void ShouldContainKey_Should_Pass_when_true(int key1, string v1, int key2, string v2)

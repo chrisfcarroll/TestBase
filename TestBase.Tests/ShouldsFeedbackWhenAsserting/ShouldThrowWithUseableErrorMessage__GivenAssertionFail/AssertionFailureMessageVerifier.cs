@@ -1,8 +1,6 @@
 ﻿using System;
-using NUnit.Framework;
-using TestBase.Shoulds;
 
-namespace TestBase.Tests.WhenAsserting.ShouldCallTheRightNUnitAssertThatOverload__GivenAssertionFail
+namespace TestBase.Tests.ShouldsFeedbackWhenAsserting.ShouldThrowWithUseableErrorMessage__GivenAssertionFail
 {
     public static class AssertionFailureMessageVerifier
     {

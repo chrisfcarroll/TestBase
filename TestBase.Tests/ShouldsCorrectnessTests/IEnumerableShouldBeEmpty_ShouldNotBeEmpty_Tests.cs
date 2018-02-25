@@ -1,9 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
-using TestBase.Shoulds;
 
-namespace TestBase.Tests.ShouldsCorrectnessAndVerbosityTests
+namespace TestBase.Tests.ShouldsCorrectnessTests
 {
     [TestFixture]
     public class IEnumerableShouldBeEmpty_ShouldNotBeEmpty_Tests

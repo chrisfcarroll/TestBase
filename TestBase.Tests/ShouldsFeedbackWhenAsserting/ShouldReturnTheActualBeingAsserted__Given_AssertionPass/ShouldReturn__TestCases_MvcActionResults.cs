@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using NUnit.Framework;
 using TestBase.Shoulds;
 
-namespace TestBase.Tests.WhenAsserting.ShouldReturnTheActualBeingAsserted__Given_AssertionPass
+namespace TestBase.Tests.ShouldsFeedbackWhenAsserting.ShouldReturnTheActualBeingAsserted__Given_AssertionPass
 {
     [TestFixture]
     public class ShouldReturn__TestCases_MvcActionResults

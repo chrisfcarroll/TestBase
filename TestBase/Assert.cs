@@ -305,7 +305,7 @@ namespace TestBase
             if (commentFormatted != null && commentArgs?.Length > 0) { commentFormatted = string.Format(commentFormatted, commentArgs); }
             return commentFormatted;
         }
-
+        
         static string ActualToString(T actual)
         {
             string actualToString;

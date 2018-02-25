@@ -28,8 +28,8 @@ namespace TestBase.Tests.FakeDbAndMockDbTests
             int i = 0;
             while (reader.Read())
             {
-                reader.GetInt32(0).ShouldEqualByValue(fakeData[i].Id);
-                reader.GetString(1).ShouldEqualByValue(fakeData[i].Name);
+                EqualsByValueShoulds.ShouldEqualByValue(reader.GetInt32(0), fakeData[i].Id);
+                EqualsByValueShoulds.ShouldEqualByValue(reader.GetString(1), fakeData[i].Name);
                 i++;
             }
         }

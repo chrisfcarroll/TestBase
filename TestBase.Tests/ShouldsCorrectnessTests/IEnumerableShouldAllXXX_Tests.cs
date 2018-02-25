@@ -1,8 +1,6 @@
 using NUnit.Framework;
-using TestBase.Shoulds;
-using Is=TestBase.Is;
 
-namespace TestBase.Tests.ShouldsCorrectnessAndVerbosityTests
+namespace TestBase.Tests.ShouldsCorrectnessTests
 {
     [TestFixture]
     public class IEnumerableShouldAllXXX_VerboseMessageOnFailure_Tests

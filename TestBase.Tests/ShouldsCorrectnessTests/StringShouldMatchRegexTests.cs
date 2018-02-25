@@ -1,8 +1,7 @@
 ﻿using System.Text.RegularExpressions;
 using NUnit.Framework;
-using TestBase.Shoulds;
 
-namespace TestBase.Tests.ShouldsCorrectnessAndVerbosityTests
+namespace TestBase.Tests.ShouldsCorrectnessTests
 {
     [TestFixture]
     public class StringShouldMatchRegexTests

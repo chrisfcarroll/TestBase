@@ -4,9 +4,8 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using NUnit.Framework;
 using TestBase.Shoulds;
-using TestBase.Tests.WhenAsserting.ShouldCallTheRightNUnitAssertThatOverload__GivenAssertionFail;
 
-namespace TestBase.Tests.WhenAsserting.ShouldThrowWithUseableErrorMessage__GivenAssertionFail
+namespace TestBase.Tests.ShouldsFeedbackWhenAsserting.ShouldThrowWithUseableErrorMessage__GivenAssertionFail
 {
     [TestFixture]
     public partial class GivenAssertionFail
