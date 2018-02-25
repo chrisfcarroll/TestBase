@@ -11,6 +11,7 @@ It offers a rich extensible set of fluent assertions and a set of verifiable Fak
 TestBase.Shoulds
 ------------------
 Chainable fluent assertions get you to the point concisely
+```
 UnitUnderTest.Action()
   .ShouldNotBeNull()
   .ShouldContain(expected);
@@ -18,35 +19,29 @@ UnitUnderTest.OtherAction()
   .ShouldEqualByValue( 
     new {Id=1, Payload=expectedPayload, Additional=new[]{ expected1, expected2 }}
 );
-* ShouldBe(), ShouldMatch(), ShouldNotBe(), ShouldContain(), ShouldNotContain(), ShouldBeEmpty(), ShouldNotBeEmpty(), ShouldAll() and many more
-* ShouldEqualByValue() works with all kinds of object and collections
-* Stream assertions include ShouldContain() and ShouldEqualByValue()
+```
+* `ShouldBe(), ShouldMatch(), ShouldNotBe(), ShouldContain(), ShouldNotContain(), ShouldBeEmpty(), ShouldNotBeEmpty(), ShouldAll()` and many more
+* `ShouldEqualByValue(), ShouldEqualByValueExceptForValues()` works with all kinds of object and collections
+* `Stream.ShouldHaveSameStreamContentAs()` and `Stream.ShouldContain()`
 
 TestBase.FakeDb
 ------------------
 Works with Ado.Net and technologies on top of it, including Dapper.
-* fakeDbConnection.SetupForQuery(IEnumerable&lt;TFakeData&gt; )
-* fakeDbConnection.SetupForQuery(IEnumerable&lt;Tuple&lt;TFakeDataForTable1,TFakeDataForTable2&gt;&gt; )
-* fakeDbConnection.SetupForQuery(fakeData, new[] {""FieldName1"", FieldName2""})
-* fakeDbConnection.SetupForExecuteNonQuery(rowsAffected)
-* fakeDbConnection.ShouldHaveUpdated(""tableName"", [Optional] fieldList, whereClauseField)
-* fakeDbConnection.ShouldHaveSelected(""tableName"", [Optional] fieldList, whereClauseField)
-* fakeDbConnection.ShouldHaveUpdated(""tableName"", [Optional] fieldList, whereClauseField)
-* fakeDbConnection.ShouldHaveDeleted(""tableName"", whereClauseField)
-* fakeDbConnection.ShouldHaveInvoked(cmd => predicate(cmd))
-* fakeDbConnection.ShouldHaveXXX().ShouldHaveParameter(""name"", value)
-* fakeDbConnection.Verify(x=>x.CommandText.Matches(""Insert [case] .*"") &amp;&amp; x.Parameters[""id""].Value==1)
-
-TestBase.TestBase&lt;T&gt; AutoMocksAndFakes
---------------------------------
-is in development and currently works non-recursively. It auto-constructs the UnitUnderTest.
-It identifies constructor dependencies by name and type, looking in the following places:
-1) Fields in the TestFixture class 
-2) Entries in the Mocks[] or Fake[] dictionaries
-3) Finally it creates a Mock (if it's a mockable type) or a default instance (if its sealed, or value type) for anything that's missing
+* `fakeDbConnection.SetupForQuery(IEnumerable&lt;TFakeData&gt; )`
+* `fakeDbConnection.SetupForQuery(IEnumerable&lt;Tuple&lt;TFakeDataForTable1,TFakeDataForTable2&gt;&gt; )`
+* `fakeDbConnection.SetupForQuery(fakeData, new[] {""FieldName1"", FieldName2""})`
+* `fakeDbConnection.SetupForExecuteNonQuery(rowsAffected)`
+* `fakeDbConnection.ShouldHaveUpdated(""tableName"", [Optional] fieldList, whereClauseField)`
+* `fakeDbConnection.ShouldHaveSelected(""tableName"", [Optional] fieldList, whereClauseField)`
+* `fakeDbConnection.ShouldHaveUpdated(""tableName"", [Optional] fieldList, whereClauseField)`
+* `fakeDbConnection.ShouldHaveDeleted(""tableName"", whereClauseField)`
+* `fakeDbConnection.ShouldHaveInvoked(cmd => predicate(cmd))`
+* `fakeDbConnection.ShouldHaveXXX().ShouldHaveParameter(""name"", value)`
+* `fakeDbConnection.Verify(x=>x.CommandText.Matches(""Insert [case] .*"") &amp;&amp; x.Parameters[""id""].Value==1)`
 
 ChangeLog
 ---------
+4.0.4.0 StreamShoulds
 4.0.3.0 StringListLogger as MS Logger and as Serilogger
 4.0.1.0 Port to NetCore
 3.0.3.0 Improves FakeDb setup

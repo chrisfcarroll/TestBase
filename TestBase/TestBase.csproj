@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <AssemblyVersion>4.0.3.0</AssemblyVersion>
-    <AssemblyFileVersion>4.0.3.0</AssemblyFileVersion>
-    <PackageVersion>4.0.3.0</PackageVersion>
+    <AssemblyVersion>4.0.4.0</AssemblyVersion>
+    <AssemblyFileVersion>4.0.4.0</AssemblyFileVersion>
+    <PackageVersion>4.0.4.0</PackageVersion>
   </PropertyGroup>
   <PropertyGroup>
     <Title>TestBase – Rich, fluent assertions and useful fakes for Mvc &amp; AdoNet.</Title>

@@ -21,7 +21,8 @@ UnitUnderTest.OtherAction()
 );
 ```
 * `ShouldBe(), ShouldMatch(), ShouldNotBe(), ShouldContain(), ShouldNotContain(), ShouldBeEmpty(), ShouldNotBeEmpty(), ShouldAll()` and many more
-* `ShouldEqualByValue()` works with all kinds of object and collections
+* `ShouldEqualByValue(), ShouldEqualByValueExceptForValues()` works with all kinds of object and collections
+* `Stream.ShouldHaveSameStreamContentAs()` and `Stream.ShouldContain()`
 
 
 ======================
@@ -51,7 +52,8 @@ TestBase.RecordingDb
 
 ChangeLog
 ---------
-4.0.3.0. StringListLogger as MS Logger and as SeriLogger
+4.0.4.0 StreamShoulds
+4.0.3.0 StringListLogger as MS Logger and as SeriLogger
 4.0.1.0 Port to NetCore
 3.0.3.0 Improves FakeDb setup
 3.0.x.0 adds and/or corrects missing Shoulds()
