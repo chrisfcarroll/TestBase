@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <AssemblyVersion>4.0.2.0</AssemblyVersion>
-    <AssemblyFileVersion>4.0.2.0</AssemblyFileVersion>
-    <PackageVersion>4.0.2.0</PackageVersion>
-    <PackageVersion>4.0.2.0</PackageVersion>
+    <AssemblyVersion>4.0.3.0</AssemblyVersion>
+    <AssemblyFileVersion>4.0.3.0</AssemblyFileVersion>
+    <PackageVersion>4.0.3.0</PackageVersion>
+    <PackageVersion>4.0.3.0</PackageVersion>
   </PropertyGroup>
   <PropertyGroup>
     <Title>TestBase – Rich, fluent assertions and useful fakes for Mvc &amp; AdoNet.</Title>
@@ -48,12 +48,12 @@ TestBase.RecordingDb
 --------------------
 * `new RecordingDbConnection(IDbConnection)` helps you profile Ado.Net Db calls
 
-Latest Change: 4.0.2.0 Port to NetCore
+Latest Change: 4.0.3.0 Port to NetCore
 ]]></Summary>
     <ReleaseNotes><![CDATA[
 ChangeLog
 ---------
-4.0.2.0 Port to NetCore
+4.0.3.0 Port to NetCore
 3.0.3.0 Improves FakeDb setup
 3.0.x.0 adds and/or corrects missing Shoulds()
 2.0.5.0 adds some intellisense and FakeDbConnection.Verify(..., message,args) overload]]>

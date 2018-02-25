@@ -1,79 +1,172 @@
-﻿using System;
+﻿// Copied from :
+// Decompiled with JetBrains decompiler
+// Type: Microsoft.Extensions.Logging.StringList.StringListLoggerProvider
+// Assembly: Microsoft.Extensions.Logging.StringList, Version=2.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60
+// MVID: 2603C9C8-DD69-4A3E-883D-B34FC012F771
+// Assembly location: /Users/chris/.nuget/packages/microsoft.extensions.logging.StringList/2.0.0/lib/netstandard2.0/Microsoft.Extensions.Logging.StringList.dll
+
+using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Text;
 using Microsoft.Extensions.Logging;
-using Serilog;
-using Serilog.Configuration;
-using Serilog.Core;
-using Serilog.Events;
-using Serilog.Formatting;
-using Serilog.Formatting.Display;
-using ILogger = Microsoft.Extensions.Logging.ILogger;
+using Microsoft.Extensions.Logging.Console;
 
 namespace TestBase
 {
-    /// <summary>Factory methods returning a logger which logs to a <see cref="List{String}"/></summary>
-    public static class StringListLogger
+    public static class StringListLoggerFactoryExtension
     {
-        public static ILogger WrappedAsMsILogger(IList<string> stringList, string categoryName = "UnitTest")
+        public static ILoggerFactory AddStringListLogger(this ILoggerFactory factory, List<string> backingList = null,
+                                                         string name = null)
         {
-            return new LoggerFactory().AddSerilog(WrappedAsSerilogger(stringList)).CreateLogger(categoryName);
+            if (factory == null) throw new ArgumentNullException(nameof(factory));
+            factory.AddProvider(new StringListLoggerProvider(backingList, name));
+            return factory;
         }
-        public static ILogger<T> WrappedAsMsILogger<T>(IList<string> stringList)
-        {
-            return new LoggerFactory().AddSerilog(WrappedAsSerilogger(stringList)).CreateLogger<T>();
-        }
+    }
 
-        public static Logger WrappedAsSerilogger(IList<string> stringList)
-        {
-            return new LoggerConfiguration().WriteTo.StringList(stringList).CreateLogger();
-        }
+    public class StringListLogger : ILogger
+    {
+        static readonly string LoglevelPadding = ": ";
 
-        /// <summary>
-        /// Write log events to the provided <see cref="StringListSink"/>.
-        /// </summary>
-        /// <param name="sinkConfiguration">Logger sink configuration.</param>
-        /// <param name="stringList">The string list to write log events to.</param>
-        /// <param name="outputTemplate">Message template describing the output format.</param>
-        /// <param name="restrictedToMinimumLevel">The minimum level for
-        /// events passed through the sink.
-        /// <returns>Configuration object allowing method chaining.</returns>
-        /// <param name="formatProvider">Supplies culture-specific formatting information, or null.</param>
-        /// <exception cref="ArgumentNullException"></exception>
-        public static LoggerConfiguration StringList(
-            this LoggerSinkConfiguration sinkConfiguration,
-            IList<string> stringList,
-            LogEventLevel restrictedToMinimumLevel = LevelAlias.Minimum,
-            string outputTemplate = StringListSink.DefaultOutputTemplate,
-            IFormatProvider formatProvider = null)
-        {
-            if (stringList == null) throw new ArgumentNullException("stringList");
-            if (outputTemplate == null) throw new ArgumentNullException("outputTemplate");
+        static readonly string MessagePadding =
+            new string(' ', LogLevel.Information.ToString().Length + LoglevelPadding.Length);
 
-            var formatter = new MessageTemplateTextFormatter(outputTemplate, formatProvider);
-            var sink = new StringListSink(stringList, formatter);
-            return sinkConfiguration.Sink(sink, restrictedToMinimumLevel);
+        static readonly string NewLineWithMessagePadding = Environment.NewLine + MessagePadding;
+        [ThreadStatic] static StringBuilder logBuilder;
+        Func<string, LogLevel, bool> filter;
+
+        public StringListLogger(List<String> backingList = null, string name = null,
+                                Func<string, LogLevel, bool> filter = null, bool includeScopes = true)
+        {
+            Name = name     ?? String.Empty;
+            Filter = filter ?? ((category, logLevel) => true);
+            IncludeScopes = includeScopes;
+            LoggedLines = backingList ?? new List<string>();
         }
 
-        /// <summary>
-        /// Write log events to the provided <see cref="System.IO.TextWriter"/>.
-        /// </summary>
-        /// <param name="sinkConfiguration">Logger sink configuration.</param>
-        /// <param name="stringList">The string list to write log events to.</param>
-        /// <param name="formatter">Text formatter used by sink.</param>
-        /// /// <param name="restrictedToMinimumLevel">The minimum level for
-        /// events passed through the sink.
-        /// <exception cref="ArgumentNullException"></exception>
-        public static LoggerConfiguration StringList(
-            this LoggerSinkConfiguration sinkConfiguration,
-            ITextFormatter formatter,
-            IList<string> stringList,
-            LogEventLevel restrictedToMinimumLevel = LevelAlias.Minimum)
-        {
-            if (stringList == null) throw new ArgumentNullException("stringList");
-            if (formatter == null) throw new ArgumentNullException("formatter");
+        public List<string> LoggedLines { get; }
 
-            var sink = new StringListSink(stringList, formatter);
-            return sinkConfiguration.Sink(sink, restrictedToMinimumLevel);
+        public Func<string, LogLevel, bool> Filter
+        {
+            protected internal get => filter;
+            set => filter = value ?? throw new ArgumentNullException(nameof(value));
         }
+
+        public bool IncludeScopes { get; set; }
+
+        public string Name { get; }
+
+        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state,
+                                Exception exception,
+                                Func<TState, Exception, string> formatter)
+        {
+            if (!IsEnabled(logLevel)) return;
+            if (formatter == null) throw new ArgumentNullException(nameof(formatter));
+            var message = formatter(state, exception);
+            if (string.IsNullOrEmpty(message) && exception == null) return;
+            WriteMessage(logLevel, Name, eventId.Id, message, exception);
+        }
+
+        public bool IsEnabled(LogLevel logLevel) { return Filter(Name, logLevel); }
+
+        public IDisposable BeginScope<TState>(TState state)
+        {
+            if (state == null) throw new ArgumentNullException(nameof(state));
+            return ConsoleLogScope.Push(Name, state);
+        }
+
+        public virtual void WriteMessage(LogLevel logLevel, string logName, int eventId, string message,
+                                         Exception exception)
+        {
+            var builder = logBuilder;
+            logBuilder = null;
+            if (builder == null) builder = new StringBuilder();
+            builder.Append(LoglevelPadding);
+            builder.Append(logName);
+            builder.Append("[");
+            builder.Append(eventId);
+            builder.AppendLine("]");
+            if (IncludeScopes) GetScopeInformation(builder);
+            if (!string.IsNullOrEmpty(message))
+            {
+                builder.Append(MessagePadding);
+                var length = builder.Length;
+                builder.AppendLine(message);
+                builder.Replace(Environment.NewLine, NewLineWithMessagePadding, length, message.Length);
+            }
+
+            if (exception      != null) builder.AppendLine(exception.ToString());
+            if (builder.Length > 0) LoggedLines.Add($"[{logLevel.ToString()}] {builder}");
+
+            builder.Clear();
+            if (builder.Capacity > 1024) builder.Capacity = 1024;
+            logBuilder = builder;
+        }
+
+        void GetScopeInformation(StringBuilder builder)
+        {
+            var consoleLogScope = ConsoleLogScope.Current;
+            var empty = string.Empty;
+            var length = builder.Length;
+            for (; consoleLogScope != null; consoleLogScope = consoleLogScope.Parent)
+            {
+                var str = length != builder.Length
+                              ? string.Format("=> {0} ", consoleLogScope)
+                              : string.Format("=> {0}", consoleLogScope);
+                builder.Insert(length, str);
+            }
+
+            if (builder.Length <= length)
+                return;
+            builder.Insert(length, MessagePadding);
+            builder.AppendLine();
+        }
+    }
+
+
+    [ProviderAlias("StringList")]
+    public class StringListLoggerProvider : ILoggerProvider, IDisposable
+    {
+        static readonly Func<string, LogLevel, bool> FalseFilter = (cat, level) => false;
+        static readonly Func<string, LogLevel, bool> TrueFilter = (cat, level) => true;
+        readonly Func<string, LogLevel, bool> filter;
+        readonly bool includeScopes;
+
+        public StringListLoggerProvider()
+        {
+            filter = TrueFilter;
+            includeScopes = true;
+        }
+
+        public StringListLoggerProvider(List<String> backingList = null, string name = null,
+                                        Func<string, LogLevel, bool> filter = null, bool includeScopes = true)
+        {
+            this.filter = filter ?? TrueFilter;
+            this.includeScopes = includeScopes;
+            if (name        != null && backingList == null) CreateLogger(name);
+            if (backingList != null)
+                Loggers.GetOrAdd(name ?? String.Empty,
+                                 s => new StringListLogger(backingList, s, this.filter, this.includeScopes));
+        }
+
+        public StringListLoggerProvider(List<string> logger) { Loggers.TryAdd("", new StringListLogger(logger)); }
+
+        public ConcurrentDictionary<string, StringListLogger> Loggers { get; } =
+            new ConcurrentDictionary<string, StringListLogger>();
+
+        public ILogger CreateLogger(string name)
+        {
+            return Loggers.GetOrAdd(name ?? String.Empty, CreateLoggerImplementation);
+        }
+
+        public void Dispose() { }
+
+        StringListLogger CreateLoggerImplementation(string name)
+        {
+            return new StringListLogger(new List<string>(), name, GetFilter(name), includeScopes);
+        }
+
+        Func<string, LogLevel, bool> GetFilter(string name) { return filter ?? FalseFilter; }
     }
 }

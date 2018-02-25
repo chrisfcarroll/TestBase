@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <AssemblyVersion>4.0.2.0</AssemblyVersion>
-    <AssemblyFileVersion>4.0.2.0</AssemblyFileVersion>
-    <PackageVersion>4.0.2.0</PackageVersion>
+    <AssemblyVersion>4.0.3.0</AssemblyVersion>
+    <AssemblyFileVersion>4.0.3.0</AssemblyFileVersion>
+    <PackageVersion>4.0.3.0</PackageVersion>
   </PropertyGroup>
   <PropertyGroup>
     <Title>TestBase – Rich, fluent assertions and useful fakes for Mvc &amp; AdoNet.</Title>
@@ -29,7 +29,7 @@ UnitUnderTest.OtherAction()
 ]]></Summary>
     <ReleaseNotes>ChangeLog
 ---------
-4.0.2.0 Port to NetCore
+4.0.3.0 Port to NetCore
 3.0.3.0 Improves FakeDb setup
 3.0.x.0 adds and/or corrects missing Shoulds()
 2.0.5.0 adds some intellisense and FakeDbConnection.Verify(..., message,args) overload
@@ -63,6 +63,9 @@ UnitUnderTest.OtherAction()
   <ItemGroup>
     <Reference Include="Microsoft.Extensions.Logging, Version=2.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60">
       <HintPath>..\..\..\..\.nuget\packages\microsoft.extensions.logging\2.0.0\lib\netstandard2.0\Microsoft.Extensions.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Logging.Console, Version=2.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60">
+      <HintPath>..\..\..\..\.nuget\packages\microsoft.extensions.logging.console\2.0.0\lib\netstandard2.0\Microsoft.Extensions.Logging.Console.dll</HintPath>
     </Reference>
   </ItemGroup>
 </Project>

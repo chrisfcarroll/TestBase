@@ -47,7 +47,8 @@ It identifies constructor dependencies by name and type, looking in the followin
 
 ChangeLog
 ---------
-4.0.2.0 Port to NetCore
+4.0.3.0 StringListLogger as MS Logger and as Serilogger
+4.0.1.0 Port to NetCore
 3.0.3.0 Improves FakeDb setup
 3.0.x.0 adds and/or corrects missing Shoulds()
 2.0.5.0 adds some intellisense and FakeDbConnection.Verify(..., message,args) overload
