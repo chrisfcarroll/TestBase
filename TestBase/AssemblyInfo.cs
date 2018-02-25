@@ -6,19 +6,19 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyDescription(@"*TestBase* gets you off to a flying start when unit testing projects with dependencies.
-It offers a rich extensible set of fluent assertions and a set of verifiable Fake Ado.Net components, with easy setup and verification.
+It has rich, but easily extensible, fluent assertions, including EqualsByValue, Regex, Stream Comparision, and Ado.Net assertions.
 
 TestBase.Shoulds
 ------------------
 Chainable fluent assertions get you to the point concisely
 ```
 UnitUnderTest.Action()
-  .ShouldNotBeNull()
-  .ShouldContain(expected);
+		.ShouldNotBeNull()
+  	.ShouldContain(expected);
 UnitUnderTest.OtherAction()
-  .ShouldEqualByValue( 
-    new {Id=1, Payload=expectedPayload, Additional=new[]{ expected1, expected2 }}
-);
+  	.ShouldEqualByValue(new {Id=1, Payload=expected, Additional=new[]{ expected1, expected2 }} )
+  	.Payload
+  			.ShouldMatchIgnoringCase(""I expected this"");
 ```
 * `ShouldBe(), ShouldMatch(), ShouldNotBe(), ShouldContain(), ShouldNotContain(), ShouldBeEmpty(), ShouldNotBeEmpty(), ShouldAll()` and many more
 * `ShouldEqualByValue(), ShouldEqualByValueExceptForValues()` works with all kinds of object and collections
