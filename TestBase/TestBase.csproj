@@ -3,13 +3,13 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyVersion>4.0.4.2</AssemblyVersion>
     <AssemblyFileVersion>4.0.4.2</AssemblyFileVersion>
-    <PackageVersion>4.0.4.1</PackageVersion>
+    <PackageVersion>4.0.4.2</PackageVersion>
   </PropertyGroup>
   <PropertyGroup>
     <Title>TestBase – Rich, fluent assertions and useful fakes for Mvc &amp; AdoNet.</Title>
     <ReleaseNotes>ChangeLog
 ---------
-      4.0.4.0 StreamShoulds
+      4.0.4.x StreamShoulds
       4.0.3.0 StringListLogger as MS Logger and as Serilogger
       4.0.1.0 Port to NetCore
       3.0.3.0 Improves FakeDb setup
