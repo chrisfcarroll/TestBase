@@ -1,23 +1,14 @@
-﻿// Copied from :
-// Decompiled with JetBrains decompiler
-// Type: Microsoft.Extensions.Logging.StringList.StringListLoggerProvider
-// Assembly: Microsoft.Extensions.Logging.StringList, Version=2.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60
-// MVID: 2603C9C8-DD69-4A3E-883D-B34FC012F771
-// Assembly location: /Users/chris/.nuget/packages/microsoft.extensions.logging.StringList/2.0.0/lib/netstandard2.0/Microsoft.Extensions.Logging.StringList.dll
-
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Console;
 
 namespace TestBase
 {
     public static class StringListLoggerFactoryExtension
     {
-        public static ILoggerFactory AddStringListLogger(this ILoggerFactory factory, List<string> backingList = null,
-                                                         string name = null)
+        public static ILoggerFactory AddStringListLogger(this ILoggerFactory factory, List<string> backingList = null, string name = "TestBase")
         {
             if (factory == null) throw new ArgumentNullException(nameof(factory));
             factory.AddProvider(new StringListLoggerProvider(backingList, name));
@@ -29,17 +20,15 @@ namespace TestBase
     {
         static readonly string LoglevelPadding = ": ";
 
-        static readonly string MessagePadding =
-            new string(' ', LogLevel.Information.ToString().Length + LoglevelPadding.Length);
+        static readonly string MessagePadding = new string(' ', LogLevel.Information.ToString().Length + LoglevelPadding.Length);
 
         static readonly string NewLineWithMessagePadding = Environment.NewLine + MessagePadding;
         [ThreadStatic] static StringBuilder logBuilder;
         Func<string, LogLevel, bool> filter;
 
-        public StringListLogger(List<String> backingList = null, string name = null,
-                                Func<string, LogLevel, bool> filter = null, bool includeScopes = true)
+        public StringListLogger(List<string> backingList = null, string name=null, Func<string, LogLevel, bool> filter = null, bool includeScopes = true)
         {
-            Name = name     ?? String.Empty;
+            Name = name ?? string.Empty;
             Filter = filter ?? ((category, logLevel) => true);
             IncludeScopes = includeScopes;
             LoggedLines = backingList ?? new List<string>();
@@ -57,6 +46,14 @@ namespace TestBase
 
         public string Name { get; }
 
+        ScopeStack Scopes {get;}= new ScopeStack();
+
+        public class ScopeStack : Stack<(string, object)>, IDisposable
+        {
+            public void Dispose(){Pop();}
+            public new ScopeStack Push((string,object) item){base.Push(item);return this;}
+        }
+
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state,
                                 Exception exception,
                                 Func<TState, Exception, string> formatter)
@@ -73,7 +70,8 @@ namespace TestBase
         public IDisposable BeginScope<TState>(TState state)
         {
             if (state == null) throw new ArgumentNullException(nameof(state));
-            return ConsoleLogScope.Push(Name, state);
+            Scopes.Push((Name, state));
+            return Scopes;
         }
 
         public virtual void WriteMessage(LogLevel logLevel, string logName, int eventId, string message,
@@ -106,19 +104,17 @@ namespace TestBase
 
         void GetScopeInformation(StringBuilder builder)
         {
-            var consoleLogScope = ConsoleLogScope.Current;
-            var empty = string.Empty;
             var length = builder.Length;
-            for (; consoleLogScope != null; consoleLogScope = consoleLogScope.Parent)
+            foreach(var scope in Scopes)
             {
+                var asString = scope.Item2 is Type t ? t.Name : scope.Item2;
                 var str = length != builder.Length
-                              ? string.Format("=> {0} ", consoleLogScope)
-                              : string.Format("=> {0}", consoleLogScope);
+                              ? string.Format("=> {0} ", asString)
+                              : string.Format("=> {0}",  asString);
                 builder.Insert(length, str);
             }
 
-            if (builder.Length <= length)
-                return;
+            if (builder.Length <= length)return;
             builder.Insert(length, MessagePadding);
             builder.AppendLine();
         }
