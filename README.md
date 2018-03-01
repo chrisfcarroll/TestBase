@@ -18,24 +18,29 @@ UnitUnderTest.OtherAction()
 * `Stream.ShouldHaveSameStreamContentAs()` and `Stream.ShouldContain()`
 
 Testable Logging with `StringListLogger`:
-* `var logger=new StringListLogger(); ... ; logger.LoggedLines.ShouldContain(x=>x.Matches(""kilroy was here"")`
-* MS Logging: `ILoggerFactory factory=new LoggerFactory.AddProvider(new StringListLoggerProvider())`
-* Serilogging: `new LoggerConfiguration().WriteTo.StringList(stringList).CreateLogger()`
+```
+MS Logging: ILoggerFactory factory=new LoggerFactory.AddProvider(new StringListLoggerProvider())
+Serilogging: new LoggerConfiguration().WriteTo.StringList(stringList).CreateLogger()
+//
+var logger=new StringListLogger(); ... ; logger.LoggedLines.ShouldContain(x=>x.Matches("kilroy was here")
+```
 
 TestBase.FakeDb
 ------------------
 Works with Ado.Net and technologies on top of it, including Dapper.
-* `fakeDbConnection.SetupForQuery(IEnumerable<TFakeData>; )`
-* `fakeDbConnection.SetupForQuery(IEnumerable<Tuple<TFakeDataForTable1,TFakeDataForTable2>> )`
-* `fakeDbConnection.SetupForQuery(fakeData, new[] {""FieldName1"", FieldName2""})`
-* `fakeDbConnection.SetupForExecuteNonQuery(rowsAffected)`
-* `fakeDbConnection.ShouldHaveUpdated(""tableName"", [Optional] fieldList, whereClauseField)`
-* `fakeDbConnection.ShouldHaveSelected(""tableName"", [Optional] fieldList, whereClauseField)`
-* `fakeDbConnection.ShouldHaveUpdated(""tableName"", [Optional] fieldList, whereClauseField)`
-* `fakeDbConnection.ShouldHaveDeleted(""tableName"", whereClauseField)`
-* `fakeDbConnection.ShouldHaveInvoked(cmd => predicate(cmd))`
-* `fakeDbConnection.ShouldHaveXXX().ShouldHaveParameter(""name"", value)`
-* `fakeDbConnection.Verify(x=>x.CommandText.Matches(""Insert [case] .*"") &amp;&amp; x.Parameters[""id""].Value==1)`
+```
+* fakeDbConnection.SetupForQuery(IEnumerable<TFakeData>; )
+* fakeDbConnection.SetupForQuery(IEnumerable<Tuple<TFakeDataForTable1,TFakeDataForTable2>> )
+* fakeDbConnection.SetupForQuery(fakeData, new[] {""FieldName1"", FieldName2""})
+* fakeDbConnection.SetupForExecuteNonQuery(rowsAffected)
+* fakeDbConnection.ShouldHaveUpdated(""tableName"", [Optional] fieldList, whereClauseField)
+* fakeDbConnection.ShouldHaveSelected(""tableName"", [Optional] fieldList, whereClauseField)
+* fakeDbConnection.ShouldHaveUpdated(""tableName"", [Optional] fieldList, whereClauseField)
+* fakeDbConnection.ShouldHaveDeleted(""tableName"", whereClauseField)
+* fakeDbConnection.ShouldHaveInvoked(cmd => predicate(cmd))
+* fakeDbConnection.ShouldHaveXXX().ShouldHaveParameter(""name"", value)
+* fakeDbConnection.Verify(x=>x.CommandText.Matches(""Insert [case] .*"") && x.Parameters[""id""].Value==1)
+```
 
 ChangeLog
 ---------
@@ -52,21 +57,22 @@ Version 3 on Net4 only
 
 TestBase-Mvc for MVC 4 & 5
 --------------------------
-
-    ControllerUnderTest.Action()
-      .ShouldbeViewResult()
-      .ShouldHaveModel<TModel>()
-      .ShouldEqualByValue(expected)
-    ControllerUnderTest.Action()
-      .ShouldBeRedirectToRouteResult()
-      .ShouldHaveRouteValue("expectedKey", [Optional] "expectedValue");
-
+```
+ControllerUnderTest.Action()
+    .ShouldbeViewResult()
+    .ShouldHaveModel<TModel>()
+    .ShouldEqualByValue(expected)
+ControllerUnderTest.Action()
+    .ShouldBeRedirectToRouteResult()
+    .ShouldHaveRouteValue("expectedKey", [Optional] "expectedValue");
 * ShouldHaveViewDataContaining(), ShouldBeJsonResult() etc.
+```
 
 * Includes mocking of HttpConttextBase and parsing of RouteConfig so that Controllers have a working Controller.Url when under test:
-
-    uut = new MyController().WithHttpContextAndRoutes(RouteConfig.RegisterRoutes);
-    uut.Url.Action("MyAction", "MyOtherController").ShouldEqual("/MyOtherController/MyAction");
+```
+uut = new MyController().WithHttpContextAndRoutes(RouteConfig.RegisterRoutes);
+uut.Url.Action("MyAction", "MyOtherController").ShouldEqual("/MyOtherController/MyAction");
+```
 
 Can be used in both NUnit & MS UnitTestFramework test projects.
 
