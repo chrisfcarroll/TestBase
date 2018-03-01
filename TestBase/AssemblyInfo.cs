@@ -1,6 +1,4 @@
 ﻿using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
@@ -13,22 +11,27 @@ TestBase.Shoulds
 Chainable fluent assertions get you to the point concisely
 ```
 UnitUnderTest.Action()
-		.ShouldNotBeNull()
-  	.ShouldContain(expected);
+    .ShouldNotBeNull()
+    .ShouldContain(expected);
 UnitUnderTest.OtherAction()
-  	.ShouldEqualByValue(new {Id=1, Payload=expected, Additional=new[]{ expected1, expected2 }} )
-  	.Payload
-  			.ShouldMatchIgnoringCase(""I expected this"");
+    .ShouldEqualByValue(new {Id=1, Payload=expected, Additional=new[]{ expected1, expected2 }} )
+    .Payload
+        .ShouldMatchIgnoringCase(""I expected this"");
 ```
 * `ShouldBe(), ShouldMatch(), ShouldNotBe(), ShouldContain(), ShouldNotContain(), ShouldBeEmpty(), ShouldNotBeEmpty(), ShouldAll()` and many more
 * `ShouldEqualByValue(), ShouldEqualByValueExceptForValues()` works with all kinds of object and collections
 * `Stream.ShouldHaveSameStreamContentAs()` and `Stream.ShouldContain()`
 
+Testable Logging with `StringListLogger`:
+* `var logger=new StringListLogger(); ... ; logger.LoggedLines.ShouldContain(x=>x.Matches(""kilroy was here"")`
+* MS Logging: `ILoggerFactory factory=new LoggerFactory.AddProvider(new StringListLoggerProvider())`
+* Serilogging: `new LoggerConfiguration().WriteTo.StringList(stringList).CreateLogger()`
+
 TestBase.FakeDb
 ------------------
 Works with Ado.Net and technologies on top of it, including Dapper.
-* `fakeDbConnection.SetupForQuery(IEnumerable&lt;TFakeData&gt; )`
-* `fakeDbConnection.SetupForQuery(IEnumerable&lt;Tuple&lt;TFakeDataForTable1,TFakeDataForTable2&gt;&gt; )`
+* `fakeDbConnection.SetupForQuery(IEnumerable<TFakeData>; )`
+* `fakeDbConnection.SetupForQuery(IEnumerable<Tuple<TFakeDataForTable1,TFakeDataForTable2>> )`
 * `fakeDbConnection.SetupForQuery(fakeData, new[] {""FieldName1"", FieldName2""})`
 * `fakeDbConnection.SetupForExecuteNonQuery(rowsAffected)`
 * `fakeDbConnection.ShouldHaveUpdated(""tableName"", [Optional] fieldList, whereClauseField)`
