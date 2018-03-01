@@ -72,5 +72,31 @@ namespace TestBase.Tests
             uut.LoggedLines.ForEach(Console.WriteLine);
             uut.LoggedLines.ShouldBeOfLength(1).ToList()[0].ShouldMatch(@"B\s*=\s*""?Two""?");
         }
+
+        [Test]
+        public void NotThrowOnNullParameters()
+        {
+            var uut=new StringListLogger();
+            string[] args = null;
+
+            uut.LogInformation("This has serilog formatted fields {@Destructured}", args);
+
+            uut.LoggedLines.ShouldBeOfLength(1).Single().ShouldMatch(@"This has serilog formatted fields").ShouldMatch("null");
+        }
+
+        [Test,Ignore("Microsoft.Extensions.Logging https://github.com/aspnet/Logging/issues/767")]
+        public void MsLoggerShouldNotThrowWhenDestructuringNullParameters()
+        {
+            var logger = new LoggerFactory().AddConsole().CreateLogger("Test");
+
+            logger.LogError("This is formatted for destructuring {@Destructure}", new {A=1,B=2});
+            Console.WriteLine("Logs with format \"{ A = 1, B = 2 }\"");
+
+            logger.LogError("This is formatted for destructuring {@Destructure}", null);
+            Console.WriteLine(@"Output:
+Message: System.AggregateException : 
+An error occurred while writing to logger(s). (Index (zero based) must be greater than or equal to zero and less than the size of the argument list.)
+----> System.FormatException : Index (zero based) must be greater than or equal to zero and less than the size of the argument list");
+        }
     }
 }

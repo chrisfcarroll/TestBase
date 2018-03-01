@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace TestBase
 {
@@ -25,6 +28,7 @@ namespace TestBase
         static readonly string NewLineWithMessagePadding = Environment.NewLine + MessagePadding;
         [ThreadStatic] static StringBuilder logBuilder;
         Func<string, LogLevel, bool> filter;
+        static readonly JsonSerializerSettings ErrorSwallowingJsonSerializerSettings = new JsonSerializerSettings{Error = (o, e) => { }, ReferenceLoopHandling = ReferenceLoopHandling.Ignore};
 
         public StringListLogger(List<string> backingList = null, string name=null, Func<string, LogLevel, bool> filter = null, bool includeScopes = true)
         {
@@ -54,13 +58,37 @@ namespace TestBase
             public new ScopeStack Push((string,object) item){base.Push(item);return this;}
         }
 
+        void SwallowError(EventArgs e){}
+
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state,
                                 Exception exception,
                                 Func<TState, Exception, string> formatter)
         {
             if (!IsEnabled(logLevel)) return;
             if (formatter == null) throw new ArgumentNullException(nameof(formatter));
-            var message = formatter(state, exception);
+            string message;
+            try
+            {
+                try
+                {
+                    message = formatter(state, exception);
+                }
+                catch (FormatException)
+                {
+                    /*
+                     * https://github.com/aspnet/Logging/issues/767
+                     */
+                    var stateFields = state.GetType().GetFields(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                    var values = stateFields.Select(f => f.GetValue(state)).ToArray();
+                    var asJson = JsonConvert.SerializeObject(values, ErrorSwallowingJsonSerializerSettings);
+                    message = $"{asJson} {exception}";
+                }
+            }
+            catch (Exception e)
+            {
+                message = string.Format("error trying to log {0} {1}\nException: {2}", state?.GetType(), exception, e);
+            }
+
             if (string.IsNullOrEmpty(message) && exception == null) return;
             WriteMessage(logLevel, Name, eventId.Id, message, exception);
         }
