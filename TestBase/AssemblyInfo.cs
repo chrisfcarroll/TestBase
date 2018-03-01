@@ -38,8 +38,23 @@ Works with Ado.Net and technologies on top of it, including Dapper.
 * `fakeDbConnection.ShouldHaveXXX().ShouldHaveParameter(""name"", value)`
 * `fakeDbConnection.Verify(x=>x.CommandText.Matches(""Insert [case] .*"") &amp;&amp; x.Parameters[""id""].Value==1)`
 
+TestBase.Mvc
+------------
+```
+ControllerUnderTest.Action()
+  .ShouldbeViewResult()
+  .ShouldHaveModel<TModel>()
+  .ShouldEqualByValue(expected)
+ControllerUnderTest.Action()
+  .ShouldBeRedirectToRouteResult()
+  .ShouldHaveRouteValue(""expectedKey"", [Optional] ""expectedValue"");
+
+ShouldHaveViewDataContaining(), ShouldBeJsonResult() etc.
+```
+
 ChangeLog
 ---------
+4.0.5.0 TestBase.Mvc partially ported to AspNetcore
 4.0.4.0 StreamShoulds
 4.0.3.0 StringListLogger as MS Logger and as Serilogger
 4.0.1.0 Port to NetCore

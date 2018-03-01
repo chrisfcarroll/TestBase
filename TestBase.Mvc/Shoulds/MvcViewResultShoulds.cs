@@ -3,7 +3,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
-namespace TestBase.Shoulds
+namespace TestBase
 {
     public static class MvcViewResultShoulds
     {

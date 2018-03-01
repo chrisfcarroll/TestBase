@@ -13,16 +13,18 @@
     <NoWarn>1701;1702;1705;NU1701</NoWarn>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="AutoFixture" Version="3.50.2" />
     <PackageReference Include="Dapper" Version="1.50.4" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0-preview-20170628-02" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.5.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="1.1.18" />
     <PackageReference Include="MSTest.TestFramework" Version="1.1.18" />
     <PackageReference Include="NUnit" Version="3.9.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.9.0" />
+    <PackageReference Include="Moq" Version="4.8.2" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\TestBase.Mvc\TestBase.Mvc.csproj" />
     <ProjectReference Include="..\TestBase\TestBase.csproj" />
     <ProjectReference Include="..\TestBase-AdoNet\TestBase.AdoNet.csproj" />
-    <ProjectReference Include="..\TestBase-Mvc\TestBase-Mvc.csproj" />
   </ItemGroup>
 </Project>

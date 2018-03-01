@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
 
-namespace TestBase.Shoulds
+namespace TestBase
 {
     public static class MvcActionResultShoulds
     {

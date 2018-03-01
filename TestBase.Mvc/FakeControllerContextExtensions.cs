@@ -1,10 +1,12 @@
-﻿using System;
+﻿#if NETSTANDARD2_0
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.DataAnnotations.Internal;
 using Microsoft.AspNetCore.Mvc.Internal;
@@ -16,10 +18,8 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
-using TestBase;
-using Moq;
 
-namespace Tests.WebApi.TestFwk
+namespace TestBase
 {
     public static class FakeControllerContextExtensions
     {
@@ -30,11 +30,12 @@ namespace Tests.WebApi.TestFwk
         }
 
 
-        public static T WithControllerContext<T>(this T controller, ClaimsPrincipal user) where T : Controller
+        public static T WithControllerContext<T>(this T controller, string action, ClaimsPrincipal user) where T : Controller
         {
-            // routes todo var actionContext = new ActionContext(httpContext, new RouteData(), new ActionDescriptor());
             var metadataProvider = TestModelMetadataProvider.CreateDefaultProvider();
             var httpContext = new DefaultHttpContext();
+            var urlActionContext = ActionContextFor<T>(action);
+            var actionContext = new ActionContext(httpContext, new RouteData(), new ActionDescriptor());
             var viewData = new ViewDataDictionary(metadataProvider, new ModelStateDictionary());
             var tempData = new TempDataDictionary( httpContext, new SessionStateTempDataProvider());
             controller.MetadataProvider = metadataProvider;
@@ -42,26 +43,40 @@ namespace Tests.WebApi.TestFwk
             controller.TempData = tempData;
             controller.ObjectValidator = new DefaultObjectValidator( metadataProvider,new List<IModelValidatorProvider>());
             controller.ControllerContext = ControllerContextWith(user);
-            WithUrlHelper(controller);
+            WithUrlHelper(controller, actionContext);
             return controller;
         }
 
-        static T WithUrlHelper<T>(this T controller) where T : Controller
+        static UrlActionContext ActionContextFor<T>(string action) where T : Controller
         {
-            var urlHelperMock = new Mock<IUrlHelper>();
-            urlHelperMock
-                .Setup(x => x.Action(It.IsAny<UrlActionContext>()))
-                .Returns((UrlActionContext uac) =>
-                             $"{uac.Controller}/{uac.Action}#{uac.Fragment}?"
-                             + string.Join("&", new RouteValueDictionary(uac.Values).Select(p => p.Key + "=" + p.Value)));
-            controller.Url = urlHelperMock.Object;
+            return new UrlActionContext
+            {
+                Controller = typeof(T).Name,
+                Action = action,
+                Fragment = "",
+                Host = "localhost",
+                Protocol = "http",
+                Values= new {}
+            };
+        }
+
+        static T WithUrlHelper<T>(this T controller, ActionContext actionContext) where T : Controller
+        {
+            controller.Url = new Microsoft.AspNetCore.Mvc.Routing.UrlHelper(actionContext);
+            //var urlHelperMock = new Mock<IUrlHelper>();
+            //urlHelperMock
+            //    .Setup(x => x.Action(It.IsAny<UrlActionContext>()))
+            //    .Returns((UrlActionContext uac) =>
+            //                 $"{uac.Controller}/{uac.Action}#{uac.Fragment}?"
+            //                 + string.Join("&", new RouteValueDictionary(uac.Values).Select(p => p.Key + "=" + p.Value)));
+            //controller.Url = urlHelperMock.Object;
             return controller;
         }
 
-        public static T WithControllerContext<T>(this T controller) where T : Controller
+        public static T WithControllerContext<T>(this T controller, string action) where T : Controller
         {
             var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[0]));
-            return WithControllerContext(controller, user);
+            return WithControllerContext(controller, action, user);
         }
 
 
@@ -287,5 +302,22 @@ namespace Tests.WebApi.TestFwk
             }
         }
     }
-}
 
+    public class FakeUrlHelper : IUrlHelper
+    {
+        public FakeUrlHelper(ActionContext actionContext){ ActionContext = actionContext; }
+
+        public string Action(UrlActionContext actionContext){return actionContext.Action; }
+
+        public string Content(string contentPath){return $"<html><head></head><body>Content from {contentPath}</body></html>";}
+
+        public bool IsLocalUrl(string url) => true;
+
+        public string RouteUrl(UrlRouteContext routeContext){ return $"{routeContext.Protocol}://{routeContext.Host}/{routeContext.RouteName}";}
+
+        public string Link(string routeName, object values){return routeName + "?" + String.Join("&", new RouteValueDictionary(values).Select(p=> p.Key+"="+p.Value));}
+
+        public ActionContext ActionContext { get; }
+    }
+}
+#endif

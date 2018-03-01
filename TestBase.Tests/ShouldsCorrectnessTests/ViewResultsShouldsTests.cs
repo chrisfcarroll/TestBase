@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NUnit.Framework;
-using TestBase.Shoulds;
-using Tests.WebApi.TestFwk;
 
 namespace TestBase.Tests.ShouldsCorrectnessTests
 {
@@ -10,8 +8,7 @@ namespace TestBase.Tests.ShouldsCorrectnessTests
         public IActionResult ActionName()
         {
             var model= new AClass();
-            var viewName = nameof(ActionName);
-            return View(viewName,model);
+            return View("ViewName",model);
         }
     }
 
@@ -21,9 +18,9 @@ namespace TestBase.Tests.ShouldsCorrectnessTests
         [Test]
         public void ShouldBeViewWithModel_ShouldAssertViewResultAndNameAndModel()
         {
-            var aController = new AController().WithControllerContext();
+            var aController = new AController().WithControllerContext(nameof(AController.ActionName));
             //
-            var result= aController.ActionName().ShouldBeViewWithModel<AClass>("ActionName");
+            var result= aController.ActionName().ShouldBeViewWithModel<AClass>("ViewName");
             //
             result.ShouldBeOfType<AClass>();
         }

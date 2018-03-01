@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 using System.Runtime.InteropServices;
 using Microsoft.AspNetCore.Mvc;
 
-namespace TestBase.Shoulds
+namespace TestBase
 {
     public static class MvcRouteResultShoulds
     {

@@ -1,0 +1,43 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>TestBase</RootNamespace>
+    <AssemblyVersion>4.0.5.0</AssemblyVersion>
+    <AssemblyFileVersion>4.0.5.0</AssemblyFileVersion>
+    <PackageVersion>4.0.5.0</PackageVersion>
+  </PropertyGroup>
+  <PropertyGroup>
+    <Title>TestBase – Rich, fluent assertions and useful fakes for Mvc &amp; AdoNet.</Title>
+    <ReleaseNotes>ChangeLog
+      ---------
+      4.0.5.0 TestBase.Mvc partially ported to netstandard20 / AspNetCore
+      4.0.4.x StreamShoulds
+      4.0.3.0 StringListLogger as MS Logger and as Serilogger
+      4.0.1.0 Port to NetCore
+      3.0.3.0 Improves FakeDb setup
+      3.0.x.0 adds and/or corrects missing Shoulds()
+      2.0.5.0 adds some intellisense and FakeDbConnection.Verify(..., message,args) overload
+    </ReleaseNotes>
+    <Copyright>(c) Chris F. Carroll, 2013-2018</Copyright>
+    <Authors>Chris F Carroll</Authors>
+    <Owners>Chris F Carroll</Owners>
+    <ProjectUrl>http://github.com/chrisfcarroll/TestBase</ProjectUrl>
+    <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
+    <Tags>nunit test unittest tdd fluent assertions mock ado.net mvc aspnetmvc aspnetcore aspnetcoremvc</Tags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore" Version="2.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="2.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TestBase\TestBase.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+  </ItemGroup>
+
+</Project>

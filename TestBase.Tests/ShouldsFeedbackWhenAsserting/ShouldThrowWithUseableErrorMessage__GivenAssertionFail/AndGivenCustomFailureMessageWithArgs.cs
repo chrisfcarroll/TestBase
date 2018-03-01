@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using NUnit.Framework;
-using TestBase.Shoulds;
 
 namespace TestBase.Tests.ShouldsFeedbackWhenAsserting.ShouldThrowWithUseableErrorMessage__GivenAssertionFail
 {

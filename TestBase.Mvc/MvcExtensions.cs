@@ -1,10 +1,6 @@
 using System;
-using System.Collections.Specialized;
-using System.Globalization;
 using System.IO;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using TestBase.Shoulds;
 
 namespace TestBase
 {

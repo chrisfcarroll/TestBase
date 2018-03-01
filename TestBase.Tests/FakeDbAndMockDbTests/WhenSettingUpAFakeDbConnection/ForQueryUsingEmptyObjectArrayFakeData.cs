@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Dapper;
 using NUnit.Framework;
 using TestBase.AdoNet.FakeDb;
-using TestBase.Shoulds;
 
 namespace TestBase.Tests.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection
 {
