@@ -13,32 +13,34 @@ using Ploeh.AutoFixture;
 
 namespace TestBase.Tests.AspNetCoreMVC
 {
-    public class Startup
+    class Startup
     {
         public Startup(IHostingEnvironment env){Configuration = new ConfigurationBuilder().Build();}
         public IConfigurationRoot Configuration { get; }
         public void ConfigureServices(IServiceCollection services){ services.AddMvc(); }
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory){app.UseMvc();}
     }
-    public class Something
-    {
-        public string A { get; set; }
-    }
+
+    public class Something{ public string A { get; set; } }
+
+    [Route("dummy")]
     public class DummyController : Controller
     {
+        public static Something Putted;
         public class Model { public string Id { get; set; }}
-        [HttpGet]public IActionResult Action(string id){ return Content("Content"); }
-        [HttpPut]public object Put([FromBody]Something something){ return Accepted(something.A);}
+
+        [HttpGet("action")]public IActionResult Action(string id){ return Content("Content"); }
+        [HttpPut]public object Put([FromBody]Something something){ Putted=something; return Accepted();}
     }
 
-    [TestFixture, Category("Integration")]
+    [TestFixture]
     public class WhenTestingControllersUsingAspNetCoreTestTestServer : HostedMvcTestFixtureBase
     {
-        [TestCase("/dummy/Get/{id}")]
+        [TestCase("/dummy/action?id={id}")]
         public async Task Get_Should_ReturnActionResult(string url)
         {
-            Given(out var id, Guid.NewGuid());
-            GivenClientForRunningServer<Startup>(out var httpClient);
+            var id=Guid.NewGuid();
+            var httpClient=GivenClientForRunningServer<Startup>();
             GivenRequestHeaders(httpClient, "CustomHeader", "HeaderValue1");
             
             var result= await httpClient.GetAsync(url.Formatz(new {id}));
@@ -49,23 +51,18 @@ namespace TestBase.Tests.AspNetCoreMVC
                 .ShouldBe("Content");
         }
 
-        [TestCase("/dummy/Put")]
+        [TestCase("/dummy")]
         public async Task Put_Should_ReturnA(string url)
         {
-            GivenSomethingInTheBody(out var something);
-            Given(out var jsonBody, new StringContent(something.ToJSon(), Encoding.UTF8, "application/json"));
-            GivenClientForRunningServer<Startup>(out var httpClient);
+            var something= new Fixture().Create<Something>();
+            var jsonBody= new StringContent(something.ToJSon(), Encoding.UTF8, "application/json");
+            var httpClient=GivenClientForRunningServer<Startup>();
             GivenRequestHeaders(httpClient, "CustomHeader", "HeaderValue1");
-            //
-            (await httpClient.PutAsync(url, jsonBody))
-                .ShouldBe_202Accepted()
-                .Content.ReadAsStringAsync().Result.ShouldBe(something.A);
-        }
 
-        void GivenSomethingInTheBody(out Something thing)
-        {
-            thing= new Fixture().Create<Something>();
-        }
+            var result = await httpClient.PutAsync(url, jsonBody);
 
+            result.ShouldBe_202Accepted();
+            DummyController.Putted.ShouldEqualByValue( something );
+        }
     }
 }

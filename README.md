@@ -1,7 +1,7 @@
-*TestBase* gets you off to a flying start when unit testing projects with dependencies.
-It has rich, but easily extensible, fluent assertions, including EqualsByValue, Regex, Stream Comparision, and Ado.Net assertions.
+*TestBase* gets you off to a flying start when unit testing, especially for projects with dependencies on AspNetMvc, HttpClient or Ado.Net
+It has rich, yet so easily extensible, fluent assertions, including EqualsByValue, Regex, Stream Comparision, Ado.Net,Mvc and HttpResponseMessage assertions.
 
-TestBase.Shoulds
+Fluent Assertions
 ------------------
 Chainable fluent assertions get you to the point concisely
 ```
@@ -59,15 +59,66 @@ ControllerUnderTest.Action()
 ShouldHaveViewDataContaining(), ShouldBeJsonResult() etc.
 ```
 
-Version 3 on Net4 only
-----------------------
+TestBase.Mvc Version 4 for netstandard20 & AspNetCore Mvc
+---------------------------------------------------------
 
-TestBase-Mvc for MVC 4 & 5
--------------------------
-* Includes mocking of HttpConttextBase and parsing of RouteConfig so that Controllers have a working Controller.Url when under test:
+Test your controllers using by specifying your MVCApplications `Startup` class:
+
 ```
-uut = new MyController().WithHttpContextAndRoutes(RouteConfig.RegisterRoutes);
-uut.Url.Action("MyAction", "MyOtherController").ShouldEqual("/MyOtherController/MyAction");
+[TestFixture]
+public class WhenTestingControllersUsingAspNetCoreTestTestServer : HostedMvcTestFixtureBase
+{
+    [TestCase(""/dummy/action?id={id}"")]
+    public async Task Get_Should_ReturnActionResult(string url)
+    {
+        var id=Guid.NewGuid();
+        var httpClient=GivenClientForRunningServer<Startup>();
+        GivenRequestHeaders(httpClient, ""CustomHeader"", ""HeaderValue1"");
+            
+        var result= await httpClient.GetAsync(url.Formatz(new {id}));
+
+        result
+            .ShouldBe_200Ok()
+            .Content.ReadAsStringAsync().Result
+            .ShouldBe(""Content"");
+    }
+
+    [TestCase(""/dummy"")]
+    public async Task Put_Should_ReturnA(string url)
+    {
+        var something= new Fixture().Create<Something>();
+        var jsonBody= new StringContent(something.ToJSon(), Encoding.UTF8, ""application/json"");
+        var httpClient=GivenClientForRunningServer<Startup>();
+        GivenRequestHeaders(httpClient, ""CustomHeader"", ""HeaderValue1"");
+
+        var result = await httpClient.PutAsync(url, jsonBody);
+
+        result.ShouldBe_202Accepted();
+        DummyController.Putted.ShouldEqualByValue( something );
+    }
+}
+```
+
+TestBase.Mvc Version 3 for Net4
+-------------------------------
+
+Use the `Controller.WithHttpContextAndRoutes()` extension methods to fake the 
+http request &amp; context. By injecting the RegisterRoutes method of your
+MvcApplication, you can use and test Controller.Url with your application's configured routes.
+
+```
+ControllerUnderTest
+  .WithHttpContextAndRoutes(
+    [Optional] Action&lt;RouteCollection&gt; mvcApplicationRoutesRegistration, 
+    [optional] string requestUrl,
+    [Optional] string query = """",
+    [Optional] string appVirtualPath = ""/"",
+    [Optional] HttpApplication applicationInstance)
+
+ApiControllerUnderTest.WithWebApiHttpContext&lt;T&gt;(
+    HttpMethod httpMethod, 
+    [Optional] string requestUri,
+    [Optional] string routeTemplate)
 ```
 
 Can be used in both NUnit & MS UnitTestFramework test projects.
@@ -76,7 +127,7 @@ Can be used in both NUnit & MS UnitTestFramework test projects.
 
 ChangeLog
 ---------
-4.0.5.0 TestBase.Mvc partially ported to AspNetcore
+4.0.5.1 TestBase.Mvc partially ported to AspNetcore
 4.0.4.0 StreamShoulds
 4.0.3.0 StringListLogger as MS Logger and as Serilogger
 4.0.1.0 Port to NetCore

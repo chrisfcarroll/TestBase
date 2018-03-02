@@ -8,7 +8,7 @@ Chainable fluent assertions get you to the point concisely:
 ```
 ControllerUnderTest.Action()
   .ShouldbeViewResult()
-  .ShouldHaveModel&lt;TModel&gt;()
+  .ShouldHaveModel<TModel>()
   .ShouldEqualByValue(expected)
 ControllerUnderTest.Action()
   .ShouldBeRedirectToRouteResult()
@@ -17,10 +17,51 @@ ControllerUnderTest.Action()
 ShouldHaveViewDataContaining(), ShouldBeJsonResult() etc.
 ```
 
+Version 4 for netstandard20 & AspNetCore Mvc
+-------------------------------------------
+
+Test your controllers using by specifying your MVCApplications `Startup` class:
+
+```
+[TestFixture]
+public class WhenTestingControllersUsingAspNetCoreTestTestServer : HostedMvcTestFixtureBase
+{
+    [TestCase(""/dummy/action?id={id}"")]
+    public async Task Get_Should_ReturnActionResult(string url)
+    {
+        var id=Guid.NewGuid();
+        var httpClient=GivenClientForRunningServer<Startup>();
+        GivenRequestHeaders(httpClient, ""CustomHeader"", ""HeaderValue1"");
+            
+        var result= await httpClient.GetAsync(url.Formatz(new {id}));
+
+        result
+            .ShouldBe_200Ok()
+            .Content.ReadAsStringAsync().Result
+            .ShouldBe(""Content"");
+    }
+
+    [TestCase(""/dummy"")]
+    public async Task Put_Should_ReturnA(string url)
+    {
+        var something= new Fixture().Create<Something>();
+        var jsonBody= new StringContent(something.ToJSon(), Encoding.UTF8, ""application/json"");
+        var httpClient=GivenClientForRunningServer<Startup>();
+        GivenRequestHeaders(httpClient, ""CustomHeader"", ""HeaderValue1"");
+
+        var result = await httpClient.PutAsync(url, jsonBody);
+
+        result.ShouldBe_202Accepted();
+        DummyController.Putted.ShouldEqualByValue( something );
+    }
+}
+```
+
 
 Version 3 for Net4
 ------------------
-Controller extensions to fake the http request &amp; context. By injecting the RegisterRoutes method of your
+Use the `Controller.WithHttpContextAndRoutes()` extension methods to fake the 
+http request &amp; context. By injecting the RegisterRoutes method of your
 MvcApplication, you can use and test Controller.Url with your application's configured routes.
 
 ```
@@ -38,7 +79,6 @@ ApiControllerUnderTest.WithWebApiHttpContext&lt;T&gt;(
     [Optional] string routeTemplate)
 ```
 
-
-4.0.5.0 TestBase.Mvc partially ported to netstandard20 / AspNetCore
+4.0.5.1 TestBase.Mvc partially ported to netstandard20 / AspNetCore
 "
 )]

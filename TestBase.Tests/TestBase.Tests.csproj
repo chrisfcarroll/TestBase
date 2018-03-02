@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
-    <AssemblyVersion>4.0.4.0</AssemblyVersion>
-    <AssemblyFileVersion>4.0.4.0</AssemblyFileVersion>
-    <PackageVersion>4.0.4.0</PackageVersion>
+    <AssemblyVersion>4.0.5.1</AssemblyVersion>
+    <AssemblyFileVersion>4.0.5.1</AssemblyFileVersion>
+    <PackageVersion>4.0.5.1</PackageVersion>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -25,6 +25,6 @@
   <ItemGroup>
     <ProjectReference Include="..\TestBase.Mvc\TestBase.Mvc.csproj" />
     <ProjectReference Include="..\TestBase\TestBase.csproj" />
-    <ProjectReference Include="..\TestBase-AdoNet\TestBase.AdoNet.csproj" />
+    <ProjectReference Include="..\TestBase.AdoNet\TestBase.AdoNet.csproj" />
   </ItemGroup>
 </Project>

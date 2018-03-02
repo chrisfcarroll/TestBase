@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Reflection;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
@@ -14,9 +15,46 @@ using Microsoft.Extensions.DependencyInjection;
 namespace TestBase
 {
     /// <summary>
-    /// A test fixture which hosts the target project (project we wish to test) in an in-memory server.
-    /// The TestFixture class is responsible for configuring and creating the TestServer, setting up an HttpClient to communicate with the TestServer.Each of the integration tests uses the Client property to connect to the test server and make a request.
+    /// <para>A test fixture which hosts the target project (project we wish to test) in an in-memory server.
+    /// The TestFixture class is responsible for configuring and creating the TestServer, setting up an HttpClient to 
+    /// communicate with the TestServer.Each of the integration tests uses the Client property to connect to the 
+    /// test server and make a request.</para>
+    /// Usage
+    /// <para>Given an AspNetCore MVC project with a <code>Startup</code> class, a <see cref="Controller"/>, and routing, a TestFixture which inherits
+    /// from <see cref="HostedMvcTestFixtureBase"/> can test Controller actions like this:</para>
+    /// <code>
+    /// [TestCase("/dummy/action?id={id}")]
+    /// public async Task Get_Should_ReturnActionResult(string url)
+    /// {
+    ///   var id=Guid.NewGuid();
+    ///   var httpClient=GivenClientForRunningServer&lt;Startup&gt;();
+    ///   GivenRequestHeaders(httpClient, "CustomHeader", "HeaderValue1");
+    /// 
+    ///   var result= await httpClient.GetAsync(url.Formatz(new {id}));
+    /// 
+    ///   result
+    ///     .ShouldBe_200Ok()
+    ///     .Content.ReadAsStringAsync().Result
+    ///     .ShouldBe("Content");
+    /// }
+    /// 
+    /// [TestCase("/dummy")]
+    /// public async Task Put_Should_ReturnA(string url)
+    /// {
+    ///   var something= new Fixture().Create&lt;Something&gt;();
+    ///   var jsonBody= new StringContent(something.ToJSon(), Encoding.UTF8, "application/json");
+    ///   var httpClient=GivenClientForRunningServer&lt;Startup&gt;();
+    ///   GivenRequestHeaders(httpClient, "CustomHeader", "HeaderValue1");
+    /// 
+    ///   var result = await httpClient.PutAsync(url, jsonBody);
+    /// 
+    ///   result.ShouldBe_202Accepted();
+    /// }
+    /// </code>
     /// </summary>
+    /// <remarks>
+    /// <strong>See https://github.com/chrisfcarroll/TestBase/blob/netstandard20/TestBase.Tests/AspNetCoreMVC/WhenTestingControllers.cs for an example.</strong>
+    /// </remarks>
     public class HostedMvcTestFixtureBase : IDisposable
     {
         HttpClient httpClient;
@@ -29,7 +67,14 @@ namespace TestBase
             TestServer?.Dispose();
         }
 
-        public HttpClient GivenClientForRunningServer<TStartup>(out HttpClient httpClient, string baseAddress="http://localhost")
+        /// <summary>
+        /// Builds and runs your AspNetCore MVC application, given <see cref="TStartup"/> as the Startup class,
+        /// and returns an <see cref="HttpClient"/> with which you can make http calls to the application.
+        /// </summary>
+        /// <typeparam name="TStartup"></typeparam>
+        /// <param name="baseAddress"></param>
+        /// <returns>and <see cref="HttpClient"/> which can make requests to the application.</returns>
+        public HttpClient GivenClientForRunningServer<TStartup>(string baseAddress="http://localhost")
         {
             this.TStartup = typeof(TStartup);
             var startupAssembly = typeof(TStartup).GetTypeInfo().Assembly;
@@ -87,10 +132,29 @@ namespace TestBase
             throw new Exception($"Solution root could not be located using application root {pathToCurrentlyExecutingTest}.");
         }
 
+        /// <summary>
+        /// For those addicted to GivenWhenThen formatting. Usage:
+        /// <code>Given(out thing, new Thing())</code>
+        /// </summary>
         public T Given<T>(out T given, T value) { return given = value; }
+        /// <summary>
+        /// For those addicted to GivenWhenThen formatting. Usage:
+        /// <code>Given(out thing, ()=>new Thing())</code>
+        /// </summary>
         public T Given<T>(out T given, Func<T> value) { return given = value(); }
+        /// <summary>
+        /// For those addicted to GivenWhenThen formatting. Usage:
+        /// <code>Given(out thing, input, i=>new Thing(i))</code>
+        /// </summary>
         public T Given<T, Tinput>(out T given, Tinput input, Func<Tinput, T> value) { return given = value(input); }
 
+        /// <summary>
+        /// Adds the specified Headers to a <see cref="HttpClient"/> request
+        /// </summary>
+        /// <param name="httpClient"></param>
+        /// <param name="headerName"></param>
+        /// <param name="headerValues"></param>
+        /// <returns></returns>
         protected static HttpRequestHeaders GivenRequestHeaders(HttpClient httpClient, string headerName, params string[] headerValues)
         {
             Assert.Precondition(headerValues, x => x != null && x.Length > 0);

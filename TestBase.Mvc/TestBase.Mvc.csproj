@@ -3,15 +3,15 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>TestBase</RootNamespace>
-    <AssemblyVersion>4.0.5.0</AssemblyVersion>
-    <AssemblyFileVersion>4.0.5.0</AssemblyFileVersion>
-    <PackageVersion>4.0.5.0</PackageVersion>
+    <AssemblyVersion>4.0.5.1</AssemblyVersion>
+    <AssemblyFileVersion>4.0.5.1</AssemblyFileVersion>
+    <PackageVersion>4.0.5.1</PackageVersion>
   </PropertyGroup>
   <PropertyGroup>
     <Title>TestBase – Rich, fluent assertions and useful fakes for Mvc &amp; AdoNet.</Title>
     <ReleaseNotes>ChangeLog
       ---------
-      4.0.5.0 TestBase.Mvc partially ported to netstandard20 / AspNetCore
+      4.0.5.1 TestBase.Mvc partially ported to netstandard20 / AspNetCore
       4.0.4.x StreamShoulds
       4.0.3.0 StringListLogger as MS Logger and as Serilogger
       4.0.1.0 Port to NetCore

@@ -1,0 +1,87 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyVersion>4.0.5.1</AssemblyVersion>
+    <AssemblyFileVersion>4.0.5.1</AssemblyFileVersion>
+    <PackageVersion>4.0.5.1</PackageVersion>
+    <PackageVersion>4.0.5.1</PackageVersion>
+  </PropertyGroup>
+  <PropertyGroup>
+    <Title>TestBase – Rich, fluent assertions and useful fakes for Mvc &amp; AdoNet.</Title>
+    <Summary><![CDATA[TestBase – Rich, fluent assertions and useful fakes for Mvc &amp; AdoNet. For a flying start to Automated and Unit Testing.
+
+TestBase.Shoulds
+------------------
+Chainable fluent assertions get you to the point concisely
+```
+UnitUnderTest.Action()
+  .ShouldNotBeNull()
+  .ShouldContain(expected);
+UnitUnderTest.OtherAction()
+  .ShouldEqualByValue( 
+    new {Id=1, Payload=expectedPayload, Additional=new[]{ expected1, expected2 }}
+);
+```
+* `ShouldBe(), ShouldMatch(), ShouldNotBe(), ShouldContain(), ShouldNotContain(), ShouldBeEmpty(), ShouldNotBeEmpty(), ShouldAll()` and many more
+* `ShouldEqualByValue()` works with all kinds of object and collections
+
+## TestBase.AdoNet adds:
+
+TestBase.FakeDb
+------------------
+Works with Ado.Net and technologies on top of it, including Dapper.
+* `fakeDbConnection.SetupForQuery(IEnumerable<TFakeData> )`
+* `fakeDbConnection.SetupForQuery(IEnumerable<Tuple<TFakeDataForTable1,TFakeDataForTable2>> )`
+* `fakeDbConnection.SetupForQuery(fakeData, new[] {""FieldName1"", FieldName2""})`
+* `fakeDbConnection.SetupForExecuteNonQuery(rowsAffected)`
+
+* `fakeDbConnection.ShouldHaveUpdated(""tableName"", [Optional] fieldList, whereClauseField)`
+* `fakeDbConnection.ShouldHaveSelected(""tableName"", [Optional] fieldList, whereClauseField)`
+* `fakeDbConnection.ShouldHaveUpdated(""tableName"", [Optional] fieldList, whereClauseField)`
+* `fakeDbConnection.ShouldHaveDeleted(""tableName"", whereClauseField)`
+* `fakeDbConnection.ShouldHaveInvoked(cmd => predicate(cmd))`
+* `fakeDbConnection.ShouldHaveXXX().ShouldHaveParameter(""name"", value)`
+
+* `fakeDbConnection.Verify(x=>x.CommandText.Matches(""Insert [case] .*"") && x.Parameters[""id""].Value==1)`
+
+TestBase.RecordingDb
+--------------------
+* `new RecordingDbConnection(IDbConnection)` helps you profile Ado.Net Db calls
+
+Latest Change: 4.0.3.0 Port to NetCore
+]]></Summary>
+    <ReleaseNotes><![CDATA[
+ChangeLog
+---------
+4.0.5.1 TestBase.Mvc partially ported to netstandard20 / AspNetCore
+4.0.4.0 Stream Shoulds
+4.0.3.0 Port to NetCore
+3.0.3.0 Improves FakeDb setup
+3.0.x.0 adds and/or corrects missing Shoulds()
+2.0.5.0 adds some intellisense and FakeDbConnection.Verify(..., message,args) overload]]>
+    </ReleaseNotes>
+    <Copyright>(c) Chris F. Carroll, 2013-2018</Copyright>
+    <Authors>Chris F Carroll</Authors>
+    <Owners>Chris F Carroll</Owners>
+    <ProjectUrl>http://github.com/chrisfcarroll/TestBase</ProjectUrl>
+    <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
+    <Tags>nunit test unittest tdd fluent assertions mock ado.net</Tags>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <NoWarn>1701;1702;1705;NU1701</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <NoWarn>1701;1702;1705;NU1701</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="FakeDb\" />
+    <Folder Include="RecordingDb\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="System.Data.Common" Version="4.3.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TestBase\TestBase.csproj" />
+  </ItemGroup>
+</Project>

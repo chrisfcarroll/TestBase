@@ -54,7 +54,7 @@ ShouldHaveViewDataContaining(), ShouldBeJsonResult() etc.
 
 ChangeLog
 ---------
-4.0.5.0 TestBase.Mvc partially ported to AspNetcore
+4.0.5.1 TestBase.Mvc partially ported to AspNetcore
 4.0.4.0 StreamShoulds
 4.0.3.0 StringListLogger as MS Logger and as Serilogger
 4.0.1.0 Port to NetCore
