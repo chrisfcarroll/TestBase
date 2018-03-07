@@ -1,26 +1,70 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 
 namespace TestBase
 {
     public static class StringListLoggerFactoryExtension
     {
-        public static ILoggerFactory AddStringListLogger(this ILoggerFactory factory, List<string> backingList = null, string name = "TestBase")
+        /// <summary>
+        /// Ensures that when a <see cref="StringListLogger"/> is requested for name <paramref name="name"/>, 
+        /// the returned Logger will write to <paramref name="backingList"/>
+        /// </summary>
+        /// <param name="factory"></param>
+        /// <param name="name"></param>
+        /// <param name="backingList"></param>
+        /// <param name="includeScopes"></param>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        public static ILoggerFactory AddStringListLogger(this ILoggerFactory factory, string name, List<string> backingList, bool includeScopes = true, Func<string, LogLevel, bool> filter = null)
         {
             if (factory == null) throw new ArgumentNullException(nameof(factory));
-            factory.AddProvider(new StringListLoggerProvider(backingList, name));
+            filter = filter ?? StringListLoggerByNameProvider.TrueFilter;
+            StringListLoggerByNameProvider.Instance.Loggers.GetOrAdd(name, new StringListLogger(backingList, name, filter, includeScopes));
+            StringListLoggerByNameProvider.DefaultFilter = filter;
+            StringListLoggerByNameProvider.DefaultIncludeScopes = includeScopes;
+            factory.AddProvider(StringListLoggerByNameProvider.Instance);
             return factory;
+        }
+
+        public static ILoggerFactory AddStringListLogger(this ILoggerFactory factory, StringListLogger soleInstance)
+        {
+            if (factory == null) throw new ArgumentNullException(nameof(factory));
+            factory.AddProvider(new StringListLoggerSingleInstanceProvider(soleInstance));
+            return factory;
+        }
+        public static ILoggerFactory AddStringListLogger(this ILoggerFactory factory)
+        {
+            return AddStringListLogger(factory, new StringListLogger());
+        }
+    }
+
+    public class StringListLoggerSingleInstanceProvider : ILoggerProvider
+    {
+        readonly StringListLogger soleInstance;
+        Stack<string> names= new Stack<string>();
+
+        public StringListLoggerSingleInstanceProvider(StringListLogger soleInstance){this.soleInstance = soleInstance;}
+
+        public void Dispose(){ soleInstance.Name=names.Pop();} 
+
+        public ILogger CreateLogger(string categoryName)
+        {
+            names.Push( soleInstance.Name = categoryName) ;
+            return soleInstance;
         }
     }
 
     public class StringListLogger : ILogger
     {
+        public static StringListLogger ByName(string name)
+        {
+            return StringListLoggerByNameProvider.Instance.Loggers[name];
+        }
+
         static readonly string LoglevelPadding = ": ";
 
         static readonly string MessagePadding = new string(' ', LogLevel.Information.ToString().Length + LoglevelPadding.Length);
@@ -48,7 +92,7 @@ namespace TestBase
 
         public bool IncludeScopes { get; set; }
 
-        public string Name { get; }
+        public string Name { get; set; }
 
         ScopeStack Scopes {get;}= new ScopeStack();
 
@@ -69,20 +113,7 @@ namespace TestBase
             string message;
             try
             {
-                try
-                {
-                    message = formatter(state, exception);
-                }
-                catch (FormatException)
-                {
-                    /*
-                     * https://github.com/aspnet/Logging/issues/767
-                     */
-                    var stateFields = state.GetType().GetFields(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                    var values = stateFields.Select(f => f.GetValue(state)).ToArray();
-                    var asJson = JsonConvert.SerializeObject(values, ErrorSwallowingJsonSerializerSettings);
-                    message = $"{asJson} {exception}";
-                }
+                message = formatter(state, exception);
             }
             catch (Exception e)
             {
@@ -150,47 +181,28 @@ namespace TestBase
 
 
     [ProviderAlias("StringList")]
-    public class StringListLoggerProvider : ILoggerProvider, IDisposable
+    public class StringListLoggerByNameProvider : ILoggerProvider
     {
-        static readonly Func<string, LogLevel, bool> FalseFilter = (cat, level) => false;
-        static readonly Func<string, LogLevel, bool> TrueFilter = (cat, level) => true;
-        readonly Func<string, LogLevel, bool> filter;
-        readonly bool includeScopes;
 
-        public StringListLoggerProvider()
-        {
-            filter = TrueFilter;
-            includeScopes = true;
-        }
+        internal static readonly Func<string, LogLevel, bool> FalseFilter = (cat, level) => false;
+        internal static readonly Func<string, LogLevel, bool> TrueFilter = (cat, level) => true;
 
-        public StringListLoggerProvider(List<String> backingList = null, string name = null,
-                                        Func<string, LogLevel, bool> filter = null, bool includeScopes = true)
-        {
-            this.filter = filter ?? TrueFilter;
-            this.includeScopes = includeScopes;
-            if (name        != null && backingList == null) CreateLogger(name);
-            if (backingList != null)
-                Loggers.GetOrAdd(name ?? String.Empty,
-                                 s => new StringListLogger(backingList, s, this.filter, this.includeScopes));
-        }
+        public static Func<string, LogLevel, bool> DefaultFilter { get; set; } = TrueFilter;
+        public static bool DefaultIncludeScopes { get; set; } = true;
 
-        public StringListLoggerProvider(List<string> logger) { Loggers.TryAdd("", new StringListLogger(logger)); }
+        public static StringListLoggerByNameProvider Instance { get; } = new StringListLoggerByNameProvider();
 
-        public ConcurrentDictionary<string, StringListLogger> Loggers { get; } =
-            new ConcurrentDictionary<string, StringListLogger>();
 
-        public ILogger CreateLogger(string name)
-        {
-            return Loggers.GetOrAdd(name ?? String.Empty, CreateLoggerImplementation);
-        }
+        public ConcurrentDictionary<string, StringListLogger> Loggers { get; } = new ConcurrentDictionary<string, StringListLogger>();
+
+        public ILogger CreateLogger(string name){ return Loggers.GetOrAdd(name, n => CreateLoggerImplementation(n, TrueFilter, true)); }
 
         public void Dispose() { }
 
-        StringListLogger CreateLoggerImplementation(string name)
+        public StringListLogger CreateLoggerImplementation(string name, Func<string, LogLevel, bool> filter, bool includeScopes)
         {
-            return new StringListLogger(new List<string>(), name, GetFilter(name), includeScopes);
+            return new StringListLogger(new List<string>(), name, filter ?? FalseFilter, includeScopes);
         }
 
-        Func<string, LogLevel, bool> GetFilter(string name) { return filter ?? FalseFilter; }
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -14,6 +15,11 @@ namespace TestBase
         public static string WithWhiteSpaceRemoved(this string @this)
         {
             return @this?.Replace(" ", "").Replace("\n", "").Replace("\r", "").Replace("\t", "");
+        }
+
+        public static string ReplaceWith(this string @this, string newValue, params string[] oldValues)
+        {
+            return oldValues.Aggregate(@this, (s,oldValue)=> s.Replace(oldValue,newValue)  );
         }
 
         public static bool Matches(this string @this, string pattern, RegexOptions options = RegexOptions.None)

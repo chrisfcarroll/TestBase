@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using NUnit.Framework;
@@ -60,7 +61,7 @@ namespace TestBase.Tests
         [Test]
         public void NotThrowOnSerilogDestructuring__EvenWhenCreatedViaMSLoggerFactory()
         {
-            var stringListLoggerProvider = new StringListLoggerProvider();
+            var stringListLoggerProvider = new StringListLoggerByNameProvider();
             var factory=new LoggerFactory();
             factory.AddProvider(stringListLoggerProvider);
             var logger = factory.CreateLogger(GetType());
@@ -74,17 +75,34 @@ namespace TestBase.Tests
         }
 
         [Test]
-        public void NotThrowOnNullParameters()
+        public void Destructure()
         {
-            var uut=new StringListLogger();
-            string[] args = null;
+            var uut= new StringListLogger();
+            var wrapped= new LoggerFactory().AddStringListLogger(uut).CreateLogger(nameof(Destructure));
 
-            uut.LogInformation("This has serilog formatted fields {@Destructured}", args);
+            wrapped.LogInformation("This has destructured output {@Destructured}", new {A=1, B="Two"});
 
-            uut.LoggedLines.ShouldBeOfLength(1).Single().ShouldMatch(@"This has serilog formatted fields").ShouldMatch("null");
+            uut.LoggedLines.ForEach(Console.WriteLine);
+
+            uut.LoggedLines.ShouldBeOfLength(1).Single().ReplaceWith("", " ", "\"") .ShouldMatch( @"\{A=1,B=Two\}");
         }
 
-        [Test,Ignore("Microsoft.Extensions.Logging https://github.com/aspnet/Logging/issues/767")]
+        [Test]
+        public void NotThrowOnNullParameters()
+        {
+            var loggedLines = new List<string>();
+            var wrapped= new LoggerFactory().AddStringListLogger("TestBase", loggedLines).CreateLogger("TestBase");
+
+            wrapped.LogInformation("{@Destructured}", new {A=1, B="Two", C= null as string});
+            wrapped.LogInformation("{@A}", null, null);
+            wrapped.LogInformation("{@A}", null as int[]);
+
+            loggedLines.ForEach(Console.WriteLine);
+
+            loggedLines.ShouldBeOfLength(3).ShouldAll( x=>x.Matches("null") );
+        }
+
+        [Test]
         public void MsLoggerShouldNotThrowWhenDestructuringNullParameters()
         {
             var logger = new LoggerFactory().AddConsole().CreateLogger("Test");
@@ -92,11 +110,19 @@ namespace TestBase.Tests
             logger.LogError("This is formatted for destructuring {@Destructure}", new {A=1,B=2});
             Console.WriteLine("Logs with format \"{ A = 1, B = 2 }\"");
 
-            logger.LogError("This is formatted for destructuring {@Destructure}", null);
-            Console.WriteLine(@"Output:
-Message: System.AggregateException : 
-An error occurred while writing to logger(s). (Index (zero based) must be greater than or equal to zero and less than the size of the argument list.)
-----> System.FormatException : Index (zero based) must be greater than or equal to zero and less than the size of the argument list");
+            object x = null;
+            logger.LogError("This is formatted for destructuring {@Destructure}", x);
+        }
+
+        [Test]
+        public void ShouldBeRetrievable()
+        {
+            var logger= new LoggerFactory().AddStringListLogger().CreateLogger("1");
+            logger.LogInformation("In Logger 1", new {A=1});
+            logger.LogInformation("In Logger 1 {@Destructured}", new {A=1});
+
+            StringListLogger.ByName("1").LoggedLines.ShouldBeOfLength(2).ShouldAll(s => s.Matches("In Logger 1"));
+
         }
     }
 }

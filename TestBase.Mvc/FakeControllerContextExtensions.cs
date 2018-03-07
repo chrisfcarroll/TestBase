@@ -16,12 +16,16 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.Routing.Internal;
 using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.ObjectPool;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.WebEncoders.Testing;
+using Moq;
 
 namespace TestBase
 {
-    public static class FakeControllerContextExtensions
+    public static class StubbedControllerContextExtensions
     {
         public static T WithRequestHeader<T>(this T controller, string name, params string[] values) where T : Controller
         {
@@ -29,25 +33,53 @@ namespace TestBase
             return controller;
         }
 
-
-        public static T WithControllerContext<T>(this T controller, string action, ClaimsPrincipal user) where T : Controller
+        public static T WithControllerContext<T>(this T controller, string action, ActionDescriptor actionDescriptor=null, Func<Type,string,string> fakeVirtualPath=null, ClaimsPrincipal user=null) where T : Controller
         {
+            fakeVirtualPath = fakeVirtualPath?? ( (t,s)=> string.Format("/{0}/{1}",t.Name,s) );
+            user= user??new ClaimsPrincipal(new ClaimsIdentity(new Claim[0]));
+            actionDescriptor = actionDescriptor ?? new ActionDescriptor();
+
             var metadataProvider = TestModelMetadataProvider.CreateDefaultProvider();
-            var httpContext = new DefaultHttpContext();
-            var urlActionContext = ActionContextFor<T>(action);
-            var actionContext = new ActionContext(httpContext, new RouteData(), new ActionDescriptor());
+            var httpContext = new DefaultHttpContext{User = user};
+
+            //---Doesnt seem to help
+            //var trb = new TreeRouteBuilder(
+            //    new LoggerFactory().AddConsole(), 
+            //    new UrlTestEncoder(),
+            //    new DefaultObjectPool<UriBuildingContext>( new TestPooledObjectPolicy<UriBuildingContext>(){Factory = ()=>new TestUriBuildingContext()}),
+            //    new DefaultInlineConstraintResolver(
+            //        new OptionsManager<RouteOptions>(
+            //            new OptionsFactory<RouteOptions>(
+            //                new IConfigureOptions<RouteOptions>[0],
+            //                new IPostConfigureOptions<RouteOptions>[0]))));
+            //var router = trb.Build();
+            //--- 
+
+            var routerMock = new Mock<IRouter>();
+            routerMock
+                .Setup(x => x.GetVirtualPath(It.IsAny<VirtualPathContext>()))
+                .Returns(new VirtualPathData(routerMock.Object, fakeVirtualPath(typeof(T),action) ));
+            var routeData = new RouteData();
+            routeData.Routers.Add(routerMock.Object);
+
+            var actionContext = new ActionContext(
+                httpContext, 
+                routeData, 
+                actionDescriptor, 
+                new ModelStateDictionary());
+
             var viewData = new ViewDataDictionary(metadataProvider, new ModelStateDictionary());
             var tempData = new TempDataDictionary( httpContext, new SessionStateTempDataProvider());
             controller.MetadataProvider = metadataProvider;
             controller.ViewData = viewData;
             controller.TempData = tempData;
             controller.ObjectValidator = new DefaultObjectValidator( metadataProvider,new List<IModelValidatorProvider>());
-            controller.ControllerContext = ControllerContextWith(user);
-            WithUrlHelper(controller, actionContext);
+            controller.Url= new UrlHelper(actionContext);
+            controller.ControllerContext = new ControllerContext{ HttpContext = httpContext }; 
             return controller;
         }
 
-        static UrlActionContext ActionContextFor<T>(string action) where T : Controller
+        static UrlActionContext UrlActionContextFor<T>(string action) where T : Controller
         {
             return new UrlActionContext
             {
@@ -62,33 +94,32 @@ namespace TestBase
 
         static T WithUrlHelper<T>(this T controller, ActionContext actionContext) where T : Controller
         {
-            controller.Url = new Microsoft.AspNetCore.Mvc.Routing.UrlHelper(actionContext);
-            //var urlHelperMock = new Mock<IUrlHelper>();
-            //urlHelperMock
-            //    .Setup(x => x.Action(It.IsAny<UrlActionContext>()))
-            //    .Returns((UrlActionContext uac) =>
-            //                 $"{uac.Controller}/{uac.Action}#{uac.Fragment}?"
-            //                 + string.Join("&", new RouteValueDictionary(uac.Values).Select(p => p.Key + "=" + p.Value)));
-            //controller.Url = urlHelperMock.Object;
+            controller.Url = new UrlHelper(actionContext);
             return controller;
         }
 
-        public static T WithControllerContext<T>(this T controller, string action) where T : Controller
+        /// <summary>
+        /// Probably  not needed, as the real <see cref="UrlHelper"/> mostly works in unit tests given a good enough fake <see cref="ActionContext"/>
+        /// 
+        /// Adds a Mock<see cref="UrlHelper"/> which returns
+        /// Action routes of the form "{uac.Controller}/{uac.Action}#{uac.Fragment}?{uac.Values.Key[i]}={uac.Values.Value[i]}..."
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="controller"></param>
+        /// <returns></returns>
+        static T WithMockUrlHelper<T>(this T controller) where T : Controller
         {
-            var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[0]));
-            return WithControllerContext(controller, action, user);
-        }
-
-
-        public static ControllerContext ControllerContextWith(ClaimsPrincipal claimsPrincipal)
-        {
-            return new ControllerContext()
-                   {
-                       HttpContext = new DefaultHttpContext
-                                     {
-                                         User = claimsPrincipal,
-                                     }
-                   };
+            var urlHelperMock = new Mock<IUrlHelper>();
+            urlHelperMock
+                .Setup(x => x.Action(It.IsAny<UrlActionContext>()))
+                .Returns((UrlActionContext uac) =>
+                             $"{uac.Controller}/{uac.Action}#{uac.Fragment}?"
+                             + string.Join("&", new RouteValueDictionary(uac.Values).Select(p => p.Key + "=" + p.Value)));
+            urlHelperMock
+                .Setup(x => x.Content(It.IsAny<string>()))
+                .Returns<string>( s=>s );
+            controller.Url = urlHelperMock.Object;
+            return controller;
         }
     }
 
@@ -309,7 +340,7 @@ namespace TestBase
 
         public string Action(UrlActionContext actionContext){return actionContext.Action; }
 
-        public string Content(string contentPath){return $"<html><head></head><body>Content from {contentPath}</body></html>";}
+        public string Content(string contentPath){return contentPath;}
 
         public bool IsLocalUrl(string url) => true;
 
@@ -318,6 +349,20 @@ namespace TestBase
         public string Link(string routeName, object values){return routeName + "?" + String.Join("&", new RouteValueDictionary(values).Select(p=> p.Key+"="+p.Value));}
 
         public ActionContext ActionContext { get; }
+    }
+
+    public class TestUriBuildingContext : UriBuildingContext
+    {
+        public TestUriBuildingContext() : base(new UrlTestEncoder()){}
+    }
+
+    public class TestPooledObjectPolicy<T> : IPooledObjectPolicy<T> where T : class
+    {
+        public Func<T> Factory = ()=>throw new InvalidOperationException("First, populate TestPooledObjectPolicy<T>.Factory, then you can use it.");
+
+        public T Create(){ return Factory(); }
+
+        public bool Return(T obj){ return true; }
     }
 }
 #endif
