@@ -22,11 +22,9 @@ namespace TestBase
         public static ILoggerFactory AddStringListLogger(this ILoggerFactory factory, string name, List<string> backingList, bool includeScopes = true, Func<string, LogLevel, bool> filter = null)
         {
             if (factory == null) throw new ArgumentNullException(nameof(factory));
-            filter = filter ?? StringListLoggerByNameProvider.TrueFilter;
-            StringListLoggerByNameProvider.Instance.Loggers.GetOrAdd(name, new StringListLogger(backingList, name, filter, includeScopes));
-            StringListLoggerByNameProvider.DefaultFilter = filter;
-            StringListLoggerByNameProvider.DefaultIncludeScopes = includeScopes;
-            factory.AddProvider(StringListLoggerByNameProvider.Instance);
+            filter = filter ?? ((s,t)=>true);
+            var soleInstance= new StringListLogger(backingList, name, filter, includeScopes);
+            factory.AddProvider(new StringListLoggerSingleInstanceProvider(soleInstance));
             return factory;
         }
 
@@ -44,26 +42,24 @@ namespace TestBase
 
     public class StringListLoggerSingleInstanceProvider : ILoggerProvider
     {
-        readonly StringListLogger soleInstance;
         Stack<string> names= new Stack<string>();
 
-        public StringListLoggerSingleInstanceProvider(StringListLogger soleInstance){this.soleInstance = soleInstance;}
+        public StringListLoggerSingleInstanceProvider(StringListLogger instance){StringListLogger.Instance =   instance; }
 
-        public void Dispose(){ soleInstance.Name=names.Pop();} 
+        public StringListLoggerSingleInstanceProvider(): this(new StringListLogger()){}
+
+        public void Dispose(){ StringListLogger.Instance.Name=names.Pop();} 
 
         public ILogger CreateLogger(string categoryName)
         {
-            names.Push( soleInstance.Name = categoryName) ;
-            return soleInstance;
+            names.Push( StringListLogger.Instance.Name = categoryName) ;
+            return StringListLogger.Instance;
         }
     }
 
     public class StringListLogger : ILogger
     {
-        public static StringListLogger ByName(string name)
-        {
-            return StringListLoggerByNameProvider.Instance.Loggers[name];
-        }
+        public static StringListLogger Instance;
 
         static readonly string LoglevelPadding = ": ";
 
@@ -101,8 +97,6 @@ namespace TestBase
             public void Dispose(){Pop();}
             public new ScopeStack Push((string,object) item){base.Push(item);return this;}
         }
-
-        void SwallowError(EventArgs e){}
 
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state,
                                 Exception exception,
@@ -180,29 +174,28 @@ namespace TestBase
     }
 
 
-    [ProviderAlias("StringList")]
-    public class StringListLoggerByNameProvider : ILoggerProvider
-    {
+    //public class StringListLoggerByNameProvider : ILoggerProvider
+    //{
 
-        internal static readonly Func<string, LogLevel, bool> FalseFilter = (cat, level) => false;
-        internal static readonly Func<string, LogLevel, bool> TrueFilter = (cat, level) => true;
+    //    internal static readonly Func<string, LogLevel, bool> FalseFilter = (cat, level) => false;
+    //    internal static readonly Func<string, LogLevel, bool> TrueFilter = (cat, level) => true;
 
-        public static Func<string, LogLevel, bool> DefaultFilter { get; set; } = TrueFilter;
-        public static bool DefaultIncludeScopes { get; set; } = true;
+    //    public static Func<string, LogLevel, bool> DefaultFilter { get; set; } = TrueFilter;
+    //    public static bool DefaultIncludeScopes { get; set; } = true;
 
-        public static StringListLoggerByNameProvider Instance { get; } = new StringListLoggerByNameProvider();
+    //    public static StringListLoggerByNameProvider Instance { get; } = new StringListLoggerByNameProvider();
 
 
-        public ConcurrentDictionary<string, StringListLogger> Loggers { get; } = new ConcurrentDictionary<string, StringListLogger>();
+    //    public ConcurrentDictionary<string, StringListLogger> Loggers { get; } = new ConcurrentDictionary<string, StringListLogger>();
 
-        public ILogger CreateLogger(string name){ return Loggers.GetOrAdd(name, n => CreateLoggerImplementation(n, TrueFilter, true)); }
+    //    public ILogger CreateLogger(string name){ return Loggers.GetOrAdd(name, n => CreateLoggerImplementation(n, TrueFilter, true)); }
 
-        public void Dispose() { }
+    //    public void Dispose() { }
 
-        public StringListLogger CreateLoggerImplementation(string name, Func<string, LogLevel, bool> filter, bool includeScopes)
-        {
-            return new StringListLogger(new List<string>(), name, filter ?? FalseFilter, includeScopes);
-        }
+    //    public StringListLogger CreateLoggerImplementation(string name, Func<string, LogLevel, bool> filter, bool includeScopes)
+    //    {
+    //        return new StringListLogger(new List<string>(), name, filter ?? FalseFilter, includeScopes);
+    //    }
 
-    }
+    //}
 }

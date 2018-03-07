@@ -1,14 +1,30 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NUnit.Framework;
+// ReSharper disable InconsistentNaming
 
 namespace TestBase.Tests.AspNetCoreMVC
 {
-    class AController : Controller
+    public class MyViewModel
     {
-        public IActionResult ActionName()
+        public string YouPassedIn { get; set; }
+        public string LinkToSelf { get; set; }
+        public string LinkToOther { get; set; }
+    }
+
+    public class IDependency{}
+
+    public class AController : Controller
+    {
+        public AController(IDependency dependency){}
+
+        public IActionResult ActionName(string parameter, string other, string thing)
         {
-            var link = Url.Action("ActionName","AController");
-            var model= new AClass{Name= link};
+            var model= new MyViewModel
+            {
+                YouPassedIn = parameter??"(null)",
+                LinkToSelf = Url.Action("ActionName","AController"),
+                LinkToOther= Url.Action(thing,other)
+            };
             return View("ViewName",model);
         }
     }
@@ -19,11 +35,14 @@ namespace TestBase.Tests.AspNetCoreMVC
         [Test]
         public void ShouldBeViewWithModel_ShouldAssertViewResultAndNameAndModel()
         {
-            var aController = new AController().WithControllerContext(nameof(AController.ActionName));
-            //
-            var result= aController.ActionName().ShouldBeViewWithModel<AClass>("ViewName");
-            //
-            result.ShouldBeOfType<AClass>().Name.ShouldBe("/AController/ActionName");
+            var controllerUnderTest = new AController(new IDependency()).WithControllerContext(nameof(AController.ActionName));
+
+            var viewModel= 
+                controllerUnderTest.ActionName("parameter", "Other", "Thing").ShouldBeViewWithModel<MyViewModel>("ViewName");
+
+            viewModel.YouPassedIn.ShouldBe("parameter");
+            viewModel.LinkToSelf.ShouldBe("/AController/ActionName");
+            viewModel.LinkToOther.ShouldBe("/Other/Thing");
         }
     }
 }

@@ -61,7 +61,7 @@ namespace TestBase.Tests
         [Test]
         public void NotThrowOnSerilogDestructuring__EvenWhenCreatedViaMSLoggerFactory()
         {
-            var stringListLoggerProvider = new StringListLoggerByNameProvider();
+            var stringListLoggerProvider = new StringListLoggerSingleInstanceProvider();
             var factory=new LoggerFactory();
             factory.AddProvider(stringListLoggerProvider);
             var logger = factory.CreateLogger(GetType());
@@ -69,7 +69,7 @@ namespace TestBase.Tests
             object destructured= new {A=1, B="Two"};
             logger.LogInformation("This has serilog formatted fields {@Destructured}", destructured);
 
-            var uut = stringListLoggerProvider.Loggers.SingleOrAssertFail("Should only have created one logger").Value;
+            var uut = StringListLogger.Instance;
             uut.LoggedLines.ForEach(Console.WriteLine);
             uut.LoggedLines.ShouldBeOfLength(1).ToList()[0].ShouldMatch(@"B\s*=\s*""?Two""?");
         }
@@ -115,13 +115,22 @@ namespace TestBase.Tests
         }
 
         [Test]
-        public void ShouldBeRetrievable()
+        public void ShouldBeRetrievableByName()
         {
-            var logger= new LoggerFactory().AddStringListLogger().CreateLogger("1");
+            var factory = new LoggerFactory().AddStringListLogger();
+            var logger= factory.CreateLogger("[Logger1]");
+
             logger.LogInformation("In Logger 1", new {A=1});
             logger.LogInformation("In Logger 1 {@Destructured}", new {A=1});
 
-            StringListLogger.ByName("1").LoggedLines.ShouldBeOfLength(2).ShouldAll(s => s.Matches("In Logger 1"));
+            logger= factory.CreateLogger("[Logger2]");
+            logger.LogInformation("In Logger 2", new {A=1});
+            logger.LogInformation("In Logger 2 {@Destructured}", new {A=1});
+
+            
+            StringListLogger.Instance.LoggedLines.ForEach(Console.WriteLine);
+            StringListLogger.Instance.LoggedLines.ShouldBeOfLength(4).ShouldAll(s => s.Matches("In Logger"));
+            StringListLogger.Instance.LoggedLines.Where(s=>s.Contains("[Logger2]")).ShouldBeOfLength(2).ShouldAll(s => s.Matches("In Logger 2"));
 
         }
     }

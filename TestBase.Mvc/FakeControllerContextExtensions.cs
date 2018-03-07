@@ -33,9 +33,9 @@ namespace TestBase
             return controller;
         }
 
-        public static T WithControllerContext<T>(this T controller, string action, ActionDescriptor actionDescriptor=null, Func<Type,string,string> fakeVirtualPath=null, ClaimsPrincipal user=null) where T : Controller
+        public static T WithControllerContext<T>(this T controller, string action, ActionDescriptor actionDescriptor=null, Func<string,string,string> fakeVirtualPath=null, ClaimsPrincipal user=null) where T : Controller
         {
-            fakeVirtualPath = fakeVirtualPath?? ( (t,s)=> string.Format("/{0}/{1}",t.Name,s) );
+            fakeVirtualPath = fakeVirtualPath?? ( (t,s)=> string.Format("/{0}/{1}",t,s) );
             user= user??new ClaimsPrincipal(new ClaimsIdentity(new Claim[0]));
             actionDescriptor = actionDescriptor ?? new ActionDescriptor();
 
@@ -58,7 +58,9 @@ namespace TestBase
             var routerMock = new Mock<IRouter>();
             routerMock
                 .Setup(x => x.GetVirtualPath(It.IsAny<VirtualPathContext>()))
-                .Returns(new VirtualPathData(routerMock.Object, fakeVirtualPath(typeof(T),action) ));
+                .Returns<VirtualPathContext>( vpc=>
+                    new VirtualPathData(routerMock.Object, fakeVirtualPath( vpc.Values["controller"] as string, vpc.Values["action"] as string ) )
+                    );
             var routeData = new RouteData();
             routeData.Routers.Add(routerMock.Object);
 

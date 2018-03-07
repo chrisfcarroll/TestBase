@@ -62,7 +62,22 @@ ShouldHaveViewDataContaining(), ShouldBeJsonResult() etc.
 TestBase.Mvc Version 4 for netstandard20 & AspNetCore Mvc
 ---------------------------------------------------------
 
-Test your controllers using by specifying your MVCApplications `Startup` class:
+* Test controllers with a minimal dependency on the `HttpContext` using `controllerUnderTest.WithControllerContext()` :
+
+```
+[Test]
+public void ShouldBeViewWithModel_ShouldAssertViewResultAndNameAndModel()
+{
+    var aController = new AController().WithControllerContext( nameof(AController.ActionName) );
+    //
+    var result= aController.ActionName().ShouldBeViewWithModel<AClass>("ViewName");
+    //
+    result.ShouldBeOfType<AClass>().FooterLink.ShouldBe("/AController/ActionName");
+}
+
+```
+
+* Test controllers with larger HttpContext dependencies by specifying your MVCApplications `Startup` class:
 
 ```
 [TestFixture]
@@ -127,7 +142,8 @@ Can be used in both NUnit & MS UnitTestFramework test projects.
 
 ChangeLog
 ---------
-4.0.5.1 TestBase.Mvc partially ported to AspNetcore
+4.0.6.0 TestBase.Mvc can run controller actions on aspnetcore using controller.WithControllerContext()
+4.0.5.2 TestBase.Mvc partially ported to AspNetcore
 4.0.4.0 StreamShoulds
 4.0.3.0 StringListLogger as MS Logger and as Serilogger
 4.0.1.0 Port to NetCore

@@ -3,21 +3,22 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>TestBase</RootNamespace>
-    <AssemblyVersion>4.0.5.2</AssemblyVersion>
-    <AssemblyFileVersion>4.0.5.2</AssemblyFileVersion>
-    <PackageVersion>4.0.5.2</PackageVersion>
+    <AssemblyVersion>4.0.6.0</AssemblyVersion>
+    <AssemblyFileVersion>4.0.6.0</AssemblyFileVersion>
+    <PackageVersion>4.0.6.0</PackageVersion>
   </PropertyGroup>
   <PropertyGroup>
     <Title>TestBase – Rich, fluent assertions and useful fakes for Mvc &amp; AdoNet.</Title>
     <ReleaseNotes>ChangeLog
-      ---------
-      4.0.5.2 TestBase.Mvc partially ported to netstandard20 / AspNetCore
-      4.0.4.x StreamShoulds
-      4.0.3.0 StringListLogger as MS Logger and as Serilogger
-      4.0.1.0 Port to NetCore
-      3.0.3.0 Improves FakeDb setup
-      3.0.x.0 adds and/or corrects missing Shoulds()
-      2.0.5.0 adds some intellisense and FakeDbConnection.Verify(..., message,args) overload
+---------
+4.0.6.0 TestBase.Mvc can run controller actions on aspnetcore using controller.WithControllerContext()
+4.0.5.2 TestBase.Mvc partially ported to netstandard20 / AspNetCore
+4.0.4.x StreamShoulds
+4.0.3.0 StringListLogger as MS Logger and as Serilogger
+4.0.1.0 Port to NetCore
+3.0.3.0 Improves FakeDb setup
+3.0.x.0 adds and/or corrects missing Shoulds()
+2.0.5.0 adds some intellisense and FakeDbConnection.Verify(..., message,args) overload
     </ReleaseNotes>
     <Copyright>(c) Chris F. Carroll, 2013-2018</Copyright>
     <Authors>Chris F Carroll</Authors>
