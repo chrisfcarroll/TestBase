@@ -20,14 +20,6 @@ UnitUnderTest.OtherAction()
 * Stream.ShouldHaveSameStreamContentAs()` and `Stream.ShouldContain()
 ```
 
-Testable Logging with `StringListLogger`:
-```
-MS Logging: ILoggerFactory factory=new LoggerFactory.AddProvider(new StringListLoggerProvider())
-Serilogging: new LoggerConfiguration().WriteTo.StringList(stringList).CreateLogger()
-//
-var logger=new StringListLogger(); ... ; logger.LoggedLines.ShouldContain(x=>x.Matches("kilroy was here")
-```
-
 TestBase.FakeDb
 ------------------
 Works with Ado.Net and technologies on top of it, including Dapper.
@@ -138,11 +130,21 @@ ApiControllerUnderTest.WithWebApiHttpContext&lt;T&gt;(
 
 Can be used in both NUnit & MS UnitTestFramework test projects.
 
+
+Testable Logging with `StringListLogger`:
+```
+MS Logging: ILoggerFactory factory=new LoggerFactory.AddProvider(new StringListLoggerProvider())
+Serilogging: new LoggerConfiguration().WriteTo.StringList(stringList).CreateLogger()
+//
+var logger= factory.CreateLogger("Test1") ; ... ; StringListLogger.Instance.LoggedLines.ShouldContain(x=>x.Matches("kilroy was here")
+```
+
+
 * Building on Mono : define compile symbol NoMSTest to remove dependency on Microsoft.VisualStudio.QualityTools.UnitTestFramework
 
 ChangeLog
 ---------
-4.0.6.0 TestBase.Mvc can run controller actions on aspnetcore using controller.WithControllerContext()
+4.0.6.1 TestBase.Mvc can run controller actions on aspnetcore using controller.WithControllerContext()
 4.0.5.2 TestBase.Mvc partially ported to AspNetcore
 4.0.4.0 StreamShoulds
 4.0.3.0 StringListLogger as MS Logger and as Serilogger

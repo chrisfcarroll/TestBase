@@ -61,7 +61,7 @@ namespace TestBase.Tests
         [Test]
         public void NotThrowOnSerilogDestructuring__EvenWhenCreatedViaMSLoggerFactory()
         {
-            var stringListLoggerProvider = new StringListLoggerSingleInstanceProvider();
+            var stringListLoggerProvider = new StringListLoggerProvider();
             var factory=new LoggerFactory();
             factory.AddProvider(stringListLoggerProvider);
             var logger = factory.CreateLogger(GetType());
@@ -91,7 +91,7 @@ namespace TestBase.Tests
         public void NotThrowOnNullParameters()
         {
             var loggedLines = new List<string>();
-            var wrapped= new LoggerFactory().AddStringListLogger("TestBase", loggedLines).CreateLogger("TestBase");
+            var wrapped= new LoggerFactory().AddStringListLogger(loggedLines).CreateLogger("TestBase");
 
             wrapped.LogInformation("{@Destructured}", new {A=1, B="Two", C= null as string});
             wrapped.LogInformation("{@A}", null, null);

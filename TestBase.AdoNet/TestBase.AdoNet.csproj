@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <AssemblyVersion>4.0.6.0</AssemblyVersion>
-    <AssemblyFileVersion>4.0.6.0</AssemblyFileVersion>
-    <PackageVersion>4.0.6.0</PackageVersion>
-    <PackageVersion>4.0.6.0</PackageVersion>
+    <AssemblyVersion>4.0.6.1</AssemblyVersion>
+    <AssemblyFileVersion>4.0.6.1</AssemblyFileVersion>
+    <PackageVersion>4.0.6.1</PackageVersion>
+    <PackageVersion>4.0.6.1</PackageVersion>
   </PropertyGroup>
   <PropertyGroup>
     <Title>TestBase – Rich, fluent assertions and useful fakes for Mvc &amp; AdoNet.</Title>
@@ -53,7 +53,7 @@ Latest Change: 4.0.3.0 Port to NetCore
     <ReleaseNotes><![CDATA[
 ChangeLog
 ---------
-4.0.6.0 TestBase.Mvc can run controller actions on aspnetcore using controller.WithControllerContext()
+4.0.6.1 TestBase.Mvc can run controller actions on aspnetcore using controller.WithControllerContext()
 4.0.5.2 TestBase.Mvc partially ported to netstandard20 / AspNetCore
 4.0.4.0 Stream Shoulds
 4.0.3.0 Port to NetCore

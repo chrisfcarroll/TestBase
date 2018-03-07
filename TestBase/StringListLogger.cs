@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Extensions.Logging;
@@ -10,28 +9,25 @@ namespace TestBase
     public static class StringListLoggerFactoryExtension
     {
         /// <summary>
-        /// Ensures that when a <see cref="StringListLogger"/> is requested for name <paramref name="name"/>, 
-        /// the returned Logger will write to <paramref name="backingList"/>
+        /// Ensures that when a <see cref="ILogger"/> is requested it will write to <see cref="StringListLogger.Instance"/>
         /// </summary>
-        /// <param name="factory"></param>
-        /// <param name="name"></param>
-        /// <param name="backingList"></param>
+        /// <param name="backingList">If specified, the returned <see cref="ILogger"/> will write to <paramref name="backingList"/></param>
         /// <param name="includeScopes"></param>
         /// <param name="filter"></param>
         /// <returns></returns>
-        public static ILoggerFactory AddStringListLogger(this ILoggerFactory factory, string name, List<string> backingList, bool includeScopes = true, Func<string, LogLevel, bool> filter = null)
+        public static ILoggerFactory AddStringListLogger(this ILoggerFactory factory, List<string> backingList, bool includeScopes = true, Func<string, LogLevel, bool> filter = null)
         {
             if (factory == null) throw new ArgumentNullException(nameof(factory));
             filter = filter ?? ((s,t)=>true);
-            var soleInstance= new StringListLogger(backingList, name, filter, includeScopes);
-            factory.AddProvider(new StringListLoggerSingleInstanceProvider(soleInstance));
+            var soleInstance= new StringListLogger(backingList, "", filter, includeScopes);
+            factory.AddProvider(new StringListLoggerProvider(soleInstance));
             return factory;
         }
 
         public static ILoggerFactory AddStringListLogger(this ILoggerFactory factory, StringListLogger soleInstance)
         {
             if (factory == null) throw new ArgumentNullException(nameof(factory));
-            factory.AddProvider(new StringListLoggerSingleInstanceProvider(soleInstance));
+            factory.AddProvider(new StringListLoggerProvider(soleInstance));
             return factory;
         }
         public static ILoggerFactory AddStringListLogger(this ILoggerFactory factory)
@@ -40,13 +36,13 @@ namespace TestBase
         }
     }
 
-    public class StringListLoggerSingleInstanceProvider : ILoggerProvider
+    public class StringListLoggerProvider : ILoggerProvider
     {
         Stack<string> names= new Stack<string>();
 
-        public StringListLoggerSingleInstanceProvider(StringListLogger instance){StringListLogger.Instance =   instance; }
+        public StringListLoggerProvider(StringListLogger instance){StringListLogger.Instance =   instance; }
 
-        public StringListLoggerSingleInstanceProvider(): this(new StringListLogger()){}
+        public StringListLoggerProvider(): this(new StringListLogger()){}
 
         public void Dispose(){ StringListLogger.Instance.Name=names.Pop();} 
 
@@ -57,8 +53,18 @@ namespace TestBase
         }
     }
 
+    /// <summary>An <see cref="ILogger"/> which will log to its <see cref="LoggedLines"/>.</summary>
     public class StringListLogger : ILogger
     {
+        /// <summary>
+        /// The single instance of <see cref="StringListLogger"/> which will be returned by <see cref="StringListLoggerProvider"/>, 
+        /// and by extension from an <see cref="ILoggerFactory"/> which has called <see cref="StringListLoggerFactoryExtension.AddStringListLogger"/>
+        /// 
+        /// Use e.g. <code>StringListLogger.Instance.LoggedLines</code> to inspect or assert on logged lines.
+        /// </summary>
+        /// <remarks>Note that if more than one <see cref="ILoggerFactory"/> uses <see cref="StringListLoggerProvider"/>, 
+        /// this Instance will be overwritten by the last factory to create a logger.
+        /// </remarks>
         public static StringListLogger Instance;
 
         static readonly string LoglevelPadding = ": ";
@@ -172,30 +178,4 @@ namespace TestBase
             builder.AppendLine();
         }
     }
-
-
-    //public class StringListLoggerByNameProvider : ILoggerProvider
-    //{
-
-    //    internal static readonly Func<string, LogLevel, bool> FalseFilter = (cat, level) => false;
-    //    internal static readonly Func<string, LogLevel, bool> TrueFilter = (cat, level) => true;
-
-    //    public static Func<string, LogLevel, bool> DefaultFilter { get; set; } = TrueFilter;
-    //    public static bool DefaultIncludeScopes { get; set; } = true;
-
-    //    public static StringListLoggerByNameProvider Instance { get; } = new StringListLoggerByNameProvider();
-
-
-    //    public ConcurrentDictionary<string, StringListLogger> Loggers { get; } = new ConcurrentDictionary<string, StringListLogger>();
-
-    //    public ILogger CreateLogger(string name){ return Loggers.GetOrAdd(name, n => CreateLoggerImplementation(n, TrueFilter, true)); }
-
-    //    public void Dispose() { }
-
-    //    public StringListLogger CreateLoggerImplementation(string name, Func<string, LogLevel, bool> filter, bool includeScopes)
-    //    {
-    //        return new StringListLogger(new List<string>(), name, filter ?? FalseFilter, includeScopes);
-    //    }
-
-    //}
 }
