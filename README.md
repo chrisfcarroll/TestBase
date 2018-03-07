@@ -3,21 +3,22 @@ It has rich, yet so easily extensible, fluent assertions, including EqualsByValu
 
 Fluent Assertions
 ------------------
+
 Chainable fluent assertions get you to the point concisely
 ```
+* ShouldEqualByValue(), ShouldEqualByValueExceptFor() 
+    * work with all kinds of object and collections, and pinpoint what was different.
+* ShouldBe(), ShouldNotBe(), ShouldBeOfType(), ...
+* string shoulds: ShouldMatch() ShouldNotBeNullOrEmptyOrWhiteSpace(), ShouldEqualIgnoringCase(), ShouldBeContainedIn(), ...
+* numeric shoulds: ShouldBeBetween(), ShouldEqualWithTolerance(), GreaterThan, LessThan, GreaterOrEqualTo ...
+* IEnumerable shoulds: ShouldAll(), ShouldContain(), ShouldNotContain(), ShouldBeEmpty(), ShouldNotBeEmpty() and more
+* Stream shoulds: ShouldHaveSameStreamContentAs() , Stream.ShouldContain()
+
 UnitUnderTest.Action()
     .ShouldNotBeNull()
-    .ShouldContain(expected);
-UnitUnderTest.OtherAction()
     .ShouldEqualByValue(new {Id=1, Payload=expected, Additional=new[]{ expected1, expected2 }} )
     .Payload
         .ShouldMatchIgnoringCase(""I expected this"");
-```
-
-```
-* ShouldBe(), ShouldMatch(), ShouldNotBe(), ShouldContain(), ShouldNotContain(), ShouldBeEmpty(), ShouldNotBeEmpty(), ShouldAll() and many more
-* ShouldEqualByValue(), ShouldEqualByValueExceptForValues() works with all kinds of object and collections
-* Stream.ShouldHaveSameStreamContentAs()` and `Stream.ShouldContain()
 ```
 
 TestBase.FakeDb
@@ -54,22 +55,22 @@ ShouldHaveViewDataContaining(), ShouldBeJsonResult() etc.
 TestBase.Mvc Version 4 for netstandard20 & AspNetCore Mvc
 ---------------------------------------------------------
 
-* Test controllers with a minimal dependency on the `HttpContext` using `controllerUnderTest.WithControllerContext()` :
+* Test most controllers with zero setup using `controllerUnderTest.WithControllerContext(actionUnderTest)` :
 
 ```
 [Test]
 public void ShouldBeViewWithModel_ShouldAssertViewResultAndNameAndModel()
 {
-    var aController = new AController().WithControllerContext( nameof(AController.ActionName) );
-    //
-    var result= aController.ActionName().ShouldBeViewWithModel<AClass>("ViewName");
-    //
+    var controllerUnderTest = new AController().WithControllerContext("Action");
+    
+    var result= controllerUnderTest.ActionName().ShouldBeViewWithModel<AClass>("ViewName");
+    
     result.ShouldBeOfType<AClass>().FooterLink.ShouldBe("/AController/ActionName");
 }
 
 ```
 
-* Test controllers with larger HttpContext dependencies by specifying your MVCApplications `Startup` class:
+* Test controllers with complex application dependencies using `HostedMvcTestFixtureBase` and specify your MVCApplications `Startup` class:
 
 ```
 [TestFixture]
@@ -152,4 +153,3 @@ ChangeLog
 3.0.3.0 Improves FakeDb setup
 3.0.x.0 adds and/or corrects missing Shoulds()
 2.0.5.0 adds some intellisense and FakeDbConnection.Verify(..., message,args) overload
-

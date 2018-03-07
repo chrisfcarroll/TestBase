@@ -37,7 +37,11 @@ namespace TestBase
         {
             fakeVirtualPath = fakeVirtualPath?? ( (t,s)=> string.Format("/{0}/{1}",t,s) );
             user= user??new ClaimsPrincipal(new ClaimsIdentity(new Claim[0]));
-            actionDescriptor = actionDescriptor ?? new ActionDescriptor();
+            actionDescriptor = actionDescriptor ?? new ActionDescriptor{
+                RouteValues = new Dictionary<string, string>(new RouteValueEqualityComparer())
+                {
+                    {"controller",typeof(T).Name}, {"action", action}
+                }};
 
             var metadataProvider = TestModelMetadataProvider.CreateDefaultProvider();
             var httpContext = new DefaultHttpContext{User = user};
