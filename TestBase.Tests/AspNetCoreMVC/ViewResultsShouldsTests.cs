@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NUnit.Framework;
 // ReSharper disable InconsistentNaming
+// ReSharper disable Mvc.ActionNotResolved
+// ReSharper disable Mvc.ControllerNotResolved
 
 namespace TestBase.Tests.AspNetCoreMVC
 {
@@ -15,6 +17,8 @@ namespace TestBase.Tests.AspNetCoreMVC
 
     public class AController : Controller
     {
+        static string ViewName = "ViewName";
+        
         public AController(IDependency dependency){}
 
         public IActionResult ActionName(string parameter, string other, string thing)
@@ -25,7 +29,7 @@ namespace TestBase.Tests.AspNetCoreMVC
                 LinkToSelf = Url.Action("ActionName","AController"),
                 LinkToOther= Url.Action(thing,other)
             };
-            return View("ViewName",model);
+            return View(ViewName,model);
         }
     }
 
