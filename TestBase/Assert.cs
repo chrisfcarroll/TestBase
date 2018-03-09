@@ -1,7 +1,7 @@
 using System;
-using System.Data.Common;
 using System.Linq.Expressions;
 using System.Reflection;
+using Mono.Linq.Expressions;
 using Newtonsoft.Json;
 
 namespace TestBase
@@ -130,6 +130,19 @@ namespace TestBase
             throw new ShouldHaveThrownException(a.Message);
         }
 
+        public static Expression<Action> DoesNotThrow(Expression<Action> action, string comment = null, params object[] commentArgs)
+        {
+            try
+            {
+                action.Compile();
+            }
+            catch (Exception ex)
+            {
+                throw ShouldNotThrowException.For(action, $"Threw {ex} but expected not to throw.", commentArgs);
+            }
+            return action;
+        }
+
         public static T DoesNotThrow<T>(T actual, Expression<Func<T,bool>> predicate, string comment = null, params object[] commentArgs)
         {
             try
@@ -224,6 +237,11 @@ namespace TestBase
         {
             return new ShouldNotThrowException(new Assertion<T>(actual, predicate, comment, args).Message);
         }
+
+        public static Exception For(Expression<Action> action, string comment, object[] commentArgs)
+        {
+            return new ShouldNotThrowException(Assertion.New(action, a=> BoolWithString.False( "Threw:" +action.ToCSharpCode()), comment, commentArgs));
+        }
     }
 
     /// <summary>A Precondition is an Assertion. Calling it a precondition is presumed to indicate that it is to be understood as a precondition</summary>
@@ -233,13 +251,26 @@ namespace TestBase
         public Precondition(T actual, Expression<Func<T,bool>> predicate, string comment = null, params object[] commentArgs) : base(actual, predicate, comment, commentArgs){}
     }
     
+    /// <summary>An Assertion is throwable (it inherits from Exception) but need not indicate an assertion failure; it might hold an assertion pass.</summary>
+    /// <typeparam name="T"></typeparam>
     public class Assertion : Exception
     {
-        protected Assertion():base() { }
+        public static Assertion<T> New<T>(T actual, Expression<Func<T, bool>> predicate, string comment,object[] commentArgs)
+        {
+            return new Assertion<T>(actual, predicate, comment, commentArgs);
+        }
+
+        public static Assertion<T> New<T>(T actual, Expression<Func<T, BoolWithString>> predicate, string comment,object[] commentArgs)
+        {
+            return new Assertion<T>(actual, predicate, comment, commentArgs);
+        }
+
+        protected Assertion(){ } 
         public Assertion(string message):base(message) { }
     }
 
-    /// <summary>An Assertion is throwable (it inherits from Exception) but need not indicate an assertion failure.</summary>
+    /// <summary>An Assertion about an instance. 
+    /// An Assertion is throwable (it inherits from Exception) but need not indicate an assertion failure; it might hold an assertion pass.</summary>
     /// <typeparam name="T"></typeparam>
     public class Assertion<T> : Assertion
     {
