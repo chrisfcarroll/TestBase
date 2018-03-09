@@ -1,44 +1,40 @@
-*TestBase* gets you off to a flying start when unit testing, especially for projects with dependencies on AspNetMvc, HttpClient or Ado.Net
-It has rich, yet so easily extensible, fluent assertions, including EqualsByValue, Regex, Stream Comparision, Ado.Net,Mvc and HttpResponseMessage assertions.
-
-Fluent Assertions
-------------------
+*TestBase* gives you a flying start with 
+- fluent assertions that are easy to extend
+- infrastructure for testing with dependencies on AspNetMvc, HttpClient, Ado.Net, Streams
 
 Chainable fluent assertions get you to the point concisely
+------------------
 ```
-* ShouldEqualByValue(), ShouldEqualByValueExceptFor() 
-    * work with all kinds of object and collections, and pinpoint what was different.
-* ShouldBe(), ShouldNotBe(), ShouldBeOfType(), ...
-* string shoulds: ShouldMatch() ShouldNotBeNullOrEmptyOrWhiteSpace(), 
-  ShouldEqualIgnoringCase(), ShouldBeContainedIn(), ...
-* numeric shoulds: ShouldBeBetween(), ShouldEqualWithTolerance(), 
-  GreaterThan, LessThan, GreaterOrEqualTo ...
-* IEnumerable shoulds: ShouldAll(), ShouldContain(), ShouldNotContain(), 
-  ShouldBeEmpty(), ShouldNotBeEmpty() and more
-* Stream shoulds: ShouldHaveSameStreamContentAs() , Stream.ShouldContain()
+- ShouldEqualByValue(), ShouldEqualByValueExceptFor() 
+  work with all kinds of object and collections, and report what differed.
+- string.ShouldMatch() ShouldNotBeNullOrEmptyOrWhiteSpace(), ShouldEqualIgnoringCase(), ShouldBeContainedIn(), ...
+- numeric.ShouldBeBetween(), ShouldEqualWithTolerance(), GreaterThan, LessThan, GreaterOrEqualTo ...
+- IEnumerable.ShouldAll(), ShouldContain(), ShouldNotContain(), ShouldBeEmpty(), ShouldNotBeEmpty() ...
+- Stream.ShouldHaveSameStreamContentAs() , Stream.ShouldContain()
+- ShouldBe(), ShouldNotBe(), ShouldBeOfType(), ...
 
 UnitUnderTest.Action()
     .ShouldNotBeNull()
     .ShouldEqualByValue(new {Id=1, Payload=expected, Additional=new[]{ expected1, expected2 }} )
     .Payload
-        .ShouldMatchIgnoringCase(""I expected this"");
+        .ShouldMatchIgnoringCase("I expected this");
 ```
 
 TestBase.FakeDb
 ------------------
 Works with Ado.Net and technologies on top of it, including Dapper.
 ```
-* fakeDbConnection.SetupForQuery(IEnumerable<TFakeData>; )
-* fakeDbConnection.SetupForQuery(IEnumerable<Tuple<TFakeDataForTable1,TFakeDataForTable2>> )
-* fakeDbConnection.SetupForQuery(fakeData, new[] {""FieldName1"", FieldName2""})
-* fakeDbConnection.SetupForExecuteNonQuery(rowsAffected)
-* fakeDbConnection.ShouldHaveUpdated(""tableName"", [Optional] fieldList, whereClauseField)
-* fakeDbConnection.ShouldHaveSelected(""tableName"", [Optional] fieldList, whereClauseField)
-* fakeDbConnection.ShouldHaveUpdated(""tableName"", [Optional] fieldList, whereClauseField)
-* fakeDbConnection.ShouldHaveDeleted(""tableName"", whereClauseField)
-* fakeDbConnection.ShouldHaveInvoked(cmd => predicate(cmd))
-* fakeDbConnection.ShouldHaveXXX().ShouldHaveParameter(""name"", value)
-* fakeDbConnection.Verify(x=>x.CommandText.Matches(""Insert [case] .*"") && x.Parameters[""id""].Value==1)
+- fakeDbConnection.SetupForQuery(IEnumerable<TFakeData>; )
+- fakeDbConnection.SetupForQuery(IEnumerable<Tuple<TFakeDataForTable1,TFakeDataForTable2>> )
+- fakeDbConnection.SetupForQuery(fakeData, new[] {"FieldName1", FieldName2"})
+- fakeDbConnection.SetupForExecuteNonQuery(rowsAffected)
+- fakeDbConnection.ShouldHaveUpdated("tableName", [Optional] fieldList, whereClauseField)
+- fakeDbConnection.ShouldHaveSelected("tableName", [Optional] fieldList, whereClauseField)
+- fakeDbConnection.ShouldHaveUpdated("tableName", [Optional] fieldList, whereClauseField)
+- fakeDbConnection.ShouldHaveDeleted("tableName", whereClauseField)
+- fakeDbConnection.ShouldHaveInvoked(cmd => predicate(cmd))
+- fakeDbConnection.ShouldHaveXXX().ShouldHaveParameter("name", value)
+- fakeDbConnection.Verify(x=>x.CommandText.Matches("Insert [case] .*") && x.Parameters["id"].Value==1)
 ```
 
 TestBase.Mvc
@@ -50,7 +46,7 @@ ControllerUnderTest.Action()
   .ShouldEqualByValue(expected)
 ControllerUnderTest.Action()
   .ShouldBeRedirectToRouteResult()
-  .ShouldHaveRouteValue(""expectedKey"", [Optional] ""expectedValue"");
+  .ShouldHaveRouteValue("expectedKey", [Optional] "expectedValue");
 
 ShouldHaveViewDataContaining(), ShouldBeJsonResult() etc.
 ```
@@ -58,7 +54,7 @@ ShouldHaveViewDataContaining(), ShouldBeJsonResult() etc.
 TestBase.Mvc Version 4 for netstandard20 & AspNetCore Mvc
 ---------------------------------------------------------
 
-* Test most controllers with zero setup using `controllerUnderTest.WithControllerContext(actionUnderTest)` :
+- Test most controllers with zero setup using `controllerUnderTest.WithControllerContext(actionUnderTest)` :
 
 ```
 [Test]
@@ -73,34 +69,33 @@ public void ShouldBeViewWithModel_ShouldAssertViewResultAndNameAndModel()
 
 ```
 
-* Test controllers with complex application dependencies using `HostedMvcTestFixtureBase` and specify your MVCApplications `Startup` class:
+- Test controllers with complex application dependencies using `HostedMvcTestFixtureBase` and specify your MVCApplications `Startup` class:
 
 ```
 [TestFixture]
 public class WhenTestingControllersUsingAspNetCoreTestTestServer : HostedMvcTestFixtureBase
 {
-    [TestCase(""/dummy/action?id={id}"")]
+    [TestCase("/dummy/action?id={id}")]
     public async Task Get_Should_ReturnActionResult(string url)
     {
-        var id=Guid.NewGuid();
         var httpClient=GivenClientForRunningServer<Startup>();
-        GivenRequestHeaders(httpClient, ""CustomHeader"", ""HeaderValue1"");
+        GivenRequestHeaders(httpClient, "CustomHeader", "HeaderValue1");
             
-        var result= await httpClient.GetAsync(url.Formatz(new {id}));
+        var result= await httpClient.GetAsync(url.Formatz(new {Guid.NewGuid()}));
 
         result
             .ShouldBe_200Ok()
             .Content.ReadAsStringAsync().Result
-            .ShouldBe(""Content"");
+            .ShouldBe("Content");
     }
 
-    [TestCase(""/dummy"")]
+    [TestCase("/dummy")]
     public async Task Put_Should_ReturnA(string url)
     {
         var something= new Fixture().Create<Something>();
-        var jsonBody= new StringContent(something.ToJSon(), Encoding.UTF8, ""application/json"");
+        var jsonBody= new StringContent(something.ToJSon(), Encoding.UTF8, "application/json");
         var httpClient=GivenClientForRunningServer<Startup>();
-        GivenRequestHeaders(httpClient, ""CustomHeader"", ""HeaderValue1"");
+        GivenRequestHeaders(httpClient, "CustomHeader", "HeaderValue1");
 
         var result = await httpClient.PutAsync(url, jsonBody);
 
@@ -122,8 +117,8 @@ ControllerUnderTest
   .WithHttpContextAndRoutes(
     [Optional] Action&lt;RouteCollection&gt; mvcApplicationRoutesRegistration, 
     [optional] string requestUrl,
-    [Optional] string query = """",
-    [Optional] string appVirtualPath = ""/"",
+    [Optional] string query = "",
+    [Optional] string appVirtualPath = "/",
     [Optional] HttpApplication applicationInstance)
 
 ApiControllerUnderTest.WithWebApiHttpContext&lt;T&gt;(
@@ -144,7 +139,7 @@ var logger= factory.CreateLogger("Test1") ; ... ; StringListLogger.Instance.Logg
 ```
 
 
-* Building on Mono : define compile symbol NoMSTest to remove dependency on Microsoft.VisualStudio.QualityTools.UnitTestFramework
+- Building on Mono : define compile symbol NoMSTest to remove dependency on Microsoft.VisualStudio.QualityTools.UnitTestFramework
 
 ChangeLog
 ---------
