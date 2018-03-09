@@ -5,16 +5,19 @@ namespace TestBase.Tests.ShouldsCorrectnessTests
 {
     class AController : Controller
     {
+        static string Viewname = "ViewName";
+        
         public IActionResult ActionName()
         {
             var model= new AClass();
-            return View("ViewName",model);
+            return View(Viewname,model);
         }
     }
 
     [TestFixture]
     public class ViewResultsShouldsTests
     {
+        
         [Test]
         public void ShouldBeViewWithModel_ShouldAssertViewResultAndNameAndModel()
         {
