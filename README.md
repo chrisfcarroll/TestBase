@@ -148,7 +148,7 @@ var logger= factory.CreateLogger("Test1") ; ... ; StringListLogger.Instance.Logg
 
 ChangeLog
 ---------
-4.0.6.1 TestBase.Mvc can run controller actions on aspnetcore using controller.WithControllerContext()
+4.0.6.2 TestBase.Mvc can run controller actions on aspnetcore using controller.WithControllerContext()
 4.0.5.2 TestBase.Mvc partially ported to AspNetcore
 4.0.4.0 StreamShoulds
 4.0.3.0 StringListLogger as MS Logger and as Serilogger
