@@ -121,12 +121,12 @@ namespace TestBase.Tests.FakeHttpClientTests
             var @this=     await uut.GetAsync("http://localhost/this");
             var other =    await uut.GetAsync("http://other/");
 
-            uut.FakeHttpMessageHandler.VerifyAll();
+            uut.VerifyAll();
 
-            uut.FakeHttpMessageHandler.Verify(x => x.RequestUri.ToString() == "http://localhost/that");
+            uut.Verify(x => x.RequestUri.ToString() == "http://localhost/that");
 
             Assert.Throws<Exception>(
-                () => uut.FakeHttpMessageHandler.Verify(x => x.Method==HttpMethod.Delete)
+                () => uut.Verify(x => x.Method==HttpMethod.Delete)
             );
         }
     }

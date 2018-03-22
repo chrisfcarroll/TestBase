@@ -82,5 +82,17 @@ namespace TestBase.HttpClient.Fake
                 return client;
             }
         }
+
+        public FakeHttpClient VerifyAll()
+        {
+            FakeHttpMessageHandler.VerifyAll();
+            return this;
+        }
+
+        public FakeHttpClient Verify(Func<HttpRequestMessage, bool> messageMatchesPredicate)
+        {
+            FakeHttpMessageHandler.Verify(messageMatchesPredicate);
+            return this;
+        }
     }
 }
