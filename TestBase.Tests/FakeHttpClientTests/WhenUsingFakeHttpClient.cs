@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -41,14 +42,13 @@ namespace TestBase.Tests.FakeHttpClientTests
                 .ShouldEqualByValue(new HttpResponseMessage(HttpStatusCode.OK){Content=new StringContent(pathandquery)});
         }
 
-        [TestCase("theresadifferentpath")]
-        [TestCase("theresadifferentpath/and/a?query=")]
+        [TestCase("theredifferentpath")]
+        [TestCase("theredifferentpath/and/a?query=")]
         public void Should_NotMatch(string pathandquery)
         {
             var uut = new FakeHttpClient()
-                            .Setup(x=>x.RequestUri.PathAndQuery.StartsWith("/here"))
-                            .Returns(rm=> new HttpResponseMessage(HttpStatusCode.OK){Content=new StringContent(rm.RequestUri.PathAndQuery)});
-
+                        .Setup(x=>x.RequestUri.PathAndQuery.StartsWith("/here"))
+                        .Returns(rm=> new HttpResponseMessage(HttpStatusCode.OK){Content=new StringContent(rm.RequestUri.PathAndQuery)});
 
             uut.GetAsync("http://localhost/" + pathandquery)
                 .ConfigureAwait(false).GetAwaiter()
@@ -59,28 +59,28 @@ namespace TestBase.Tests.FakeHttpClientTests
         [Test]
         public void Should_MatchTheRightExpectationAndReturnTheSetupResponse__GivenMultipleSetups()
         {
-            var cannedResponseThis = new HttpResponseMessage(HttpStatusCode.OK){Content = new StringContent("I Expected This")};
-            var cannedResponseThat = new HttpResponseMessage(HttpStatusCode.Accepted){Headers = { {"That-Header","Value"}}};
+            var thisResponse = new HttpResponseMessage(HttpStatusCode.OK){Content = new StringContent("I Expected This")};
+            var thatResponse = new HttpResponseMessage(HttpStatusCode.Accepted){Headers = { {"That-Header","Value"}}};
 
             var uut = new FakeHttpClient()
-                        .Setup(x=>x.RequestUri.PathAndQuery.StartsWith("/this")).Returns(cannedResponseThis)
-                        .Setup(x=>x.RequestUri.PathAndQuery.StartsWith("/that")).Returns(cannedResponseThat)
+                        .Setup(x=>x.RequestUri.PathAndQuery.StartsWith("/this") && x.Method==HttpMethod.Put).Returns(thisResponse)
+                        .Setup(x=>x.RequestUri.PathAndQuery.StartsWith("/that")).Returns(thatResponse)
                         .Setup(x=>x.RequestUri.PathAndQuery.StartsWith("/forbidden")).Returns(new HttpResponseMessage(HttpStatusCode.Forbidden));
 
             uut.GetAsync("http://localhost/that")
                 .ConfigureAwait(false).GetAwaiter()
                 .GetResult()
-                .ShouldEqualByValue(cannedResponseThat,"/that should have matched That");
+                .ShouldEqualByValue(thatResponse,"/that should have matched That");
 
-            uut.GetAsync("http://localhost/forbidden")
+            uut.PostAsync("http://localhost/forbidden",new StringContent(@"{""postedContent"":""here""}"))
                 .ConfigureAwait(false).GetAwaiter()
                 .GetResult()
                 .StatusCode.ShouldBe(HttpStatusCode.Forbidden, "/forbidden should be Forbidden");
 
-            uut.GetAsync("http://localhost/this")
+            uut.PutAsync("http://localhost/this", new FormUrlEncodedContent(new []{new KeyValuePair<string, string>("a","b") }))
                 .ConfigureAwait(false).GetAwaiter()
                 .GetResult()
-                .ShouldEqualByValue(cannedResponseThis,"/this should have matched This");
+                .ShouldEqualByValue(thisResponse,"/this should have matched This");
 
             uut.GetAsync("http://other/")
                 .ConfigureAwait(false).GetAwaiter()
@@ -123,7 +123,11 @@ namespace TestBase.Tests.FakeHttpClientTests
 
             uut.FakeHttpMessageHandler.VerifyAll();
 
+            uut.FakeHttpMessageHandler.Verify(x => x.RequestUri.ToString() == "http://localhost/that");
 
+            Assert.Throws<Exception>(
+                () => uut.FakeHttpMessageHandler.Verify(x => x.Method==HttpMethod.Delete)
+            );
         }
     }
 }

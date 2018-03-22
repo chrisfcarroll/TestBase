@@ -21,6 +21,28 @@ UnitUnderTest.Action()
 		.Should(someOtherPredicate);
 ```
 
+TestBase.HttpClient.Fake
+------------------------
+
+```
+[Test]
+public async Task Should_MatchTheRightExpectationAndReturnTheSetupResponse__GivenMultipleSetups()
+{
+    var cannedResponseThis = new HttpResponseMessage(HttpStatusCode.OK){Content = new StringContent("I Expected This")};
+    var cannedResponseThat = new HttpResponseMessage(HttpStatusCode.Accepted){Headers = { {"That-Header","Value"}}};
+
+    var uut = new FakeHttpClient()
+        .Setup(x=>x.Method==HttpMethod.Put).Returns(new HttpResponseMessage(HttpStatusCode.Accepted))
+        .Setup(x=>x.RequestUri.PathAndQuery.StartsWith("/this")).Returns(thisResponse)
+        .Setup(x=>x.RequestUri.PathAndQuery.StartsWith("/that")).Returns(thatResponse)
+        .Setup(x=>x.RequestUri.PathAndQuery.StartsWith("/forbidden")).Returns(new HttpResponseMessage(HttpStatusCode.Forbidden));
+
+    (await uut.GetAsync("http://localhost/that")).ShouldEqualByValue(thatResponse);
+
+    (await uut.GetAsync("http://localhost/forbidden")).StatusCode.ShouldBe(HttpStatusCode.Forbidden);
+}
+```
+
 TestBase.FakeDb
 ------------------
 Works with Ado.Net and technologies on top of it, including Dapper.
