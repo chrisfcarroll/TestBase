@@ -159,5 +159,21 @@ namespace TestBase
             Assert.That(result, expression, message??nameof(ShouldSatisfy), args);
             return @this;
         }
+        public static T ShouldSatisfy<T>(this T @this, Expression<Func<T, bool>> function, string message=null, params object[] args)
+        {
+            Assert.That(@this, function, message??nameof(ShouldSatisfy), args);
+            return @this;
+        }
+        public static T Should<T, TResult>(this T @this, Func<T, TResult> function, Expression<Func<TResult,bool>> expression, string message=null, params object[] args)
+        {
+            var result = function(@this);
+            Assert.That(result, expression, message??nameof(ShouldSatisfy), args);
+            return @this;
+        }
+        public static T Should<T>(this T @this, Expression<Func<T, bool>> function, string message=null, params object[] args)
+        {
+            Assert.That(@this, function, message??nameof(ShouldSatisfy), args);
+            return @this;
+        }
     }
 }

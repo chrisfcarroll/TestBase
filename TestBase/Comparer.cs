@@ -230,7 +230,7 @@ namespace TestBase
                 try { return (long)left == (long)right; }
                 catch (Exception) { /*comparing as long failed, so swallow the exception and carry on*/ }
             }
-            if (left is ValueType)
+            if (left is ValueType && !left.GetType().IsGenericType /*ValueType comparison isn't always reliable*/)
             {
                 // do a field comparison, or use the override if Equals is implemented: 
                 return left.EqualsOrDiffers(right);

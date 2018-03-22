@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyVersion>4.0.7.0</AssemblyVersion>
+    <AssemblyFileVersion>4.0.7.0</AssemblyFileVersion>
+    <PackageVersion>4.0.7.0</PackageVersion>
+  </PropertyGroup>
+  <PropertyGroup>
+    <Title>TestBase – Rich, fluent assertions and useful fakes for Mvc &amp; AdoNet.</Title>
+    <ReleaseNotes>ChangeLog
+      ---------
+      4.0.7.0 Added TestBase.FakeHttpClient. Added Should(predicate,...) as synonym of ShouldHave(predicate,...)
+      4.0.6.2 TestBase.Mvc can run controller actions on aspnetcore using controller.WithControllerContext()
+      4.0.5.2 TestBase.Mvc partially ported to netstandard20 / AspNetCore
+      4.0.4.1 StreamShoulds
+      4.0.3.0 StringListLogger as MS Logger and as Serilogger
+      4.0.1.0 Port to NetCore
+      3.0.3.0 Improves FakeDb setup
+      3.0.x.0 adds and/or corrects missing Shoulds()
+      2.0.5.0 adds some intellisense and FakeDbConnection.Verify(..., message,args) overload
+    </ReleaseNotes>
+    <Copyright>(c) Chris F. Carroll, 2013-2018</Copyright>
+    <Authors>Chris F Carroll</Authors>
+    <Owners>Chris F Carroll</Owners>
+    <ProjectUrl>http://github.com/chrisfcarroll/TestBase</ProjectUrl>
+    <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
+    <Tags>nunit test unittest tdd fluent assertions mock ado.net mvc aspnetmvc aspnetcore aspnetcoremvc</Tags>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <NoWarn>1701;1702;1705;NU1701</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <NoWarn>1701;1702;1705;NU1701</NoWarn>
+  </PropertyGroup>
+
+</Project>

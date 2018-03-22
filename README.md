@@ -17,7 +17,8 @@ UnitUnderTest.Action()
     .ShouldNotBeNull()
     .ShouldEqualByValue(new {Id=1, Payload=expected, Additional=new[]{ expected1, expected2 }} )
     .Payload
-        .ShouldMatchIgnoringCase("I expected this");
+        .ShouldMatchIgnoringCase("I expected this")
+		.Should(someOtherPredicate);
 ```
 
 TestBase.FakeDb
@@ -143,6 +144,7 @@ var logger= factory.CreateLogger("Test1") ; ... ; StringListLogger.Instance.Logg
 
 ChangeLog
 ---------
+4.0.7.0 Added TestBase.FakeHttpClient. Added Should(predicate,...) as synonym of ShouldHave(predicate,...)
 4.0.6.2 TestBase.Mvc can run controller actions on aspnetcore using controller.WithControllerContext()
 4.0.5.2 TestBase.Mvc partially ported to AspNetcore
 4.0.4.0 StreamShoulds
