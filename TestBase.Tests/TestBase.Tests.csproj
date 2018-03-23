@@ -23,6 +23,8 @@
     <PackageReference Include="Moq" Version="4.8.2" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Serilog.Sinks.StringListLogger\Serilog.Sinks.ListOfString.csproj" />
+    <ProjectReference Include="..\StringListLogger\Extensions.Logging.ListOfString.csproj" />
     <ProjectReference Include="..\TestBase.FakeHttpClient\TestBase.HttpClient.Fake.csproj" />
     <ProjectReference Include="..\TestBase.Mvc\TestBase.Mvc.csproj" />
     <ProjectReference Include="..\TestBase\TestBase.csproj" />

@@ -1,0 +1,56 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard1.1</TargetFramework>
+    <RootNamespace>Extensions.Logging.ListOfString</RootNamespace>
+    <AssemblyVersion>4.0.7.0</AssemblyVersion>
+    <AssemblyFileVersion>4.0.7.0</AssemblyFileVersion>
+    <PackageVersion>4.0.7.0</PackageVersion>
+    <Title>Extensions.Logging.ListOfString</Title>
+    <PackageDescription><![CDATA[Extensions.Logging.ListOfString logs to a list of string so you can test your logging :
+
+```
+var log= new List<String>();
+var testLogger= new LoggerConfiguration().WriteTo.StringList(log).CreateLogger();
+
+...tests...
+
+log.ShouldContain( entry=>entry.Contains(expectedException.Message) );
+
+```
+
+`<seealso cref="StringListSeriLogger/>`
+
+Part of http://github.com/chrisfcarroll/TestBase 
+
+*TestBase* gives you a flying start to unit testing with fluent assertions that 
+are easy to extend, and tools for testing with dependencies on AspNetMvc, HttpClient, Ado.Net, Streams and Loggers.
+]]></PackageDescription>
+    <PackageReleaseNotes>ChangeLog
+---------
+4.0.8.0 Separated Serilog.Sinks.ListOfString and Extensions.Logging.StringListLogger
+4.0.7.0 Added TestBase.FakeHttpClient. Added Should(predicate,...) as synonym of ShouldHave(predicate,...)
+4.0.6.2 TestBase.Mvc can run controller actions on aspnetcore using controller.WithControllerContext()
+4.0.5.2 TestBase.Mvc partially ported to netstandard20 / AspNetCore
+4.0.4.1 StreamShoulds
+4.0.3.0 StringListLogger as MS Logger and as Serilogger
+4.0.1.0 Port to NetCore
+3.0.3.0 Improves FakeDb setup
+3.0.x.0 adds and/or corrects missing Shoulds()
+2.0.5.0 adds some intellisense and FakeDbConnection.Verify(..., message,args) overload
+</PackageReleaseNotes>
+    <Copyright>(c) Chris F. Carroll, 2013-2018</Copyright>
+    <Authors>Chris F Carroll</Authors>
+    <Owners>Chris F Carroll</Owners>
+    <PackageProjectUrl>http://github.com/chrisfcarroll/TestBase</PackageProjectUrl>
+    <RepositoryUrl>http://github.com/chrisfcarroll/TestBase</RepositoryUrl>
+    <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
+    <IncludeSymbols>true</IncludeSymbols>
+    <PackageTags>nunit;test;unittest;tdd;mock;logging;serilog</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="1.1.2" />
+  </ItemGroup>
+
+</Project>

@@ -2,9 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <AssemblyVersion>4.0.7.0</AssemblyVersion>
-    <AssemblyFileVersion>4.0.7.0</AssemblyFileVersion>
-    <PackageVersion>4.0.7.0</PackageVersion>
+    <AssemblyVersion>4.0.7.1</AssemblyVersion>
+    <AssemblyFileVersion>4.0.7.1</AssemblyFileVersion>
+    <PackageVersion>4.0.7.1</PackageVersion>
     <Title>TestBase – Rich, fluent assertions and useful fakes for HttpClient and more</Title>
     <PackageDescription><![CDATA[*TestBase* gives you a flying start with 
 - fluent assertions that are easy to extend

@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 
-namespace TestBase
+namespace Extensions.Logging.ListOfString
 {
     public static class StringListLoggerFactoryExtension
     {
@@ -67,14 +66,19 @@ namespace TestBase
         /// </remarks>
         public static StringListLogger Instance;
 
+        /// <summary>
+        /// The record of lines logged to this <see cref="StringListLogger"/>
+        /// 
+        /// If the <see cref="StringListLogger"/> was created by passing in an existing <see cref="List{String}"/>, then this property will be <seealso cref="object.ReferenceEquals"/>() to that list.
+        /// </summary>
+        public List<string> LoggedLines { get; }
+
         static readonly string LoglevelPadding = ": ";
-
         static readonly string MessagePadding = new string(' ', LogLevel.Information.ToString().Length + LoglevelPadding.Length);
-
         static readonly string NewLineWithMessagePadding = Environment.NewLine + MessagePadding;
+
         [ThreadStatic] static StringBuilder logBuilder;
         Func<string, LogLevel, bool> filter;
-        static readonly JsonSerializerSettings ErrorSwallowingJsonSerializerSettings = new JsonSerializerSettings{Error = (o, e) => { }, ReferenceLoopHandling = ReferenceLoopHandling.Ignore};
 
         public StringListLogger(List<string> backingList = null, string name=null, Func<string, LogLevel, bool> filter = null, bool includeScopes = true)
         {
@@ -83,8 +87,6 @@ namespace TestBase
             IncludeScopes = includeScopes;
             LoggedLines = backingList ?? new List<string>();
         }
-
-        public List<string> LoggedLines { get; }
 
         public Func<string, LogLevel, bool> Filter
         {
@@ -98,10 +100,10 @@ namespace TestBase
 
         ScopeStack Scopes {get;}= new ScopeStack();
 
-        public class ScopeStack : Stack<(string, object)>, IDisposable
+        public class ScopeStack : Stack<Tuple<string, object>>, IDisposable
         {
             public void Dispose(){Pop();}
-            public new ScopeStack Push((string,object) item){base.Push(item);return this;}
+            public new ScopeStack Push(Tuple<string, object> item){base.Push(item);return this;}
         }
 
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state,
@@ -129,7 +131,7 @@ namespace TestBase
         public IDisposable BeginScope<TState>(TState state)
         {
             if (state == null) throw new ArgumentNullException(nameof(state));
-            Scopes.Push((Name, state));
+            Scopes.Push(new Tuple<string, object>(Name, state));
             return Scopes;
         }
 

@@ -6,7 +6,7 @@ using Serilog.Events;
 using Serilog.Formatting;
 using Serilog.Formatting.Display;
 
-namespace TestBase
+namespace Serilog.Sinks.ListOfString
 {
     /// <summary>
     /// An <see cref="ILogEventSink"/> sink for Serilog which logs to a given <see cref="IList{T}"/> of string.
@@ -17,7 +17,7 @@ namespace TestBase
     /// You may wish to be careful to only use this for short-lived loggers if you use a <see cref="List{T}"/> 
     /// or other in-memory structure as your <see cref="IList{T}"/>.
     /// </remarks>
-    class StringListSink : ILogEventSink
+    class ListOfStringSink : ILogEventSink
     {
         readonly IList<string> stringList;
         readonly ITextFormatter _textFormatter;
@@ -28,7 +28,7 @@ namespace TestBase
         /// </summary>
         /// <param name="stringList">You may wish to be careful to only use this for short-lived loggers, if you 
         /// use a <see cref="List{T}"/> or other in-memory structure as your <see cref="IList{T}"/>.</param>
-        public StringListSink(IList<string> stringList, ITextFormatter textFormatter)
+        public ListOfStringSink(IList<string> stringList, ITextFormatter textFormatter)
         {
             if (textFormatter == null) throw new ArgumentNullException("textFormatter");
             this.stringList = stringList;
@@ -51,7 +51,7 @@ namespace TestBase
         public static ILogEventSink For(IList<string> stringList)
         {
             var formatter = new MessageTemplateTextFormatter(DefaultOutputTemplate, null);
-            return new StringListSink(stringList, formatter);
+            return new ListOfStringSink(stringList, formatter);
         }
 
         internal const string DefaultOutputTemplate = "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level}] {Message}{NewLine}{Exception}";

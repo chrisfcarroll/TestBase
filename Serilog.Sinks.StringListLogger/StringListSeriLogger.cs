@@ -1,35 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.Extensions.Logging;
-using Serilog;
 using Serilog.Configuration;
 using Serilog.Core;
 using Serilog.Events;
 using Serilog.Formatting;
 using Serilog.Formatting.Display;
-using ILogger = Microsoft.Extensions.Logging.ILogger;
 
-namespace TestBase
+namespace Serilog.Sinks.ListOfString
 {
-    /// <summary>Factory methods returning a logger which logs to a <see cref="List{String}"/></summary>
+    /// <summary>
+    /// Factory methods returning a logger which logs to a <see cref="List{String}"/>
+    /// Equivalent to <code>new LoggerConfiguration().WriteTo.StringList(stringList).CreateLogger();</code>
+    /// </summary>
     public static class StringListSeriLogger
     {
-        public static ILogger WrappedAsMsILogger(this IList<string> stringList, string categoryName = "UnitTest")
-        {
-            return new LoggerFactory().AddSerilog(WrappedAsSerilogger(stringList)).CreateLogger(categoryName);
-        }
-        public static ILogger<T> WrappedAsMsILogger<T>(this IList<string> stringList)
-        {
-            return new LoggerFactory().AddSerilog(WrappedAsSerilogger(stringList)).CreateLogger<T>();
-        }
-
-        public static Logger WrappedAsSerilogger(this IList<string> stringList)
+        public static Logger AsSeriLogger(this IList<string> stringList)
         {
             return new LoggerConfiguration().WriteTo.StringList(stringList).CreateLogger();
         }
 
         /// <summary>
-        /// Write log events to the provided <see cref="StringListSink"/>.
+        /// Write log events to the provided <see cref="ListOfStringSink"/>.
         /// </summary>
         /// <param name="sinkConfiguration">Logger sink configuration.</param>
         /// <param name="stringList">The string list to write log events to.</param>
@@ -43,14 +34,14 @@ namespace TestBase
             this LoggerSinkConfiguration sinkConfiguration,
             IList<string> stringList,
             LogEventLevel restrictedToMinimumLevel = LevelAlias.Minimum,
-            string outputTemplate = StringListSink.DefaultOutputTemplate,
+            string outputTemplate = ListOfStringSink.DefaultOutputTemplate,
             IFormatProvider formatProvider = null)
         {
             if (stringList == null) throw new ArgumentNullException("stringList");
             if (outputTemplate == null) throw new ArgumentNullException("outputTemplate");
 
             var formatter = new MessageTemplateTextFormatter(outputTemplate, formatProvider);
-            var sink = new StringListSink(stringList, formatter);
+            var sink = new ListOfStringSink(stringList, formatter);
             return sinkConfiguration.Sink(sink, restrictedToMinimumLevel);
         }
 
@@ -72,7 +63,7 @@ namespace TestBase
             if (stringList == null) throw new ArgumentNullException("stringList");
             if (formatter == null) throw new ArgumentNullException("formatter");
 
-            var sink = new StringListSink(stringList, formatter);
+            var sink = new ListOfStringSink(stringList, formatter);
             return sinkConfiguration.Sink(sink, restrictedToMinimumLevel);
         }
     }

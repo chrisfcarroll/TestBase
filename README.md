@@ -155,10 +155,19 @@ Can be used in both NUnit & MS UnitTestFramework test projects.
 
 Testable Logging with `StringListLogger`:
 ```
-MS Logging: ILoggerFactory factory=new LoggerFactory.AddProvider(new StringListLoggerProvider())
-Serilogging: new LoggerConfiguration().WriteTo.StringList(stringList).CreateLogger()
-//
-var logger= factory.CreateLogger("Test1") ; ... ; StringListLogger.Instance.LoggedLines.ShouldContain(x=>x.Matches("kilroy was here")
+//MS.Extensions.Logging: 
+ILoggerFactory factory=new LoggerFactory.AddProvider(new StringListLoggerProvider())
+ILogger logger= factory.CreateLogger("Test1");
+ ... ;
+StringListLogger.Instance
+	.LoggedLines
+	.ShouldContain(x=>x.Matches("kilroy was here"));
+
+//Serilogging
+var loglines= new List<String>();
+var logger=new LoggerConfiguration().WriteTo.StringList(loglines).CreateLogger();
+... ;
+logLines.ShouldContain(x=>x.Matches("kilroy was here"));
 ```
 
 
@@ -166,7 +175,8 @@ var logger= factory.CreateLogger("Test1") ; ... ; StringListLogger.Instance.Logg
 
 ChangeLog
 ---------
-4.0.7.0 Added TestBase.FakeHttpClient. Added Should(predicate,...) as synonym of ShouldHave(predicate,...)
+4.0.8.0 Separated `Serilog.Sinks.ListOfString` and `Extensions.Logging.StringListLogger`
+4.0.7.0 Added `TestBase.FakeHttpClient` Added `Should(predicate,...)` as synonym of `ShouldHave(predicate,...)`
 4.0.6.2 TestBase.Mvc can run controller actions on aspnetcore using controller.WithControllerContext()
 4.0.5.2 TestBase.Mvc partially ported to AspNetcore
 4.0.4.0 StreamShoulds

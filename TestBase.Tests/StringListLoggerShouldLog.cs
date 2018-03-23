@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Extensions.Logging.ListOfString;
 using Microsoft.Extensions.Logging;
 using NUnit.Framework;
 
@@ -47,7 +48,7 @@ namespace TestBase.Tests
         }
 
         [Test]
-        public void NotThrowOnSerilogDestructuring()
+        public void NotThrowOnDestructuring()
         {
             var uut=new StringListLogger();
 
@@ -59,7 +60,7 @@ namespace TestBase.Tests
         }
 
         [Test]
-        public void NotThrowOnSerilogDestructuring__EvenWhenCreatedViaMSLoggerFactory()
+        public void BeBuildableByLoggerFactory()
         {
             var stringListLoggerProvider = new StringListLoggerProvider();
             var factory=new LoggerFactory();
@@ -72,6 +73,33 @@ namespace TestBase.Tests
             var uut = StringListLogger.Instance;
             uut.LoggedLines.ForEach(Console.WriteLine);
             uut.LoggedLines.ShouldBeOfLength(1).ToList()[0].ShouldMatch(@"B\s*=\s*""?Two""?");
+        }
+
+        [Test]
+        public void BeBuildableByLoggerFactoryGivenInstance()
+        {
+            var uut= new StringListLogger();
+            var wrapped= new LoggerFactory().AddStringListLogger(uut).CreateLogger<StringListLoggerShould>();
+
+            wrapped.LogInformation("This has destructured output {@Destructured}", new {A=1, B="Two"});
+
+            uut.LoggedLines.ForEach(Console.WriteLine);
+
+            uut.LoggedLines.ShouldBeOfLength(1).Single().ReplaceWith("", " ", "\"") .ShouldMatch( @"\{A=1,B=Two\}");
+        }
+
+        [Test]
+        public void BeBuildableByLoggerFactoryGivenBackingList()
+        {
+            var loggedLines = new List<string>();
+            var wrapped= new LoggerFactory().AddStringListLogger(loggedLines).CreateLogger(nameof(Destructure));
+
+            wrapped.LogInformation("This has destructured output {@Destructured}", new {A=1, B="Two"});
+
+            loggedLines.ForEach(Console.WriteLine);
+            loggedLines.ShouldBeOfLength(1).Single().ReplaceWith("", " ", "\"") .ShouldMatch( @"\{A=1,B=Two\}");
+
+            StringListLogger.Instance.LoggedLines.ShouldBe(loggedLines);
         }
 
         [Test]

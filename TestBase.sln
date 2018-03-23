@@ -18,6 +18,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestBase.AdoNet", "TestBase
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestBase.HttpClient.Fake", "TestBase.FakeHttpClient\TestBase.HttpClient.Fake.csproj", "{5A0DDEF5-A863-470F-9ED2-6EF2320E4DFA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Extensions.Logging.ListOfString", "StringListLogger\Extensions.Logging.ListOfString.csproj", "{E44DCA49-F456-4550-A08F-944D02AC7196}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serilog.Sinks.ListOfString", "Serilog.Sinks.StringListLogger\Serilog.Sinks.ListOfString.csproj", "{A9834981-9487-431E-96BC-2B15898D6609}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,6 +48,14 @@ Global
 		{5A0DDEF5-A863-470F-9ED2-6EF2320E4DFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5A0DDEF5-A863-470F-9ED2-6EF2320E4DFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5A0DDEF5-A863-470F-9ED2-6EF2320E4DFA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E44DCA49-F456-4550-A08F-944D02AC7196}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E44DCA49-F456-4550-A08F-944D02AC7196}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E44DCA49-F456-4550-A08F-944D02AC7196}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E44DCA49-F456-4550-A08F-944D02AC7196}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9834981-9487-431E-96BC-2B15898D6609}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9834981-9487-431E-96BC-2B15898D6609}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9834981-9487-431E-96BC-2B15898D6609}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9834981-9487-431E-96BC-2B15898D6609}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
