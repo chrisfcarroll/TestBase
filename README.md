@@ -177,17 +177,3 @@ logLines.ShouldContain(x=>x.Matches("kilroy was here"));
 
 - Mix and match with your favourite test runners and assertions
 - Building on Mono : define compile symbol NoMSTest to remove dependency on Microsoft.VisualStudio.QualityTools.UnitTestFramework
-
-ChangeLog
----------
-4.0.9.0 Remove dependency on net4 version of Mono.Linq.Expressions
-4.0.8.0 Separated `Serilog.Sinks.ListOfString` and `Extensions.Logging.StringListLogger`
-4.0.7.0 Added `TestBase.FakeHttpClient` Added `Should(predicate,...)` as synonym of `ShouldHave(predicate,...)`
-4.0.6.2 TestBase.Mvc can run controller actions on aspnetcore using controller.WithControllerContext()
-4.0.5.2 TestBase.Mvc partially ported to AspNetcore
-4.0.4.0 StreamShoulds
-4.0.3.0 StringListLogger as MS Logger and as Serilogger
-4.0.1.0 Port to NetCore
-3.0.3.0 Improves FakeDb setup
-3.0.x.0 adds and/or corrects missing Shoulds()
-2.0.5.0 adds some intellisense and FakeDbConnection.Verify(..., message,args) overload
