@@ -8,52 +8,43 @@
   </PropertyGroup>
   <PropertyGroup>
     <Title>TestBase – Rich, fluent assertions and useful fakes for Mvc &amp; AdoNet.</Title>
-    <PackageDescription><![CDATA[TestBase – Rich, fluent assertions and useful fakes for Mvc &amp; AdoNet. For a flying start to Automated and Unit Testing.
-
-TestBase.Shoulds
-------------------
-Chainable fluent assertions get you to the point concisely
-```
-UnitUnderTest.Action()
-  .ShouldNotBeNull()
-  .ShouldContain(expected);
-UnitUnderTest.OtherAction()
-  .ShouldEqualByValue( 
-    new {Id=1, Payload=expectedPayload, Additional=new[]{ expected1, expected2 }}
-);
-```
-* `ShouldBe(), ShouldMatch(), ShouldNotBe(), ShouldContain(), ShouldNotContain(), ShouldBeEmpty(), ShouldNotBeEmpty(), ShouldAll()` and many more
-* `ShouldEqualByValue()` works with all kinds of object and collections
-
-## TestBase.AdoNet adds:
+    <PackageDescription><![CDATA[TestBase.AdoNet
 
 TestBase.FakeDb
 ------------------
-Works with Ado.Net and technologies on top of it, including Dapper.
-* `fakeDbConnection.SetupForQuery(IEnumerable<TFakeData> )`
-* `fakeDbConnection.SetupForQuery(IEnumerable<Tuple<TFakeDataForTable1,TFakeDataForTable2>> )`
-* `fakeDbConnection.SetupForQuery(fakeData, new[] {""FieldName1"", FieldName2""})`
-* `fakeDbConnection.SetupForExecuteNonQuery(rowsAffected)`
-
-* `fakeDbConnection.ShouldHaveUpdated(""tableName"", [Optional] fieldList, whereClauseField)`
-* `fakeDbConnection.ShouldHaveSelected(""tableName"", [Optional] fieldList, whereClauseField)`
-* `fakeDbConnection.ShouldHaveUpdated(""tableName"", [Optional] fieldList, whereClauseField)`
-* `fakeDbConnection.ShouldHaveDeleted(""tableName"", whereClauseField)`
-* `fakeDbConnection.ShouldHaveInvoked(cmd => predicate(cmd))`
-* `fakeDbConnection.ShouldHaveXXX().ShouldHaveParameter(""name"", value)`
-
-* `fakeDbConnection.Verify(x=>x.CommandText.Matches(""Insert [case] .*"") && x.Parameters[""id""].Value==1)`
+Fake and verify AdoNet queries and commands
+```
+- fakeDbConnection.SetupForQuery(IEnumerable<TFakeData>; )
+- fakeDbConnection.SetupForQuery(IEnumerable<Tuple<TFakeDataForTable1,TFakeDataForTable2>> )
+- fakeDbConnection.SetupForQuery(fakeData, new[] {"FieldName1", FieldName2"})
+- fakeDbConnection.SetupForExecuteNonQuery(rowsAffected)
+- fakeDbConnection.ShouldHaveUpdated("tableName", [Optional] fieldList, whereClauseField)
+- fakeDbConnection.ShouldHaveSelected("tableName", [Optional] fieldList, whereClauseField)
+- fakeDbConnection.ShouldHaveUpdated("tableName", [Optional] fieldList, whereClauseField)
+- fakeDbConnection.ShouldHaveDeleted("tableName", whereClauseField)
+- fakeDbConnection.ShouldHaveInvoked(cmd => predicate(cmd))
+- fakeDbConnection.ShouldHaveXXX().ShouldHaveParameter("name", value)
+- fakeDbConnection.Verify(x=>x.CommandText.Matches("Insert [case] .*") && x.Parameters["id"].Value==1)
+```
 
 TestBase.RecordingDb
 --------------------
 * `new RecordingDbConnection(IDbConnection)` helps you profile Ado.Net Db calls
 
-Latest Change: 4.0.3.0 Port to NetCore
+
+See also
+ - TestBase
+ - TestBase.Mvc
+ - TestBase.AdoNet
+ - Serilog.Sinks.ListOfString 
+ - Extensions.Logging.ListOfString
 ]]></PackageDescription>
     <ReleaseNotes><![CDATA[
 ChangeLog
 ---------
-4.0.7.0 Added TestBase.FakeHttpClient. Added Should(predicate,...) as synonym of ShouldHave(predicate,...)
+4.0.9.0 Remove dependency on net4 version of Mono.Linq.Expressions
+4.0.8.0 Separated `Serilog.Sinks.ListOfString` and `Extensions.Logging.StringListLogger`
+4.0.7.0 Added `TestBase.FakeHttpClient` Added `Should(predicate,...)` as synonym of `ShouldHave(predicate,...)`
 4.0.6.2 TestBase.Mvc can run controller actions on aspnetcore using controller.WithControllerContext()
 4.0.5.2 TestBase.Mvc partially ported to netstandard20 / AspNetCore
 4.0.4.0 Stream Shoulds

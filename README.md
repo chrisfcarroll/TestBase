@@ -1,9 +1,8 @@
 *TestBase* gives you a flying start with 
 - fluent assertions that are easy to extend
-- infrastructure for testing with dependencies on AspNetMvc, HttpClient, Ado.Net, Streams
+- tools to help you test with dependencies on AspNetMvc, HttpClient, Ado.Net, Streams and Logging
 
 Chainable fluent assertions get you to the point concisely:
-
 ```
 - ShouldEqualByValue(), ShouldEqualByValueExceptFor() 
   work with all kinds of object and collections, and report what differed.
@@ -15,7 +14,7 @@ Chainable fluent assertions get you to the point concisely:
 
 UnitUnderTest.Action()
     .ShouldNotBeNull()
-    .ShouldEqualByValue(new {Id=1, Payload=expected, Additional=new[]{ expected1, expected2 }} )
+    .ShouldEqualByValueExceptFor(new {Id=1, Payload=expected}, ignoreList )
     .Payload
         .ShouldMatchIgnoringCase("I expected this")
 		.Should(someOtherPredicate);
@@ -28,24 +27,24 @@ TestBase.HttpClient.Fake
 [Test]
 public async Task Should_MatchTheRightExpectationAndReturnTheSetupResponse__GivenMultipleSetups()
 {
-    var cannedResponseThis = new HttpResponseMessage(HttpStatusCode.OK){Content = new StringContent("I Expected This")};
-    var cannedResponseThat = new HttpResponseMessage(HttpStatusCode.Accepted){Headers = { {"That-Header","Value"}}};
-
-    var uut = new FakeHttpClient()
+    var httpClient = new FakeHttpClient()
         .Setup(x=>x.Method==HttpMethod.Put).Returns(new HttpResponseMessage(HttpStatusCode.Accepted))
         .Setup(x=>x.RequestUri.PathAndQuery.StartsWith("/this")).Returns(thisResponse)
         .Setup(x=>x.RequestUri.PathAndQuery.StartsWith("/that")).Returns(thatResponse)
         .Setup(x=>x.RequestUri.PathAndQuery.StartsWith("/forbidden")).Returns(new HttpResponseMessage(HttpStatusCode.Forbidden));
 
-    (await uut.GetAsync("http://localhost/that")).ShouldEqualByValue(thatResponse);
+    (await httpClient.GetAsync("http://localhost/that")).ShouldEqualByValue(thatResponse);
+    (await httpClient.GetAsync("http://localhost/forbidden")).StatusCode.ShouldBe(HttpStatusCode.Forbidden);
 
-    (await uut.GetAsync("http://localhost/forbidden")).StatusCode.ShouldBe(HttpStatusCode.Forbidden);
+
+    httpClient.Verify(x=>x.Method==HttpMethod.Put);
+    httClient.VerifyAll();     
 }
 ```
 
 TestBase.FakeDb
 ------------------
-Works with Ado.Net and technologies on top of it, including Dapper.
+Works with Ado.Net 
 ```
 - fakeDbConnection.SetupForQuery(IEnumerable<TFakeData>; )
 - fakeDbConnection.SetupForQuery(IEnumerable<Tuple<TFakeDataForTable1,TFakeDataForTable2>> )
@@ -59,6 +58,10 @@ Works with Ado.Net and technologies on top of it, including Dapper.
 - fakeDbConnection.ShouldHaveXXX().ShouldHaveParameter("name", value)
 - fakeDbConnection.Verify(x=>x.CommandText.Matches("Insert [case] .*") && x.Parameters["id"].Value==1)
 ```
+
+TestBase.RecordingDb
+--------------------
+* `new RecordingDbConnection(IDbConnection)` helps you profile Ado.Net Db calls
 
 TestBase.Mvc
 ------------
@@ -144,38 +147,40 @@ ControllerUnderTest
     [Optional] string appVirtualPath = "/",
     [Optional] HttpApplication applicationInstance)
 
-ApiControllerUnderTest.WithWebApiHttpContext&lt;T&gt;(
+ApiControllerUnderTest.WithWebApiHttpContext<T>(
     HttpMethod httpMethod, 
     [Optional] string requestUri,
     [Optional] string routeTemplate)
 ```
 
-Can be used in both NUnit & MS UnitTestFramework test projects.
-
-
 Testable Logging with StringListLogger
 --------------------------------------
+`Extensions.Logging.ListOfString` for Microsoft.Extensions.Logging.Abstractions:
 ```
-//MS.Extensions.Logging: 
-ILoggerFactory factory=new LoggerFactory.AddProvider(new StringListLoggerProvider())
-ILogger logger= factory.CreateLogger("Test1");
+var logger= new LoggerFactory.AddProvider(new StringListLoggerProvider()).CreateLogger("Test1");
+// or
+var loggedLines = new List<string>();
+var logger= new LoggerFactory().AddStringListLogger(loggedLines).CreateLogger("Test2");
+
  ... ;
 StringListLogger.Instance
 	.LoggedLines
 	.ShouldContain(x=>x.Matches("kilroy was here"));
-
-//Serilogging
+```
+`Serilog.Sinks.ListOfString` for Serilog:
+```
 var loglines= new List<String>();
 var logger=new LoggerConfiguration().WriteTo.StringList(loglines).CreateLogger();
 ... ;
 logLines.ShouldContain(x=>x.Matches("kilroy was here"));
 ```
 
-
+- Mix and match with your favourite test runners and assertions
 - Building on Mono : define compile symbol NoMSTest to remove dependency on Microsoft.VisualStudio.QualityTools.UnitTestFramework
 
 ChangeLog
 ---------
+4.0.9.0 Remove dependency on net4 version of Mono.Linq.Expressions
 4.0.8.0 Separated `Serilog.Sinks.ListOfString` and `Extensions.Logging.StringListLogger`
 4.0.7.0 Added `TestBase.FakeHttpClient` Added `Should(predicate,...)` as synonym of `ShouldHave(predicate,...)`
 4.0.6.2 TestBase.Mvc can run controller actions on aspnetcore using controller.WithControllerContext()

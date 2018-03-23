@@ -6,129 +6,35 @@
     <AssemblyFileVersion>4.0.9.0</AssemblyFileVersion>
     <PackageVersion>4.0.9.0</PackageVersion>
     <Title>TestBase – Rich, fluent assertions and useful fakes for HttpClient and more</Title>
-    <PackageDescription><![CDATA[*TestBase* gives you a flying start with 
-- fluent assertions that are easy to extend
-- tools for testing with dependencies on AspNetMvc, HttpClient, Ado.Net, Streams
-
-Chainable fluent assertions get you to the point concisely
-------------------
-```
-- ShouldEqualByValue(), ShouldEqualByValueExceptFor() 
-  work with all kinds of object and collections, and report what differed.
-- string.ShouldMatch().ShouldEqualIgnoringCase(), ...
-- numeric.ShouldBeBetween().ShouldEqualWithTolerance(), ...
-- IEnumerable.ShouldAll().ShouldContain().ShouldNotContain(), ...
-- Stream.ShouldHaveSameStreamContentAs(), Stream.ShouldContain()
-
-UnitUnderTest.Action()
-    .ShouldNotBeNull()
-    .ShouldEqualByValue(new {Id=1, Payload=expected} )
-    .Payload
-        .ShouldMatchIgnoringCase("I expected this")
-		    .Should(somePredicate);
-```
+    <PackageDescription><![CDATA[*TestBase* gives you a flying start with fluent assertions that
+are easy to extend and tools for testing with dependencies 
+on AspNetMvc, HttpClient, Ado.Net, Streams and Logging.
 
 TestBase.HttpClient.Fake
 ------------------------
 
 ```
-  var uut = new FakeHttpClient()
-        .Setup(x=>x.RequestUri.PathAndQuery.StartsWith("/this")).Returns(response)
-        .Setup(x=>x.Method==HttpMethod.Put).Returns(new HttpResponseMessage(HttpStatusCode.Accepted))
+var httpClient = new FakeHttpClient()
+      .Setup(x=>x.RequestUri.PathAndQuery.StartsWith("/this")).Returns(response)
+      .Setup(x=>x.Method==HttpMethod.Put).Returns(new HttpResponseMessage(HttpStatusCode.Accepted));
+
+...tests...;
+
+httpClient.Verify(x=>x.Method==HttpMethod.Put);
+httClient.VerifyAll();     
 ```
 
-TestBase.FakeDb
-------------------
-`FakeDbConnection` 
-
-```
-- db.SetupForQuery(…)
-- db.SetupForExecuteNonQuery(…)
-- db.ShouldHaveUpdated("tableName", …)
-- db.ShouldHaveSelected("tableName", …)
-- db.ShouldHaveUpdated("tableName", …)
-- db.ShouldHaveDeleted("tableName", …)
-- db.ShouldHaveInvoked(cmd => predicate(cmd))
-- db.ShouldHaveXXX().ShouldHaveParameter("name", value)
-- db.Verify(x=>x.CommandText.Matches("Insert [case] .*") && x.Parameters["id"].Value==1)
-```
-
-TestBase.Mvc
-------------
-```
-ControllerUnderTest.Action()
-  .ShouldbeViewResult()
-  .ShouldHaveModel<TModel>()
-  .ShouldEqualByValue(expected)
-ControllerUnderTest.Action()
-  .ShouldBeRedirectToRouteResult()
-  .ShouldHaveRouteValue("expectedKey", [Optional] "expectedValue");
-
-ShouldHaveViewDataContaining(), ShouldBeJsonResult() etc.
-```
-
-TestBase.Mvc Version 4 for netstandard20 & AspNetCore Mvc
----------------------------------------------------------
-
-- Test most controllers with zero setup using `controllerUnderTest.WithControllerContext(actionUnderTest)` :
-
-```
-[Test]
-public void ShouldBeViewWithModel_ShouldAssertViewResultAndNameAndModel()
-{
-    var controllerUnderTest = new AController().WithControllerContext("Action");
-    
-    controllerUnderTest
-        .Action().ShouldBeViewWithModel<AClass>("ViewName")
-        .ShouldBeOfType<AClass>()
-        .FooterLink.ShouldBe("/AController/ActionName");
-}
-
-```
-
-- Test more complex controller/application dependencies using `HostedMvcTestFixtureBase` and specify your MVCApplications `Startup` class:
-
-```
-[TestCase("/dummy")]
-public async Task Put_Should_ReturnA(string url)
-{
-    var something= new Fixture().Create<Something>();
-    var jsonBody= new StringContent(something.ToJSon(), Encoding.UTF8, "application/json");
-    var httpClient=GivenClientForRunningServer<Startup>();
-    GivenRequestHeaders(httpClient, "CustomHeader", "HeaderValue1");
-
-    var result = await httpClient.PutAsync(url, jsonBody);
-
-    result.ShouldBe_202Accepted();
-    DummyController.Putted.ShouldEqualByValue( something );
-}
-```
-
-TestBase.Mvc Version 3 for Net4
--------------------------------
-
-`Controller.WithHttpContextAndRoutes()` fakes your http request &amp; context. 
-Use the RegisterRoutes method of your actual application to test Controller.Url with your application's configured routes.
-
-```
-ControllerUnderTest
-  .WithHttpContextAndRoutes(
-    RouteConfig.RegisterRoutes, 
-    "/incomingurl")
-
-ApiControllerUnderTest.WithWebApiHttpContext&lt;T&gt;(
-    httpMethod, 
-    requestUri,
-    routeTemplate)
-```
-
-Testable Logging with `StringListLogger`.
-Mix and match with your favourite test runners and frameworks.
-
-- Building on Mono : define compile symbol NoMSTest to remove dependency on Microsoft.VisualStudio.QualityTools.UnitTestFramework
+See also
+ - TestBase
+ - TestBase.Mvc
+ - TestBase.AdoNet
+ - Serilog.Sinks.ListOfString 
+ - Extensions.Logging.ListOfString
 ]]></PackageDescription>
     <PackageReleaseNotes>ChangeLog
 ---------
+4.0.9.0 Removed dependency on net4 version of Mono.Linq.Expressions
+4.0.8.0 Separated Serilog.Sinks.ListOfString and Extensions.Logging.StringListLogger
 4.0.7.0 Added TestBase.FakeHttpClient. Added Should(predicate,...) as synonym of ShouldHave(predicate,...)
 4.0.6.2 TestBase.Mvc can run controller actions on aspnetcore using controller.WithControllerContext()
 4.0.5.2 TestBase.Mvc partially ported to netstandard20 / AspNetCore
