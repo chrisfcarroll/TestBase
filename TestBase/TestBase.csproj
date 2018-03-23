@@ -1,29 +1,27 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <AssemblyVersion>4.0.7.0</AssemblyVersion>
-    <AssemblyFileVersion>4.0.7.0</AssemblyFileVersion>
-    <PackageVersion>4.0.7.0</PackageVersion>
-    <PackageDescription><![CDATA[*TestBase* gives you a flying start with 
-- fluent assertions that are easy to extend
-- tools for testing with dependencies on AspNetMvc, HttpClient, Ado.Net, Streams
+    <AssemblyVersion>4.0.9.0</AssemblyVersion>
+    <AssemblyFileVersion>4.0.9.0</AssemblyFileVersion>
+    <PackageVersion>4.0.9.0</PackageVersion>
+    <PackageDescription><![CDATA[*TestBase* gives you a flying start with fluent assertions that are easy to extend and 
+tools for testing with dependencies on AspNetMvc, HttpClient, Ado.Net, Streams and Logging.
 
-Chainable fluent assertions get you to the point concisely
-------------------
+Chainable fluent assertions get you to the point concisely:
 ```
-- ShouldEqualByValue(), ShouldEqualByValueExceptFor() 
-  work with all kinds of object and collections, and report what differed.
+- ShouldEqualByValue() & ShouldEqualByValueExceptFor() work with all kinds of 
+  object and collections, and report what differed.
 - string.ShouldMatch().ShouldEqualIgnoringCase(), ...
 - numeric.ShouldBeBetween().ShouldEqualWithTolerance(), ...
 - IEnumerable.ShouldAll().ShouldContain().ShouldNotContain(), ...
 - Stream.ShouldHaveSameStreamContentAs(), Stream.ShouldContain()
 
 UnitUnderTest.Action()
-    .ShouldNotBeNull()
-    .ShouldEqualByValue(new {Id=1, Payload=expected} )
+    .ShouldBeViewWithModel<TModel>()
     .Payload
+        .ShouldEqualByValue(new {Id=1, Payload=expected} )    
         .ShouldMatchIgnoringCase("I expected this")
-		    .Should(somePredicate);
+		    .Should(someOtherPredicate);
 ```
 
 TestBase.HttpClient.Fake
@@ -44,15 +42,16 @@ TestBase.FakeDb
 - db.SetupForExecuteNonQuery(…)
 - db.ShouldHaveUpdated("tableName", …)
 - db.ShouldHaveSelected("tableName", …)
-- db.ShouldHaveUpdated("tableName", …)
 - db.ShouldHaveDeleted("tableName", …)
-- db.ShouldHaveInvoked(cmd => predicate(cmd))
-- db.ShouldHaveXXX().ShouldHaveParameter("name", value)
-- db.Verify(x=>x.CommandText.Matches("Insert [case] .*") && x.Parameters["id"].Value==1)
+- db.Verify( x=>x.CommandText.Matches("Insert [case] .*") && x.Parameters["id"].Value==1 )
+- db
+    .ShouldHaveInvoked(cmd => predicate(cmd))
+    .ShouldHaveParameter("name", value)
 ```
 
 TestBase.Mvc
 ------------
+
 ```
 ControllerUnderTest.Action()
   .ShouldbeViewResult()
@@ -65,7 +64,7 @@ ControllerUnderTest.Action()
 ShouldHaveViewDataContaining(), ShouldBeJsonResult() etc.
 ```
 
-TestBase.Mvc Version 4 for netstandard20 & AspNetCore Mvc
+TestBase.Mvc for netstandard20 & AspNetCore Mvc
 ---------------------------------------------------------
 
 - Test most controllers with zero setup using `controllerUnderTest.WithControllerContext(actionUnderTest)` :
@@ -121,13 +120,21 @@ ApiControllerUnderTest.WithWebApiHttpContext&lt;T&gt;(
 ```
 
 Testable Logging with `StringListLogger`.
-Mix and match with your favourite test runners and frameworks.
+```
+var log = new List<String>();
+ILogger       mslogger= new LoggerFactory().AddStringListLogger(log).CreateLogger("Test2");
+//or
+Serilog.Logger slogger= new LoggerConfiguration().WriteTo.StringList(log).CreateLogger();
+```
 
+- Mix and match with your favourite test runners and frameworks.
 - Building on Mono : define compile symbol NoMSTest to remove dependency on Microsoft.VisualStudio.QualityTools.UnitTestFramework
 ]]></PackageDescription>
     <Title>TestBase – Rich, fluent assertions and useful fakes for Mvc &amp; AdoNet.</Title>
     <PackageReleaseNotes>ChangeLog
 ---------
+4.0.9.0 Removed dependency on net4 version of Mono.Linq.Expressions
+4.0.8.0 Separated Serilog.Sinks.ListOfString and Extensions.Logging.StringListLogger
 4.0.7.0 Added TestBase.FakeHttpClient. Added Should(predicate,...) as synonym of ShouldHave(predicate,...)
 4.0.6.2 TestBase.Mvc can run controller actions on aspnetcore using controller.WithControllerContext()
 4.0.5.2 TestBase.Mvc partially ported to netstandard20 / AspNetCore
@@ -159,7 +166,6 @@ Mix and match with your favourite test runners and frameworks.
     <Compile Remove="GivenMockEventStore.cs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Mono.Linq.Expressions" Version="1.2.0" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.1" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="4.4.1" />
   </ItemGroup>

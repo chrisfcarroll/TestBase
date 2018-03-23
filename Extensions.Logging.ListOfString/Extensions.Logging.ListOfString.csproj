@@ -3,28 +3,39 @@
   <PropertyGroup>
     <TargetFramework>netstandard1.1</TargetFramework>
     <RootNamespace>Extensions.Logging.ListOfString</RootNamespace>
-    <AssemblyVersion>4.0.7.0</AssemblyVersion>
-    <AssemblyFileVersion>4.0.7.0</AssemblyFileVersion>
-    <PackageVersion>4.0.7.0</PackageVersion>
+    <AssemblyVersion>4.0.9.0</AssemblyVersion>
+    <AssemblyFileVersion>4.0.9.0</AssemblyFileVersion>
+    <PackageVersion>4.0.9.0</PackageVersion>
     <Title>Extensions.Logging.ListOfString</Title>
     <PackageDescription><![CDATA[Extensions.Logging.ListOfString logs to a list of string so you can test your logging :
+```
+ILoggerFactory factory=new LoggerFactory.AddProvider(new StringListLoggerProvider())
+ILogger logger= factory.CreateLogger("Test1");
+
+...tests... ;
+
+StringListLogger.Instance
+   .LoggedLines
+   .ShouldContain(x=>x.Matches("kilroy was here"));
+```
+or
+```
+var loggedLines = new List<string>();
+var logger= new LoggerFactory().AddStringListLogger(loggedLines).CreateLogger("Test2");
+
+...tests... ;
+
+loggedLines   .ShouldContain(x=>x.Matches("kilroy was here too."));
 
 ```
-var log= new List<String>();
-var testLogger= new LoggerConfiguration().WriteTo.StringList(log).CreateLogger();
 
-...tests...
+This is for Microsoft.Extensions.Logging.Abstractions. For Serilog, see https://www.nuget.org/packages/Serilog.Sinks.ListOfString/
 
-log.ShouldContain( entry=>entry.Contains(expectedException.Message) );
+Part of https://www.nuget.org/packages/TestBase 
 
-```
+*TestBase* gives you a flying start to unit testing with fluent assertions that are easy to extend, and 
+tools for testing with dependencies on AspNetMvc, HttpClient, Ado.Net, Streams and Loggers.
 
-`<seealso cref="StringListSeriLogger/>`
-
-Part of http://github.com/chrisfcarroll/TestBase 
-
-*TestBase* gives you a flying start to unit testing with fluent assertions that 
-are easy to extend, and tools for testing with dependencies on AspNetMvc, HttpClient, Ado.Net, Streams and Loggers.
 ]]></PackageDescription>
     <PackageReleaseNotes>ChangeLog
 ---------

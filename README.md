@@ -2,8 +2,8 @@
 - fluent assertions that are easy to extend
 - infrastructure for testing with dependencies on AspNetMvc, HttpClient, Ado.Net, Streams
 
-Chainable fluent assertions get you to the point concisely
-------------------
+Chainable fluent assertions get you to the point concisely:
+
 ```
 - ShouldEqualByValue(), ShouldEqualByValueExceptFor() 
   work with all kinds of object and collections, and report what differed.
@@ -153,7 +153,8 @@ ApiControllerUnderTest.WithWebApiHttpContext&lt;T&gt;(
 Can be used in both NUnit & MS UnitTestFramework test projects.
 
 
-Testable Logging with `StringListLogger`:
+Testable Logging with StringListLogger
+--------------------------------------
 ```
 //MS.Extensions.Logging: 
 ILoggerFactory factory=new LoggerFactory.AddProvider(new StringListLoggerProvider())

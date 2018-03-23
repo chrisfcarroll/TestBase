@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
-    <AssemblyVersion>4.0.6.2</AssemblyVersion>
-    <AssemblyFileVersion>4.0.6.2</AssemblyFileVersion>
-    <PackageVersion>4.0.6.2</PackageVersion>
+    <AssemblyVersion>4.0.9.0</AssemblyVersion>
+    <AssemblyFileVersion>4.0.9.0</AssemblyFileVersion>
+    <PackageVersion>4.0.9.0</PackageVersion>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -23,8 +23,8 @@
     <PackageReference Include="Moq" Version="4.8.2" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Serilog.Sinks.StringListLogger\Serilog.Sinks.ListOfString.csproj" />
-    <ProjectReference Include="..\StringListLogger\Extensions.Logging.ListOfString.csproj" />
+    <ProjectReference Include="..\Extensions.Logging.ListOfString\Extensions.Logging.ListOfString.csproj" />
+    <ProjectReference Include="..\Serilog.Sinks.LostOfString\Serilog.Sinks.ListOfString.csproj" />
     <ProjectReference Include="..\TestBase.FakeHttpClient\TestBase.HttpClient.Fake.csproj" />
     <ProjectReference Include="..\TestBase.Mvc\TestBase.Mvc.csproj" />
     <ProjectReference Include="..\TestBase\TestBase.csproj" />

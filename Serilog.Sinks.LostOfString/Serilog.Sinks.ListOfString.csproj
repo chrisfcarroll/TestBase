@@ -3,9 +3,9 @@
   <PropertyGroup>
     <TargetFramework>netstandard1.3</TargetFramework>
     <RootNamespace>Serilog.Sinks.ListOfString</RootNamespace>
-    <AssemblyVersion>4.0.7.0</AssemblyVersion>
-    <AssemblyFileVersion>4.0.7.0</AssemblyFileVersion>
-    <PackageVersion>4.0.7.0</PackageVersion>
+    <AssemblyVersion>4.0.9.0</AssemblyVersion>
+    <AssemblyFileVersion>4.0.9.0</AssemblyFileVersion>
+    <PackageVersion>4.0.9.0</PackageVersion>
     <Title>Serilog.Sinks.ListOfString</Title>
     <PackageDescription><![CDATA[Serilog.Sinks.ListOfString logs to a list of string so you can test your logging :
 
@@ -15,16 +15,15 @@ var testLogger= new LoggerConfiguration().WriteTo.StringList(log).CreateLogger()
 
 ...tests...
 
-log.ShouldContain( entry=>entry.Contains(expectedException.Message) );
+log.ShouldContain( x=>x.Matches("kilroy was here") );
 
 ```
+This is for Serilog. For Microsoft.Extensions.Logging.Abstractions see also https://www.nuget.org/packages/Extensions.Logging.ListOfString/
 
-`<seealso cref="StringListSeriLogger/>`
+Part of https://www.nuget.org/packages/TestBase 
 
-Part of http://github.com/chrisfcarroll/TestBase 
-
-*TestBase* gives you a flying start to unit testing with fluent assertions that 
-are easy to extend, and tools for testing with dependencies on AspNetMvc, HttpClient, Ado.Net, Streams and Loggers.
+*TestBase* gives you a flying start to unit testing with fluent assertions that are easy to extend, and 
+tools for testing with dependencies on AspNetMvc, HttpClient, Ado.Net, Streams and Loggers.
 ]]></PackageDescription>
     <PackageReleaseNotes>ChangeLog
 ---------
