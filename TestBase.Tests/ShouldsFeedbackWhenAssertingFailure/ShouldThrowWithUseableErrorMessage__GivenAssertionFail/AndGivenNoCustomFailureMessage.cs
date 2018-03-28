@@ -72,6 +72,10 @@ namespace TestBase.Tests.ShouldsFeedbackWhenAsserting.ShouldThrowWithUseableErro
             { "ShouldEndWith",          new KeyValuePair<Action,string>(()=> "20".ShouldEndWith("20x")                , null)}, 
             { "ShouldSatisfy",          new KeyValuePair<Action,string>(()=> 21.ShouldSatisfy(i => i.ToString(), x=>x.Equals("boo"))         , null)}, 
             { "ShouldContainInOrder",   new KeyValuePair<Action,string>(()=> (new List<int>{22,222}).ShouldContainInOrder(222,22) , null)},
+            { "ShouldContain(item)",    new KeyValuePair<Action,string>(()=> (new List<int>{22,222}).ShouldContain(1) , null)},
+            { "ShouldContain(predicate)",new KeyValuePair<Action,string>(()=> (new List<int>{22,222}).ShouldContain(x=> x<0) , null)},
+            { "ShouldNotContain(item)",    new KeyValuePair<Action,string>(()=> (new List<int>{22,222}).ShouldNotContain(22) , null)},
+            { "ShouldNotContain(predicate)",new KeyValuePair<Action,string>(()=> (new List<int>{22,222}).ShouldNotContain(x=> x>0) , null)},
 
             { "ShouldBeFileResult",     new KeyValuePair<Action,string>(
                     () => new RedirectResult("/").ShouldBeFileResult(TestCasesForCustomFailureMessageWithArgs.FailureMessage ) , null)},

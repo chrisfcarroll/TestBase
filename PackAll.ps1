@@ -8,6 +8,7 @@ echo @'
 scriptRoot="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 pushd $scriptRoot
+find . -iname *.nupkg -delete
 for dir in `ls -d TestBase*/` ; do dotnet pack $dir ; done
 popd
 
@@ -21,7 +22,8 @@ echo > /dev/null <<"out-null" ###
 pushd $PSScriptRoot
 try
 {
-    ls -Directory TestBase* | %{ dotnet pack $_.Name }
+	gci -rec *.nupkg | %{ rm $_ }
+    gci -Directory TestBase* | %{ dotnet pack $_.Name }
 }
 finally{ popd }
 

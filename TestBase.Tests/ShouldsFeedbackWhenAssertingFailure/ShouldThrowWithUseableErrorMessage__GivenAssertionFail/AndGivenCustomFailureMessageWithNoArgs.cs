@@ -52,7 +52,10 @@ namespace TestBase.Tests.ShouldsFeedbackWhenAsserting.ShouldThrowWithUseableErro
             { "ShouldEndWith",          () => "21".ShouldEndWith("21x", TestCasesForCustomFailureMessageWithArgs.FailureMessage ) }, 
             { "ShouldSatisfy",          () => 22.ShouldSatisfy(i => i.ToString(), x=>x.Equals("boo"), TestCasesForCustomFailureMessageWithArgs.FailureMessage ) }, 
             { "ShouldContainInOrder",   () => (new List<int>{23,24}).ShouldContainInOrder(24,23, TestCasesForCustomFailureMessageWithArgs.FailureMessage ) },
-
+            { "ShouldContain(item)", () => (new List<int>{1,2}).ShouldContain(3,   TestCasesForCustomFailureMessageWithArgs.FailureMessage ) } ,
+            { "ShouldContain(predicate)", () => (new List<int>{2,1}).ShouldContain(x => x<0 , TestCasesForCustomFailureMessageWithArgs.FailureMessage ) } ,
+            { "ShouldNotContain(item)", () => (new List<int>{1,2}).ShouldNotContain(1,   TestCasesForCustomFailureMessageWithArgs.FailureMessage ) } ,
+            { "ShouldNotContain(predicate)", () => (new List<int>{2,1}).ShouldNotContain(x => x>0 , TestCasesForCustomFailureMessageWithArgs.FailureMessage ) } ,
             { "ShouldBeFileResult",   () => (new RedirectResult("/")).ShouldBeFileResult(null,TestCasesForCustomFailureMessageWithArgs.FailureMessage ) },
             { "ShouldBeFileContentResult",   () => (new RedirectResult("/")).ShouldBeFileContentResult(null,TestCasesForCustomFailureMessageWithArgs.FailureMessage ) },
             { "ShouldBeFileStreamResult",   () => (new RedirectResult("/")).ShouldBeFileStreamResult(null,TestCasesForCustomFailureMessageWithArgs.FailureMessage ) },

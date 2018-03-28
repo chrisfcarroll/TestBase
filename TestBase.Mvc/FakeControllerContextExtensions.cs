@@ -25,7 +25,7 @@ using Moq;
 
 namespace TestBase
 {
-    public static class StubbedControllerContextExtensions
+    public static class StubbedAspNetCoreControllerContextExtensions
     {
         public static T WithRequestHeader<T>(this T controller, string name, params string[] values) where T : Controller
         {

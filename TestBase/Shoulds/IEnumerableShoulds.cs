@@ -16,11 +16,25 @@ namespace TestBase
             return Assert.That(actual, a => a.Any(predicate.Compile()), comment ?? $"Should contain {predicate.ToCSharpCode()}", args);
         }
 
-        /// <summary>Asserts that <paramref name="actual"/> contains an element such that element.Equals(<paramref name="expectedItem"/>) is True</summary>
+        /// <summary>Asserts that <paramref name="actual"/> does not contain an element satisfying <paramref name="predicate"/></summary>
+        /// <returns><paramref name="actual"/></returns>
+        public static IEnumerable<T> ShouldNotContain<T>(this IEnumerable<T> actual, Expression<Func<T,bool>> predicate,string comment = null, params object[] args)
+        {
+            return Assert.That(actual, a => !a.Any(predicate.Compile()), comment ?? $"Should not contain {predicate.ToCSharpCode()}", args);
+        }
+
+        /// <summary>Asserts that <paramref name="actual"/> contains an element such that element.Equals(<paramref name="expectedItem"/>)</summary>
         /// <returns><paramref name="actual"/></returns>
         public static IEnumerable<T> ShouldContain<T>(this IEnumerable<T> actual, T expectedItem, string comment = null, params object[] args)
         {
             return Assert.That(actual, a => a.Any(i=>i.Equals(expectedItem) ), comment ?? $"Should contain {expectedItem}", args);
+        }
+
+        /// <summary>Asserts that <paramref name="actual"/> does not contains an element such that element.Equals(<paramref name="unexpectedItem"/>)</summary>
+        /// <returns><paramref name="actual"/></returns>
+        public static IEnumerable<T> ShouldNotContain<T>(this IEnumerable<T> actual, T unexpectedItem, string comment = null, params object[] args)
+        {
+            return Assert.That(actual, a => !a.Any(i=>i.Equals(unexpectedItem) ), comment ?? $"Should not contain {unexpectedItem}", args);
         }
 
         /// <summary>Asserts that <paramref name="actual"/> is not empty</summary>
