@@ -9,29 +9,35 @@
 are easy to extend and tools for testing with dependencies 
 on AspNetMvc, HttpClient, Ado.Net, Streams and Logging.
 
-Chainable fluent assertions get you to the point concisely:
 ```
-- ShouldEqualByValue() & ShouldEqualByValueExceptFor() 
-  work with all kinds of object and collections, and 
-  report what differed.
-- string.ShouldMatch().ShouldEqualIgnoringCase(), ...
-- numeric.ShouldBeBetween().ShouldEqualWithTolerance(), ...
-- IEnumerable.ShouldAll().ShouldContain().ShouldNotContain(), ...
-- Stream.ShouldHaveSameStreamContentAs(), Stream.ShouldContain()
-
 UnitUnderTest.Action()
-  .ShouldBeViewWithModel<TModel>()
+  .ShouldNotBeNull()
+  .ShouldEqualByValueExceptFor(new {Id=1, Descr=expected}, ignoreList )
   .Payload
-    .ShouldEqualByValueExceptFor(new {Id=1, Payload1=expected}, ignoreFields)
-    .Payload2
-      .ShouldMatchIgnoringCase("I expected this");
+    .ShouldMatchIgnoringCase("I expected this")
+  	.Should(someOtherPredicate);
+	.Items
+    .ShouldAll(predicate)
+	  .ShouldContain(item)
+	  .ShouldNotContain(predicate)
+	  .Where(predicate)
+	  .SingleOrAssertFail()
+
+.ShouldEqualByValue().ShouldEqualByValueExceptFor(...) 
+  work with all kinds of object and collections, and report what differed.
+string.ShouldMatch(regex).ShouldBeEmpty().ShouldNotBeEmpty()
+.ShouldNotBeNullOrEmptyOrWhiteSpace().ShouldEqualIgnoringCase()
+.ShouldContain().ShouldStartWith().ShouldEndWith().ShouldBeContainedIn(), ...
+numeric.ShouldBeBetween().ShouldEqualWithTolerance()....GreaterThan....LessThan...GreaterOrEqualTo ...
+ienumerable.ShouldAll().ShouldContain().ShouldNotContain().ShouldBeEmpty().ShouldNotBeEmpty() ...
+stream.ShouldHaveSameStreamContentAs().ShouldContain()
+value.ShouldBe().ShouldNotBe().ShouldBeOfType().ShouldBeAssignableTo()...
 ```
 
 TestBase.HttpClient.Fake
-------------------------
 
 ```
-var uut = new FakeHttpClient()
+new FakeHttpClient()
       .Setup(x=>x.RequestUri.PathAndQuery.StartsWith("/this"))
         .Returns(response)
       .Setup(x=>x.Method==HttpMethod.Put)
@@ -59,7 +65,8 @@ TestBase.Mvc
 ------------
 
 ```
-ControllerUnderTest.Action()
+ControllerUnderTest.WithControllerContext()
+  .Action()
   .ShouldbeViewResult()
   .ShouldHaveModel<TModel>()
   .ShouldEqualByValue(expected)

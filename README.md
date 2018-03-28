@@ -4,20 +4,28 @@
 
 Chainable fluent assertions get you to the point concisely:
 ```
-- ShouldEqualByValue(), ShouldEqualByValueExceptFor() 
-  work with all kinds of object and collections, and report what differed.
-- string.ShouldMatch() ShouldNotBeNullOrEmptyOrWhiteSpace(), ShouldEqualIgnoringCase(), ShouldBeContainedIn(), ...
-- numeric.ShouldBeBetween(), ShouldEqualWithTolerance(), GreaterThan, LessThan, GreaterOrEqualTo ...
-- IEnumerable.ShouldAll(), ShouldContain(), ShouldNotContain(), ShouldBeEmpty(), ShouldNotBeEmpty() ...
-- Stream.ShouldHaveSameStreamContentAs() , Stream.ShouldContain()
-- ShouldBe(), ShouldNotBe(), ShouldBeOfType(), ...
-
 UnitUnderTest.Action()
-    .ShouldNotBeNull()
-    .ShouldEqualByValueExceptFor(new {Id=1, Payload=expected}, ignoreList )
-    .Payload
-        .ShouldMatchIgnoringCase("I expected this")
-		.Should(someOtherPredicate);
+  .ShouldNotBeNull()
+  .ShouldEqualByValueExceptFor(new {Id=1, Descr=expected}, ignoreList )
+  .Payload
+    .ShouldMatchIgnoringCase("I expected this")
+	.Should(someOtherPredicate);
+	.Items
+      .ShouldAll(predicate)
+	  .ShouldContain(item)
+	  .ShouldNotContain(predicate)
+	  .Where(predicate)
+	  .SingleOrAssertFail()
+
+.ShouldEqualByValue().ShouldEqualByValueExceptFor(...) 
+  work with all kinds of object and collections, and report what differed.
+string.ShouldMatch(regex).ShouldBeEmpty().ShouldNotBeEmpty()
+.ShouldNotBeNullOrEmptyOrWhiteSpace().ShouldEqualIgnoringCase()
+.ShouldContain().ShouldStartWith().ShouldEndWith().ShouldBeContainedIn(), ...
+numeric.ShouldBeBetween().ShouldEqualWithTolerance()....GreaterThan....LessThan...GreaterOrEqualTo ...
+ienumerable.ShouldAll().ShouldContain().ShouldNotContain().ShouldBeEmpty().ShouldNotBeEmpty() ...
+stream.ShouldHaveSameStreamContentAs().ShouldContain()
+value.ShouldBe().ShouldNotBe().ShouldBeOfType().ShouldBeAssignableTo()...
 ```
 
 TestBase.HttpClient.Fake
@@ -27,18 +35,17 @@ TestBase.HttpClient.Fake
 [Test]
 public async Task Should_MatchTheRightExpectationAndReturnTheSetupResponse__GivenMultipleSetups()
 {
-    var httpClient = new FakeHttpClient()
-        .Setup(x=>x.Method==HttpMethod.Put).Returns(new HttpResponseMessage(HttpStatusCode.Accepted))
-        .Setup(x=>x.RequestUri.PathAndQuery.StartsWith("/this")).Returns(thisResponse)
-        .Setup(x=>x.RequestUri.PathAndQuery.StartsWith("/that")).Returns(thatResponse)
-        .Setup(x=>x.RequestUri.PathAndQuery.StartsWith("/forbidden")).Returns(new HttpResponseMessage(HttpStatusCode.Forbidden));
+  var httpClient = new FakeHttpClient()
+    .Setup(x=>x.Method==HttpMethod.Put).Returns(new HttpResponseMessage(HttpStatusCode.Accepted))
+    .Setup(x=>x.RequestUri.PathAndQuery.StartsWith("/this")).Returns(thisResponse)
+    .Setup(x=>x.RequestUri.PathAndQuery.StartsWith("/that")).Returns(thatResponse)
+    .Setup(x=>x.RequestUri.PathAndQuery.StartsWith("/forbidden")).Returns(new HttpResponseMessage(HttpStatusCode.Forbidden));
 
-    (await httpClient.GetAsync("http://localhost/that")).ShouldEqualByValue(thatResponse);
-    (await httpClient.GetAsync("http://localhost/forbidden")).StatusCode.ShouldBe(HttpStatusCode.Forbidden);
+  (await httpClient.GetAsync("http://localhost/that")).ShouldEqualByValue(thatResponse);
+  (await httpClient.GetAsync("http://localhost/forbidden")).StatusCode.ShouldBe(HttpStatusCode.Forbidden);
 
-
-    httpClient.Verify(x=>x.Method==HttpMethod.Put);
-    httClient.VerifyAll();     
+  httpClient.Verify(x=>x.Method==HttpMethod.Put);
+  httClient.VerifyAll();     
 }
 ```
 
