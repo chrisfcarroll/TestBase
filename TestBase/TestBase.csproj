@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <AssemblyVersion>4.0.9.1</AssemblyVersion>
-    <AssemblyFileVersion>4.0.9.1</AssemblyFileVersion>
-    <PackageVersion>4.0.9.1</PackageVersion>
+    <AssemblyVersion>4.0.9.2</AssemblyVersion>
+    <AssemblyFileVersion>4.0.9.2</AssemblyFileVersion>
+    <PackageVersion>4.0.9.2</PackageVersion>
     <Title>TestBase – Rich, fluent assertions and useful fakes for dependencies on AspNetMvc, HttpClient, Ado.Net, Streams and Logging.</Title>
     <PackageDescription><![CDATA[*TestBase* gives you a flying start with fluent assertions that
 are easy to extend and tools for testing with dependencies 
@@ -25,7 +25,7 @@ UnitUnderTest.Action()
 
 .ShouldEqualByValue().ShouldEqualByValueExceptFor(...) 
   work with all kinds of object and collections, and report what differed.
-string.ShouldMatch(regex).ShouldBeEmpty().ShouldNotBeEmpty()
+string.ShouldMatch(pattern).ShouldNotMatch().ShouldBeEmpty().ShouldNotBeEmpty()
 .ShouldNotBeNullOrEmptyOrWhiteSpace().ShouldEqualIgnoringCase()
 .ShouldContain().ShouldStartWith().ShouldEndWith().ShouldBeContainedIn(), ...
 numeric.ShouldBeBetween().ShouldEqualWithTolerance()....GreaterThan....LessThan...GreaterOrEqualTo ...
@@ -130,6 +130,7 @@ Serilog.Logger slogger= new LoggerConfiguration().WriteTo.StringList(log).Create
 ]]></PackageDescription>
     <PackageReleaseNotes>ChangeLog
 ---------
+4.0.9.2 ShouldNotMatch(pattern)
 4.0.9.1 ShouldNotContain( item or predicate)
 4.0.9.0 Removed dependency on net4 version of Mono.Linq.Expressions
 4.0.8.0 Separated Serilog.Sinks.ListOfString and Extensions.Logging.StringListLogger

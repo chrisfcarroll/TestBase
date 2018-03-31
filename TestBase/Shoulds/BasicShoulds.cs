@@ -8,7 +8,7 @@ namespace TestBase
     {
         public static T ShouldNotBeNull<T>(this T @this, string message=null, params object[] args)
         {
-            Assert.That(@this, x=>x!=null, message ?? nameof(ShouldNotBeNull), args);
+            Assert.That(@this, Is.NotNull, message ?? nameof(ShouldNotBeNull), args);
             return @this;
         }
 
@@ -42,6 +42,7 @@ namespace TestBase
             Assert.That(@this != null && @this.ToString().Trim().Length != 0, message ?? nameof(ShouldNotBeNullOrEmptyOrWhitespace), args);
         }
 
+        /// <summary>Asserts that <paramref name="@this"/>.Equals(<paramref name="expected"/>) or else that <paramref name="@this"/> and <paramref name="expected"/> are both null.</summary>
         public static T ShouldBe<T>(this T @this, T expected, string message=null, params object[] args)
         {
             Assert.That(@this,  
@@ -50,6 +51,7 @@ namespace TestBase
             return @this;
         }
 
+        /// <summary>Asserts that @this.Equals(expected) would fail (or else that <paramref name="@this"/> is null and <paramref name="notExpected"/> is not).</summary>
         public static T ShouldNotBe<T>(this T @this, T notExpected, string message=null, params object[] args)
         {
             Assert.That(@this, Is.NotEqualTo(notExpected),  message ?? $"{nameof(ShouldNotBe)}\n\n{notExpected}", args);
@@ -113,19 +115,24 @@ namespace TestBase
             return @this;
         }
 
-
+        /// <summary>Asserts that <code><paramref name="@this"/> is <paramref name="T"/></code></summary>
+        /// <returns><code>((<paramref name="T"/>)<paramref name="@this"/>)</code></returns>
         public static T ShouldBeOfType<T>(this object @this, string message=null, params object[] args) 
         {
             Assert.That(@this, x=> x is T, message ??nameof(ShouldBeOfType), args);
             return (T)@this;
         }
 
+        /// <summary>Asserts that <code>typeof(<paramref name="T"/>) == <paramref name="type"/></code></summary>
+        /// <returns><code><paramref name="@this"/></returns>
         public static T ShouldBeOfTypeEvenIfNull<T>(this T @this, Type type, string message=null, params object[] args) where T : class
         {
             typeof (T).ShouldEqual(type, message??nameof(ShouldBeOfTypeEvenIfNull), args);
             return @this;
         }
 
+        /// <summary>Asserts that <code><paramref name="@this"/> is <paramref name="T"/></code></summary>
+        /// <returns><code>((<paramref name="T"/>)<paramref name="@this"/>)</code></returns>
         public static T ShouldBeAssignableTo<T>(this object @this, string message=null, params object[] args) where T : class
         {
             Assert.That(@this, x=>x is T, message??nameof(ShouldBeAssignableTo), args);
@@ -133,6 +140,8 @@ namespace TestBase
             return @this as T;
         }
         
+        /// <summary>Asserts that <code>((<paramref name="T"/>)<paramref name="@this"/>)</code> is not null.</summary>
+        /// <returns><code>((<paramref name="T"/>)<paramref name="@this"/>)</code></returns>
         public static T ShouldBeCastableTo<T>(this object @this, string message=null, params object[] args)
         {
             Assert.That(@this, x=> ((T)x)!=null, message ??nameof(ShouldBeAssignableTo), args);
@@ -140,12 +149,16 @@ namespace TestBase
             return (T)@this ;
         }
 
-        public static T ShouldBe<T>(this T @this, Expression<Func<T,bool>> expression, string message=null, params object[] args)
+        /// <summary>Synonym of <seealso cref="Should"/> Asserts that <paramref name="@this"/> satisfies <paramref name="predicate"/></summary>
+        /// <returns>@this</returns>
+        public static T ShouldBe<T>(this T @this, Expression<Func<T,bool>> predicate, string message=null, params object[] args)
         {
-            Assert.That(@this,expression, message??nameof(ShouldBe), args);
+            Assert.That(@this,predicate, message??nameof(ShouldBe), args);
             return @this;
         }
         
+        /// <summary>Asserts that <paramref name="@this"/> does not satisfy <paramref name="predicate"/></summary>
+        /// <returns>@this</returns>
         public static T ShouldNotBe<T>(this T @this, Expression<Func<T,bool>> predicate, string message=null, params object[] args)
         {
             var notPredicate = Expression.IsFalse(predicate) as Expression<Func<T,bool>>;
@@ -153,26 +166,37 @@ namespace TestBase
             return @this;
         }
 
-        public static T ShouldSatisfy<T, TResult>(this T @this, Func<T, TResult> function, Expression<Func<TResult,bool>> expression, string message=null, params object[] args)
+        /// <summary>Synonym of <see cref="Should{T,TResult}"/> Asserts that <paramref name="function"/>(<paramref name="@this"/>) satisfies <paramref name="predicate"/></summary>
+        /// <returns>@this</returns>
+        public static T ShouldSatisfy<T, TResult>(this T @this, Func<T, TResult> function, Expression<Func<TResult,bool>> predicate, string message=null, params object[] args)
         {
             var result = function(@this);
-            Assert.That(result, expression, message??nameof(ShouldSatisfy), args);
+            Assert.That(result, predicate, message??nameof(ShouldSatisfy), args);
             return @this;
         }
-        public static T ShouldSatisfy<T>(this T @this, Expression<Func<T, bool>> function, string message=null, params object[] args)
+
+        /// <summary>Synonym of <seealso cref="Should{T,TResult}"/>. Asserts that <paramref name="@this"/> satisfies <paramref name="predicate"/></summary>
+        /// <returns>@this</returns>
+        public static T ShouldSatisfy<T>(this T @this, Expression<Func<T, bool>> predicate, string message=null, params object[] args)
         {
-            Assert.That(@this, function, message??nameof(ShouldSatisfy), args);
+            Assert.That(@this, predicate, message??nameof(ShouldSatisfy), args);
             return @this;
         }
-        public static T Should<T, TResult>(this T @this, Func<T, TResult> function, Expression<Func<TResult,bool>> expression, string message=null, params object[] args)
+
+        /// <summary>Asserts that <paramref name="function"/>(<paramref name="@this"/>) satisfies <paramref name="predicate"/></summary>
+        /// <returns>@this</returns>
+        public static T Should<T, TResult>(this T @this, Func<T, TResult> function, Expression<Func<TResult,bool>> predicate, string message=null, params object[] args)
         {
             var result = function(@this);
-            Assert.That(result, expression, message??nameof(ShouldSatisfy), args);
+            Assert.That(result, predicate, message??nameof(ShouldSatisfy), args);
             return @this;
         }
-        public static T Should<T>(this T @this, Expression<Func<T, bool>> function, string message=null, params object[] args)
+
+        /// <summary>Asserts that <paramref name="@this"/> satisfies <paramref name="predicate"/></summary>
+        /// <returns>@this</returns>
+        public static T Should<T>(this T @this, Expression<Func<T, bool>> predicate, string message=null, params object[] args)
         {
-            Assert.That(@this, function, message??nameof(ShouldSatisfy), args);
+            Assert.That(@this, predicate, message??nameof(ShouldSatisfy), args);
             return @this;
         }
     }

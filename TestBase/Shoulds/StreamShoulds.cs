@@ -9,12 +9,16 @@ namespace TestBase
     {
         public static int MaxExpectedBytesToShowInFailureOutput=30;
         
+        /// <summary>Assert this <paramref name="@this"/>, considered as a byte[], contains <paramref name="expected"/> as a substring.</summary>
+        /// <returns>@this</returns>
         public static Stream ShouldContain(this Stream @this, Stream expected, string message=null, params object[] args)
         {
             Assert.That(@this, actual=>StreamContains(actual,expected), message ?? $"{nameof(StreamShoulds)}{nameof(ShouldContain)}", args);
             return @this;
         }
         
+        /// <summary>Assert this <paramref name="@this"/>, considered as a byte[], contains <paramref name="expected"/> as a substring.</summary>
+        /// <returns>@this</returns>
         public static Stream ShouldContain(this Stream @this, byte[] expected, string message=null, params object[] args)
         {
             Assert.That(@this, 
@@ -23,11 +27,15 @@ namespace TestBase
             return @this;
         }
 
+        /// <summary>Synonym for <seealso cref="ShouldHaveSameStreamContentAs{T,TE}"/> Assert this <paramref name="@this"/> and <paramref name="expected"/> are byte-for-byte identical</summary>
+        /// <returns>@this</returns>
         public static T ShouldEqualByStreamContent<T,TE>(this T @this, TE expected, string message = null, params object[] args) where T: Stream where TE:Stream
         {
             return ShouldHaveSameStreamContentAs(@this, expected, message, args);
         }
 
+        /// <summary>Assert this <paramref name="@this"/> and <paramref name="expected"/> are byte-for-byte identical</summary>
+        /// <returns>@this</returns>
         public static T ShouldHaveSameStreamContentAs<T,TE>(this T @this, TE expected, string message = null, params object[] args) where T: Stream where TE:Stream
         {
             @this.Position = 0;

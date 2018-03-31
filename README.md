@@ -19,7 +19,7 @@ UnitUnderTest.Action()
 
 .ShouldEqualByValue().ShouldEqualByValueExceptFor(...) 
   work with all kinds of object and collections, and report what differed.
-string.ShouldMatch(regex).ShouldBeEmpty().ShouldNotBeEmpty()
+string.ShouldMatch(pattern).ShouldNotMatch().ShouldBeEmpty().ShouldNotBeEmpty()
 .ShouldNotBeNullOrEmptyOrWhiteSpace().ShouldEqualIgnoringCase()
 .ShouldContain().ShouldStartWith().ShouldEndWith().ShouldBeContainedIn(), ...
 numeric.ShouldBeBetween().ShouldEqualWithTolerance()....GreaterThan....LessThan...GreaterOrEqualTo ...

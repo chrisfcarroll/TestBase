@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Mvc;
 using NUnit.Framework;
 
@@ -45,7 +46,12 @@ namespace TestBase.Tests.ShouldsFeedbackWhenAsserting.ShouldThrowWithUseableErro
             { "ShouldBeOfTypeEvenIfNull", () => "14".ShouldBeOfTypeEvenIfNull(typeof(bool), TestCasesForCustomFailureMessageWithArgs.FailureMessage ) }, 
             { "ShouldBeAssignableTo",   () => 15.ShouldBeAssignableTo<string>(TestCasesForCustomFailureMessageWithArgs.FailureMessage ) }, 
             { "ShouldBeContainedIn",    () => "16".ShouldBeContainedIn("sixteen", TestCasesForCustomFailureMessageWithArgs.FailureMessage ) }, 
-            { "ShouldMatch",            () => "17".ShouldMatch("seventeen", TestCasesForCustomFailureMessageWithArgs.FailureMessage ) }, 
+            { "ShouldMatch.1",          ()=> "16".ShouldMatch("sixteen",  TestCasesForCustomFailureMessageWithArgs.FailureMessage)}, 
+            { "ShouldMatch.2",          ()=> "16".ShouldMatch("sixteen",RegexOptions.Multiline,  TestCasesForCustomFailureMessageWithArgs.FailureMessage)}, 
+            { "ShouldMatchIgnoringCase", ()=> "16".ShouldMatchIgnoringCase("sixteen",  TestCasesForCustomFailureMessageWithArgs.FailureMessage)}, 
+            { "ShouldNotMatch.1",       ()=> "16".ShouldNotMatch("16",  TestCasesForCustomFailureMessageWithArgs.FailureMessage)}, 
+            { "ShouldNotMatch.2",       ()=> "16".ShouldNotMatch("16",RegexOptions.Multiline,  TestCasesForCustomFailureMessageWithArgs.FailureMessage)}, 
+            { "ShouldNotMatchIgnoringCase", ()=> "SIX".ShouldNotMatchIgnoringCase("six",  TestCasesForCustomFailureMessageWithArgs.FailureMessage)}, 
             { "ShouldNotContain",       () => "18".ShouldNotContain("18", TestCasesForCustomFailureMessageWithArgs.FailureMessage ) }, 
             { "ShouldContain<IEnumerable>",          () => (new[]{"19"}).ShouldContain("nineteen", TestCasesForCustomFailureMessageWithArgs.FailureMessage ) }, 
             { "ShouldStartWith",        () => "20".ShouldStartWith("x20", TestCasesForCustomFailureMessageWithArgs.FailureMessage ) }, 

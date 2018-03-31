@@ -115,7 +115,7 @@ namespace TestBase
             return AreEqual(Convert.ToInt32(expected), Convert.ToInt32(actual), tolerance);
         }
 
-        private static bool AreEqual(double expected, double actual, double tolerance=1e-15)
+        static bool AreEqual(double expected, double actual, double tolerance=1e-15)
         {
             if (double.IsNaN(expected) && double.IsNaN(actual))return true;
 
@@ -131,7 +131,7 @@ namespace TestBase
             return Math.Abs(expected - actual) <= tolerance;
         }
 
-        private static bool AreEqual(float expected, float actual, double tolerance= 1e-15)
+        static bool AreEqual(float expected, float actual, double tolerance= 1e-15)
         {
             if (float.IsNaN(expected) && float.IsNaN(actual))return true;
 
@@ -147,14 +147,14 @@ namespace TestBase
         }
 
 
-        private static bool AreEqual(decimal expected, decimal actual, double tolerance=1e-15)
+        static bool AreEqual(decimal expected, decimal actual, double tolerance=1e-15)
         {
             var decimalTolerance = Convert.ToDecimal(tolerance);
             if (decimalTolerance > 0m) return Math.Abs(expected - actual) <= decimalTolerance;
             return expected == actual;
         }
 
-        private static bool AreEqual(ulong expected, ulong actual, double tolerance=0)
+        static bool AreEqual(ulong expected, ulong actual, double tolerance=0)
         {
             ulong ulongTolerance = Convert.ToUInt64(tolerance);
             if (ulongTolerance > 0ul)
@@ -165,7 +165,7 @@ namespace TestBase
             return expected==actual;
         }
 
-        private static bool AreEqual(long expected, long actual, double tolerance=0)
+        static bool AreEqual(long expected, long actual, double tolerance=0)
         {
             var longTolerance = Convert.ToInt64(tolerance);
             if (longTolerance > 0L) return Math.Abs(expected - actual) <= longTolerance;
@@ -173,7 +173,7 @@ namespace TestBase
             return expected.Equals(actual);
         }
 
-        private static bool AreEqual(uint expected, uint actual, double tolerance=0)
+        static bool AreEqual(uint expected, uint actual, double tolerance=0)
         {
             uint uintTolerance = Convert.ToUInt32(tolerance);
             if (uintTolerance > 0)
@@ -185,7 +185,7 @@ namespace TestBase
             return expected.Equals(actual);
         }
 
-        private static bool AreEqual(int expected, int actual, double tolerance=0)
+        static bool AreEqual(int expected, int actual, double tolerance=0)
         {
             int intTolerance = Convert.ToInt32(tolerance);
             if (intTolerance > 0)return Math.Abs(expected - actual) <= intTolerance;

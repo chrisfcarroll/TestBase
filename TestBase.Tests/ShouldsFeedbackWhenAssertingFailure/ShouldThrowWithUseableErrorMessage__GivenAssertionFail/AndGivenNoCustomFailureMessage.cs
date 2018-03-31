@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Mvc;
 using NUnit.Framework;
 
@@ -65,9 +66,14 @@ namespace TestBase.Tests.ShouldsFeedbackWhenAsserting.ShouldThrowWithUseableErro
             { "ShouldBeOfTypeEvenIfNull", new KeyValuePair<Action,string>(()=> "13".ShouldBeOfTypeEvenIfNull(typeof(bool)) , null)}, 
             { "ShouldBeAssignableTo",   new KeyValuePair<Action,string>(()=> 14.ShouldBeAssignableTo<string>()        , null)}, 
             { "ShouldBeContainedIn",    new KeyValuePair<Action,string>(()=> "15".ShouldBeContainedIn("x")            , null)}, 
-            { "ShouldMatch",            new KeyValuePair<Action,string>(()=> "16".ShouldMatch("sixteen")              , null)}, 
+            { "ShouldMatch.1",          new KeyValuePair<Action,string>(()=> "16".ShouldMatch("sixteen")              , null)}, 
+            { "ShouldMatch.2",          new KeyValuePair<Action,string>(()=> "16".ShouldMatch("sixteen",RegexOptions.Multiline), null)}, 
+            { "ShouldMatchIgnoringCase", new KeyValuePair<Action,string>(()=> "16".ShouldMatchIgnoringCase("sixteen")  , null)}, 
+            { "ShouldNotMatch.1",       new KeyValuePair<Action,string>(()=> "16".ShouldNotMatch("16")              , null)}, 
+            { "ShouldNotMatch.2",       new KeyValuePair<Action,string>(()=> "16".ShouldNotMatch("16",RegexOptions.Multiline), null)}, 
+            { "ShouldNotMatchIgnoringCase", new KeyValuePair<Action,string>(()=> "SIX".ShouldNotMatchIgnoringCase("six")  , null)}, 
             { "ShouldNotContain",       new KeyValuePair<Action,string>(()=> "17".ShouldNotContain("17")              , null)}, 
-            { "ShouldContain<IEnumerable>",          new KeyValuePair<Action,string>(()=> (new[]{"18"}).ShouldContain("188")       , null)}, 
+            { "ShouldContain<IEnumerable>", new KeyValuePair<Action,string>(()=> (new[]{"18"}).ShouldContain("188")       , null)}, 
             { "ShouldStartWith",        new KeyValuePair<Action,string>(()=> "19".ShouldStartWith("x19")              , null)}, 
             { "ShouldEndWith",          new KeyValuePair<Action,string>(()=> "20".ShouldEndWith("20x")                , null)}, 
             { "ShouldSatisfy",          new KeyValuePair<Action,string>(()=> 21.ShouldSatisfy(i => i.ToString(), x=>x.Equals("boo"))         , null)}, 

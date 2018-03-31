@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using TestBase.Mono.Linq.Expressions;
+// ReSharper disable InconsistentNaming
 
 namespace TestBase
 {
