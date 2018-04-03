@@ -4,7 +4,7 @@ using System.Data.Common;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
-using TestBase.Mono.Linq.Expressions;
+using ExpressionToCodeLib;
 
 namespace TestBase.AdoNet.FakeDb
 {
@@ -35,7 +35,7 @@ namespace TestBase.AdoNet.FakeDb
             if (invocation != null) { return invocation; }
             //
             message = (message == null) 
-                    ? "Expected to invoke a SQL command matching " + predicate.ToCSharpCode() 
+                    ? "Expected to invoke a SQL command matching " + ExpressionToCode.ToCode((Expression) predicate) 
                     : string.Format(message, args);
 
             throw new Assertion<List<FakeDbCommand>>(invocations, i => i.Any(predicate.Compile()), message);

@@ -1,4 +1,5 @@
-﻿using Dapper;
+﻿using System;
+using Dapper;
 using NUnit.Framework;
 using TestBase.AdoNet.FakeDb;
 
@@ -28,11 +29,13 @@ namespace TestBase.Tests.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection
             fakeConnection.Verify(x => x.Parameters["id"].Value.Equals(1) && x.Parameters["name"].Value.Equals("pname"),expectedInvocationsCount: 1,exactly: true);
             fakeConnection.Verify(x => x.CommandText=="Query @id, @name");
 
-            Assert.Throws<Assertion>(() => fakeConnection.Verify(x => x.Parameters["id"].Value.Equals(999)))
-                  .Message.ShouldMatch("called .* times.*");
+            var assertion = Assert.Throws<Assertion>(() => fakeConnection.Verify(x => x.Parameters["id"].Value.Equals(999)));
+            Console.WriteLine(assertion);
+            assertion.Message.ShouldMatch("called .* times.*");
 
-            Assert.Throws<Assertion>(() => fakeConnection.Verify(x=>x.CommandText == "WrongCommandText"))
-                  .Message.ShouldMatch("called .* times.*");
+            assertion = Assert.Throws<Assertion>(() => fakeConnection.Verify(x => x.CommandText == "WrongCommandText"));
+            Console.WriteLine(assertion);
+            assertion.Message.ShouldMatch("called .* times.*");
         }
 
         [Test]
@@ -63,11 +66,13 @@ namespace TestBase.Tests.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection
             Assert.Throws<Assertion>(() => fakeConnection.Verify(x => x.Parameters["pname"].Value.ToString().StartsWith("pvalue"), expectedInvocationsCount: 1, exactly: true))
                   .Message.ShouldMatch("called .* times.*");
 
-            Assert.Throws<Assertion>(() => fakeConnection.Verify(x => x.Parameters["pname"].Value.Equals("wrongValue")))
-                  .Message.ShouldMatch("called .* times.*");
+            var assertion = Assert.Throws<Assertion>(() => fakeConnection.Verify(x => x.Parameters["pname"].Value.Equals("wrongValue")));
+            Console.WriteLine(assertion);
+            assertion.Message.ShouldMatch("called .* times.*");
 
-            Assert.Throws<Assertion>(() => fakeConnection.Verify(x => x.CommandText == "WrongCommandText"))
-                  .Message.ShouldMatch("called .* times.*");
+            assertion= Assert.Throws<Assertion>(() => fakeConnection.Verify(x => x.CommandText == "WrongCommandText"));
+            Console.WriteLine(assertion);
+            assertion.Message.ShouldMatch("called .* times.*");
         }
 
         [Test]
@@ -78,12 +83,13 @@ namespace TestBase.Tests.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection
             fakeConnection.Query<IdAndName>("Query @id, @name", new { id = 1, name = "pname" }).ShouldEqualByValue(fakeData);
 
             //A & A
-            Assert.Throws<Assertion>(
+            var assertion = Assert.Throws<Assertion>(
                    () => fakeConnection.Verify(x => x.Parameters["id"].Value.Equals(999),1,true,
                                               "SpecificErrorMessage {0}",
                                               "WithParam")
-                   )
-                  .Message.ShouldMatch("SpecificErrorMessage WithParam");
+                   );
+            Console.WriteLine(assertion);
+            assertion.Message.ShouldMatch("SpecificErrorMessage WithParam");
         }
 
     }

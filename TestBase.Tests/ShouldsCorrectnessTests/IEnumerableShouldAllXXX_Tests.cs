@@ -1,3 +1,4 @@
+using System;
 using NUnit.Framework;
 
 namespace TestBase.Tests.ShouldsCorrectnessTests
@@ -15,6 +16,7 @@ namespace TestBase.Tests.ShouldsCorrectnessTests
             }
             catch (Assertion e)
             {
+                Console.WriteLine(e);
                 e.Message.ShouldContain("999").ShouldNotContain("1");
             }
         }
@@ -28,6 +30,7 @@ namespace TestBase.Tests.ShouldsCorrectnessTests
             }
             catch (Assertion e)
             {
+                Console.WriteLine(e);
                 e.Message.ShouldContain("999").ShouldNotContain("1");
                 e.Message.ShouldContain("Custom Message And Params");
             }
@@ -42,6 +45,7 @@ namespace TestBase.Tests.ShouldsCorrectnessTests
             }
             catch (Assertion e) 
             {
+                Console.WriteLine(e);
                 e.Message.ShouldContain("999").ShouldNotContain("2");
             }
         }
@@ -55,6 +59,7 @@ namespace TestBase.Tests.ShouldsCorrectnessTests
             }
             catch (Assertion e)
             {
+                Console.WriteLine(e);
                 e.Message.ShouldContain("999").ShouldNotContain("2");
                 e.Message.ShouldContain("Custom Message And Params");
             }

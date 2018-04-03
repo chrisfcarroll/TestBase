@@ -6,15 +6,15 @@ namespace TestBase
     {
         public static string ShouldNotBeNullOrEmpty(this string @this, string message=null, params object[] args)
         {
-            Assert.That(@this, Is.NotNull, message, args);
-            @this.ShouldNotBe("", message ?? $"{nameof(ShouldNotBeNullOrEmpty)}", args);
+            @this.ShouldNotBeNull(message, args);
+            @this.ShouldNotBe(string.Empty, message ?? nameof(ShouldNotBeNullOrEmpty), args);
             return @this;
         }
 
         public static string ShouldNotBeNullOrEmptyOrWhiteSpace(this string @this, string message=null, params object[] args)
         {
             @this.ShouldNotBeNull(message, args);
-            @this.Trim().ShouldNotBeNullOrEmpty(message, args);
+            @this.Trim().ShouldNotBeNullOrEmpty(message?? nameof(ShouldNotBeNullOrEmptyOrWhiteSpace), args);
             return @this;
         }
 
@@ -30,7 +30,7 @@ namespace TestBase
         /// <returns>@this</returns>
         public static string ShouldContain(this string @this, string expected, string message=null, params object[] args)
         {
-            Assert.That(@this, x=>x.Contains(expected), message ??$"{nameof(ShouldContain)} {expected}", args);
+            Assert.That(@this, x=>x.Contains(expected), message??$"{nameof(ShouldContain)} {expected}", args);
             return @this;
         }
 

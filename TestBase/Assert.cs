@@ -1,8 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
+using FastExpressionCompiler;
 using Newtonsoft.Json;
-using TestBase.Mono.Linq.Expressions;
+using ExpressionToCodeLib;
 
 namespace TestBase
 {
@@ -38,6 +41,23 @@ namespace TestBase
         public static T That<T>(T actual, Expression<Func<T,bool>> predicate, string comment = null, params object[] commentArgs)
         {
             var result= new Assertion<T>(actual, predicate, comment, commentArgs);
+            return result ? actual : throw result;
+        }
+
+        /// <summary>
+        /// If <paramref name="predicate"/>(<paramref name="actual"/>) evaluates to true, then <paramref name="actual"/> is returned.
+        /// If not, an <see cref="Assertion{T}"/> is thrown, containing details of the assertion failure.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="actual"></param>
+        /// <param name="predicate"></param>
+        /// <param name="comment"></param>
+        /// <param name="commentArgs"></param>
+        /// <returns><paramref name="actual"/>, if the precondition succeeds</returns>
+        /// <exception cref="Assertion{T}">thrown if the precondition fails.</exception>
+        public static T That<T>(T actual, T comparedTo, Expression<Func<T,T,BoolWithString>> predicate, string comment = null, params object[] commentArgs)
+        {
+            var result = new Assertion<T>(actual, comparedTo, predicate.Chain( x=>x.AsBool)  , comment, commentArgs);
             return result ? actual : throw result;
         }
 
@@ -127,6 +147,20 @@ namespace TestBase
                 throw That(ex, e => e is TE, $"Expected to throw a {typeof(TE)} but threw {ex}");
             }
 
+            throw new ShouldHaveThrownException(a.Message);
+        }
+
+        static T Throws<T>(T actual, Expression<Func<T,bool>> predicate, string comment, object[] commentArgs)
+        {
+            Assertion<T> a;
+            try
+            {
+                a = new Assertion<T>(actual, predicate, comment, commentArgs);
+            }
+            catch (Exception)
+            {
+                return actual;
+            }
             throw new ShouldHaveThrownException(a.Message);
         }
 
@@ -240,7 +274,7 @@ namespace TestBase
 
         public static Exception For(Expression<Action> action, string comment, object[] commentArgs)
         {
-            return new ShouldNotThrowException(Assertion.New(action, a=> BoolWithString.False( "Threw:" +action.ToCSharpCode()), comment, commentArgs));
+            return new ShouldNotThrowException(Assertion.New(action, a=> BoolWithString.False( "Threw:" +ExpressionToCodeLib.ExpressionToCode.ToCode(action)), comment, commentArgs));
         }
     }
 
@@ -288,6 +322,35 @@ namespace TestBase
         /// an exception is thrown during evaluation, catches and stores the exception instead.
         /// </summary>
         /// <param name="actual">The value under assertion</param>
+        /// <param name="comparedTo">The expected value, or the 'comparable' value to be used in <paramref name="predicate"/>(actual,expected).</param>
+        /// <param name="predicate">The predicate to apply</param>
+        /// <param name="comment">Occurrences of "{{actual}}" in the comment string will be replace with <paramref name="actual"/>?.ToString()</param>
+        /// <param name="commentArgs">will be inserted into <paramref name="comment"/> using string.Format()</param>
+        public Assertion(T actual,  T comparedTo, Expression<Func<T,T,bool>> predicate, string comment, object[] commentArgs)
+        {
+            try
+            {
+                Actual=ActualToString(actual);
+                Comment=CommentFormatted(Actual, comment, commentArgs);
+                var assertActual = Expression.Lambda(predicate.Body, false, Expression.Parameter(actual?.GetType()??typeof(T), "actual"));
+                Asserted= ExpressionToCodeConfiguration.DefaultAssertionConfiguration
+                    .WithPrintedListLengthLimit(15)
+                    .WithMaximumValueLength(80)
+                    .WithOmitImplicitCasts(true)
+                    .GetAnnotatedToCode().AnnotatedToCode(assertActual);
+                var result = predicate.CompileFast()(actual,comparedTo);
+                Result = result;
+            }
+            catch (Exception e)
+            {
+                Exception = e;
+            }
+        }
+        /// <summary>
+        /// Evaluates whether <paramref name="predicate"/> is true of <paramref name="actual"/>, and stores the result of the evaluation or, if 
+        /// an exception is thrown during evaluation, catches and stores the exception instead.
+        /// </summary>
+        /// <param name="actual">The value under assertion</param>
         /// <param name="predicate">The predicate to apply</param>
         /// <param name="comment">Occurrences of "{{actual}}" in the comment string will be replace with <paramref name="actual"/>?.ToString()</param>
         /// <param name="commentArgs">will be inserted into <paramref name="comment"/> using string.Format()</param>
@@ -297,9 +360,14 @@ namespace TestBase
             {
                 Actual=ActualToString(actual);
                 Comment=CommentFormatted(Actual, comment, commentArgs);
-                var result = predicate.Compile()(actual);
+                var assertActual = Expression.Lambda(predicate.Body, false, Expression.Parameter(actual?.GetType()??typeof(T), "actual"));
+                Asserted= ExpressionToCodeConfiguration.DefaultAssertionConfiguration
+                    .WithPrintedListLengthLimit(15)
+                    .WithMaximumValueLength(80)
+                    .WithOmitImplicitCasts(true)
+                    .GetAnnotatedToCode().AnnotatedToCode(assertActual);
+                var result = predicate.CompileFast()(actual);
                 Result = result;
-                Asserted = result.ToString();
             }
             catch (Exception e)
             {
@@ -320,7 +388,7 @@ namespace TestBase
             {
                 Actual=ActualToString(actual);
                 Comment=CommentFormatted(Actual, comment, commentArgs);
-                var result = predicate.Compile()(actual);
+                var result = predicate.CompileFast()(actual);
                 Result = result;
                 Asserted = result.ToString();
             }
@@ -339,38 +407,63 @@ namespace TestBase
         
         static string ActualToString(T actual)
         {
-            string actualToString;
-            if (actual == null) { actualToString = "<null>"; }
-            else
+            foreach (var toString in PreferredToStringMethod)
                 try
                 {
-                    actualToString =
-                        (actual.GetType().GetMethod("ToString", BindingFlags.DeclaredOnly | BindingFlags.Public) != null)
-                            ? actual.ToString()
-                            : JsonConvert.SerializeObject(actual, Assert.BestEffortJsonSerializerSettings.Serializer);
+                    return StringifyMethods[toString](actual);
                 }
-                catch
-                {
-                    try { actualToString = actual.ToString(); }
-                    catch { actualToString = "actual"; }
-                }
-            return actualToString;
+                catch{}
+            try { return actual.ToString(); }
+            catch { return "actual"; }
         }
+
+        /// <summary>
+        /// Called by <seealso cref="ActualToString"/>. Modify this if you want to change the method used to Stringify actual.
+        /// </summary>
+        public static StringifyMethod[] PreferredToStringMethod =
+        {
+            StringifyMethod.DeclaredToStringElseThrow,
+            StringifyMethod.ExpressionToCodeStringify,
+            StringifyMethod.NewtonsoftJsonSerialize,
+            StringifyMethod.InheritedToString,
+        };
+
+        static Dictionary<StringifyMethod, Func<object, string>> StringifyMethods = new Dictionary<StringifyMethod, Func<object, string>>
+        {
+            {
+                StringifyMethod.DeclaredToStringElseThrow,
+                o => o==null ? "<null>" : o.GetType().GetMethod("ToString", BindingFlags.DeclaredOnly | BindingFlags.Public) !=null ? o.ToString() : throw new ArgumentNullException("actual")
+            },
+            {StringifyMethod.ExpressionToCodeStringify, ObjectStringify.Default.PlainObjectToCode},
+            {StringifyMethod.NewtonsoftJsonSerialize, o => JsonConvert.SerializeObject(o, Assert.BestEffortJsonSerializerSettings.Serializer)},
+            {StringifyMethod.InheritedToString, o=>o.ToString()},
+        };
+
 
         public static implicit operator bool(Assertion<T> assertion) { return assertion.Result.HasValue && assertion.Result.Value; }
         public static implicit operator BoolWithString(Assertion<T> assertion) { return new BoolWithString(assertion.DidPass, assertion.ToString()); }
 
         public override string ToString()
         {
-            return DidPass ? "" : ToStringEvenIfPassed();
+            return ToStringEvenIfPassed();
         }
+
         public string ToStringEvenIfPassed()
         {
-            var resultHeader = DidPass ? "" : "Fail :";
+            var resultHeader = DidPass ? "Pass:" : "Fail :";
             var actualHeader ="Actual:";
             return Result.HasValue
                 ? string.Join(nl+nl, resultHeader, Comment, actualHeader,  Actual, Asserted)
                 : string.Join(nl+nl, resultHeader, Comment, actualHeader,  Actual, Asserted, Exception.ToString());
         }
+
+        public enum StringifyMethod
+        {
+            DeclaredToStringElseThrow=0,
+            ExpressionToCodeStringify=1,
+            NewtonsoftJsonSerialize=2,
+            InheritedToString=3
+        }
+
     }
 }

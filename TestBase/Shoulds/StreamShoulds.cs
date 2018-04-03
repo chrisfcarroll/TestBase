@@ -54,7 +54,7 @@ namespace TestBase
                 {
                     Assert.That(mismatches.Length == 0,
                                 message
-                             ?? $"{nameof(ShouldHaveSameStreamContentAs)}"
+                             ?? nameof(ShouldHaveSameStreamContentAs)
                               + string.Format("Streams differed starting at position {0}: {1} vs {2}",
                                               l * MaxExpectedBytesToShowInFailureOutput + mismatches.First(),
                                               bufLeft.Skip(mismatches[0]).Select(x => (char) x).ToArray(),

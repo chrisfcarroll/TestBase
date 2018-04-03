@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Linq.Expressions;
+using FastExpressionCompiler;
 
 namespace TestBase
 {
@@ -161,43 +162,43 @@ namespace TestBase
         /// <returns>@this</returns>
         public static T ShouldNotBe<T>(this T @this, Expression<Func<T,bool>> predicate, string message=null, params object[] args)
         {
-            var notPredicate = Expression.IsFalse(predicate) as Expression<Func<T,bool>>;
+            Expression<Func<bool, bool>> expression = p=>!p;
+            var notPredicate = predicate.Chain(expression);
+
             Assert.That(@this, notPredicate, message??nameof(ShouldNotBe), args);
             return @this;
         }
 
-        /// <summary>Synonym of <see cref="Should{T,TResult}"/> Asserts that <paramref name="function"/>(<paramref name="@this"/>) satisfies <paramref name="predicate"/></summary>
+        /// <summary>Synonym of <see cref="Should{T,TResult}"/> Asserts that <paramref name="transform"/>(<paramref name="@this"/>) satisfies <paramref name="predicate"/></summary>
         /// <returns>@this</returns>
-        public static T ShouldSatisfy<T, TResult>(this T @this, Func<T, TResult> function, Expression<Func<TResult,bool>> predicate, string message=null, params object[] args)
+        public static T ShouldSatisfy<T, TResult>(this T actual, Expression<Func<T, TResult>> transform, Expression<Func<TResult,bool>> predicate, string message=null, params object[] args)
         {
-            var result = function(@this);
-            Assert.That(result, predicate, message??nameof(ShouldSatisfy), args);
-            return @this;
+            Assert.That(actual, transform.Chain(predicate), message??nameof(ShouldSatisfy), args);
+            return actual;
         }
 
         /// <summary>Synonym of <seealso cref="Should{T,TResult}"/>. Asserts that <paramref name="@this"/> satisfies <paramref name="predicate"/></summary>
         /// <returns>@this</returns>
-        public static T ShouldSatisfy<T>(this T @this, Expression<Func<T, bool>> predicate, string message=null, params object[] args)
+        public static T ShouldSatisfy<T>(this T actual, Expression<Func<T, bool>> predicate, string message=null, params object[] args)
         {
-            Assert.That(@this, predicate, message??nameof(ShouldSatisfy), args);
-            return @this;
+            Assert.That(actual, predicate, message??nameof(ShouldSatisfy), args);
+            return actual;
         }
 
-        /// <summary>Asserts that <paramref name="function"/>(<paramref name="@this"/>) satisfies <paramref name="predicate"/></summary>
+        /// <summary>Asserts that <paramref name="transform"/>(<paramref name="@this"/>) satisfies <paramref name="predicate"/></summary>
         /// <returns>@this</returns>
-        public static T Should<T, TResult>(this T @this, Func<T, TResult> function, Expression<Func<TResult,bool>> predicate, string message=null, params object[] args)
+        public static T Should<T, TResult>(this T actual, Expression<Func<T, TResult>> transform, Expression<Func<TResult,bool>> predicate, string message=null, params object[] args)
         {
-            var result = function(@this);
-            Assert.That(result, predicate, message??nameof(ShouldSatisfy), args);
-            return @this;
+            Assert.That(actual, transform.Chain(predicate), message??nameof(ShouldSatisfy), args);
+            return actual;
         }
 
         /// <summary>Asserts that <paramref name="@this"/> satisfies <paramref name="predicate"/></summary>
         /// <returns>@this</returns>
-        public static T Should<T>(this T @this, Expression<Func<T, bool>> predicate, string message=null, params object[] args)
+        public static T Should<T>(this T actual, Expression<Func<T, bool>> predicate, string message=null, params object[] args)
         {
-            Assert.That(@this, predicate, message??nameof(ShouldSatisfy), args);
-            return @this;
+            Assert.That(actual, predicate, message??nameof(ShouldSatisfy), args);
+            return actual;
         }
     }
 }

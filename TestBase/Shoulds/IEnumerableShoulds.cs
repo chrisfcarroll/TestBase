@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using TestBase.Mono.Linq.Expressions;
+using ExpressionToCodeLib;
 // ReSharper disable InconsistentNaming
 
 namespace TestBase
@@ -14,14 +14,14 @@ namespace TestBase
         /// <returns><paramref name="actual"/></returns>
         public static IEnumerable<T> ShouldContain<T>(this IEnumerable<T> actual, Expression<Func<T,bool>> predicate,string comment = null, params object[] args)
         {
-            return Assert.That(actual, a => a.Any(predicate.Compile()), comment ?? $"Should contain {predicate.ToCSharpCode()}", args);
+            return Assert.That(actual, a => a.Any(predicate.Compile()), comment ?? $"Should contain {ExpressionToCode.ToCode((Expression) predicate)}", args);
         }
 
         /// <summary>Asserts that <paramref name="actual"/> does not contain an element satisfying <paramref name="predicate"/></summary>
         /// <returns><paramref name="actual"/></returns>
         public static IEnumerable<T> ShouldNotContain<T>(this IEnumerable<T> actual, Expression<Func<T,bool>> predicate,string comment = null, params object[] args)
         {
-            return Assert.That(actual, a => !a.Any(predicate.Compile()), comment ?? $"Should not contain {predicate.ToCSharpCode()}", args);
+            return Assert.That(actual, a => !a.Any(predicate.Compile()), comment ?? $"Should not contain {ExpressionToCode.ToCode((Expression) predicate)}", args);
         }
 
         /// <summary>Asserts that <paramref name="actual"/> contains an element such that element.Equals(<paramref name="expectedItem"/>)</summary>

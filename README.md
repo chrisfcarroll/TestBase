@@ -1,6 +1,7 @@
 *TestBase* gives you a flying start with 
 - fluent assertions that are easy to extend
-- tools to help you test with dependencies on AspNetMvc, HttpClient, Ado.Net, Streams and Logging
+- explicit error messages
+- tools to help you test with heavy dependencies on AspNetMvc, HttpClient, Ado.Net, Streams and Logging
 
 Chainable fluent assertions get you to the point concisely:
 ```
