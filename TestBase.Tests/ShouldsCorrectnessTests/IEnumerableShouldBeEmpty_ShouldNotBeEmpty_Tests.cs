@@ -57,5 +57,28 @@ namespace TestBase.Tests.ShouldsCorrectnessTests
                 );
         }
 
+        [Test]
+        public void IEnumerableGeneric_ShouldNotBeNullEmpty_ShouldFail()
+        {
+            Assert.Throws<Assertion>( () =>  (null as IEnumerable<object>).ShouldNotBeNullOrEmpty() );
+            Assert.Throws<Assertion>( () =>  (new string[0]).ShouldNotBeNullOrEmpty() );
+        }
+        [TestCase(new[] { 1, 2, 3 })]
+        public void IEnumerableGeneric_ShouldNotBeNullEmpty_ShouldPass(int[] value)
+        {
+            value.ShouldNotBeNullOrEmpty();
+        }
+
+        [TestCase(new[] { 1, 2, 3 })]
+        public void IEnumerableGeneric_ShouldNotHaveAny_ShouldFail(int[] value)
+        {
+            Assert.Throws<Assertion>( () =>  value.ShouldNotHaveAny(x=>x>1) );
+        }
+
+        [TestCase(new[] { 1, 2, 3 })]
+        public void IEnumerableGeneric_ShouldNotHaveAny_ShouldPass(int[] value)
+        {
+            value.ShouldNotHaveAny(x=>x>4);
+        }
     }
 }

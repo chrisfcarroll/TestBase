@@ -2,13 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Security.Cryptography.X509Certificates;
 using FastExpressionCompiler;
 using Newtonsoft.Json;
 using ExpressionToCodeLib;
 
 namespace TestBase
 {
+    /// <summary>Static convenience methods for invoking <see cref="Assertion"/>s.</summary>
     public static class Assert
     {
         /// <summary>
@@ -50,6 +50,7 @@ namespace TestBase
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="actual"></param>
+        /// <param name="comparedTo"></param>
         /// <param name="predicate"></param>
         /// <param name="comment"></param>
         /// <param name="commentArgs"></param>
@@ -112,6 +113,20 @@ namespace TestBase
             return result ? result : throw result;
         }
 
+        /// <summary>
+        /// Assert that <code><paramref name="action"/>.Compile()()</code> throws, catching the exception and returning it.
+        /// </summary>
+        /// <returns>The caught exception.</returns>
+        /// <exception cref="ShouldHaveThrownException">is thrown if <paramref name="action"/> does not throw.</exception>
+        public static Exception Throws(Expression<Action> action, string comment = null, params object[] commentArgs) =>Throws<Exception>(action.CompileFast(), comment, commentArgs);
+
+        /// <summary>
+        /// Asserts that <code><paramref name="action"/>()</code> throws a <typeparamref name="TE"/>, catching the exception and returning it.
+        /// For an overload that accepts an <see cref="Expression{Action}"/> argument, see <see cref="Throws"/>.
+        /// </summary>
+        /// <typeparam name="TE"></typeparam>
+        /// <returns>The caught exception</returns>
+        /// <exception cref="ShouldHaveThrownException">is thrown if <paramref name="action"/> does not throw.</exception>
         public static TE Throws<TE>(Action action, string comment = null,params object[] commentArgs) where TE : Exception
         {
             try
@@ -126,6 +141,12 @@ namespace TestBase
             throw new ShouldHaveThrownException( action.ToString());
         }
 
+        /// <summary>
+        /// Asserts that <code><paramref name="predicate"/>( <paramref name="actual"/> )</code> throws a <typeparamref name="TE"/>, catching the exception and returning it.
+        /// </summary>
+        /// <typeparam name="TE"></typeparam>
+        /// <returns>The caught exception</returns>
+        /// <exception cref="ShouldHaveThrownException">is thrown if <paramref name="predicate"/> does not throw.</exception>
         public static T Throws<T,TE>(T actual, Expression<Func<T,bool>> predicate, TE dummyForTypeInference=null, string comment = null, params object[] commentArgs) where TE : Exception
         {
             return Throws<T, TE>(actual, predicate, comment, commentArgs);
@@ -150,20 +171,11 @@ namespace TestBase
             throw new ShouldHaveThrownException(a.Message);
         }
 
-        static T Throws<T>(T actual, Expression<Func<T,bool>> predicate, string comment, object[] commentArgs)
-        {
-            Assertion<T> a;
-            try
-            {
-                a = new Assertion<T>(actual, predicate, comment, commentArgs);
-            }
-            catch (Exception)
-            {
-                return actual;
-            }
-            throw new ShouldHaveThrownException(a.Message);
-        }
-
+        /// <summary>
+        /// Executes <code><paramref name="action"/>()</code>. If the execution throws, the thrown exception is wrapped in an <see cref="ShouldNotThrowException"/> and thrown.
+        /// </summary>
+        /// <returns><paramref name="action"/></returns>
+        /// <exception cref="ShouldNotThrowException">is thrown if <paramref name="action"/> throws.</exception>
         public static Expression<Action> DoesNotThrow(Expression<Action> action, string comment = null, params object[] commentArgs)
         {
             try
@@ -175,19 +187,6 @@ namespace TestBase
                 throw ShouldNotThrowException.For(action, $"Threw {ex} but expected not to throw.", commentArgs);
             }
             return action;
-        }
-
-        public static T DoesNotThrow<T>(T actual, Expression<Func<T,bool>> predicate, string comment = null, params object[] commentArgs)
-        {
-            try
-            {
-                predicate.Compile()(actual);
-            }
-            catch (Exception ex)
-            {
-                throw ShouldNotThrowException.For(actual,predicate, $"Threw {ex} but expected not to throw.", commentArgs);
-            }
-            return actual;
         }
 
         internal static class BestEffortJsonSerializerSettings
@@ -261,7 +260,7 @@ namespace TestBase
         }
     }
     /// <summary>
-    /// An Exception thrown when <see cref="Assert.DoesNotThrow{T}"/> finds that an Assertion <em>was</em> thrown.
+    /// An Exception thrown when <see cref="Assert.DoesNotThrow"/> finds that an Assertion <em>was</em> thrown.
     /// </summary>
     public class ShouldNotThrowException : Exception
     {
@@ -285,8 +284,7 @@ namespace TestBase
         public Precondition(T actual, Expression<Func<T,bool>> predicate, string comment = null, params object[] commentArgs) : base(actual, predicate, comment, commentArgs){}
     }
     
-    /// <summary>An Assertion is throwable (it inherits from Exception) but need not indicate an assertion failure; it might hold an assertion pass.</summary>
-    /// <typeparam name="T"></typeparam>
+    /// <summary>An Assertion is throwable (it inherits from Exception) but need not indicate an assertion <em>failure</em>; it might hold an assertion pass.</summary>
     public class Assertion : Exception
     {
         public static Assertion<T> New<T>(T actual, Expression<Func<T, bool>> predicate, string comment,object[] commentArgs)

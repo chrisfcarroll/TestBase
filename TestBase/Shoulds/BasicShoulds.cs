@@ -7,197 +7,270 @@ namespace TestBase
 {
     public static class BasicShoulds
     {
-        public static T ShouldNotBeNull<T>(this T @this, string message=null, params object[] args)
+        /// <summary>Asserts that <code>actual!=null</code></summary>
+        /// <returns><paramref name="actual"/></returns>
+        public static T ShouldNotBeNull<T>(this T actual, string message=null, params object[] args)
         {
-            Assert.That(@this, Is.NotNull, message ?? nameof(ShouldNotBeNull), args);
-            return @this;
+            Assert.That(actual, Is.NotNull, message ?? nameof(ShouldNotBeNull), args);
+            return actual;
         }
 
-        public static void ShouldBeNull(this object @this, string message=null, params object[] args)
+        /// <summary>Asserts that <code>actual==null</code></summary>
+        public static void ShouldBeNull(this object actual, string message=null, params object[] args)
         {
-            Assert.That(@this, Is.Null, message ?? nameof(ShouldBeNull), args);
+            Assert.That(actual, Is.Null, message ?? nameof(ShouldBeNull), args);
         }
 
-        public static void ShouldBeNullOrEmpty(this string @this, string message=null, params object[] args)
+        /// <summary>Asserts that <code>string.IsNullOrEmpty(actual)</code></summary>
+        /// <returns><paramref name="actual"/></returns>
+        public static void ShouldBeNullOrEmpty(this string actual, string message=null, params object[] args)
         {
-            Assert.That(String.IsNullOrEmpty(@this), message?? nameof(ShouldBeNullOrEmpty), args);
+            Assert.That(String.IsNullOrEmpty(actual), message?? nameof(ShouldBeNullOrEmpty), args);
         }
 
-        public static void ShouldBeEmpty(this string @this, string message=null, params object[] args)
+        /// <summary>Asserts that <code>actual.Length==0</code></summary>
+        /// <returns><paramref name="actual"/></returns>
+        public static void ShouldBeEmpty(this string actual, string message=null, params object[] args)
         {
-            Assert.That(@this.Length == 0, message??nameof(ShouldBeEmpty), args);
+            Assert.That(actual.Length == 0, message??nameof(ShouldBeEmpty), args);
         }
 
-        public static void ShouldBeEmpty(this IEnumerable @this, string message=null, params object[] args)
+        /// <summary>Asserts that <paramref name="actual"/> has no elements. This will fail if actual is null.</summary>
+        /// <returns><paramref name="actual"/></returns>
+        public static void ShouldBeEmpty(this IEnumerable actual, string message=null, params object[] args)
         {
-            Assert.That(@this, Is.Empty, message??nameof(ShouldBeEmpty), args);
+            Assert.That(actual, Is.Empty, message??nameof(ShouldBeEmpty), args);
         }
 
-        public static void ShouldBeNullOrEmptyOrWhitespace(this object @this, string message=null, params object[] args)
+        /// <summary>Asserts that <code>string.IsNullOrWhitespace(actual.ToString())</code></summary>
+        /// <returns><paramref name="actual"/></returns>
+        public static void ShouldBeNullOrEmptyOrWhitespace(this object actual, string message=null, params object[] args)
         {
-            Assert.That(@this == null || @this.ToString().Trim().Length == 0, message??nameof(ShouldBeNullOrEmptyOrWhitespace), args);
+            Assert.That(actual == null || actual.ToString().Trim().Length == 0, message??nameof(ShouldBeNullOrEmptyOrWhitespace), args);
         }
 
-        public static void ShouldNotBeNullOrEmptyOrWhitespace(this object @this, string message=null, params object[] args)
+        /// <summary>Asserts that <code>string.IsNullOrWhitespace(actual.ToString())</code> would fail.</summary>
+        /// <returns><paramref name="actual"/></returns>
+        public static void ShouldNotBeNullOrEmptyOrWhitespace(this object actual, string message=null, params object[] args)
         {
-            Assert.That(@this != null && @this.ToString().Trim().Length != 0, message ?? nameof(ShouldNotBeNullOrEmptyOrWhitespace), args);
+            Assert.That(actual != null && actual.ToString().Trim().Length != 0, message ?? nameof(ShouldNotBeNullOrEmptyOrWhitespace), args);
         }
 
-        /// <summary>Asserts that <paramref name="@this"/>.Equals(<paramref name="expected"/>) or else that <paramref name="@this"/> and <paramref name="expected"/> are both null.</summary>
-        public static T ShouldBe<T>(this T @this, T expected, string message=null, params object[] args)
+        /// <summary>Asserts that <paramref name="actual"/>.Equals(<paramref name="expected"/>) or else that <paramref name="actual"/> and <paramref name="expected"/> are both null.</summary>
+        /// <returns><paramref name="actual"/></returns>
+        public static T ShouldBe<T>(this T actual, T expected, string message=null, params object[] args)
         {
-            Assert.That(@this,  
+            Assert.That(actual,  
                         x=> (x==null && expected==null) || x.Equals(expected), 
                         message ?? $"{nameof(ShouldBe)}\n\n{expected}", args);
-            return @this;
+            return actual;
         }
 
-        /// <summary>Asserts that @this.Equals(expected) would fail (or else that <paramref name="@this"/> is null and <paramref name="notExpected"/> is not).</summary>
-        public static T ShouldNotBe<T>(this T @this, T notExpected, string message=null, params object[] args)
+        /// <summary>Asserts that <code>actual.Equals(expected)</code> would fail (or else that <paramref name="actual"/> is null and <paramref name="notExpected"/> is not).</summary>
+        /// <returns><paramref name="actual"/></returns>
+        public static T ShouldNotBe<T>(this T actual, T notExpected, string message=null, params object[] args)
         {
-            Assert.That(@this, Is.NotEqualTo(notExpected),  message ?? $"{nameof(ShouldNotBe)}\n\n{notExpected}", args);
-            return @this;
+            Assert.That(actual, Is.NotEqualTo(notExpected),  message ?? $"{nameof(ShouldNotBe)}\n\n{notExpected}", args);
+            return actual;
         }
 
-        /// <summary>Tests whether @this.Equals(expected)</summary>
+        /// <summary>Asserts that <code><paramref name="actual"/>.Equals(<paramref name="expected"/>)</code></summary>
+        /// <returns><paramref name="actual"/></returns>
         public static T ShouldEqual<T>(this T actual, object expected, string comment=null, params object[] args)
         {
             return Assert.That(actual, a=>a.Equals(expected), comment ?? $"{nameof(ShouldEqual)}\n\n{expected}", args);
         }
 
-        /// <summary>Tests whether !@this.Equals(expected)</summary>
+        /// <summary>Asserts that <code>!<paramref name="actual"/>.Equals(<paramref name="notExpected"/>)</code></summary>
+        /// <returns><paramref name="actual"/></returns>
         public static T ShouldNotEqual<T>(this T actual, T notExpected, string comment=null, params object[] args)
         {
             return Assert.That(actual, a => !a.Equals(notExpected), comment ?? $"{nameof(ShouldNotEqual)}\n\n{notExpected}", args);
         }
 
-        public static T ShouldBeBetween<T>(this T @this, T left, T right, string message=null, params object[] args)
+        /// <summary>Asserts that <paramref name="actual"/> is between <paramref name="left"/> and <paramref name="right"/> inclusively.</summary>
+        /// <returns><paramref name="actual"/></returns>
+        public static T ShouldBeBetween<T>(this T actual, T left, T right, string message=null, params object[] args)
                         where T : IComparable<T>
         {
-            Assert.That(@this, Is.InRange(left, right), message ??nameof(ShouldBeBetween), args);
-            return @this;
+            Assert.That(actual, Is.InRange(left, right), message ??nameof(ShouldBeBetween), args);
+            return actual;
         }
 
-        public static T ShouldBeTrue<T>(this T @this, string message=null, params object[] args)
+        /// <summary>Asserts that <code><paramref name="actual"/>.Equals(true)</code></summary>
+        /// <returns><paramref name="actual"/></returns>
+        public static T ShouldBeTrue<T>(this T actual, string message=null, params object[] args)
         {
-            Assert.That( @this, 
+            Assert.That( actual, 
                          x=>x!=null&&x.Equals(true),
                          message ??nameof(ShouldBeTrue), args);
-            return @this;
+            return actual;
         }
 
-        public static T ShouldBeFalse<T>( this T @this, string message=null, params object[] args )
+        /// <summary>Asserts that <code><paramref name="actual"/>.Equals(false)</code></summary>
+        /// /// <returns><paramref name="actual"/></returns>
+        public static T ShouldBeFalse<T>( this T actual, string message=null, params object[] args )
         {
-            Assert.That(@this, x=> x!=null&&x.Equals(false), message??nameof(ShouldBeFalse), args);
-            return @this;
+            Assert.That(actual, x=> x!=null&&x.Equals(false), message??nameof(ShouldBeFalse), args);
+            return actual;
         }
 
-        public static T ShouldBeGreaterThan<T>( this T @this, object expected, string message=null, params object[] args)
+        /// <summary>Asserts that <paramref name="actual"/> is GreaterThan <paramref name="expected"/>
+        /// The comparer used is the NUnitComparer https://github.com/nunit/nunit/blob/master/src/NUnitFramework/framework/Constraints/NUnitComparer.cs 
+        /// </summary>
+        /// <returns><paramref name="actual"/></returns>
+        public static T ShouldBeGreaterThan<T>( this T actual, object expected, string message=null, params object[] args)
         {
-            Assert.That( @this, Is.GreaterThan( expected ), message??nameof(ShouldBeGreaterThan), args );
-            return @this;
+            Assert.That( actual, Is.GreaterThan( expected ), message??nameof(ShouldBeGreaterThan), args );
+            return actual;
         }
 
-        public static T ShouldBeGreaterThanOrEqualTo<T>( this T @this, object expected, string message=null, params object[] args )
+        /// <summary>Asserts that <paramref name="actual"/> is GreaterThanOrEqualTo <paramref name="expected"/>
+        /// The comparer used is the NUnitComparer https://github.com/nunit/nunit/blob/master/src/NUnitFramework/framework/Constraints/NUnitComparer.cs 
+        /// </summary>
+        /// <returns><paramref name="actual"/></returns>
+        public static T ShouldBeGreaterThanOrEqualTo<T>( this T actual, object expected, string message=null, params object[] args )
         {
-            Assert.That( @this, Is.GreaterThanOrEqualTo( expected ), message??nameof(ShouldBeGreaterThanOrEqualTo), args );
-            return @this;
+            Assert.That( actual, Is.GreaterThanOrEqualTo( expected ), message??nameof(ShouldBeGreaterThanOrEqualTo), args );
+            return actual;
         }
 
-        public static T ShouldBeLessThan<T>(this T @this, object expected, string message=null, params object[] args)
+        /// <summary>Asserts that <paramref name="actual"/> is LessThan <paramref name="expected"/>
+        /// The comparer used is the NUnitComparer https://github.com/nunit/nunit/blob/master/src/NUnitFramework/framework/Constraints/NUnitComparer.cs 
+        /// </summary>
+        /// <returns><paramref name="actual"/></returns>
+        public static T ShouldBeLessThan<T>(this T actual, object expected, string message=null, params object[] args)
         {
-            Assert.That(@this, Is.LessThanOrEqualTo(expected), message??nameof(ShouldBeLessThan), args);
-            return @this;
+            Assert.That(actual, Is.LessThan(expected), message??nameof(ShouldBeLessThan), args);
+            return actual;
         }
 
-        public static T ShouldBeLessThanOrEqualTo<T>(this T @this, object expected, string message=null, params object[] args)
+        /// <summary>Asserts that <paramref name="actual"/> is LessThanOrEqualTo <paramref name="expected"/>
+        /// The comparer used is the NUnitComparer https://github.com/nunit/nunit/blob/master/src/NUnitFramework/framework/Constraints/NUnitComparer.cs 
+        /// </summary>
+        /// <returns><paramref name="actual"/></returns>
+        public static T ShouldBeLessThanOrEqualTo<T>(this T actual, object expected, string message=null, params object[] args)
         {
-            Assert.That(@this, Is.LessThanOrEqualTo(expected), message??nameof(ShouldBeLessThanOrEqualTo), args);
-            return @this;
+            Assert.That(actual, Is.LessThanOrEqualTo(expected), message??nameof(ShouldBeLessThanOrEqualTo), args);
+            return actual;
         }
 
-        /// <summary>Asserts that <code><paramref name="@this"/> is <paramref name="T"/></code></summary>
-        /// <returns><code>((<paramref name="T"/>)<paramref name="@this"/>)</code></returns>
-        public static T ShouldBeOfType<T>(this object @this, string message=null, params object[] args) 
+        /// <summary>Asserts that <code><paramref name="actual"/> is <typeparamref name="T"/></code></summary>
+        /// <returns><code>((<typeparamref name="T"/>)<paramref name="actual"/>)</code></returns>
+        public static T ShouldBeOfType<T>(this object actual, string message=null, params object[] args) 
         {
-            Assert.That(@this, x=> x is T, message ??nameof(ShouldBeOfType), args);
-            return (T)@this;
+            Assert.That(actual, x=> x is T, message ??nameof(ShouldBeOfType), args);
+            return (T)actual;
         }
 
-        /// <summary>Asserts that <code>typeof(<paramref name="T"/>) == <paramref name="type"/></code></summary>
-        /// <returns><code><paramref name="@this"/></returns>
-        public static T ShouldBeOfTypeEvenIfNull<T>(this T @this, Type type, string message=null, params object[] args) where T : class
+        /// <summary>Asserts that <code>typeof(<typeparamref name="T"/>) == <paramref name="type"/></code></summary>
+        /// <returns><code><paramref name="actual"/></code></returns>
+        public static T ShouldBeOfTypeEvenIfNull<T>(this T actual, Type type, string message=null, params object[] args) where T : class
         {
             typeof (T).ShouldEqual(type, message??nameof(ShouldBeOfTypeEvenIfNull), args);
-            return @this;
+            return actual;
         }
 
-        /// <summary>Asserts that <code><paramref name="@this"/> is <paramref name="T"/></code></summary>
-        /// <returns><code>((<paramref name="T"/>)<paramref name="@this"/>)</code></returns>
-        public static T ShouldBeAssignableTo<T>(this object @this, string message=null, params object[] args) where T : class
+        /// <summary>Asserts that <code><paramref name="actual"/> is <typeparamref name="T"/></code></summary>
+        /// <returns><code>((<typeparamref name="T"/>)<paramref name="actual"/>)</code></returns>
+        public static T ShouldBeAssignableTo<T>(this object actual, string message=null, params object[] args) where T : class
         {
-            Assert.That(@this, x=>x is T, message??nameof(ShouldBeAssignableTo), args);
+            Assert.That(actual, x=>x is T, message??nameof(ShouldBeAssignableTo), args);
 
-            return @this as T;
+            return actual as T;
         }
         
-        /// <summary>Asserts that <code>((<paramref name="T"/>)<paramref name="@this"/>)</code> is not null.</summary>
-        /// <returns><code>((<paramref name="T"/>)<paramref name="@this"/>)</code></returns>
-        public static T ShouldBeCastableTo<T>(this object @this, string message=null, params object[] args)
+        /// <summary>Asserts that <code>((<typeparamref name="T"/>)<paramref name="actual"/>)</code> is not null.</summary>
+        /// <returns><code>((<typeparamref name="T"/>)<paramref name="actual"/>)</code></returns>
+        public static T ShouldBeCastableTo<T>(this object actual, string message=null, params object[] args)
         {
-            Assert.That(@this, x=> ((T)x)!=null, message ??nameof(ShouldBeAssignableTo), args);
+            Assert.That(actual, x=> ((T)x)!=null, message ??nameof(ShouldBeAssignableTo), args);
 
-            return (T)@this ;
+            return (T)actual ;
         }
 
-        /// <summary>Synonym of <seealso cref="Should"/> Asserts that <paramref name="@this"/> satisfies <paramref name="predicate"/></summary>
-        /// <returns>@this</returns>
-        public static T ShouldBe<T>(this T @this, Expression<Func<T,bool>> predicate, string message=null, params object[] args)
+        /// <summary>Synonym of <seealso cref="Should{T}"/> Asserts that <paramref name="actual"/> satisfies <paramref name="predicate"/></summary>
+        /// <returns>actual</returns>
+        public static T ShouldBe<T>(this T actual, Expression<Func<T,bool>> predicate, string message=null, params object[] args)
         {
-            Assert.That(@this,predicate, message??nameof(ShouldBe), args);
-            return @this;
+            Assert.That(actual,predicate, message??nameof(ShouldBe), args);
+            return actual;
         }
         
-        /// <summary>Asserts that <paramref name="@this"/> does not satisfy <paramref name="predicate"/></summary>
-        /// <returns>@this</returns>
-        public static T ShouldNotBe<T>(this T @this, Expression<Func<T,bool>> predicate, string message=null, params object[] args)
+        /// <summary>Asserts that <paramref name="actual"/> does not satisfy <paramref name="predicate"/></summary>
+        /// <returns>actual</returns>
+        public static T ShouldNotBe<T>(this T actual, Expression<Func<T,bool>> predicate, string message=null, params object[] args)
         {
             Expression<Func<bool, bool>> expression = p=>!p;
             var notPredicate = predicate.Chain(expression);
 
-            Assert.That(@this, notPredicate, message??nameof(ShouldNotBe), args);
-            return @this;
+            Assert.That(actual, notPredicate, message??nameof(ShouldNotBe), args);
+            return actual;
         }
 
-        /// <summary>Synonym of <see cref="Should{T,TResult}"/> Asserts that <paramref name="transform"/>(<paramref name="@this"/>) satisfies <paramref name="predicate"/></summary>
-        /// <returns>@this</returns>
+        /// <summary>Synonym of <see cref="Should{T,TResult}"/> Asserts that <paramref name="transform"/>(<paramref name="actual"/>) satisfies <paramref name="predicate"/></summary>
+        /// <returns>actual</returns>
         public static T ShouldSatisfy<T, TResult>(this T actual, Expression<Func<T, TResult>> transform, Expression<Func<TResult,bool>> predicate, string message=null, params object[] args)
         {
             Assert.That(actual, transform.Chain(predicate), message??nameof(ShouldSatisfy), args);
             return actual;
         }
 
-        /// <summary>Synonym of <seealso cref="Should{T,TResult}"/>. Asserts that <paramref name="@this"/> satisfies <paramref name="predicate"/></summary>
-        /// <returns>@this</returns>
+        /// <summary>Synonym of <seealso cref="Should{T,TResult}"/>. Asserts that <paramref name="actual"/> satisfies <paramref name="predicate"/></summary>
+        /// <returns>actual</returns>
         public static T ShouldSatisfy<T>(this T actual, Expression<Func<T, bool>> predicate, string message=null, params object[] args)
         {
             Assert.That(actual, predicate, message??nameof(ShouldSatisfy), args);
             return actual;
         }
 
-        /// <summary>Asserts that <paramref name="transform"/>(<paramref name="@this"/>) satisfies <paramref name="predicate"/></summary>
-        /// <returns>@this</returns>
+        /// <summary>Asserts that <paramref name="transform"/>(<paramref name="actual"/>) satisfies <paramref name="predicate"/></summary>
+        /// <returns>actual</returns>
         public static T Should<T, TResult>(this T actual, Expression<Func<T, TResult>> transform, Expression<Func<TResult,bool>> predicate, string message=null, params object[] args)
         {
             Assert.That(actual, transform.Chain(predicate), message??nameof(ShouldSatisfy), args);
             return actual;
         }
 
-        /// <summary>Asserts that <paramref name="@this"/> satisfies <paramref name="predicate"/></summary>
-        /// <returns>@this</returns>
+        /// <summary>Asserts that <paramref name="actual"/> satisfies <paramref name="predicate"/></summary>
+        /// <returns>actual</returns>
         public static T Should<T>(this T actual, Expression<Func<T, bool>> predicate, string message=null, params object[] args)
         {
             Assert.That(actual, predicate, message??nameof(ShouldSatisfy), args);
+            return actual;
+        }
+        /// <summary>A synonym for <seealso cref="Should{T}"/>
+        /// Asserts that <paramref name="actual"/> satisfies <paramref name="predicate"/></summary>
+        /// <returns>actual</returns>
+        public static T ShouldHave<T>(this T actual, Expression<Func<T, bool>> predicate, string message=null, params object[] args)
+        {
+            Assert.That(actual, predicate, message??nameof(ShouldSatisfy), args);
+            return actual;
+        }
+
+        ///<summary>
+        /// Applies <paramref name="assertion"/> to <paramref name="actual"/> and returns <paramref name="actual"/>.
+        /// There is no check that <paramref name="assertion"/> asserts anything. If it doesn't, <paramref name="actual"/> is returned.
+        /// 
+        /// This is intended as a convenience overload for the case where e.g. you prefer
+        /// <code> actual
+        ///   .Should(a=> a.SomeProperty.ShouldBeGreaterThan(1))
+        ///   .Should(a=> a.SomeOtherProperty.ShouldBeGreaterThan(2))
+        ///   .Should(a=> someOtherPredicate )
+        /// </code>
+        /// over
+        /// <code>  
+        ///   actual.SomeProperty.ShouldBeGreaterThan(1)
+        ///   actual.SomeOtherProperty.ShouldBeGreaterThan(2);
+        ///   actual.SomeOtherPredicate()
+        /// </code>
+        /// </summary>
+        /// <param name="actual">the value under test</param>
+        /// <param name="assertion">An action. It is assumed to be an assertion</param>
+        /// <returns><paramref name="actual"/></returns>
+        public static T Should<T>(this T actual, Action<T> assertion)
+        {
+            assertion(actual);
             return actual;
         }
     }
