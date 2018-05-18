@@ -1,4 +1,5 @@
-﻿using Dapper;
+﻿using System.Threading.Tasks;
+using Dapper;
 using NUnit.Framework;
 using TestBase.AdoNet.FakeDb;
 
@@ -16,6 +17,15 @@ namespace TestBase.Tests.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection
             //A 
             fakeConnection.CreateCommand().ExecuteNonQuery().ShouldEqual(123);
         }
+        [Test]
+        public async Task When_SetupForExecuteNonQuery__Should_return_the_setup_int__GivenQueryAsync()
+        {
+            //A
+            var fakeConnection = new FakeDbConnection().SetUpForExecuteNonQuery(123);
+
+            //A 
+            (await fakeConnection.CreateCommand().ExecuteNonQueryAsync()).ShouldEqual(123);
+        }
 
         [Test]
         public void When_SetupForExecuteNonQuery__Given__Using_Dapper__Should_return_the_setup_int()
@@ -28,6 +38,16 @@ namespace TestBase.Tests.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection
         }
 
         [Test]
+        public async Task When_SetupForExecuteNonQuery__Given__Using_Dapper__Should_return_the_setup_int__GivenExecuteAsync()
+        {
+            //A
+            var fakeConnection = new FakeDbConnection().SetUpForExecuteNonQuery(123);
+
+            //A 
+            (await fakeConnection.ExecuteAsync("")).ShouldEqual(123);
+        }
+
+        [Test]
         public void When_SetupForExecuteNonQueryNTimes__Should_return_an_int_each_time()
         {
             //A
@@ -37,6 +57,18 @@ namespace TestBase.Tests.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection
             fakeConnection.CreateCommand().ExecuteNonQuery().ShouldEqual(123);
             fakeConnection.CreateCommand().ExecuteNonQuery().ShouldEqual(123);
             fakeConnection.CreateCommand().ExecuteNonQuery().ShouldEqual(123);
+        }
+
+        [Test]
+        public async Task When_SetupForExecuteNonQueryNTimes__Should_return_an_int_each_time__GivenExecuteAsync()
+        {
+            //A
+            var fakeConnection = new FakeDbConnection().SetUpForExecuteNonQuery(123, 3);
+
+            //A 
+            (await fakeConnection.CreateCommand().ExecuteNonQueryAsync()).ShouldEqual(123);
+            fakeConnection.CreateCommand().ExecuteNonQuery().ShouldEqual(123);
+            (await fakeConnection.CreateCommand().ExecuteNonQueryAsync()).ShouldEqual(123);
         }
 
         [Test]
