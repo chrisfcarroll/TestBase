@@ -1,4 +1,10 @@
 ﻿using System.Reflection;
+
+#if ASPNETCORE
+#endif
+#if MVC45
+#endif
+
 [assembly: AssemblyDescription(@"*TestBase* gets you off to a flying start when unit testing projects with dependencies.
 TestBase.Mvc adds a rich extensible set of fluent assertions for verifying Mvc ActionResults and for easy setup of ControllerContext and HttpContext for both Mvc and WebApi
 

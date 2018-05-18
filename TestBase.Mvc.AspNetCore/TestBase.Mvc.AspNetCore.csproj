@@ -113,19 +113,34 @@ See also
 </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>TRACE;DEBUG;NETSTANDARD2_0;MVC45</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NETSTANDARD2_0;ASPNETCORE</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.2.6" />
+    <Compile Include="..\TestBase.Mvc\AssemblyInfo.cs" Link="AssemblyInfo.cs" />
+    <Compile Include="..\TestBase.Mvc\DeSerializeExcludingFieldsContractResolver.cs" Link="DeSerializeExcludingFieldsContractResolver.cs" />
+    <Compile Include="..\TestBase.Mvc\HostedMvcTestFixtureBase.cs" Link="HostedMvcTestFixtureBase.cs" />
+    <Compile Include="..\TestBase.Mvc\MockApiHttpContextHelper.cs" Link="MockApiHttpContextHelper.cs" />
+    <Compile Include="..\TestBase.Mvc\MockHttpContextHelperV3.cs" Link="MockHttpContextHelperV3.cs" />
+    <Compile Include="..\TestBase.Mvc\MvcExtensions.cs" Link="MvcExtensions.cs" />
+    <Compile Include="..\TestBase.Mvc\Shoulds\HttpResponseMessageShoulds.cs" Link="HttpResponseMessageShoulds.cs" />
+    <Compile Include="..\TestBase.Mvc\Shoulds\MvcActionResultShoulds.cs" Link="MvcActionResultShoulds.cs" />
+    <Compile Include="..\TestBase.Mvc\Shoulds\MvcFileResultShoulds.cs" Link="MvcFileResultShoulds.cs" />
+    <Compile Include="..\TestBase.Mvc\Shoulds\MvcRouteResultShoulds.cs" Link="MvcRouteResultShoulds.cs" />
+    <Compile Include="..\TestBase.Mvc\Shoulds\MvcViewResultShoulds.cs" Link="MvcViewResultShoulds.cs" />
+    <Compile Include="..\TestBase.Mvc\TestableHttpListener.cs" Link="TestableHttpListener.cs" />
+    <Compile Include="..\TestBase.Mvc\TypicalMvcRouteConfig.cs" Link="TypicalMvcRouteConfig.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore" Version="2.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="2.0.1" />
     <PackageReference Include="Moq" Version="4.8.2" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\TestBase\TestBase.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
   </ItemGroup>
 
 </Project>
