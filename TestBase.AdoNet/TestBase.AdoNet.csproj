@@ -7,7 +7,7 @@
     <PackageVersion>4.1.2.0</PackageVersion>
   </PropertyGroup>
   <PropertyGroup>
-    <Title>TestBase – Rich, fluent assertions and useful fakes for Mvc &amp; AdoNet.</Title>
+    <Title>TestBase – Rich, fluent assertions and tools for testing with heavyweight dependencies: AdoNet, HttpClient, AspNetCore, AspNet.Mvc, Streams, Logging</Title>
     <PackageDescription><![CDATA[TestBase.AdoNet
 
 TestBase.FakeDb

@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 [assembly: AssemblyDescription(@"*TestBase* gives you a flying start with 
 - fluent assertions that are easy to extend
-- explicit error messages
+- sharp error messages
 - tools to help you test with “heavyweight” dependencies on 
     - AspNetCore.Mvc, AspNet.Mvc or WebApi Contexts
 	- HttpClient
@@ -23,7 +23,7 @@ ControllerUnderTest.Action()
 ShouldHaveViewDataContaining(), ShouldBeJsonResult() etc.
 ```
 
-TestBase.Mvc
+TestBase.Mvc.AspNetCore & TestBase.Mvc
 ------------
 
 ```
@@ -38,10 +38,7 @@ ControllerUnderTest.Action()
 ShouldHaveViewDataContaining(), ShouldBeJsonResult() etc.
 ```
 
-TestBase.Mvc.AspNetCore
--------------------------------------------
-
-Quickly test controllers with zero setup using `controllerUnderTest.WithControllerContext()` :
+Quickly test AspNetCore controllers with zero setup using `controllerUnderTest.WithControllerContext()` :
 
 ```
 [TestFixture]

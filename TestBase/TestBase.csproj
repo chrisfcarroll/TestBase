@@ -5,10 +5,15 @@
     <AssemblyFileVersion>4.1.2.0</AssemblyFileVersion>
     <PackageVersion>4.1.2.0</PackageVersion>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <Title>TestBase – Rich, fluent assertions; Useful fakes for heavy dependencies on AspNetMvc, HttpClient, Ado.Net, Streams and Logging.</Title>
-    <PackageDescription><![CDATA[*TestBase* gives you a flying start with fluent assertions that
-are easy to extend; sharp failure messages; and tools for testing with heavy dependencies 
-on AspNetMvc, HttpClient, Ado.Net, Streams and Logging.
+    <Title>TestBase – Rich, fluent assertions and tools for testing with heavyweight dependencies: AspNetCore, AdoNet, HttpClient, AspNet.Mvc, Streams, Logging</Title>
+    <PackageDescription><![CDATA[*TestBase* gives you a flying start with 
+- fluent assertions that are easy to extend
+- sharp error messages
+- tools to help you test with “heavyweight” dependencies on 
+    - AspNetCore.Mvc, AspNet.Mvc or WebApi Contexts
+	- HttpClient
+	- Ado.Net
+	- Streams & Logging
 
 ```
 UnitUnderTest.Action()

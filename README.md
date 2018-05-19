@@ -1,8 +1,8 @@
 *TestBase* gives you a flying start with 
 - fluent assertions that are easy to extend
-- explicit error messages
+- sharp error messages
 - tools to help you test with “heavyweight” dependencies on 
-    - AspNet.Mvc & AspNetCore.Mvc Context
+    - AspNet.Mvc & AspNetCore.Mvc Contexts
 	- HttpClient
 	- Ado.Net
 	- Streams & Logging
@@ -75,8 +75,10 @@ TestBase.RecordingDb
 --------------------
 * `new RecordingDbConnection(IDbConnection)` helps you profile Ado.Net Db calls
 
-TestBase.Mvc
-------------
+
+TestBase.Mvc.AspNetCore & TestBase.Mvc
+--------------------------------------
+
 ```
 ControllerUnderTest.Action()
   .ShouldbeViewResult()
@@ -89,37 +91,43 @@ ControllerUnderTest.Action()
 ShouldHaveViewDataContaining(), ShouldBeJsonResult() etc.
 ```
 
-TestBase.Mvc.AspNetCore
----------------------------------------------------------
-
-- Either quickly test controllers with zero setup using `controllerUnderTest.WithControllerContext()` :
+Quickly test AspNetCore controllers with zero setup, even with Action dependencies on HttpContext, Request, Response, ViewData, UrlHelper using `controllerUnderTest.WithControllerContext()` :
 
 ```
-[Test]
-public void ShouldBeViewWithModel_ShouldAssertViewResultAndNameAndModel()
+[TestFixture]
+public class WhenTestingControllersUsingFakeControllerContext
 {
-    var controllerUnderTest = new AController().WithControllerContext();
-    
-    var result= controllerUnderTest.Action("Footer","Link",thing:1)
-				.ShouldBeViewWithModel<AClass>("ViewName");
-				.FooterLink.ShouldBe("/Footer/Link?thing=1");
-}
+    [Test]
+    public void ShouldBeViewWithModel_ShouldAssertViewResultAndNameAndModel_And_UrlHelper_ShouldWork()
+    {
+        var controllerUnderTest = 
+            new AController()
+                .WithControllerContext();
 
+        var result= controllerUnderTest
+                .Action("SomeController","SomeAction",other:1)
+                .ShouldBeViewWithModel<AClass>("ViewName");
+                    .FooterLink
+                    .ShouldBe("/Controller/Action?other=1");
+    }
+}
 ```
 
-- Or test controllers with complex application dependencies using `HostedMvcTestFixtureBase` and specify your MVCApplications `Startup` class:
+... Or test against complex application dependencies using `HostedMvcTestFixtureBase` and specify your `Startup` class:
 
 ```
 [TestFixture]
 public class WhenTestingControllersUsingAspNetCoreTestTestServer : HostedMvcTestFixtureBase
 {
+
     [TestCase("/dummy/action?id={id}")]
     public async Task Get_Should_ReturnActionResult(string url)
     {
+        var id=Guid.NewGuid();
         var httpClient=GivenClientForRunningServer<Startup>();
         GivenRequestHeaders(httpClient, "CustomHeader", "HeaderValue1");
             
-        var result= await httpClient.GetAsync(url.Formatz(new {Guid.NewGuid()}));
+        var result= await httpClient.GetAsync(url.Formatz(new {id}));
 
         result
             .ShouldBe_200Ok()
@@ -143,11 +151,10 @@ public class WhenTestingControllersUsingAspNetCoreTestTestServer : HostedMvcTest
 }
 ```
 
-TestBase.Mvc for Mvc 4 &amp; 5
--------------------------------
-
+TestBase.Mvc for Mvc4 and Mvc 5
+------------------
 Use the `Controller.WithHttpContextAndRoutes()` extension methods to fake the 
-http request &amp; context. By injecting the RegisterRoutes method of your
+http request &amp; context. And, by injecting the RegisterRoutes method of your
 MvcApplication, you can use and test Controller.Url with your application's configured routes.
 
 ```
@@ -159,11 +166,12 @@ ControllerUnderTest
     [Optional] string appVirtualPath = "/",
     [Optional] HttpApplication applicationInstance)
 
-ApiControllerUnderTest.WithWebApiHttpContext<T>(
+ApiControllerUnderTest.WithWebApiHttpContext&lt;T&gt;(
     HttpMethod httpMethod, 
     [Optional] string requestUri,
     [Optional] string routeTemplate)
 ```
+
 
 Testable Logging with StringListLogger
 --------------------------------------

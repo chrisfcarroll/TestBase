@@ -5,7 +5,7 @@
     <AssemblyVersion>4.1.2.0</AssemblyVersion>
     <AssemblyFileVersion>4.1.2.0</AssemblyFileVersion>
     <PackageVersion>4.1.2.0</PackageVersion>
-    <Title>TestBase – Rich, fluent assertions and useful fakes for HttpClient and more</Title>
+        <Title>TestBase – Rich, fluent assertions and tools for testing with heavyweight dependencies: HttpClient, AdoNet, AspNetCore, AspNet.Mvc, Streams, Logging</Title>
     <PackageDescription><![CDATA[*TestBase* gives you a flying start with fluent assertions that
 are easy to extend and tools for testing with dependencies 
 on AspNetMvc, HttpClient, Ado.Net, Streams and Logging.
