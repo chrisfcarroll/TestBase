@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <AssemblyVersion>4.1.1.0</AssemblyVersion>
-    <AssemblyFileVersion>4.1.1.0</AssemblyFileVersion>
-    <PackageVersion>4.1.1.0</PackageVersion>
+    <AssemblyVersion>4.1.2.0</AssemblyVersion>
+    <AssemblyFileVersion>4.1.2.0</AssemblyFileVersion>
+    <PackageVersion>4.1.2.0</PackageVersion>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Title>TestBase – Rich, fluent assertions; Useful fakes for heavy dependencies on AspNetMvc, HttpClient, Ado.Net, Streams and Logging.</Title>
     <PackageDescription><![CDATA[*TestBase* gives you a flying start with fluent assertions that
@@ -62,8 +62,8 @@ TestBase.FakeDb
     .ShouldHaveParameter("name", value)
 ```
 
-TestBase.Mvc
-------------
+TestBase.Mvc.AspNetCore & TestBase.Mvc for Mvc 4 & Mvc 5
+--------------------------------------------------------
 
 ```
 ControllerUnderTest.WithControllerContext()
@@ -78,12 +78,10 @@ ControllerUnderTest.Action()
 ShouldHaveViewDataContaining(), ShouldBeJsonResult() etc.
 ```
 
-TestBase.Mvc for netstandard20 & AspNetCore Mvc
----------------------------------------------------------
 
-- Test most controllers with zero setup using 
+- Test AspNetCore controllers with zero setup using 
   `controllerUnderTest.WithControllerContext(actionUnderTest)`
-- Test more complex controller/application dependencies using 
+- Test more complex AspNetCore controller/application dependencies using 
   `HostedMvcTestFixtureBase` and specify your MVCApplications `Startup` class.
 
 ```
@@ -99,11 +97,8 @@ public async Task Put_Should_ReturnA(string url)
 }
 ```
 
-TestBase.Mvc Version 3 for Net4
--------------------------------
-
-Fake your http request &amp; context, and use the `RegisterRoutes` method 
-of your actual application to setup `Controller.Url`
+Foor Mvc4 and Mvc 5, fake your http request &amp; context, and use the `RegisterRoutes` method 
+of your actual application to set up `Controller.Url`
 
 ```
 ControllerUnderTest
@@ -131,6 +126,7 @@ Serilog.Logger slogger= new LoggerConfiguration().WriteTo.StringList(log).Create
 ]]></PackageDescription>
     <PackageReleaseNotes>ChangeLog
 ---------
+4.1.2.0 TestBase.Mvc.AspNetCore provides WithControllerContext()
 4.1.1.0 Should(assertion) and ShouldHave(assertion) as well as Should(predicate)
 4.1.0.0 [ExpressionToCodeLib](https://www.nuget.org/packages/ExpressionToCodeLib/) and [FastExpressionCompiler](https://www.nuget.org/packages/FastExpressionCompiler/) ftw. Awesomer, and faster, assertions.
 4.0.9.2  ShouldNotMatch(pattern)

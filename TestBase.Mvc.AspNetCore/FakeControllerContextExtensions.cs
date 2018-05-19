@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Security.Claims;
+using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
@@ -93,9 +94,9 @@ namespace TestBase
             var fakeVirtualPath = virtualPathTemplate;
             var valuesInTemplate = new List<KeyValuePair<string, object>>();
             foreach (var kv in routeValues)
-                if (fakeVirtualPath.IndexOf("{" + kv.Key + "}") >= 0)
+                if (fakeVirtualPath.IndexOf("{" + kv.Key + "}", StringComparison.CurrentCultureIgnoreCase) >= 0)
                 {
-                    fakeVirtualPath = fakeVirtualPath.Replace("{" + kv.Key + "}", kv.Value.ToString());
+                    fakeVirtualPath = Regex.Replace(fakeVirtualPath, "{" + kv.Key + "}", kv.Value.ToString(), RegexOptions.IgnoreCase);
                     valuesInTemplate.Add(kv);
                 }
 

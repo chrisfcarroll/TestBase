@@ -1,7 +1,11 @@
 *TestBase* gives you a flying start with 
 - fluent assertions that are easy to extend
 - explicit error messages
-- tools to help you test with heavy dependencies on AspNetMvc, HttpClient, Ado.Net, Streams and Logging
+- tools to help you test with “heavyweight” dependencies on 
+    - AspNet.Mvc & AspNetCore.Mvc Context
+	- HttpClient
+	- Ado.Net
+	- Streams & Logging
 
 Chainable fluent assertions get you to the point concisely:
 ```
@@ -85,25 +89,25 @@ ControllerUnderTest.Action()
 ShouldHaveViewDataContaining(), ShouldBeJsonResult() etc.
 ```
 
-TestBase.Mvc Version 4 for netstandard20 & AspNetCore Mvc
+TestBase.Mvc.AspNetCore
 ---------------------------------------------------------
 
-- Test most controllers with zero setup using `controllerUnderTest.WithControllerContext(actionUnderTest)` :
+- Either quickly test controllers with zero setup using `controllerUnderTest.WithControllerContext()` :
 
 ```
 [Test]
 public void ShouldBeViewWithModel_ShouldAssertViewResultAndNameAndModel()
 {
-    var controllerUnderTest = new AController().WithControllerContext("Action");
+    var controllerUnderTest = new AController().WithControllerContext();
     
-    var result= controllerUnderTest.ActionName().ShouldBeViewWithModel<AClass>("ViewName");
-    
-    result.ShouldBeOfType<AClass>().FooterLink.ShouldBe("/AController/ActionName");
+    var result= controllerUnderTest.Action("Footer","Link",thing:1)
+				.ShouldBeViewWithModel<AClass>("ViewName");
+				.FooterLink.ShouldBe("/Footer/Link?thing=1");
 }
 
 ```
 
-- Test controllers with complex application dependencies using `HostedMvcTestFixtureBase` and specify your MVCApplications `Startup` class:
+- Or test controllers with complex application dependencies using `HostedMvcTestFixtureBase` and specify your MVCApplications `Startup` class:
 
 ```
 [TestFixture]
@@ -139,7 +143,7 @@ public class WhenTestingControllersUsingAspNetCoreTestTestServer : HostedMvcTest
 }
 ```
 
-TestBase.Mvc Version 3 for Net4
+TestBase.Mvc for Mvc 4 &amp; 5
 -------------------------------
 
 Use the `Controller.WithHttpContextAndRoutes()` extension methods to fake the 

@@ -39,7 +39,7 @@ namespace TestBase.Tests.AspNetCoreMVC
         [Test]
         public void ShouldBeViewWithModel_ShouldAssertViewResultAndNameAndModel()
         {
-            var controllerUnderTest = new AController(new IDependency()).WithControllerContext(nameof(AController.ActionName));
+            var controllerUnderTest = new AController(new IDependency()).WithControllerContext();
 
             var viewModel= 
                 controllerUnderTest.ActionName("parameter", "Other", "Thing").ShouldBeViewWithModel<MyViewModel>("ViewName");

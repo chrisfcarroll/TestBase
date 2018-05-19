@@ -5,9 +5,14 @@ using NUnit.Framework;
 namespace TestBase.Tests.AspNetCoreMVC
 {
     [TestFixture]
-    public class WhenMockingAndFakingHttpContextForAnAspNetCoreController
+    public class WhenFakingContextForAnAspNetCoreController
     {
         public class FakeController : Controller{}
+
+        public class AController : Controller
+        {
+            public IActionResult Action(string c, string a, int id){return View("ViewName",new MyViewModel{LinkToOther= Url.Action(a,c,new{id})});}
+        }
 
         [Test]
         public void Should_get_nonnull_context_httpcontext_request_response_urlhelper_tempdata_viewdata()
@@ -24,11 +29,20 @@ namespace TestBase.Tests.AspNetCoreMVC
             uut.HttpContext.ShouldBe(uut.ControllerContext.HttpContext);
         }
 
-        [Test, Ignore("WIP: not implemented")]
-        public void Should_get_nonnull_viewbag()
+        [Test, Ignore("WIP: not yet implemented")]
+        public void Should_get_nonnull_viewbag() { new FakeController().WithControllerContext().ViewData.ShouldNotBeNull(); }
+
+
+        [Test]
+        public void ShouldBeViewWithModel_ShouldAssertViewResultAndNameAndModel_And_UrlHelper_ShouldWork()
         {
-            new FakeController().WithControllerContext().ViewData.ShouldNotBeNull();
+            var controllerUnderTest = new AController().WithControllerContext(virtualPathTemplate:"/{Action}/Before/{Controller}");
+   
+            var result= controllerUnderTest.Action("OtherController","OtherAction",id:1).ShouldBeViewWithModel<MyViewModel>("ViewName");
+    
+            result.ShouldBeOfType<MyViewModel>().LinkToOther.ShouldBe("/OtherAction/Before/OtherController?id=1");
         }
+
 
         [Test]
         public void UrlHelper_should_map_controller_and_action()

@@ -1,12 +1,12 @@
 ﻿using System.Reflection;
-
-#if ASPNETCORE
-#endif
-#if MVC45
-#endif
-
-[assembly: AssemblyDescription(@"*TestBase* gets you off to a flying start when unit testing projects with dependencies.
-TestBase.Mvc adds a rich extensible set of fluent assertions for verifying Mvc ActionResults and for easy setup of ControllerContext and HttpContext for both Mvc and WebApi
+[assembly: AssemblyDescription(@"*TestBase* gives you a flying start with 
+- fluent assertions that are easy to extend
+- explicit error messages
+- tools to help you test with “heavyweight” dependencies on 
+    - AspNetCore.Mvc, AspNet.Mvc or WebApi Contexts
+	- HttpClient
+	- Ado.Net
+	- Streams & Logging
 
 TestBase.Shoulds
 -------------------
@@ -23,15 +23,73 @@ ControllerUnderTest.Action()
 ShouldHaveViewDataContaining(), ShouldBeJsonResult() etc.
 ```
 
-Version 4 for netstandard20 & AspNetCore Mvc
+TestBase.Mvc
+------------
+
+```
+ControllerUnderTest.Action()
+  .ShouldbeViewResult()
+  .ShouldHaveModel<TModel>()
+  .ShouldEqualByValue(expected)
+ControllerUnderTest.Action()
+  .ShouldBeRedirectToRouteResult()
+  .ShouldHaveRouteValue(""expectedKey"", [Optional] ""expectedValue"");
+
+ShouldHaveViewDataContaining(), ShouldBeJsonResult() etc.
+```
+
+TestBase.Mvc.AspNetCore
 -------------------------------------------
 
-Test your controllers using by specifying your MVCApplications `Startup` class:
+Quickly test controllers with zero setup using `controllerUnderTest.WithControllerContext()` :
+
+```
+[TestFixture]
+public class WhenTestingControllersUsingFakeControllerContext
+{
+   [Test]
+    public void ControllerUrlAndOtherPropertiesShouldWorkAsExpected__GivenControllerContext()
+    {
+        var uut = new FakeController().WithControllerContext();
+        uut.Url.Action(""a"", ""b"").ShouldEqual(""/b/a"");
+        uut.ControllerContext.ShouldNotBeNull();
+        uut.HttpContext.ShouldBe(uut.ControllerContext.HttpContext);
+        uut.ControllerContext.HttpContext.Request.ShouldNotBeNull();
+        uut.Request.ShouldNotBeNull();
+        uut.Response.ShouldNotBeNull();
+        uut.Url.ShouldNotBeNull();
+        uut.ViewData.ShouldNotBeNull();
+        uut.TempData.ShouldNotBeNull();
+
+        uut.MyAction(param)
+            .ShouldBeViewResult()
+            .ShouldHaveModel<YouSaidViewModel>()
+            .YouSaid.ShouldBe(param);
+    }
+
+    [Test]
+    public void ShouldBeViewWithModel_ShouldAssertViewResultAndNameAndModel_And_UrlHelper_ShouldWork()
+    {
+        var controllerUnderTest = 
+            new AController()
+                .WithControllerContext(virtualPathTemplate:""/{Action}/Before/{Controller}"");
+
+        var result= controllerUnderTest
+                .Action(""SomeController"",""SomeAction"")
+                .ShouldBeViewWithModel<AClass>(""ViewName"");
+                    .FooterLink
+                    .ShouldBe(""/SomeAction/Before/SomeController"");
+    }
+}
+```
+
+... Or test against complex application dependencies using `HostedMvcTestFixtureBase` and specify your `Startup` class:
 
 ```
 [TestFixture]
 public class WhenTestingControllersUsingAspNetCoreTestTestServer : HostedMvcTestFixtureBase
 {
+
     [TestCase(""/dummy/action?id={id}"")]
     public async Task Get_Should_ReturnActionResult(string url)
     {
@@ -63,11 +121,10 @@ public class WhenTestingControllersUsingAspNetCoreTestTestServer : HostedMvcTest
 }
 ```
 
-
-Version 3 for Net4
+TestBase.Mvc for Mvc4 and Mvc 5
 ------------------
 Use the `Controller.WithHttpContextAndRoutes()` extension methods to fake the 
-http request &amp; context. By injecting the RegisterRoutes method of your
+http request &amp; context. And, by injecting the RegisterRoutes method of your
 MvcApplication, you can use and test Controller.Url with your application's configured routes.
 
 ```
@@ -84,7 +141,5 @@ ApiControllerUnderTest.WithWebApiHttpContext&lt;T&gt;(
     [Optional] string requestUri,
     [Optional] string routeTemplate)
 ```
-
-4.0.5.1 TestBase.Mvc partially ported to netstandard20 / AspNetCore
 "
 )]

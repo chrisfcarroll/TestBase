@@ -1,15 +1,20 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>TestBase</RootNamespace>
-    <AssemblyVersion>4.1.0.0</AssemblyVersion>
-    <AssemblyFileVersion>4.1.0.0</AssemblyFileVersion>
-    <PackageVersion>4.1.0.0</PackageVersion>
+    <AssemblyVersion>4.1.2.0</AssemblyVersion>
+    <AssemblyFileVersion>4.1.2.0</AssemblyFileVersion>
+    <PackageVersion>4.1.2.0</PackageVersion>
     <Title>TestBase – Rich, fluent assertions and useful fakes for Mvc &amp; AdoNet.</Title>
-<PackageDescription><![CDATA[*TestBase* gives you a flying start with fluent assertions that
-are easy to extend and tools for testing with dependencies 
-on AspNetMvc, HttpClient, Ado.Net, Streams and Logging.
+<PackageDescription><![CDATA[*TestBase* gives you a flying start with 
+- fluent assertions that are easy to extend
+- explicit error messages
+- tools to help you test with “heavyweight” dependencies on 
+    - AspNetCore.Mvc, AspNet.Mvc or WebApi Contexts
+	- HttpClient
+	- Ado.Net
+	- Streams & Logging
 
 Chainable fluent assertions get you to the point concisely:
 ```
@@ -44,7 +49,7 @@ ControllerUnderTest.Action()
 ShouldHaveViewDataContaining(), ShouldBeJsonResult() etc.
 ```
 
-TestBase.Mvc for netstandard20 & AspNetCore Mvc
+TestBase.Mvc.AspNetCore
 ---------------------------------------------------------
 
 - Test most controllers with zero setup using 
@@ -65,7 +70,7 @@ public async Task Put_Should_ReturnA(string url)
 }
 ```
 
-TestBase.Mvc Version 3 for Net4
+TestBase.Mvc for Mvc4 and Mvc 5
 -------------------------------
 
 Fake your http request &amp; context, and use the `RegisterRoutes` method 
@@ -92,6 +97,7 @@ See also
  - Extensions.Logging.ListOfString]]></PackageDescription>
     <PackageReleaseNotes>ChangeLog
 ---------
+4.1.2.0 TestBase.Mvc.AspNetCore provides WithControllerContext()
 4.0.7.0 Added TestBase.FakeHttpClient. Added Should(predicate,...) as synonym of ShouldHave(predicate,...)
 4.0.6.2 TestBase.Mvc can run controller actions on aspnetcore using controller.WithControllerContext()
 4.0.5.2 TestBase.Mvc partially ported to netstandard20 / AspNetCore
