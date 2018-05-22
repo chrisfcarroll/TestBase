@@ -3,9 +3,9 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>TestBase</RootNamespace>
-    <AssemblyVersion>4.1.2.0</AssemblyVersion>
-    <AssemblyFileVersion>4.1.2.0</AssemblyFileVersion>
-    <PackageVersion>4.1.2.0</PackageVersion>
+    <AssemblyVersion>4.1.2.1</AssemblyVersion>
+    <AssemblyFileVersion>4.1.2.1</AssemblyFileVersion>
+    <PackageVersion>4.1.2.1</PackageVersion>
     <Title>TestBase – Rich, fluent assertions and tools for testing with heavyweight dependencies: AspNetCore, AdoNet, HttpClient, AspNet.Mvc, Streams, Logging</Title>
 <PackageDescription><![CDATA[*TestBase* gives you a flying start with 
 - fluent assertions that are easy to extend
@@ -18,30 +18,13 @@
 
 Chainable fluent assertions get you to the point concisely:
 ```
-- ShouldEqualByValue() & ShouldEqualByValueExceptFor() 
-  work with all kinds of object and collections, and 
-  report what differed.
-- string.ShouldMatch().ShouldEqualIgnoringCase(), ...
-- numeric.ShouldBeBetween().ShouldEqualWithTolerance(), ...
-- IEnumerable.ShouldAll().ShouldContain().ShouldNotContain(), ...
-- Stream.ShouldHaveSameStreamContentAs(), Stream.ShouldContain()
-
-UnitUnderTest.Action()
-  .ShouldBeViewWithModel<TModel>()
-  .Payload
-    .ShouldEqualByValueExceptFor(new {Id=1, Payload1=expected}, ignoreFields)
-    .Payload2
-      .ShouldMatchIgnoringCase("I expected this");
-```
-
-TestBase.Mvc.AspNetCore & TestBase.Mvc
-------------
-
-```
 ControllerUnderTest.Action()
   .ShouldbeViewResult()
   .ShouldHaveModel<TModel>()
-  .ShouldEqualByValue(expected)
+    .ShouldEqualByValue(expected, exceptForTheseFields);
+    .Reference
+      .ShouldMatchIgnoringCase("I expected this");
+  
 ControllerUnderTest.Action()
   .ShouldBeRedirectToRouteResult()
   .ShouldHaveRouteValue(""expectedKey"", [Optional] ""expectedValue"");
@@ -78,7 +61,9 @@ public class WhenTestingControllersUsingFakeControllerContext
     [Test]
     public void ShouldBeViewWithModel_ShouldAssertViewResultAndNameAndModel_And_UrlHelper_ShouldWork()
     {
-        var controllerUnderTest = 
+      var moreServicesFromDI=TestServerBuilder.RunningServerUsingStartup<TStartup>().Host.ServiceProvider;
+
+      var controllerUnderTest = 
             new AController()
                 .WithControllerContext(virtualPathTemplate:""/{Action}/Before/{Controller}"");
 
@@ -129,29 +114,9 @@ public class WhenTestingControllersUsingAspNetCoreTestTestServer : HostedMvcTest
 }
 ```
 
-TestBase.Mvc for Mvc4 and Mvc 5
-------------------
-Use the `Controller.WithHttpContextAndRoutes()` extension methods to fake the 
-http request &amp; context. And, by injecting the RegisterRoutes method of your
-MvcApplication, you can use and test Controller.Url with your application's configured routes.
-
-```
-ControllerUnderTest
-  .WithHttpContextAndRoutes(
-    [Optional] Action&lt;RouteCollection&gt; mvcApplicationRoutesRegistration, 
-    [optional] string requestUrl,
-    [Optional] string query = """",
-    [Optional] string appVirtualPath = ""/"",
-    [Optional] HttpApplication applicationInstance)
-
-ApiControllerUnderTest.WithWebApiHttpContext&lt;T&gt;(
-    HttpMethod httpMethod, 
-    [Optional] string requestUri,
-    [Optional] string routeTemplate)
-```
-
 See also
  - TestBase
+ - TestBase.Mvc for Mvc4 and Mvc 5
  - TestBase.HttpClient.Fake
  - TestBase.AdoNet
  - Serilog.Sinks.ListOfString 
@@ -182,22 +147,6 @@ See also
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>TRACE;DEBUG;NETSTANDARD2_0;ASPNETCORE</DefineConstants>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Include="..\TestBase.Mvc\AssemblyInfo.cs" Link="AssemblyInfo.cs" />
-    <Compile Include="..\TestBase.Mvc\DeSerializeExcludingFieldsContractResolver.cs" Link="DeSerializeExcludingFieldsContractResolver.cs" />
-    <Compile Include="..\TestBase.Mvc\HostedMvcTestFixtureBase.cs" Link="HostedMvcTestFixtureBase.cs" />
-    <Compile Include="..\TestBase.Mvc\MockApiHttpContextHelper.cs" Link="MockApiHttpContextHelper.cs" />
-    <Compile Include="..\TestBase.Mvc\MockHttpContextHelperV3.cs" Link="MockHttpContextHelperV3.cs" />
-    <Compile Include="..\TestBase.Mvc\MvcExtensions.cs" Link="MvcExtensions.cs" />
-    <Compile Include="..\TestBase.Mvc\Shoulds\HttpResponseMessageShoulds.cs" Link="HttpResponseMessageShoulds.cs" />
-    <Compile Include="..\TestBase.Mvc\Shoulds\MvcActionResultShoulds.cs" Link="MvcActionResultShoulds.cs" />
-    <Compile Include="..\TestBase.Mvc\Shoulds\MvcFileResultShoulds.cs" Link="MvcFileResultShoulds.cs" />
-    <Compile Include="..\TestBase.Mvc\Shoulds\MvcRouteResultShoulds.cs" Link="MvcRouteResultShoulds.cs" />
-    <Compile Include="..\TestBase.Mvc\Shoulds\MvcViewResultShoulds.cs" Link="MvcViewResultShoulds.cs" />
-    <Compile Include="..\TestBase.Mvc\TestableHttpListener.cs" Link="TestableHttpListener.cs" />
-    <Compile Include="..\TestBase.Mvc\TypicalMvcRouteConfig.cs" Link="TypicalMvcRouteConfig.cs" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore" Version="2.0.1" />

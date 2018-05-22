@@ -4,13 +4,8 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Reflection;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ApplicationParts;
-using Microsoft.AspNetCore.Mvc.Controllers;
-using Microsoft.AspNetCore.Mvc.ViewComponents;
 using Microsoft.AspNetCore.TestHost;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace TestBase
 {
@@ -73,38 +68,21 @@ namespace TestBase
         /// </summary>
         /// <typeparam name="TStartup"></typeparam>
         /// <param name="baseAddress"></param>
+        /// <param name="contentRoot">The directory path of the Project under test, assumed to be the ContentRoot for the server.
+        /// If not specified, we attempt to guess by searching for a directory named typeof(TStartup).GetTypeInfo().Assembly under the solution root.
+        /// </param>
         /// <returns>and <see cref="HttpClient"/> which can make requests to the application.</returns>
-        public HttpClient GivenClientForRunningServer<TStartup>(string baseAddress="http://localhost")
+        public HttpClient GivenClientForRunningServer<TStartup>(string baseAddress="http://localhost", string contentRoot=null)
         {
             this.TStartup = typeof(TStartup);
             var startupAssembly = typeof(TStartup).GetTypeInfo().Assembly;
-            var contentRoot = GetProjectPath(startupAssembly);
+            contentRoot = contentRoot??GetProjectPath(startupAssembly);
 
-            var builder = new WebHostBuilder()
-                .UseContentRoot(contentRoot)
-                .ConfigureServices(InitializeServices)
-                .UseEnvironment("Development")
-                .UseStartup(typeof(TStartup));
-
-            TestServer = new TestServer(builder);
+            this.TestServer= TestServerBuilder.RunningServerUsingStartup<TStartup>(contentRoot);
 
             this.httpClient= httpClient = TestServer.CreateClient();
             httpClient.BaseAddress = new Uri(baseAddress);
             return httpClient;
-        }
-
-        protected virtual void InitializeServices(IServiceCollection services)
-        {
-            var startupAssembly = TStartup.GetTypeInfo().Assembly;
-
-            // Inject a custom application part manager. Overrides AddMvcCore() because that uses TryAdd().
-            var manager = new ApplicationPartManager();
-            manager.ApplicationParts.Add(new AssemblyPart(startupAssembly));
-
-            manager.FeatureProviders.Add(new ControllerFeatureProvider());
-            manager.FeatureProviders.Add(new ViewComponentFeatureProvider());
-
-            services.AddSingleton(manager);
         }
 
         /// <summary>

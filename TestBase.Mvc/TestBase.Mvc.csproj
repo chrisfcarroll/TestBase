@@ -1,15 +1,33 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <None Remove="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ReadMe.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TestBase.Mvc.AspNetCore\TestBase.Mvc.AspNetCore.csproj" />
+  </ItemGroup>
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>TestBase</RootNamespace>
-    <AssemblyVersion>4.1.0.0</AssemblyVersion>
-    <AssemblyFileVersion>4.1.0.0</AssemblyFileVersion>
-    <PackageVersion>4.1.0.0</PackageVersion>
-    <Title>TestBase – Rich, fluent assertions and useful fakes for Mvc &amp; AdoNet.</Title>
-<PackageDescription><![CDATA[*TestBase* gives you a flying start with fluent assertions that
-are easy to extend and tools for testing with dependencies 
-on AspNetMvc, HttpClient, Ado.Net, Streams and Logging.
+    <AssemblyVersion>4.1.2.0</AssemblyVersion>
+    <AssemblyFileVersion>4.1.2.0</AssemblyFileVersion>
+    <PackageVersion>4.1.2.0</PackageVersion>
+    <Title>TestBase – Rich, fluent assertions and tools for testing with heavyweight dependencies: AspNetCore, AdoNet, HttpClient, AspNet.Mvc, Streams, Logging</Title>
+<PackageDescription><![CDATA[TestBase.Mvc is renamed => https://www.nuget.org/packages/TestBase.Mvc.AspNetCore
+TestBase-Mvc for Net4/Mvc4 is => https://www.nuget.org/packages/TestBase-Mvc
+
+*TestBase* gives you a flying start with 
+- fluent assertions that are easy to extend
+- sharp error messages
+- tools to help you test with “heavyweight” dependencies on 
+  - AspNetCore.Mvc, AspNet.Mvc or WebApi Contexts
+    - HttpClient
+    - Ado.Net
+    - Streams & Logging
 
 Chainable fluent assertions get you to the point concisely:
 ```
@@ -19,79 +37,110 @@ Chainable fluent assertions get you to the point concisely:
 - string.ShouldMatch().ShouldEqualIgnoringCase(), ...
 - numeric.ShouldBeBetween().ShouldEqualWithTolerance(), ...
 - IEnumerable.ShouldAll().ShouldContain().ShouldNotContain(), ...
-- Stream.ShouldHaveSameStreamContentAs(), Stream.ShouldContain()
 
-UnitUnderTest.Action()
-  .ShouldBeViewWithModel<TModel>()
-  .Payload
-    .ShouldEqualByValueExceptFor(new {Id=1, Payload1=expected}, ignoreFields)
-    .Payload2
-      .ShouldMatchIgnoringCase("I expected this");
 ```
 
-TestBase.Mvc
+TestBase.Mvc.AspNetCore & TestBase-Mvc
 ------------
 
 ```
 ControllerUnderTest.Action()
   .ShouldbeViewResult()
   .ShouldHaveModel<TModel>()
-  .ShouldEqualByValue(expected)
+    .Payload
+    .ShouldEqualByValueExceptFor(new {Id=1, Payload1=expected}, ignoreFields);
+
 ControllerUnderTest.Action()
   .ShouldBeRedirectToRouteResult()
-  .ShouldHaveRouteValue("expectedKey", [Optional] "expectedValue");
+  .ShouldHaveRouteValue(""expectedKey"", [Optional] ""expectedValue"");
 
 ShouldHaveViewDataContaining(), ShouldBeJsonResult() etc.
 ```
-
-TestBase.Mvc for netstandard20 & AspNetCore Mvc
----------------------------------------------------------
-
-- Test most controllers with zero setup using 
-  `controllerUnderTest.WithControllerContext(actionUnderTest)`
-- Test more complex controller/application dependencies using 
-  `HostedMvcTestFixtureBase` and specify your MVCApplications `Startup` class.
+Quickly test AspNetCore controllers with zero setup using `WithControllerContext()` :
 
 ```
-[TestCase("/dummy")]
-public async Task Put_Should_ReturnA(string url)
+[Test]
+public void ControllerUrlAndOtherPropertiesShouldWorkAsExpected__GivenControllerContext()
 {
-    var httpClient=GivenClientForRunningServer<Startup>();
-    GivenRequestHeaders(httpClient, "CustomHeader", "HeaderValue1");
+    var uut = new FakeController().WithControllerContext();
+    uut.Url.Action(""a"", ""b"").ShouldEqual(""/b/a"");
+    uut.ControllerContext.ShouldNotBeNull();
+    uut.HttpContext.ShouldBe(uut.ControllerContext.HttpContext);
+    uut.ControllerContext.HttpContext.Request.ShouldNotBeNull();
+    uut.Request.ShouldNotBeNull();
+    uut.Response.ShouldNotBeNull();
+    uut.Url.ShouldNotBeNull();
+    uut.ViewData.ShouldNotBeNull();
+    uut.TempData.ShouldNotBeNull();
 
-    var result = await httpClient.PutAsync(url, json);
+    uut.MyAction(param)
+        .ShouldBeViewResult()
+        .ShouldHaveModel<YouSaidViewModel>()
+        .YouSaid.ShouldBe(param);
+}
 
-    result.ShouldBe_202Accepted();
+[Test]
+public void ShouldBeViewWithModel_And_UrlHelper_ShouldWork()
+{
+    var controllerUnderTest = 
+        new AController()
+            .WithControllerContext(virtualPathTemplate:""/{Action}/Before/{Controller}"");
+
+    var result= controllerUnderTest
+            .Action(""SomeController"",""SomeAction"")
+            .ShouldBeViewWithModel<AClass>(""ViewName"");
+                .FooterLink
+                .ShouldBe(""/SomeAction/Before/SomeController"");
 }
 ```
 
-TestBase.Mvc Version 3 for Net4
--------------------------------
-
-Fake your http request &amp; context, and use the `RegisterRoutes` method 
-of your actual application to setup `Controller.Url`
+... Or test against complex application dependencies using `HostedMvcTestFixtureBase` and specify your `Startup` class:
 
 ```
-ControllerUnderTest
-  .WithHttpContextAndRoutes(
-    RouteConfig.RegisterRoutes, 
-    "/incomingurl"
-  );
+[TestFixture]
+public class Tests : HostedMvcTestFixtureBase
+{
 
-ApiControllerUnderTest.WithWebApiHttpContext<T>(
-    httpMethod, 
-    requestUri,
-    routeTemplate)
+    [TestCase(""/dummy/action?id={id}"")]
+    public async Task Get_Should_ReturnActionResult(string url)
+    {
+        var id=Guid.NewGuid();
+        var httpClient=GivenClientForRunningServer<Startup>();
+        GivenRequestHeaders(httpClient, ""CustomHeader"", ""HeaderValue1"");
+            
+        var result= await httpClient.GetAsync(url.Formatz(new {id}));
+
+        result
+            .ShouldBe_200Ok()
+            .Content.ReadAsStringAsync().Result
+            .ShouldBe(""Content"");
+    }
+
+    [TestCase(""/dummy"")]
+    public async Task Put_Should_ReturnA(string url)
+    {
+        var something= new Fixture().Create<Something>();
+        var jsonBody= new StringContent(something.ToJSon(), Encoding.UTF8, ""application/json"");
+        var httpClient=GivenClientForRunningServer<Startup>();
+        GivenRequestHeaders(httpClient, ""CustomHeader"", ""HeaderValue1"");
+
+        var result = await httpClient.PutAsync(url, jsonBody);
+
+        result.ShouldBe_202Accepted();
+        DummyController.Putted.ShouldEqualByValue( something );
+    }
+}
 ```
-
 See also
  - TestBase
+ - TestBase-Mvc for Mvc4
  - TestBase.HttpClient.Fake
  - TestBase.AdoNet
  - Serilog.Sinks.ListOfString 
  - Extensions.Logging.ListOfString]]></PackageDescription>
     <PackageReleaseNotes>ChangeLog
 ---------
+4.1.2.0 TestBase.Mvc.AspNetCore provides WithControllerContext()
 4.0.7.0 Added TestBase.FakeHttpClient. Added Should(predicate,...) as synonym of ShouldHave(predicate,...)
 4.0.6.2 TestBase.Mvc can run controller actions on aspnetcore using controller.WithControllerContext()
 4.0.5.2 TestBase.Mvc partially ported to netstandard20 / AspNetCore
@@ -111,21 +160,4 @@ See also
     <IncludeSymbols>true</IncludeSymbols>
     <PackageTags>nunit;test;unittest;tdd;fluent assertions;mock;mvc;aspnetmvc;aspnetcore;aspnetcoremvc</PackageTags>
 </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>TRACE;DEBUG;NETSTANDARD2_0;MVC45</DefineConstants>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.2.6" />
-    <PackageReference Include="Moq" Version="4.8.2" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\TestBase\TestBase.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-  </ItemGroup>
-
 </Project>

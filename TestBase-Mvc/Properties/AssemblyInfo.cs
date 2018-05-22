@@ -1,16 +1,23 @@
 ﻿using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("TestBase-Mvc")]
-[assembly: AssemblyDescription(@"*TestBase* gets you off to a flying start when unit testing projects with dependencies.
-TestBase-Mvc adds a rich extensible set of fluent assertions for verifying Mvc ActionResults and for easy setup of ControllerContext and HttpContext for both Mvc and WebApi
-TestBase.Shoulds
--------------------
-Chainable fluent assertions get you to the point concisely
+[assembly: AssemblyDescription(@"*TestBase* gives you a flying start with 
+- fluent assertions that are easy to extend
+- sharp error messages
+- tools to help you test with “heavyweight” dependencies on 
+    - AspNet.Mvc & AspNetCore.Mvc Contexts
+	- HttpClient
+	- Ado.Net
+	- Streams & Logging
+
+TestBase-Mvc adds a rich extensible set of fluent assertions for verifying Mvc4 ActionResults, and for easy setup of ControllerContext and HttpContext for both Mvc and WebApi
+
+Chainable fluent assertions get you to the point concisely:
+```
 ControllerUnderTest.Action()
   .ShouldbeViewResult()
   .ShouldHaveModel&lt;TModel&gt;()
@@ -20,6 +27,7 @@ ControllerUnderTest.Action()
   .ShouldHaveRouteValue(""expectedKey"", [Optional] ""expectedValue"");
 
 ShouldHaveViewDataContaining(), ShouldBeJsonResult() etc.
+```
 
 TestBase
 ----------
@@ -37,7 +45,20 @@ ControllerUnderTest
 ApiControllerUnderTest.WithWebApiHttpContext&lt;T&gt;(
     HttpMethod httpMethod, 
     [Optional] string requestUri,
-    [Optional] string routeTemplate)"
+    [Optional] string routeTemplate)
+
+
+See Also
+--------
+
+For AspNetCore: https://www.nuget.org/packages/TestBase.Mvc.AspNetCore
+
+For NetStandard2
+-----------------
+https://www.nuget.org/Packages/TestBase 
+https://www.nuget.org/Packages/TestBase.HttpClient.Fake
+https://www.nuget.org/packages/TestBase.AdoNet
+"
 )]
 
 // Setting ComVisible to false makes the types in this assembly not visible 

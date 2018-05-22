@@ -195,5 +195,12 @@ var logger=new LoggerConfiguration().WriteTo.StringList(loglines).CreateLogger()
 logLines.ShouldContain(x=>x.Matches("kilroy was here"));
 ```
 
+PDFs
+----
+`TestBase.Pdf.DocumentWithLineOfText(myLineOfText)` gives you a small but well-formed PDF document to play with.
+(taken from https://www.cafe-encounter.net/p521/a-very-small-editable-pdf-for-testing)
+
+
+
 - Mix and match with your favourite test runners and assertions
 - Building on Mono : define compile symbol NoMSTest to remove dependency on Microsoft.VisualStudio.QualityTools.UnitTestFramework
