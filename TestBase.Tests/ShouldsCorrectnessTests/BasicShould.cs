@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using NUnit.Framework;
 
 namespace TestBase.Tests.ShouldsCorrectnessTests
@@ -45,6 +43,16 @@ namespace TestBase.Tests.ShouldsCorrectnessTests
                     .Should(d => d["a"].ShouldBe(2))
                     .Should(d => d["b"].ShouldBe(1))
             );
+        }
+
+        class ASubclass : AClass{}
+
+        [Test]
+        public void ShouldBeAssignableTo()
+        {
+            new AClass().ShouldBeAssignableTo<AClass>();
+            new ASubclass().ShouldBeAssignableTo<AClass>();
+
         }
     }
 }

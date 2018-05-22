@@ -159,7 +159,7 @@ namespace TestBase
         /// <returns><code>((<typeparamref name="T"/>)<paramref name="actual"/>)</code></returns>
         public static T ShouldBeOfType<T>(this object actual, string message=null, params object[] args) 
         {
-            Assert.That(actual, x=> x is T, message ??nameof(ShouldBeOfType), args);
+            Assert.That(actual, x=> x is T, message ??$"actual of type {actual?.GetType()} {nameof(ShouldBeOfType)} {nameof(T)} but isn't.", args);
             return (T)actual;
         }
 
@@ -167,7 +167,7 @@ namespace TestBase
         /// <returns><code><paramref name="actual"/></code></returns>
         public static T ShouldBeOfTypeEvenIfNull<T>(this T actual, Type type, string message=null, params object[] args) where T : class
         {
-            typeof (T).ShouldEqual(type, message??nameof(ShouldBeOfTypeEvenIfNull), args);
+            typeof (T).ShouldEqual(type, message??$"{nameof(ShouldBeOfTypeEvenIfNull)} {nameof(T)}", args);
             return actual;
         }
 
@@ -175,7 +175,7 @@ namespace TestBase
         /// <returns><code>((<typeparamref name="T"/>)<paramref name="actual"/>)</code></returns>
         public static T ShouldBeAssignableTo<T>(this object actual, string message=null, params object[] args) where T : class
         {
-            Assert.That(actual, x=>x is T, message??nameof(ShouldBeAssignableTo), args);
+            Assert.That(actual, x=>x is T, message??$"{actual?.GetType()} {nameof(ShouldBeAssignableTo)} {nameof(T)} but isn't.", args);
 
             return actual as T;
         }
@@ -184,7 +184,7 @@ namespace TestBase
         /// <returns><code>((<typeparamref name="T"/>)<paramref name="actual"/>)</code></returns>
         public static T ShouldBeCastableTo<T>(this object actual, string message=null, params object[] args)
         {
-            Assert.That(actual, x=> ((T)x)!=null, message ??nameof(ShouldBeAssignableTo), args);
+            Assert.That(actual, x=> ((T)x)!=null, message??$"actual of type {actual?.GetType()} {nameof(ShouldBeCastableTo)} {nameof(T)} but isn't.", args);
 
             return (T)actual ;
         }
