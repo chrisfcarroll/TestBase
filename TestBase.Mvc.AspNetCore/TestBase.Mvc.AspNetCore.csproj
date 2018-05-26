@@ -1,13 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>TestBase</RootNamespace>
-    <AssemblyVersion>4.1.2.1</AssemblyVersion>
-    <AssemblyFileVersion>4.1.2.1</AssemblyFileVersion>
-    <PackageVersion>4.1.2.1</PackageVersion>
+    <AssemblyVersion>4.1.2.2</AssemblyVersion>
+    <AssemblyFileVersion>4.1.2.2</AssemblyFileVersion>
+    <PackageVersion>4.1.2.2</PackageVersion>
     <Title>TestBase – Rich, fluent assertions and tools for testing with heavyweight dependencies: AspNetCore, AdoNet, HttpClient, AspNet.Mvc, Streams, Logging</Title>
-<PackageDescription><![CDATA[*TestBase* gives you a flying start with 
+    <PackageDescription><![CDATA[*TestBase* gives you a flying start with 
 - fluent assertions that are easy to extend
 - sharp error messages
 - tools to help you test with “heavyweight” dependencies on 
@@ -45,13 +44,9 @@ public class WhenTestingControllersUsingFakeControllerContext
         uut.Url.Action(""a"", ""b"").ShouldEqual(""/b/a"");
         uut.ControllerContext.ShouldNotBeNull();
         uut.HttpContext.ShouldBe(uut.ControllerContext.HttpContext);
-        uut.ControllerContext.HttpContext.Request.ShouldNotBeNull();
         uut.Request.ShouldNotBeNull();
-        uut.Response.ShouldNotBeNull();
-        uut.Url.ShouldNotBeNull();
         uut.ViewData.ShouldNotBeNull();
         uut.TempData.ShouldNotBeNull();
-
         uut.MyAction(param)
             .ShouldBeViewResult()
             .ShouldHaveModel<YouSaidViewModel>()
@@ -59,7 +54,7 @@ public class WhenTestingControllersUsingFakeControllerContext
     }
 
     [Test]
-    public void ShouldBeViewWithModel_ShouldAssertViewResultAndNameAndModel_And_UrlHelper_ShouldWork()
+    public void ShouldBeAbleToUseServicesConfiguredInStartupInTests()
     {
       var moreServicesFromDI=TestServerBuilder.RunningServerUsingStartup<TStartup>().Host.ServiceProvider;
 
@@ -123,7 +118,7 @@ See also
  - Extensions.Logging.ListOfString]]></PackageDescription>
     <PackageReleaseNotes>ChangeLog
 ---------
-4.1.2.0 TestBase.Mvc.AspNetCore provides WithControllerContext()
+4.1.2.0 TestBase.Mvc.AspNetCore provides WithControllerContext() and TestServerBuilder
 4.0.7.0 Added TestBase.FakeHttpClient. Added Should(predicate,...) as synonym of ShouldHave(predicate,...)
 4.0.6.2 TestBase.Mvc can run controller actions on aspnetcore using controller.WithControllerContext()
 4.0.5.2 TestBase.Mvc partially ported to netstandard20 / AspNetCore
@@ -142,21 +137,17 @@ See also
     <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
     <IncludeSymbols>true</IncludeSymbols>
     <PackageTags>nunit;test;unittest;tdd;fluent assertions;mock;mvc;aspnetmvc;aspnetcore;aspnetcoremvc</PackageTags>
-</PropertyGroup>
-
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>TRACE;DEBUG;NETSTANDARD2_0;ASPNETCORE</DefineConstants>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore" Version="2.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="2.0.1" />
     <PackageReference Include="Moq" Version="4.8.2" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\TestBase\TestBase.csproj" />
   </ItemGroup>
-
 </Project>

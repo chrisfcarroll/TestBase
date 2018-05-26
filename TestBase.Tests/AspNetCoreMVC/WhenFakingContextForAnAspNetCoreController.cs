@@ -48,22 +48,21 @@ namespace TestBase.Tests.AspNetCoreMVC
         public void UrlHelper_should_map_controller_and_action()
         {
             var uut = new FakeController().WithControllerContext();
-            uut.Url.Action("a", "b").ShouldEqual("/b/a");
+            uut.Url.Action("Action", "A").ShouldEqual("/A/Action");
         }
 
         [Test]
         public void UrlHelper_should_respect_virtualpathtemplate()
         {
             var uut = new FakeController().WithControllerContext(virtualPathTemplate:"/some/{action}/{controller}/thing/");
-            uut.Url.Action("a", "b").ShouldEqual("/some/a/b/thing/");
+            uut.Url.Action("Action", "A").ShouldEqual("/some/Action/A/thing/");
         }
 
         [Test]
         public void UrlHelper_should_map_controller_and_action_and_other_values()
         {
             var uut = new FakeController().WithControllerContext();
-            uut.Url.Action("a", "b").ShouldEqual("/b/a");
-            uut.Url.Action("a", "b", new {id=1, otherparameter="2"}).ShouldEqual("/b/a?id=1&otherparameter=2");
+            uut.Url.Action("Action", "A", new {id=1, otherparameter="2"}).ShouldEqual("/A/Action?id=1&otherparameter=2");
         }
 
         [Test]
@@ -73,16 +72,6 @@ namespace TestBase.Tests.AspNetCoreMVC
             //
             uut.Url.Content("~/here.txt").ShouldBe("/here.txt");
         }
-
-        //static void RegisterFakeRoutes(RouteCollection routes)
-        //{
-        //    routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
-        //    routes.MapRoute(
-        //        name: "Default",
-        //        url: "custom/{controller}-{action}/{id}",
-        //        defaults: new { controller = "CustomC", action = "CustomA", id = UrlParameter.Optional }
-        //        );
-        //}
     }
 }
 #endif

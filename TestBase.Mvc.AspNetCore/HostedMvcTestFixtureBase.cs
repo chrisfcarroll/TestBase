@@ -72,15 +72,15 @@ namespace TestBase
         /// If not specified, we attempt to guess by searching for a directory named typeof(TStartup).GetTypeInfo().Assembly under the solution root.
         /// </param>
         /// <returns>and <see cref="HttpClient"/> which can make requests to the application.</returns>
-        public HttpClient GivenClientForRunningServer<TStartup>(string baseAddress="http://localhost", string contentRoot=null)
+        public HttpClient GivenClientForRunningServer<TStartup>(string baseAddress = "http://localhost", string contentRoot = null)
         {
             this.TStartup = typeof(TStartup);
             var startupAssembly = typeof(TStartup).GetTypeInfo().Assembly;
-            contentRoot = contentRoot??GetProjectPath(startupAssembly);
+            contentRoot = contentRoot ?? GetProjectPath(startupAssembly);
 
-            this.TestServer= TestServerBuilder.RunningServerUsingStartup<TStartup>(contentRoot);
+            this.TestServer = TestServerBuilder.RunningServerUsingStartup<TStartup>(contentRoot);
 
-            this.httpClient= httpClient = TestServer.CreateClient();
+            this.httpClient = httpClient = TestServer.CreateClient();
             httpClient.BaseAddress = new Uri(baseAddress);
             return httpClient;
         }
@@ -98,13 +98,11 @@ namespace TestBase
             {
                 if (directoryToSearchForSolnFile.GetFileSystemInfos("*.sln").Any())
                 {
-                    return Path.GetFullPath(Path.Combine(directoryToSearchForSolnFile.FullName,projectUnderTestName));
+                    return Path.GetFullPath(Path.Combine(directoryToSearchForSolnFile.FullName, projectUnderTestName));
                 }
 
                 directoryToSearchForSolnFile = directoryToSearchForSolnFile.Parent;
-            }
-            while (directoryToSearchForSolnFile.Parent != null);
-
+            } while (directoryToSearchForSolnFile.Parent != null);
 
 
             throw new Exception($"Solution root could not be located using application root {pathToCurrentlyExecutingTest}.");
@@ -114,17 +112,28 @@ namespace TestBase
         /// For those addicted to GivenWhenThen formatting. Usage:
         /// <code>Given(out thing, new Thing())</code>
         /// </summary>
-        public T Given<T>(out T given, T value) { return given = value; }
+        public T Given<T>(out T given, T value)
+        {
+            return given = value;
+        }
+
         /// <summary>
         /// For those addicted to GivenWhenThen formatting. Usage:
         /// <code>Given(out thing, ()=>new Thing())</code>
         /// </summary>
-        public T Given<T>(out T given, Func<T> value) { return given = value(); }
+        public T Given<T>(out T given, Func<T> value)
+        {
+            return given = value();
+        }
+
         /// <summary>
         /// For those addicted to GivenWhenThen formatting. Usage:
         /// <code>Given(out thing, input, i=>new Thing(i))</code>
         /// </summary>
-        public T Given<T, Tinput>(out T given, Tinput input, Func<Tinput, T> value) { return given = value(input); }
+        public T Given<T, Tinput>(out T given, Tinput input, Func<Tinput, T> value)
+        {
+            return given = value(input);
+        }
 
         /// <summary>
         /// Adds the specified Headers to a <see cref="HttpClient"/> request
@@ -139,8 +148,9 @@ namespace TestBase
 
             foreach (var headerValue in headerValues)
             {
-                httpClient.DefaultRequestHeaders.Add(headerName, headerValue); 
-            }  
+                httpClient.DefaultRequestHeaders.Add(headerName, headerValue);
+            }
+
             return httpClient.DefaultRequestHeaders;
         }
     }

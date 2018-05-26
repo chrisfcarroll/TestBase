@@ -11,6 +11,7 @@ namespace TestBase
         {
             return @this.ShouldBeViewResultNamed(viewName).ViewData.Model.ShouldBeOfType<T>();
         }
+
         public static T ShouldBeViewWithModel<T>(this IActionResult @this)
         {
             return @this.ShouldBeViewResult().ViewData.Model.ShouldBeOfType<T>();
@@ -31,7 +32,7 @@ namespace TestBase
 
         public static object ShouldHaveViewDataForKey(this ViewResult @this, string key)
         {
-            Assert.That(@this.ViewData.ContainsKey(key), 
+            Assert.That(@this.ViewData.ContainsKey(key),
                         String.Format("Keys present: {0}", String.Join(";", @this.ViewData.Keys.ToArray())));
             return @this.ViewData[key];
         }
@@ -42,6 +43,7 @@ namespace TestBase
             {
                 @this.ShouldHaveViewDataForKey(key);
             }
+
             return @this;
         }
 

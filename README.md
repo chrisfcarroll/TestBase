@@ -2,7 +2,7 @@
 - fluent assertions that are easy to extend
 - sharp error messages
 - tools to help you test with “heavyweight” dependencies on 
-    - AspNet.Mvc & AspNetCore.Mvc Contexts
+    - AspNet.Mvc or AspNetCore Contexts
 	- HttpClient
 	- Ado.Net
 	- Streams & Logging

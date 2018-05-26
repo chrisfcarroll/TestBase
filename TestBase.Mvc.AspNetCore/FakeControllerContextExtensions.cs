@@ -34,7 +34,11 @@ namespace TestBase
             return controller;
         }
 
-        public static T WithControllerContext<T>(this T controller, string action="action", object routeValues=null, string virtualPathTemplate="/{controller}/{action}", ClaimsPrincipal user=null) where T : Controller
+        public static T WithControllerContext<T>(this T controller,
+                                                 string action = "action",
+                                                 object routeValues = null,
+                                                 string virtualPathTemplate = "/{controller}/{action}",
+                                                 ClaimsPrincipal user = null) where T : Controller
         {
             var controllerName = controller.GetType().Name;
             if (controllerName.EndsWith("Controller") && controllerName.Length > 10)
@@ -42,12 +46,15 @@ namespace TestBase
                 controllerName = controllerName.Substring(0, controllerName.Length - 10);
             }
 
-            var actionDescriptor = new ActionDescriptor{
-                RouteValues = new Dictionary<string, string>(new RouteValueEqualityComparer())
-                {
-                    {"controller",controllerName}, {"action", action}
-                }};
-            foreach(var kv in new RouteValueDictionary(routeValues??new {})){actionDescriptor.RouteValues.Add(kv.Key,kv.Value.ToString());}
+            var actionDescriptor = new ActionDescriptor
+                                   {
+                                       RouteValues = new Dictionary<string, string>(new RouteValueEqualityComparer())
+                                                     {
+                                                         {"controller", controllerName},
+                                                         {"action", action}
+                                                     }
+                                   };
+            foreach (var kv in new RouteValueDictionary(routeValues ?? new { })) { actionDescriptor.RouteValues.Add(kv.Key, kv.Value.ToString()); }
 
             //---Doesnt seem to help
             //var trb = new TreeRouteBuilder(
@@ -64,28 +71,28 @@ namespace TestBase
             var routerMock = new Mock<IRouter>();
             routerMock
                 .Setup(x => x.GetVirtualPath(It.IsAny<VirtualPathContext>()))
-                .Returns<VirtualPathContext>( vpc=>
-                    new VirtualPathData(routerMock.Object, VirtualPathFromTemplateAndValues(virtualPathTemplate, vpc.Values ), vpc.Values )
-                    );
+                .Returns<VirtualPathContext>(vpc =>
+                                                 new VirtualPathData(routerMock.Object, VirtualPathFromTemplateAndValues(virtualPathTemplate, vpc.Values), vpc.Values)
+                                            );
             var routeData = new RouteData();
             routeData.Routers.Add(routerMock.Object);
             var metadataProvider = TestModelMetadataProvider.CreateDefaultProvider();
-            var httpContext = new DefaultHttpContext{User = user ?? new ClaimsPrincipal(new ClaimsIdentity(new Claim[0]))};
+            var httpContext = new DefaultHttpContext {User = user ?? new ClaimsPrincipal(new ClaimsIdentity(new Claim[0]))};
 
             var actionContext = new ActionContext(
-                httpContext,
-                routeData, 
-                actionDescriptor, 
-                new ModelStateDictionary());
+                                                  httpContext,
+                                                  routeData,
+                                                  actionDescriptor,
+                                                  new ModelStateDictionary());
 
             var viewData = new ViewDataDictionary(metadataProvider, new ModelStateDictionary());
-            var tempData = new TempDataDictionary( httpContext, new SessionStateTempDataProvider());
+            var tempData = new TempDataDictionary(httpContext, new SessionStateTempDataProvider());
             controller.MetadataProvider = metadataProvider;
             controller.ViewData = viewData;
             controller.TempData = tempData;
-            controller.ObjectValidator = new DefaultObjectValidator( metadataProvider,new List<IModelValidatorProvider>());
-            controller.Url= new UrlHelper(actionContext);
-            controller.ControllerContext = new ControllerContext{ HttpContext = httpContext };
+            controller.ObjectValidator = new DefaultObjectValidator(metadataProvider, new List<IModelValidatorProvider>());
+            controller.Url = new UrlHelper(actionContext);
+            controller.ControllerContext = new ControllerContext {HttpContext = httpContext};
             return controller;
         }
 
@@ -125,7 +132,7 @@ namespace TestBase
                              + string.Join("&", new RouteValueDictionary(uac.Values).Select(p => p.Key + "=" + p.Value)));
             urlHelperMock
                 .Setup(x => x.Content(It.IsAny<string>()))
-                .Returns<string>( s=>s );
+                .Returns<string>(s => s);
             controller.Url = urlHelperMock.Object;
             return controller;
         }
@@ -134,8 +141,15 @@ namespace TestBase
 
     public class TestOptionsManager<TOptions> : IOptions<TOptions> where TOptions : class, new()
     {
-        public TestOptionsManager() : this(new TOptions()) { }
-        public TestOptionsManager(TOptions value) { Value = value; }
+        public TestOptionsManager() : this(new TOptions())
+        {
+        }
+
+        public TestOptionsManager(TOptions value)
+        {
+            Value = value;
+        }
+
         public TOptions Value { get; }
     }
 
@@ -145,12 +159,12 @@ namespace TestBase
         public static IModelMetadataProvider CreateDefaultProvider(IStringLocalizerFactory stringLocalizerFactory = null)
         {
             var detailsProviders = new IMetadataDetailsProvider[]
-            {
-                new DefaultBindingMetadataProvider(),
-                new DefaultValidationMetadataProvider(),
-                new DataAnnotationsMetadataProvider(new TestOptionsManager<MvcDataAnnotationsLocalizationOptions>(),stringLocalizerFactory),
-                //new DataMemberRequiredBindingMetadataProvider(),
-            };
+                                   {
+                                       new DefaultBindingMetadataProvider(),
+                                       new DefaultValidationMetadataProvider(),
+                                       new DataAnnotationsMetadataProvider(new TestOptionsManager<MvcDataAnnotationsLocalizationOptions>(), stringLocalizerFactory),
+                                       //new DataMemberRequiredBindingMetadataProvider(),
+                                   };
 
             var compositeDetailsProvider = new DefaultCompositeMetadataDetailsProvider(detailsProviders);
             return new DefaultModelMetadataProvider(compositeDetailsProvider, new TestOptionsManager<MvcOptions>());
@@ -159,12 +173,12 @@ namespace TestBase
         public static IModelMetadataProvider CreateDefaultProvider(IList<IMetadataDetailsProvider> providers)
         {
             var detailsProviders = new List<IMetadataDetailsProvider>()
-            {
-                new DefaultBindingMetadataProvider(),
-                new DefaultValidationMetadataProvider(),
-                new DataAnnotationsMetadataProvider(new TestOptionsManager<MvcDataAnnotationsLocalizationOptions>(),stringLocalizerFactory: null),
-                //new DataMemberRequiredBindingMetadataProvider(),
-            };
+                                   {
+                                       new DefaultBindingMetadataProvider(),
+                                       new DefaultValidationMetadataProvider(),
+                                       new DataAnnotationsMetadataProvider(new TestOptionsManager<MvcDataAnnotationsLocalizationOptions>(), stringLocalizerFactory: null),
+                                       //new DataMemberRequiredBindingMetadataProvider(),
+                                   };
 
             detailsProviders.AddRange(providers);
 
@@ -193,14 +207,15 @@ namespace TestBase
 
         TestModelMetadataProvider(TestModelMetadataDetailsProvider detailsProvider)
             : base(
-                  new DefaultCompositeMetadataDetailsProvider(new IMetadataDetailsProvider[]
-                  {
-                      new DefaultBindingMetadataProvider(),
-                      new DefaultValidationMetadataProvider(),
-                      new DataAnnotationsMetadataProvider(new TestOptionsManager<MvcDataAnnotationsLocalizationOptions>(),stringLocalizerFactory: null),
-                      detailsProvider
-                  }),
-                  new TestOptionsManager<MvcOptions>())
+                   new DefaultCompositeMetadataDetailsProvider(new IMetadataDetailsProvider[]
+                                                               {
+                                                                   new DefaultBindingMetadataProvider(),
+                                                                   new DefaultValidationMetadataProvider(),
+                                                                   new DataAnnotationsMetadataProvider(new TestOptionsManager<MvcDataAnnotationsLocalizationOptions>(),
+                                                                                                       stringLocalizerFactory: null),
+                                                                   detailsProvider
+                                                               }),
+                   new TestOptionsManager<MvcOptions>())
         {
             _detailsProvider = detailsProvider;
         }
@@ -344,33 +359,56 @@ namespace TestBase
 
     public class FakeUrlHelper : IUrlHelper
     {
-        public FakeUrlHelper(ActionContext actionContext){ ActionContext = actionContext; }
+        public FakeUrlHelper(ActionContext actionContext)
+        {
+            ActionContext = actionContext;
+        }
 
-        public string Action(UrlActionContext actionContext){return actionContext.Action; }
+        public string Action(UrlActionContext actionContext)
+        {
+            return actionContext.Action;
+        }
 
-        public string Content(string contentPath){return contentPath;}
+        public string Content(string contentPath)
+        {
+            return contentPath;
+        }
 
         public bool IsLocalUrl(string url) => true;
 
-        public string RouteUrl(UrlRouteContext routeContext){ return $"{routeContext.Protocol}://{routeContext.Host}/{routeContext.RouteName}";}
+        public string RouteUrl(UrlRouteContext routeContext)
+        {
+            return $"{routeContext.Protocol}://{routeContext.Host}/{routeContext.RouteName}";
+        }
 
-        public string Link(string routeName, object values){return routeName + "?" + String.Join("&", new RouteValueDictionary(values).Select(p=> p.Key+"="+p.Value));}
+        public string Link(string routeName, object values)
+        {
+            return routeName + "?" + String.Join("&", new RouteValueDictionary(values).Select(p => p.Key + "=" + p.Value));
+        }
 
         public ActionContext ActionContext { get; }
     }
 
     public class TestUriBuildingContext : UriBuildingContext
     {
-        public TestUriBuildingContext() : base(new UrlTestEncoder()){}
+        public TestUriBuildingContext() : base(new UrlTestEncoder())
+        {
+        }
     }
 
     public class TestPooledObjectPolicy<T> : IPooledObjectPolicy<T> where T : class
     {
-        public Func<T> Factory = ()=>throw new InvalidOperationException("First, populate TestPooledObjectPolicy<T>.Factory, then you can use it.");
+        public Func<T> Factory = () => throw new InvalidOperationException("First, populate TestPooledObjectPolicy<T>.Factory, then you can use it.");
 
-        public T Create(){ return Factory(); }
+        public T Create()
+        {
+            return Factory();
+        }
 
-        public bool Return(T obj){ return true; }
+        public bool Return(T obj)
+        {
+            return true;
+        }
     }
 }
 #endif

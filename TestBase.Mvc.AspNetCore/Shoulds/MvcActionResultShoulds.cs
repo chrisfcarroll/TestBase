@@ -12,11 +12,14 @@ namespace TestBase
             {
                 result.Url.ShouldEqual(url, "Expected the RedirectResult.Url to be {0}", url);
             }
+
             if (permanent.HasValue)
             {
-                result.Permanent.ShouldEqual(permanent, "Expected the RedirectResult to {0} be permanent",
+                result.Permanent.ShouldEqual(permanent,
+                                             "Expected the RedirectResult to {0} be permanent",
                                              permanent.Value ? "" : "not ");
             }
+
             return result;
         }
 
@@ -55,9 +58,10 @@ namespace TestBase
             if (result.RouteValues.ContainsKey("controller"))
             {
                 result.RouteValues["controller"].ShouldBeNullOrEmptyOrWhitespace(
-                    "Expected IActionResult to be Redirect to default action, but a controller, '{0}', was specified.",
-                    result.RouteValues["controller"]);
+                                                                                 "Expected IActionResult to be Redirect to default action, but a controller, '{0}', was specified.",
+                                                                                 result.RouteValues["controller"]);
             }
+
             result.ShouldBeRedirectToDefaultAction();
 
             return result;

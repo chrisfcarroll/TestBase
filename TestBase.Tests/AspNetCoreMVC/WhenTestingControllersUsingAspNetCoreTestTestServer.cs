@@ -16,7 +16,7 @@ namespace TestBase.Tests.AspNetCoreMVC
     class Startup
     {
         public Startup(IHostingEnvironment env){Configuration = new ConfigurationBuilder().Build();}
-        public IConfigurationRoot Configuration { get; }
+        IConfigurationRoot Configuration { get; }
         public void ConfigureServices(IServiceCollection services){ services.AddMvc(); }
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory){app.UseMvc();}
     }

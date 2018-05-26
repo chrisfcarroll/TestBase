@@ -1,4 +1,4 @@
-Microsoft Visual Studio Solution File, Format Version 12.00
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 10.0.40219.1
@@ -23,6 +23,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Serilog.Sinks.ListOfString", "Serilog.Sinks.LostOfString\Serilog.Sinks.ListOfString.csproj", "{E0FF5F10-2CB6-4245-8B0D-115FAE80EFBF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestBase.Mvc.AspNetCore", "TestBase.Mvc.AspNetCore\TestBase.Mvc.AspNetCore.csproj", "{7D3A3024-33EB-45E4-9FC7-0AAD095187E1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestBase.Mvc.AspNetCore.GuineaPig", "TestBase.Mvc.AspNetCore.GuineaPig\TestBase.Mvc.AspNetCore.GuineaPig.csproj", "{2462C9FD-9F47-44C9-A4DC-068E799EBA4C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -62,6 +64,10 @@ Global
 		{7D3A3024-33EB-45E4-9FC7-0AAD095187E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7D3A3024-33EB-45E4-9FC7-0AAD095187E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7D3A3024-33EB-45E4-9FC7-0AAD095187E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2462C9FD-9F47-44C9-A4DC-068E799EBA4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2462C9FD-9F47-44C9-A4DC-068E799EBA4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2462C9FD-9F47-44C9-A4DC-068E799EBA4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2462C9FD-9F47-44C9-A4DC-068E799EBA4C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

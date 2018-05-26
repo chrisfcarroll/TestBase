@@ -32,15 +32,17 @@ namespace TestBase
         /// <remarks>
         /// Use <see cref="TestServer.Host"/>.<see cref="ServiceProvider"/> to get instances of complex dependencies defined in your Startup class.
         /// </remarks>
-        public static TestServer RunningServerUsingStartup<TStartup>(string webProjectPhysicalPath = null, string environmentName = "Development", FeatureCollection featureCollection= null)
+        public static TestServer RunningServerUsingStartup<TStartup>(string webProjectPhysicalPath = null,
+                                                                     string environmentName = "Development",
+                                                                     FeatureCollection featureCollection = null)
         {
             webProjectPhysicalPath = webProjectPhysicalPath ?? GuessWebProjectPathFromAssemblyName(typeof(TStartup).GetTypeInfo().Assembly);
 
             var webHostBuilder = new WebHostBuilder()
-                .UseContentRoot(webProjectPhysicalPath).ConfigureServices(InitializeServices<TStartup>)
-                .UseEnvironment(environmentName)
-                .UseStartup(typeof (TStartup));
-            return new TestServer(webHostBuilder, featureCollection??new FeatureCollection());
+                                 .UseContentRoot(webProjectPhysicalPath).ConfigureServices(InitializeServices<TStartup>)
+                                 .UseEnvironment(environmentName)
+                                 .UseStartup(typeof(TStartup));
+            return new TestServer(webHostBuilder, featureCollection ?? new FeatureCollection());
         }
 
         internal static void InitializeServices<TStartup>(IServiceCollection services)
@@ -61,7 +63,7 @@ namespace TestBase
         /// <param name="startupAssembly"></param>
         /// <param name="projectFilePattern"></param>
         /// <returns></returns>
-        public static string GuessWebProjectPathFromAssemblyName(Assembly startupAssembly, string projectFilePattern="*.*proj")
+        public static string GuessWebProjectPathFromAssemblyName(Assembly startupAssembly, string projectFilePattern = "*.*proj")
         {
             var name = startupAssembly.GetName().Name;
             var baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
@@ -69,18 +71,19 @@ namespace TestBase
             while (!directoryInfo.GetFileSystemInfos("*.sln").Any())
             {
                 directoryInfo = directoryInfo.Parent;
-                if (directoryInfo.Parent == null)throw new Exception($"Solution root could not be located using application root {baseDirectory}.");
+                if (directoryInfo.Parent == null) throw new Exception($"Solution root could not be located using application root {baseDirectory}.");
             }
 
             var directoriesUnderSolution = directoryInfo.EnumerateDirectories("*", SearchOption.TopDirectoryOnly);
             var projectFilesInSolution = directoriesUnderSolution.SelectMany(d => d.GetFileSystemInfos(projectFilePattern));
-            var originalProjectFile = projectFilesInSolution.FirstOrDefault(p => p.Name==name);
+            var originalProjectFile = projectFilesInSolution.FirstOrDefault(p => p.Name == name + p.Extension);
             if (originalProjectFile == null)
             {
                 throw new ArgumentException(
-                    $"Failed to find a Project file *.*.proj whose name matched the Startup classes' AssemblyName {name} under solution directory {directoryInfo.FullName}", 
-                    directoryInfo.FullName);
+                                            $"Failed to find a Project file {projectFilePattern} whose name matched the Startup classes' AssemblyName {name} under solution directory {directoryInfo.FullName}",
+                                            directoryInfo.FullName);
             }
+
             var originalProjectDirectoryPath = Path.GetDirectoryName(originalProjectFile.FullName);
             return originalProjectDirectoryPath;
         }

@@ -25,7 +25,8 @@ namespace TestBase
 
     public static class MockHttpContextHelper
     {
-        public static T WithHttpContextAndRoutes<T>(this T @this, Action<RouteCollection> mvcApplicationRoutesRegistration = null, string requestUrl = null, string query = "", string appVirtualPath = "/", HttpApplication applicationInstance = null) where T : Controller
+        public static T WithHttpContextAndRoutes<T>(this T @this, Action<RouteCollection> mvcApplicationRoutesRegistration = null, string requestUrl = null, string query =
+ "", string appVirtualPath = "/", HttpApplication applicationInstance = null) where T : Controller
         {
             string requestUrl1 = requestUrl ?? @this.GetType().Name;
             HttpApplication applicationInstance1 = applicationInstance ?? new HttpApplication();

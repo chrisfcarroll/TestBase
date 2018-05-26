@@ -15,7 +15,7 @@ namespace TestBase
                                       key,
                                       String.Join(",", @this.RouteValues.Keys.ToArray()),
                                       value
-                            ));
+                                     ));
 
             @this.RouteValues[key].ShouldEqual(value);
             return @this;
@@ -27,7 +27,7 @@ namespace TestBase
                         String.Format("Key \"{0}\" not found in routevalues <{1}>.",
                                       key,
                                       String.Join(",", @this.RouteValues.Keys.ToArray())
-                            ));
+                                     ));
             return @this;
         }
 
@@ -37,7 +37,7 @@ namespace TestBase
                         message ?? String.Format("Key \"{0}\" not found in routevalues <{1}>.",
                                                  key,
                                                  String.Join(",", @this.RouteValues.Keys.ToArray())
-                                       ),
+                                                ),
                         args);
             @this.RouteValues[key].ToString().ShouldEqualIgnoringCase(value);
             return @this;
@@ -49,10 +49,10 @@ namespace TestBase
                         String.Format("Key \"{0}\" expected but not found in routevalues <{1}>.",
                                       key,
                                       String.Join(",", @this.RouteValues.Keys.ToArray())
-                            ));
+                                     ));
 
-            predicate.Compile()((T)@this.RouteValues[key])
-                .ShouldBeTrue(String.Format("Expected {0}( RouteValues[{1}] ) to be true", predicate.Body, key));
+            predicate.Compile()((T) @this.RouteValues[key])
+                     .ShouldBeTrue(String.Format("Expected {0}( RouteValues[{1}] ) to be true", predicate.Body, key));
             return @this;
         }
 

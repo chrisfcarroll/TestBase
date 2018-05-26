@@ -13,12 +13,12 @@ namespace TestBase
 
         public static string RedirectController(this ActionResult actionResult)
         {
-            return ((RedirectToRouteResult)actionResult).RouteValues["controller"].ToString();
+            return ((RedirectToRouteResult) actionResult).RouteValues["controller"].ToString();
         }
 
         public static string RedirectAction(this ActionResult actionResult)
         {
-            return ((RedirectToRouteResult)actionResult).RouteValues["action"].ToString();
+            return ((RedirectToRouteResult) actionResult).RouteValues["action"].ToString();
         }
 
         public static bool IsView(this ActionResult actionResult)
@@ -28,7 +28,7 @@ namespace TestBase
 
         public static bool ViewNameIs(this ActionResult actionResult, string expectedViewName)
         {
-            return ((ViewResult)actionResult).ViewName.Equals(expectedViewName);
+            return ((ViewResult) actionResult).ViewName.Equals(expectedViewName);
         }
 
         public static TController WithModelStateIsInvalid<TController>(this TController @this)
@@ -58,24 +58,26 @@ namespace TestBase
 
         public static string ViewFile(this Controller controller, ViewResult viewResult, string namespacePathToMvcRoot)
         {
-            return ViewFile( controller, viewResult.ViewName + ".aspx", namespacePathToMvcRoot);
+            return ViewFile(controller, viewResult.ViewName + ".aspx", namespacePathToMvcRoot);
         }
 
-        public static string ViewFile<TC>( this TC controller, string viewFileName, string namespacePathToMvcRoot) where TC : Controller
+        public static string ViewFile<TC>(this TC controller, string viewFileName, string namespacePathToMvcRoot) where TC : Controller
         {
-            var pathToViewFile = "..\\..\\..\\" + 
+            var pathToViewFile = "..\\..\\..\\" +
                                  controller.GetType().Namespace
-                                           .Replace(namespacePathToMvcRoot,"")
+                                           .Replace(namespacePathToMvcRoot, "")
                                            .Replace(".", "\\")
-                                           .Replace("\\Controllers", "\\Views\\") + 
-                                 controller.GetType().Name.Replace("Controller","\\");
+                                           .Replace("\\Controllers", "\\Views\\") +
+                                 controller.GetType().Name.Replace("Controller", "\\");
 
             var fi = new FileInfo(pathToViewFile + viewFileName);
             fi.Exists
-              .ShouldBeTrue(String.Format("Couldn't find viewfile {0} for controller {1}, view {2}", 
-                                          fi,controller.GetType().Name, viewFileName));
+              .ShouldBeTrue(String.Format("Couldn't find viewfile {0} for controller {1}, view {2}",
+                                          fi,
+                                          controller.GetType().Name,
+                                          viewFileName));
 
-            using ( var viewFile = new StreamReader(fi.FullName) )
+            using (var viewFile = new StreamReader(fi.FullName))
             {
                 return viewFile.ReadToEnd();
             }

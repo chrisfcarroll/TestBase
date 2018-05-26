@@ -10,10 +10,16 @@ namespace TestBase
 {
     class TestableHttpListener : IDisposable
     {
-        public class RequestAndBody {
+        public class RequestAndBody
+        {
             public string RequestAsJson { get; set; }
             public string RequestBody { get; set; }
-            public RequestAndBody(string requestAsJson, string requestBody) { RequestAsJson = requestAsJson; RequestBody = requestBody; }
+
+            public RequestAndBody(string requestAsJson, string requestBody)
+            {
+                RequestAsJson = requestAsJson;
+                RequestBody = requestBody;
+            }
         }
 
         TextWriter consoleLogger = Console.Out;
@@ -21,23 +27,29 @@ namespace TestBase
         static readonly byte[] EmptyUtf8String = Encoding.UTF8.GetBytes("");
         JsonSerializerSettings jsonSettingsIgnoreStreamsAndBody;
 
-        public TestableHttpListener(params string[] prefixes) : this((IEnumerable<string>)prefixes) { }
+        public TestableHttpListener(params string[] prefixes) : this((IEnumerable<string>) prefixes)
+        {
+        }
+
         public TestableHttpListener(IEnumerable<string> prefixes)
         {
             if (!HttpListener.IsSupported) { throw new NotImplementedException("Windows XP SP2 or Server 2003 is required to use the HttpListener class."); }
+
             if (prefixes == null || !prefixes.Any()) { throw new ArgumentException("Prefixes must not be null or empty", "prefixes"); }
+
             //
-            jsonSettingsIgnoreStreamsAndBody= new JsonSerializerSettings
-            {
-                ContractResolver = new DeSerializeExcludingFieldsContractResolver(
-                    typeof(HttpListenerRequest),
-                    p => typeof(Stream).IsAssignableFrom(p.PropertyType) 
-                         || typeof(EndPoint).IsAssignableFrom(p.PropertyType)
-                         || p.PropertyName.Matches("Certificate")
-                )
-            };
+            jsonSettingsIgnoreStreamsAndBody = new JsonSerializerSettings
+                                               {
+                                                   ContractResolver = new DeSerializeExcludingFieldsContractResolver(
+                                                                                                                     typeof(HttpListenerRequest),
+                                                                                                                     p => typeof(Stream).IsAssignableFrom(p.PropertyType)
+                                                                                                                          || typeof(EndPoint).IsAssignableFrom(p.PropertyType)
+                                                                                                                          || p.PropertyName.Matches("Certificate")
+                                                                                                                    )
+                                               };
             listener = new HttpListener();
-            foreach (var prefix in prefixes){listener.Prefixes.Add(prefix);}
+            foreach (var prefix in prefixes) { listener.Prefixes.Add(prefix); }
+
             listener.Start();
             consoleLogger.WriteLine("Listening...");
         }
@@ -47,10 +59,10 @@ namespace TestBase
         /// <returns>
         /// <see cref="JsonConvert.SerializeObject(object)"/>(<see cref="HttpListenerContext.Request"/>, <see cref="Formatting.Indented"/>)
         /// </returns>
-        public /*async Task<*/ RequestAndBody FixedResponseAsync(Func<HttpListenerRequest,bool> isRequestMatching, string responseString)
+        public /*async Task<*/ RequestAndBody FixedResponseAsync(Func<HttpListenerRequest, bool> isRequestMatching, string responseString)
         {
             responseString = responseString ?? "<!DOCTYPE html><html><body>Hello world</body></html>";
-            string requestJson = "",content=null;
+            string requestJson = "", content = null;
 
             //var context = await listener.GetContextAsync();
 
@@ -74,7 +86,7 @@ namespace TestBase
             //    context.Response.OutputStream.Write(EmptyUtf8String, 0, EmptyUtf8String.Length);
             //    context.Response.OutputStream.Close();
             //}
-            return new RequestAndBody(requestJson,content);
+            return new RequestAndBody(requestJson, content);
         }
 
         public void Dispose()
@@ -82,8 +94,9 @@ namespace TestBase
             if (listener != null)
             {
                 listener.Stop();
-                ((IDisposable)listener).Dispose();
+                ((IDisposable) listener).Dispose();
             }
+
             consoleLogger = null;
         }
     }

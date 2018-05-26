@@ -8,9 +8,9 @@ namespace TestBase
     class DeSerializeExcludingFieldsContractResolver : DefaultContractResolver
     {
         readonly Type type;
-        readonly Func<JsonProperty,bool> ignoreProperty;
+        readonly Func<JsonProperty, bool> ignoreProperty;
 
-        public DeSerializeExcludingFieldsContractResolver(Type type, Func<JsonProperty,bool> ignoreProperty)
+        public DeSerializeExcludingFieldsContractResolver(Type type, Func<JsonProperty, bool> ignoreProperty)
         {
             this.type = type;
             this.ignoreProperty = ignoreProperty;

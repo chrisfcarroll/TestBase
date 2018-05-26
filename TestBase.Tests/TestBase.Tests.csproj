@@ -26,8 +26,12 @@
     <ProjectReference Include="..\Extensions.Logging.ListOfString\Extensions.Logging.ListOfString.csproj" />
     <ProjectReference Include="..\Serilog.Sinks.LostOfString\Serilog.Sinks.ListOfString.csproj" />
     <ProjectReference Include="..\TestBase.FakeHttpClient\TestBase.HttpClient.Fake.csproj" />
+    <ProjectReference Include="..\TestBase.Mvc.AspNetCore.GuineaPig\TestBase.Mvc.AspNetCore.GuineaPig.csproj" />
     <ProjectReference Include="..\TestBase.Mvc.AspNetCore\TestBase.Mvc.AspNetCore.csproj" />
     <ProjectReference Include="..\TestBase\TestBase.csproj" />
     <ProjectReference Include="..\TestBase.AdoNet\TestBase.AdoNet.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\A\ViewName.cshtml" />
   </ItemGroup>
 </Project>
