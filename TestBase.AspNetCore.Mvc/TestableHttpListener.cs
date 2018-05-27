@@ -33,22 +33,31 @@ namespace TestBase
 
         public TestableHttpListener(IEnumerable<string> prefixes)
         {
-            if (!HttpListener.IsSupported) { throw new NotImplementedException("Windows XP SP2 or Server 2003 is required to use the HttpListener class."); }
+            if (!HttpListener.IsSupported)
+            {
+                throw new NotImplementedException("Windows XP SP2 or Server 2003 is required to use the HttpListener class.");
+            }
 
-            if (prefixes == null || !prefixes.Any()) { throw new ArgumentException("Prefixes must not be null or empty", "prefixes"); }
+            if (prefixes == null || !prefixes.Any())
+            {
+                throw new ArgumentException("Prefixes must not be null or empty", "prefixes");
+            }
 
             //
             jsonSettingsIgnoreStreamsAndBody = new JsonSerializerSettings
-                                               {
-                                                   ContractResolver = new DeSerializeExcludingFieldsContractResolver(
-                                                                                                                     typeof(HttpListenerRequest),
-                                                                                                                     p => typeof(Stream).IsAssignableFrom(p.PropertyType)
-                                                                                                                          || typeof(EndPoint).IsAssignableFrom(p.PropertyType)
-                                                                                                                          || p.PropertyName.Matches("Certificate")
-                                                                                                                    )
-                                               };
+            {
+                ContractResolver = new DeSerializeExcludingFieldsContractResolver(
+                    typeof(HttpListenerRequest),
+                    p => typeof(Stream).IsAssignableFrom(p.PropertyType)
+                         || typeof(EndPoint).IsAssignableFrom(p.PropertyType)
+                         || p.PropertyName.Matches("Certificate")
+                )
+            };
             listener = new HttpListener();
-            foreach (var prefix in prefixes) { listener.Prefixes.Add(prefix); }
+            foreach (var prefix in prefixes)
+            {
+                listener.Prefixes.Add(prefix);
+            }
 
             listener.Start();
             consoleLogger.WriteLine("Listening...");

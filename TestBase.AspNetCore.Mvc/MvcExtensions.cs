@@ -65,17 +65,17 @@ namespace TestBase
         {
             var pathToViewFile = "..\\..\\..\\" +
                                  controller.GetType().Namespace
-                                           .Replace(namespacePathToMvcRoot, "")
-                                           .Replace(".", "\\")
-                                           .Replace("\\Controllers", "\\Views\\") +
+                                     .Replace(namespacePathToMvcRoot, "")
+                                     .Replace(".", "\\")
+                                     .Replace("\\Controllers", "\\Views\\") +
                                  controller.GetType().Name.Replace("Controller", "\\");
 
             var fi = new FileInfo(pathToViewFile + viewFileName);
             fi.Exists
-              .ShouldBeTrue(String.Format("Couldn't find viewfile {0} for controller {1}, view {2}",
-                                          fi,
-                                          controller.GetType().Name,
-                                          viewFileName));
+                .ShouldBeTrue(String.Format("Couldn't find viewfile {0} for controller {1}, view {2}",
+                    fi,
+                    controller.GetType().Name,
+                    viewFileName));
 
             using (var viewFile = new StreamReader(fi.FullName))
             {

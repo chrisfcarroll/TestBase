@@ -16,6 +16,17 @@ namespace TestBase.Tests.AspNetCoreMVC
                   .GetService(typeof(ILogger<WhenUsingTestServerBuilder>))
                   .ShouldBeOfType<Logger<WhenUsingTestServerBuilder>>();
         }
+
+        [Test]
+        public void Should_correctly_guess_contentRoot_from_Startup_AssemblyName()
+        {
+            Assert.DoesNotThrow(
+                ()=>
+                    TestServerBuilder
+                        .RunningServerUsingStartupAndContentRoot<Mvc.AspNetCore.GuineaPig.Startup>(
+                            null,
+                            "Development",null));
+        }
     }
 }
 #endif

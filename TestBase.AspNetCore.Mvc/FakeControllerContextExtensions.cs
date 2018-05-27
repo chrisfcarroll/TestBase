@@ -35,10 +35,10 @@ namespace TestBase
         }
 
         public static T WithControllerContext<T>(this T controller,
-                                                 string action = "action",
-                                                 object routeValues = null,
-                                                 string virtualPathTemplate = "/{controller}/{action}",
-                                                 ClaimsPrincipal user = null) where T : Controller
+            string action = "action",
+            object routeValues = null,
+            string virtualPathTemplate = "/{controller}/{action}",
+            ClaimsPrincipal user = null) where T : Controller
         {
             var controllerName = controller.GetType().Name;
             if (controllerName.EndsWith("Controller") && controllerName.Length > 10)
@@ -47,14 +47,17 @@ namespace TestBase
             }
 
             var actionDescriptor = new ActionDescriptor
-                                   {
-                                       RouteValues = new Dictionary<string, string>(new RouteValueEqualityComparer())
-                                                     {
-                                                         {"controller", controllerName},
-                                                         {"action", action}
-                                                     }
-                                   };
-            foreach (var kv in new RouteValueDictionary(routeValues ?? new { })) { actionDescriptor.RouteValues.Add(kv.Key, kv.Value.ToString()); }
+            {
+                RouteValues = new Dictionary<string, string>(new RouteValueEqualityComparer())
+                {
+                    {"controller", controllerName},
+                    {"action", action}
+                }
+            };
+            foreach (var kv in new RouteValueDictionary(routeValues ?? new { }))
+            {
+                actionDescriptor.RouteValues.Add(kv.Key, kv.Value.ToString());
+            }
 
             //---Doesnt seem to help
             //var trb = new TreeRouteBuilder(
@@ -72,18 +75,18 @@ namespace TestBase
             routerMock
                 .Setup(x => x.GetVirtualPath(It.IsAny<VirtualPathContext>()))
                 .Returns<VirtualPathContext>(vpc =>
-                                                 new VirtualPathData(routerMock.Object, VirtualPathFromTemplateAndValues(virtualPathTemplate, vpc.Values), vpc.Values)
-                                            );
+                    new VirtualPathData(routerMock.Object, VirtualPathFromTemplateAndValues(virtualPathTemplate, vpc.Values), vpc.Values)
+                );
             var routeData = new RouteData();
             routeData.Routers.Add(routerMock.Object);
             var metadataProvider = TestModelMetadataProvider.CreateDefaultProvider();
             var httpContext = new DefaultHttpContext {User = user ?? new ClaimsPrincipal(new ClaimsIdentity(new Claim[0]))};
 
             var actionContext = new ActionContext(
-                                                  httpContext,
-                                                  routeData,
-                                                  actionDescriptor,
-                                                  new ModelStateDictionary());
+                httpContext,
+                routeData,
+                actionDescriptor,
+                new ModelStateDictionary());
 
             var viewData = new ViewDataDictionary(metadataProvider, new ModelStateDictionary());
             var tempData = new TempDataDictionary(httpContext, new SessionStateTempDataProvider());
@@ -128,8 +131,8 @@ namespace TestBase
             urlHelperMock
                 .Setup(x => x.Action(It.IsAny<UrlActionContext>()))
                 .Returns((UrlActionContext uac) =>
-                             $"{uac.Controller}/{uac.Action}#{uac.Fragment}?"
-                             + string.Join("&", new RouteValueDictionary(uac.Values).Select(p => p.Key + "=" + p.Value)));
+                    $"{uac.Controller}/{uac.Action}#{uac.Fragment}?"
+                    + string.Join("&", new RouteValueDictionary(uac.Values).Select(p => p.Key + "=" + p.Value)));
             urlHelperMock
                 .Setup(x => x.Content(It.IsAny<string>()))
                 .Returns<string>(s => s);
@@ -159,12 +162,12 @@ namespace TestBase
         public static IModelMetadataProvider CreateDefaultProvider(IStringLocalizerFactory stringLocalizerFactory = null)
         {
             var detailsProviders = new IMetadataDetailsProvider[]
-                                   {
-                                       new DefaultBindingMetadataProvider(),
-                                       new DefaultValidationMetadataProvider(),
-                                       new DataAnnotationsMetadataProvider(new TestOptionsManager<MvcDataAnnotationsLocalizationOptions>(), stringLocalizerFactory),
-                                       //new DataMemberRequiredBindingMetadataProvider(),
-                                   };
+            {
+                new DefaultBindingMetadataProvider(),
+                new DefaultValidationMetadataProvider(),
+                new DataAnnotationsMetadataProvider(new TestOptionsManager<MvcDataAnnotationsLocalizationOptions>(), stringLocalizerFactory),
+                //new DataMemberRequiredBindingMetadataProvider(),
+            };
 
             var compositeDetailsProvider = new DefaultCompositeMetadataDetailsProvider(detailsProviders);
             return new DefaultModelMetadataProvider(compositeDetailsProvider, new TestOptionsManager<MvcOptions>());
@@ -173,12 +176,12 @@ namespace TestBase
         public static IModelMetadataProvider CreateDefaultProvider(IList<IMetadataDetailsProvider> providers)
         {
             var detailsProviders = new List<IMetadataDetailsProvider>()
-                                   {
-                                       new DefaultBindingMetadataProvider(),
-                                       new DefaultValidationMetadataProvider(),
-                                       new DataAnnotationsMetadataProvider(new TestOptionsManager<MvcDataAnnotationsLocalizationOptions>(), stringLocalizerFactory: null),
-                                       //new DataMemberRequiredBindingMetadataProvider(),
-                                   };
+            {
+                new DefaultBindingMetadataProvider(),
+                new DefaultValidationMetadataProvider(),
+                new DataAnnotationsMetadataProvider(new TestOptionsManager<MvcDataAnnotationsLocalizationOptions>(), stringLocalizerFactory: null),
+                //new DataMemberRequiredBindingMetadataProvider(),
+            };
 
             detailsProviders.AddRange(providers);
 
@@ -207,15 +210,15 @@ namespace TestBase
 
         TestModelMetadataProvider(TestModelMetadataDetailsProvider detailsProvider)
             : base(
-                   new DefaultCompositeMetadataDetailsProvider(new IMetadataDetailsProvider[]
-                                                               {
-                                                                   new DefaultBindingMetadataProvider(),
-                                                                   new DefaultValidationMetadataProvider(),
-                                                                   new DataAnnotationsMetadataProvider(new TestOptionsManager<MvcDataAnnotationsLocalizationOptions>(),
-                                                                                                       stringLocalizerFactory: null),
-                                                                   detailsProvider
-                                                               }),
-                   new TestOptionsManager<MvcOptions>())
+                new DefaultCompositeMetadataDetailsProvider(new IMetadataDetailsProvider[]
+                {
+                    new DefaultBindingMetadataProvider(),
+                    new DefaultValidationMetadataProvider(),
+                    new DataAnnotationsMetadataProvider(new TestOptionsManager<MvcDataAnnotationsLocalizationOptions>(),
+                        stringLocalizerFactory: null),
+                    detailsProvider
+                }),
+                new TestOptionsManager<MvcOptions>())
         {
             _detailsProvider = detailsProvider;
         }

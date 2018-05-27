@@ -33,7 +33,7 @@ namespace TestBase
         public static object ShouldHaveViewDataForKey(this ViewResult @this, string key)
         {
             Assert.That(@this.ViewData.ContainsKey(key),
-                        String.Format("Keys present: {0}", String.Join(";", @this.ViewData.Keys.ToArray())));
+                String.Format("Keys present: {0}", String.Join(";", @this.ViewData.Keys.ToArray())));
             return @this.ViewData[key];
         }
 

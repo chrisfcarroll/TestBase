@@ -2,9 +2,9 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>TestBase</RootNamespace>
-    <AssemblyVersion>4.1.2.2</AssemblyVersion>
-    <AssemblyFileVersion>4.1.2.2</AssemblyFileVersion>
-    <PackageVersion>4.1.2.2</PackageVersion>
+    <AssemblyVersion>4.1.2.3</AssemblyVersion>
+    <AssemblyFileVersion>4.1.2.3</AssemblyFileVersion>
+    <PackageVersion>4.1.2.3</PackageVersion>
     <Title>TestBase – Rich, fluent assertions and tools for testing with heavyweight dependencies: AspNetCore, AdoNet, HttpClient, AspNet.Mvc, Streams, Logging</Title>
     <PackageDescription><![CDATA[*TestBase* gives you a flying start with 
 - fluent assertions that are easy to extend
@@ -118,6 +118,7 @@ See also
  - Extensions.Logging.ListOfString]]></PackageDescription>
     <PackageReleaseNotes>ChangeLog
 ---------
+4.1.2.3 TestBase.Mvc.AspNetCore renamed to TestBase.AspNetCore.Mvc
 4.1.2.0 TestBase.Mvc.AspNetCore provides WithControllerContext() and TestServerBuilder
 4.0.7.0 Added TestBase.FakeHttpClient. Added Should(predicate,...) as synonym of ShouldHave(predicate,...)
 4.0.6.2 TestBase.Mvc can run controller actions on aspnetcore using controller.WithControllerContext()
