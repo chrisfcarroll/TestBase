@@ -54,8 +54,8 @@ tools for testing with dependencies on AspNetMvc, HttpClient, Ado.Net, Streams a
     <Copyright>(c) Chris F. Carroll, 2013-2018</Copyright>
     <Authors>Chris F Carroll</Authors>
     <Owners>Chris F Carroll</Owners>
-    <PackageProjectUrl>http://github.com/chrisfcarroll/TestBase</PackageProjectUrl>
-    <RepositoryUrl>http://github.com/chrisfcarroll/TestBase</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/chrisfcarroll/TestBase</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/chrisfcarroll/TestBase</RepositoryUrl>
     <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
     <IncludeSymbols>true</IncludeSymbols>
     <PackageTags>nunit;test;unittest;tdd;mock;logging;serilog</PackageTags>

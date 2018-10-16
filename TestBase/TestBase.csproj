@@ -153,8 +153,8 @@ Serilog.Logger slogger= new LoggerConfiguration().WriteTo.StringList(log).Create
     <Copyright>(c) Chris F. Carroll, 2013-2018</Copyright>
     <Authors>Chris F Carroll</Authors>
     <Owners>Chris F Carroll</Owners>
-    <PackageProjectUrl>http://github.com/chrisfcarroll/TestBase</PackageProjectUrl>
-    <RepositoryUrl>http://github.com/chrisfcarroll/TestBase</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/chrisfcarroll/TestBase</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/chrisfcarroll/TestBase</RepositoryUrl>
     <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
     <IncludeSymbols>true</IncludeSymbols>
     <PackageTags>nunit;test;unittest;tdd;fluent assertions;mock;ado.net;mvc;aspnetmvc;aspnetcore;aspnetcoremvc</PackageTags>
