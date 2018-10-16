@@ -2,9 +2,9 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>TestBase</RootNamespace>
-    <AssemblyVersion>4.1.2.3</AssemblyVersion>
-    <AssemblyFileVersion>4.1.2.3</AssemblyFileVersion>
-    <PackageVersion>4.1.2.3</PackageVersion>
+    <AssemblyVersion>4.1.2.4</AssemblyVersion>
+    <AssemblyFileVersion>4.1.2.4</AssemblyFileVersion>
+    <PackageVersion>4.1.2.4</PackageVersion>
     <Title>TestBase – Rich, fluent assertions and tools for testing with heavyweight dependencies: AspNetCore, AdoNet, HttpClient, AspNet.Mvc, Streams, Logging</Title>
     <PackageDescription><![CDATA[*TestBase* gives you a flying start with 
 - fluent assertions that are easy to extend

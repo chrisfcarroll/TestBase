@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <AssemblyVersion>4.1.2.3</AssemblyVersion>
-    <AssemblyFileVersion>4.1.2.3</AssemblyFileVersion>
-    <PackageVersion>4.1.2.3</PackageVersion>
+    <AssemblyVersion>4.1.2.4</AssemblyVersion>
+    <AssemblyFileVersion>4.1.2.4</AssemblyFileVersion>
+    <PackageVersion>4.1.2.4</PackageVersion>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Title>TestBase – Rich, fluent assertions and tools for testing with heavyweight dependencies: AspNetCore, AdoNet, HttpClient, AspNet.Mvc, Streams, Logging</Title>
     <PackageDescription><![CDATA[*TestBase* gives you a flying start with 
@@ -131,6 +131,7 @@ Serilog.Logger slogger= new LoggerConfiguration().WriteTo.StringList(log).Create
 ]]></PackageDescription>
     <PackageReleaseNotes>ChangeLog
 ---------
+4.1.2.4 TestBase.AdoNet providers VerifyFirst(), VerifyLast(), VerifySingle(). Added ToCodeString() overload
 4.1.2.1 Added TestBase.Pdf.DocumentWithLineOfText
 4.1.2.0 TestBase.Mvc.AspNetCore provides WithControllerContext()
 4.1.1.0 Should(assertion) and ShouldHave(assertion) as well as Should(predicate)

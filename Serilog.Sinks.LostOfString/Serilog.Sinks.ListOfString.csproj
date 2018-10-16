@@ -3,9 +3,9 @@
   <PropertyGroup>
     <TargetFramework>netstandard1.3</TargetFramework>
     <RootNamespace>Serilog.Sinks.ListOfString</RootNamespace>
-    <AssemblyVersion>4.1.0.0</AssemblyVersion>
-    <AssemblyFileVersion>4.1.0.0</AssemblyFileVersion>
-    <PackageVersion>4.1.0.0</PackageVersion>
+    <AssemblyVersion>4.1.2.4</AssemblyVersion>
+    <AssemblyFileVersion>4.1.2.4</AssemblyFileVersion>
+    <PackageVersion>4.1.2.4</PackageVersion>
     <Title>Serilog.Sinks.ListOfString : Test your logging with WriteTo.StringList</Title>
     <PackageDescription><![CDATA[Serilog.Sinks.ListOfString logs to a list of string so you can test your logging :
 
