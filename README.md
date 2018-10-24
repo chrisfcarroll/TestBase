@@ -1,13 +1,13 @@
 *TestBase* gives you a flying start with 
 - fluent assertions that are easy to extend
 - sharp error messages
-- tools to help you test with ìheavyweightî dependencies on 
+- tools to help you test with ‚Äúheavyweight‚Äù dependencies on 
     - AspNet.Mvc or AspNetCore Contexts
 	- HttpClient
 	- Ado.Net
 	- Streams & Logging
 
-Chainable fluent assertions get you to the point concisely:
+Mix & match with your favourite test runners & assertions. Chainable fluent assertions get you to the point concisely:
 ```
 UnitUnderTest.Action()
   .ShouldNotBeNull()
@@ -22,16 +22,24 @@ UnitUnderTest.Action()
 	  .Where(predicate)
 	  .SingleOrAssertFail()
 
-.ShouldEqualByValue().ShouldEqualByValueExceptFor(...) 
-  work with all kinds of object and collections, and report what differed.
+.ShouldEqualByValue().ShouldEqualByValueExceptFor(...) work with all kinds of object and collections, and report what differed.
 string.ShouldMatch(pattern).ShouldNotMatch().ShouldBeEmpty().ShouldNotBeEmpty()
 .ShouldNotBeNullOrEmptyOrWhiteSpace().ShouldEqualIgnoringCase()
-.ShouldContain().ShouldStartWith().ShouldEndWith().ShouldBeContainedIn(), ...
+.ShouldContain().ShouldStartWith().ShouldEndWith().ShouldBeContainedIn().ShouldBeOneOf().ShouldNotBeOneOf()‚Ä¶
 numeric.ShouldBeBetween().ShouldEqualWithTolerance()....GreaterThan....LessThan...GreaterOrEqualTo ...
 ienumerable.ShouldAll().ShouldContain().ShouldNotContain().ShouldBeEmpty().ShouldNotBeEmpty() ...
 stream.ShouldHaveSameStreamContentAs().ShouldContain()
 value.ShouldBe().ShouldNotBe().ShouldBeOfType().ShouldBeAssignableTo()...
 ```
+
+See Also
+
+TestBase.HttpClient.Fake
+TestBase.AdoNet
+TestBase.AspNetCore.Mvc
+TestBase-Mvc for Mvc 3-5
+Extensions.Logging.ListOfString
+Serilog.Sinks.ListOfString
 
 TestBase.HttpClient.Fake
 ------------------------
@@ -54,9 +62,9 @@ public async Task Should_MatchTheRightExpectationAndReturnTheSetupResponse__Give
 }
 ```
 
-TestBase.FakeDb
+TestBase.AdoNet
 ------------------
-Works with Ado.Net 
+ 
 ```
 - fakeDbConnection.SetupForQuery(IEnumerable<TFakeData>; )
 - fakeDbConnection.SetupForQuery(IEnumerable<Tuple<TFakeDataForTable1,TFakeDataForTable2>> )
@@ -71,12 +79,9 @@ Works with Ado.Net
 - fakeDbConnection.Verify(x=>x.CommandText.Matches("Insert [case] .*") && x.Parameters["id"].Value==1)
 ```
 
-TestBase.RecordingDb
---------------------
 * `new RecordingDbConnection(IDbConnection)` helps you profile Ado.Net Db calls
 
-
-TestBase.Mvc.AspNetCore & TestBase.Mvc
+TestBase.AspNetCore.Mvc & TestBase-Mvc
 --------------------------------------
 
 ```
@@ -173,15 +178,17 @@ ApiControllerUnderTest.WithWebApiHttpContext&lt;T&gt;(
 ```
 
 
-Testable Logging with StringListLogger
+Testable Logging with ListOfString
 --------------------------------------
 `Extensions.Logging.ListOfString` for Microsoft.Extensions.Logging.Abstractions:
 ```
 var logger= new LoggerFactory.AddProvider(new StringListLoggerProvider()).CreateLogger("Test1");
+// of
+var logLines = new StringListLogger();
+var loggerFactory = new LoggerFactory().AddStringListLogger(logLines);
 // or
 var loggedLines = new List<string>();
 var logger= new LoggerFactory().AddStringListLogger(loggedLines).CreateLogger("Test2");
-
  ... ;
 StringListLogger.Instance
 	.LoggedLines
@@ -199,8 +206,3 @@ PDFs
 ----
 `TestBase.Pdf.DocumentWithLineOfText(myLineOfText)` gives you a small but well-formed PDF document to play with.
 (taken from https://www.cafe-encounter.net/p521/a-very-small-editable-pdf-for-testing)
-
-
-
-- Mix and match with your favourite test runners and assertions
-- Building on Mono : define compile symbol NoMSTest to remove dependency on Microsoft.VisualStudio.QualityTools.UnitTestFramework

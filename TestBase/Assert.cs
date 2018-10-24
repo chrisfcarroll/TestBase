@@ -236,6 +236,8 @@ namespace TestBase
             }
         }
 
+        /// <summary>Immediately throws a <c>new <see cref="Assertion"/>(string.Format(format, args))</c></summary>
+        /// <exception cref="Assertion">with the given string.Format(format, args) message</exception>
         public static void Fail(string format, params object[] args)
         {
             throw new Assertion(string.Format(format, args));

@@ -98,7 +98,7 @@ namespace Extensions.Logging.ListOfString
 
         public string Name { get; set; }
 
-        ScopeStack Scopes {get;}= new ScopeStack();
+        public ScopeStack Scopes {get;}= new ScopeStack();
 
         public class ScopeStack : Stack<Tuple<string, object>>, IDisposable
         {

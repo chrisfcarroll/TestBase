@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace TestBase
 {
@@ -32,6 +33,25 @@ namespace TestBase
         {
             Assert.That(@this, x=>x.Contains(expected), message??$"{nameof(ShouldContain)} {expected}", args);
             return @this;
+        }
+
+        /// <summary>Asserts that <paramref name="@this"/> .Contains(<paramref name="substrings"/>)</summary>
+        /// <returns>@this</returns>
+        /// <remarks><seealso cref="ShouldContainEachOf(string,string[])"/></remarks>
+        public static string ShouldContainEachOf(this string @this, IEnumerable<string> substrings, string message=null, params object[] args)
+        {
+            foreach (var substring in substrings)
+            {
+                Assert.That(@this, x=>x.Contains(substring), message ??$"{nameof(ShouldContainEachOf)} {substrings}", args);
+            }
+            return @this;
+        }
+        /// <summary>Asserts that <paramref name="@this"/> .Contains(<paramref name="substrings"/>)</summary>
+        /// <returns>@this</returns>
+        /// <remarks><seealso cref="ShouldContainEachOf(string,System.Collections.Generic.IEnumerable{string},string,object[])"/></remarks>
+        public static string ShouldContainEachOf(this string @this, params string[] substrings)
+        {
+            return ShouldContainEachOf(@this, (IEnumerable<string>)substrings);
         }
 
         /// <summary>Asserts that <paramref name="expected"/>.Contains(<paramref name="@this"/>)</summary>

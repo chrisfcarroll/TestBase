@@ -12,7 +12,7 @@ namespace TestBase
     {
         /// <summary>Asserts that <paramref name="actual"/> contains an element satisfying <paramref name="predicate"/></summary>
         /// <returns><paramref name="actual"/></returns>
-        public static IEnumerable<T> ShouldContain<T>(this IEnumerable<T> actual, Expression<Func<T,bool>> predicate,string comment = null, params object[] args)
+        public static IEnumerable<T> ShouldContain<T>(this IEnumerable<T> actual, Expression<Func<T,bool>> predicate, string comment = null, params object[] args)
         {
             return Assert.That(actual, a => a.Any(predicate.Compile()), comment ?? $"Should contain {ExpressionToCode.ToCode((Expression) predicate)}", args);
         }
@@ -142,6 +142,9 @@ namespace TestBase
             return actual;
         }
 
+        /// <summary>Synonym for <see cref="ShouldContainEachOf{T}"/>.
+        /// Assert that <paramref name="actual"/> contains each item of <paramref name="subset"/></summary>
+        /// <returns><paramref name="actual"/></returns>
         public static IEnumerable<T> ShouldContainEachItemOf<T>(this IEnumerable<T> actual, IEnumerable<T> subset, string message=null, params object[] args)
         {
             foreach (var item in subset)
@@ -150,6 +153,18 @@ namespace TestBase
             }
             return actual;
         }
+        
+        /// <summary>Assert that <paramref name="actual"/> contains each item of <paramref name="subset"/></summary>
+        /// <returns><paramref name="actual"/></returns>
+        public static IEnumerable<T> ShouldContainEachOf<T>(this IEnumerable<T> actual, IEnumerable<T> subset, string message=null, params object[] args)
+        {
+            foreach (var item in subset)
+            {
+                Assert.That(actual, x=>x.Contains(item), message, args);
+            }
+            return actual;
+        }
+
 
         public static List<T> ShouldContainInOrder<T>(this List<T> actual, T expectedFirst, T expectedAfter, string message=null, params object[] args)
         {
@@ -240,7 +255,6 @@ namespace TestBase
             return actual;
         }
 
-
         /// <summary>
         /// Synonym for <see cref="ShouldAll{T}"/>
         /// Assert that <paramref name="constraintPerItem"/> is true of each item in <paramref name="actual"/>
@@ -268,32 +282,5 @@ namespace TestBase
         {
             return ShouldAll(actual, transformBeforeAsserting, constraintPerItem, message, args);
         }
-    }
-
-    public static class IEnumerablePredicates
-    {
-        public static bool IsInList<T>(this T item, params T[] list)
-        {
-            return list.Contains(item);
-        }
-        public static bool IsInList<T>(this T item, IEnumerable<T> list)
-        {
-            return list.Contains(item);
-        }
-
-        public static bool IsNotInList<T>(this T item, params T[] list)
-        {
-            return !list.Contains(item);
-        }
-        public static bool IsNotInList<T>(this T item, IEnumerable<T> list)
-        {
-            return !list.Contains(item);
-        }
-
-        public static bool DoesNotContain<T>(this IEnumerable<T> list, T item)
-        {
-            return !list.Contains(item);
-        }
-
     }
 }
