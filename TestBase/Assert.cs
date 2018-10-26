@@ -430,7 +430,7 @@ namespace TestBase
         {
             {
                 StringifyMethod.DeclaredToStringElseThrow,
-                o => o==null ? "<null>" : o.GetType().GetMethod("ToString", BindingFlags.DeclaredOnly | BindingFlags.Public) !=null ? o.ToString() : throw new ArgumentNullException("actual")
+                o => o==null ? "<null>" : o.GetType().GetMethod("ToString", BindingFlags.Instance |BindingFlags.DeclaredOnly | BindingFlags.Public) !=null ? o.ToString() : throw new ArgumentNullException("actual")
             },
             {StringifyMethod.ExpressionToCodeStringify, ObjectStringify.Default.PlainObjectToCode},
             {StringifyMethod.NewtonsoftJsonSerialize, o => JsonConvert.SerializeObject(o, Assert.BestEffortJsonSerializerSettings.Serializer)},
@@ -438,23 +438,35 @@ namespace TestBase
         };
 
 
+        /// <summary>Treat an <see cref="Assertion"/> as a <c>Boolean</c></summary>
+        /// <param name="assertion"></param>
+        /// <returns><c>assertion.Result.HasValue && assertion.Result.Value</c></returns>
         public static implicit operator bool(Assertion<T> assertion) { return assertion.Result.HasValue && assertion.Result.Value; }
+
+        /// <summary>Treat an <see cref="Assertion"/> as a <see cref="BoolWithString"/></summary>
+        /// <param name="assertion"></param>
+        /// <returns>A <see cref="BoolWithString"/> which, if the assertion has failed, will contain the assertion failure description.</returns>
         public static implicit operator BoolWithString(Assertion<T> assertion) { return new BoolWithString(assertion.DidPass, assertion.ToString()); }
 
+        /// <returns>A description of the failed assertion.</returns>
         public override string ToString()
         {
             return ToStringEvenIfPassed();
         }
 
+        /// <returns>A description of the assertion.</returns>
         public string ToStringEvenIfPassed()
         {
-            var resultHeader = DidPass ? "Pass:" : "Fail :";
-            var actualHeader ="Actual:";
+            var resultHeader = DidPass ? "Passed : " : "Failed : ";
+            const string actualHeader = "Actual : ";
+            const string assertedHeader = "Asserted : ";
+            const string divider = "----------------------------";
             return Result.HasValue
-                ? string.Join(nl+nl, resultHeader, Comment, actualHeader,  Actual, Asserted)
-                : string.Join(nl+nl, resultHeader, Comment, actualHeader,  Actual, Asserted, Exception.ToString());
+                ? string.Join(nl, resultHeader , Comment, actualHeader, divider, Actual, divider, assertedHeader + Asserted)
+                : string.Join(nl, resultHeader , Comment, actualHeader, divider, Actual, divider, assertedHeader + Asserted, Exception.ToString());
         }
 
+#pragma warning disable 1591
         public enum StringifyMethod
         {
             DeclaredToStringElseThrow=0,
@@ -462,6 +474,7 @@ namespace TestBase
             NewtonsoftJsonSerialize=2,
             InheritedToString=3
         }
+#pragma warning restore 1591
 
     }
 }

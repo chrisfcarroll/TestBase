@@ -30,14 +30,13 @@ namespace Serilog.Sinks.ListOfString
         /// use a <see cref="List{T}"/> or other in-memory structure as your <see cref="IList{T}"/>.</param>
         public ListOfStringSink(IList<string> stringList, ITextFormatter textFormatter)
         {
-            if (textFormatter == null) throw new ArgumentNullException("textFormatter");
+            _textFormatter = textFormatter ?? throw new ArgumentNullException(nameof(textFormatter));
             this.stringList = stringList;
-            _textFormatter = textFormatter;
         }
 
         public void Emit(LogEvent logEvent)
         {
-            if (logEvent == null) throw new ArgumentNullException("logEvent");
+            if (logEvent == null) throw new ArgumentNullException(nameof(logEvent));
             lock (_syncRoot)
             {
                 using (var payload = new StringWriter())

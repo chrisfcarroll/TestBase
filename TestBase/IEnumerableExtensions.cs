@@ -1,8 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using Newtonsoft.Json;
 
 //
 // code taken from Castle.Core.Internal
@@ -11,17 +9,41 @@ namespace TestBase
 {
     public static class EnumerableExtensions
     {
+        /// <summary>Execute <paramref name="action"/> on each item in <paramref name="source"/></summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="source"></param>
+        /// <param name="action"></param>
+        /// <returns><paramref name="source"/></returns>
+        public static IEnumerable<T> ForEach<T>(this IEnumerable<T> source , Action<T> action)
+        {
+            foreach (var item in source) action(item);
+            return source;
+        }
+
+        /// <summary>Find the first element of <paramref name="items"/> which satisfies <paramref name="predicate"/></summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="items"></param>
+        /// <param name="predicate"></param>
+        /// <returns><c>Array.Find{T}(<paramref name="items"/>, <paramref name="predicate"/>)</c> </returns>
         public static T Find<T>(this T[] items, Func<T,bool> predicate)
         {
             
             return Array.Find<T>(items, new Predicate<T>(predicate));
         }
 
+        /// <summary>Find all elemente of <paramref name="items"/> which satisfy <paramref name="predicate"/></summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="items"></param>
+        /// <param name="predicate"></param>
+        /// <returns><c>Array.FindAll{T}(<paramref name="items"/>, <paramref name="predicate"/>)</c> </returns>
         public static T[] FindAll<T>(this T[] items, Func<T,bool> predicate)
         {
             return Array.FindAll<T>(items, new Predicate<T>(predicate));
         }
 
+        /// <summary>Return true if <paramref name="@this"/> is null or has no elements</summary>
+        /// <param name="this"></param>
+        /// <returns><c>@this == null || !@this.GetEnumerator().MoveNext()</c>  </returns>
         public static bool IsNullOrEmpty(this IEnumerable @this)
         {
             return @this == null || !@this.GetEnumerator().MoveNext();
@@ -38,43 +60,4 @@ namespace TestBase
             return num;
         }
     }
-
-    public static class IDictionaryExtensions
-    {
-        public static IDictionary<Tkey, TValue> ShouldHaveKey<Tkey, TValue>(this IDictionary<Tkey, TValue> dict, Tkey key, TValue value, string comment=null, params object[] args)
-        {
-            Assert.That(dict, d => d.ContainsKey(key), comment ?? $"Should Contain {key} but didn't.", args);
-            Assert.That(dict[key], v=>v.EqualsByValue(value), comment ?? $"[{key}] ShouldEqualByValue({value})", args);
-            return dict;
-        }
-        public static TValue ShouldHaveKey<Tkey, TValue>(this IDictionary<Tkey, TValue> dict, Tkey key, string comment=null, params object[] args)
-        {
-            Assert.That(dict, d => d.ContainsKey(key), comment ?? $"Should Contain {key}", args);
-            return dict[key];
-        }
-    }
-
-    public static class AnonymousObjectInspector
-    {
-        public static Dictionary<string, object> ToPropertyDictionary(this object obj, ReferenceLoopHandling jsonReferenceLoopHandling=ReferenceLoopHandling.Ignore)
-        {
-            return JsonConvert.DeserializeObject<Dictionary<string, object>>(
-                        JsonConvert.SerializeObject(
-                            obj,
-                            new JsonSerializerSettings{ReferenceLoopHandling = jsonReferenceLoopHandling}));
-        }
-    }
-
-    public static class Generate
-    {
-        public static IEnumerable<T> Times<T>(int count, Func<int, T> generator)
-        {
-            return Enumerable.Range(1, count).Select(generator);
-        }
-        public static IEnumerable<T> Times<T>(this Func<int, T> generator, int count)
-        {
-            return Times(count, generator);
-        }
-    }
-
 }

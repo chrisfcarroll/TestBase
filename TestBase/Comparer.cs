@@ -33,48 +33,67 @@ using System.Reflection;
 namespace TestBase
 {
     /// <summary>
-    /// Compares objects memberwise by value. All Properties (public or not), and public Fields, are considered in the comparison.
+    /// Compares objects memberwise, recursively, by value. All Properties (public or not), and public Fields, are considered in the comparison.
+    /// Recursion stops when it arrives at a value type, or at a type (such as <see cref="String"/>) which override <see cref="object.Equals(object)"/>
     /// </summary>
     public static class Comparer
     {
-        /// <remarks>An abbreviation for <see cref="EqualsByValueJustOnCommonPublicReadableProperties"/></remarks>
-        /// <param name="left"></param><param name="right"></param>
-        /// <returns>
-        /// True, if the readable properties of <paramref name="left"/> &amp; <paramref name="right"/> with identical names are all <see cref="EqualsByValue(object,object)"/>
-        /// <see cref="BoolWithString.False"/> if not, with a description of the first mismatch found in <see cref="BoolWithString.ToString"/>()
-        /// </returns>
+        /// <remarks>A synonym for <see cref="EqualsByValueJustOnCommonPublicReadableProperties"/></remarks>
+        /// <summary>Uses <see cref="MemberCompare"/> to recursively compare the values of
+        /// the public readable Members of <paramref name="left"/> and <paramref name="right"/> with identical names,
+        /// and reports the first discrepancy, if any.</summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns><see cref="BoolWithString.True"/> if the public readable Members of <paramref name="left"/> and <paramref name="right"/>
+        /// with identical names are all <see cref="EqualsByValue(object,object)"/>,
+        /// or a <see cref="BoolWithString.False"/>
+        /// bearing a description of the first discrepancy if not.</returns>
         public static BoolWithString PropertiesMatch(this object left, object right)
         {
             return EqualsByValueJustOnCommonPropertiesSatisfying(left, right, p => p.CanRead);
         }
 
         ///<remarks>Can be abbreviated to <see cref="PropertiesMatch"/></remarks>
-        /// <param name="left"></param><param name="right"></param>
-        /// <returns>
-        /// True, if the readable properties of <paramref name="left"/> &amp; <paramref name="right"/> with identical names are all <see cref="EqualsByValue(object,object)"/>
-        /// <see cref="BoolWithString.False"/> if not, with a description of the first mismatch found in <see cref="BoolWithString.ToString"/>()
-        /// </returns>
+        /// <summary>Uses <see cref="MemberCompare"/> to recursively compare the values of
+        /// the public readable Members of <paramref name="left"/> and <paramref name="right"/> with identical names,
+        /// and reports the first discrepancy, if any.</summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns><see cref="BoolWithString.True"/> if the public readable Members of <paramref name="left"/> and <paramref name="right"/>
+        /// with identical names are all <see cref="EqualsByValue(object,object)"/>,
+        /// or a <see cref="BoolWithString.False"/>
+        /// bearing a description of the first discrepancy if not.</returns>
         public static BoolWithString EqualsByValueJustOnCommonPublicReadableProperties(this object left, object right)
         {
             return EqualsByValueJustOnCommonPropertiesSatisfying(left, right, p=>p.CanRead);
         }
 
-        /// <param name="left"></param><param name="right"></param>
-        /// <returns>
-        /// True, if the writeable properties of <paramref name="left"/> &amp; <paramref name="right"/> with identical names are all <see cref="EqualsByValue(object,object)"/>
-        /// <see cref="BoolWithString.False"/> if not, with a description of the first mismatch found in <see cref="BoolWithString.ToString"/>()
-        /// </returns>
-        /// <remarks>Writeable properties are often a subset of readable properties. Often, if an object is deserialized from a database or datastore, then it is expected to be fully specified by its writeable properties.</remarks>
+        /// <summary>Uses <see cref="MemberCompare"/> to recursively compare the values of
+        /// the writeable Members of <paramref name="left"/> and <paramref name="right"/>
+        /// and reports the first discrepancy, if any.</summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns><see cref="BoolWithString.True"/> if the writeable Members of <paramref name="left"/> and <paramref name="right"/>
+        /// with identical names are all <see cref="EqualsByValue(object,object)"/>,
+        /// or a <see cref="BoolWithString.False"/>
+        /// bearing a description of the first discrepancy if not.</returns>
+        /// <remarks>Writeable properties are often a subset of readable properties. Often, if an object is deserialized from a
+        /// database or datastore, then it is expected to be fully specified by its writeable properties.</remarks>
         public static BoolWithString EqualsByValueJustOnCommonPublicWriteableProperties(this object left, object right)
         {
             return EqualsByValueJustOnCommonPropertiesSatisfying(left, right, p => p.CanWrite);
         }
 
-        /// <param name="left"></param><param name="right"></param>
-        /// <returns>
-        /// True, if the properties of <paramref name="left"/> &amp; <paramref name="right"/> with identical names are all <see cref="EqualsByValue(object,object)"/>
-        /// <see cref="BoolWithString.False"/> if not, with a description of the first mismatch found in <see cref="BoolWithString.ToString"/>()
-        /// </returns>
+        /// <summary>Uses <see cref="MemberCompare"/> to recursively compare the values of
+        /// those Members on <paramref name="left"/> and <paramref name="right"/>
+        /// which satisfy <see cref="predicate"/> and reports the first discrepancy, if any.
+        /// All Properties (public or not), and public Fields, are considered in the comparison.</summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <param name="predicate"></param>
+        /// <returns><see cref="BoolWithString.True"/> if the Members of <paramref name="left"/> and <paramref name="right"/>
+        /// which satisfy <paramref name="predicate"/> are equal by value, or a <see cref="BoolWithString.False"/>
+        /// bearing a description of the first discrepancy if not.</returns>
         static BoolWithString EqualsByValueJustOnCommonPropertiesSatisfying(this object left, object right, Func<PropertyInfo,bool> predicate)
         {
             var leftProperties = left.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(predicate);
@@ -83,44 +102,171 @@ namespace TestBase
             return MemberCompare(left, right, exclusionList: null, includeOnlyList: commonProperties, typesMustAlsoBeSame: false);
         }
 
+        /// <summary>Uses <see cref="MemberCompare"/> to recursively compare the values of
+        /// the specified Members on <paramref name="left"/> and <paramref name="right"/>
+        /// and reports the first discrepancy, if any.
+        /// Named Properties (public or not), and public Fields, are considered in the comparison.</summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <param name="propertiesToCompare">a possibly empty list of <em>Member</em> names to restrict the comparisons to only those members.
+        /// To specify members of child members, provide the full dotted 'breadcrumb' to the member 
+        /// to include, e.g. new List&lt;string&gt;{"Id","SomeProperty.SomePropertyOfThat.FieldName"} </param>
+        /// <returns><see cref="BoolWithString.True"/> if the Members of <paramref name="left"/> and <paramref name="right"/>
+        /// named in <paramref name="propertiesToCompare"/> are equal by value, or a
+        /// <see cref="BoolWithString.False"/> bearing a description of the first discrepancy if not.</returns>
+        [Obsolete("Use the correctly named method EqualsByValuesJustOnMembersNamed instead.")]
         public static BoolWithString EqualsByValueJustOnPropertiesNamed(this object left, object right, IEnumerable<string> propertiesToCompare)
         {
-            return MemberCompare(left, right, exclusionList: null, includeOnlyList: propertiesToCompare, typesMustAlsoBeSame: false);
+            return EqualsByValuesJustOnMembersNamed(left, right, propertiesToCompare);
         }
 
+        /// <summary>Uses <see cref="MemberCompare"/> to recursively compare the values of
+        /// the specified Members on <paramref name="left"/> and <paramref name="right"/>
+        /// and reports the first discrepancy, if any.
+        /// Named Properties (public or not), and public Fields, are considered in the comparison.</summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <param name="membersToCompare">a possibly empty list of Member names to restrict the comparisons to only those members.
+        /// To specify members of child members, provide the full dotted 'breadcrumb' to the member 
+        /// to include, e.g. new List&lt;string&gt;{"Id","SomeProperty.SomePropertyOfThat.FieldName"} </param>
+        /// <returns><see cref="BoolWithString.True"/> if the Members of <paramref name="left"/> and <paramref name="right"/>
+        /// named in <paramref name="membersToCompare"/> are equal by value, or a
+        /// <see cref="BoolWithString.False"/> bearing a description of the first discrepancy if not.</returns>
+        public static BoolWithString EqualsByValuesJustOnMembersNamed(this object left, object right, IEnumerable<string> membersToCompare)
+        {
+            return MemberCompare(left, right, exclusionList: null, includeOnlyList: membersToCompare, typesMustAlsoBeSame: false);
+        }
+
+        /// <summary>A synonym for <see cref="EqualsByValue(object,object)"/>
+        /// Uses <see cref="MemberCompare"/> to recursively compare the values of
+        /// the Members of <paramref name="left"/> and <paramref name="right"/>
+        /// and reports the first discrepancy, if any.
+        /// All Properties (public or not), and public Fields, are considered in the comparison.
+        /// Recursion stops when it arrives at a value type, or at a type (such as <see cref="String"/>)
+        /// which override <see cref="object.Equals(object)"/></summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <param name="floatTolerance"></param>
+        /// <returns><see cref="BoolWithString.True"/> if the Members of <paramref name="left"/> and <paramref name="right"/> are equal by value, or a
+        /// <see cref="BoolWithString.False"/> bearing a description of the first discrepancy if not.</returns>
         public static BoolWithString EqualsByValueOrDiffers(this object left, object right, double floatTolerance=1e-14d)
         {
             return MemberCompare(left, right, exclusionList: null, includeOnlyList: null, floatTolerance: floatTolerance, typesMustAlsoBeSame: false);
         }
 
+        /// <summary>Uses <see cref="MemberCompare"/> to recursively compare the values of
+        /// the specified Members on <paramref name="left"/> and <paramref name="right"/>
+        /// and reports the first discrepancy, if any.
+        /// Named Properties (public or not), and public Fields, are considered in the comparison.
+        /// Recursion stops when it arrives at a value type, or at a type (such as <see cref="String"/>)
+        /// which override <see cref="object.Equals(object)"/></summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <param name="exclusionList">a possibly empty list of Member names to exclude for the purposes of this 
+        ///     comparison. To exclude members of child members, provide the full dotted 'breadcrumb' to the member 
+        ///     to exclude, e.g. new List&lt;string&gt;{"Id","SomeProperty.SomePropertyOfThat.FieldName"} 
+        /// </param>
+        /// <param name="floatTolerance"></param>
+        /// <returns><see cref="BoolWithString.True"/> if the Members of <paramref name="left"/> and <paramref name="right"/>
+        /// —excluding those named in <paramref name="exclusionList"/>— are equal by value, or a
+        /// <see cref="BoolWithString.False"/> bearing a description of the first discrepancy if not.</returns>
         public static BoolWithString EqualsByValueOrDiffersExceptFor(this object left, object right, IEnumerable<string> exclusionList, double floatTolerance = 1e-14d)
         {
             return MemberCompare(left, right, exclusionList: exclusionList, includeOnlyList: null, floatTolerance: floatTolerance, typesMustAlsoBeSame: false);
         }
 
+        /// <summary>Uses <see cref="MemberCompare"/> to recursively compare the values of
+        /// the specified Members on <paramref name="left"/> and <paramref name="right"/>
+        /// and reports the first discrepancy, if any.
+        /// Named Properties (public or not), and public Fields, are considered in the comparison.
+        /// Recursion stops when it arrives at a value type, or at a type (such as <see cref="String"/>)
+        /// which override <see cref="object.Equals(object)"/></summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns><see cref="BoolWithString.True"/> if the Members of <paramref name="left"/> and <paramref name="right"/>
+        /// are equal by value, or a
+        /// <see cref="BoolWithString.False"/> bearing a description of the first discrepancy if not.</returns>
         public static BoolWithString EqualsByValue(this object left, object right)
         {
             return MemberCompare(left, right, includeOnlyList: null, typesMustAlsoBeSame: false);
         }
+
+        /// <summary>Uses <see cref="MemberCompare"/> to recursively compare the values of
+        /// the specified Members on <paramref name="left"/> and <paramref name="right"/>
+        /// and reports the first discrepancy, if any.
+        /// Named Properties (public or not), and public Fields, are considered in the comparison.
+        /// Recursion stops when it arrives at a value type, or at a type (such as <see cref="String"/>)
+        /// which override <see cref="object.Equals(object)"/></summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns><see cref="BoolWithString.True"/> if the Members of <paramref name="left"/> and <paramref name="right"/>
+        /// are equal by value, or a
+        /// <see cref="BoolWithString.False"/> bearing a description of the first discrepancy if not.</returns>
         public static BoolWithString EqualsByValue(this object left, object right, double floatTolerance)
         {
             return MemberCompare(left, right, exclusionList: null,includeOnlyList: null, floatTolerance: floatTolerance, typesMustAlsoBeSame: false);
         }
 
+        /// <summary>Uses <see cref="MemberCompare"/> to recursively compare the values of
+        /// the specified Members on <paramref name="left"/> and <paramref name="right"/>
+        /// and reports the first discrepancy, if any.
+        /// Named Properties (public or not), and public Fields, are considered in the comparison.</summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <param name="exclusionList">a possibly empty list of Member names to exclude for the purposes of this 
+        ///     comparison. To exclude members of child members, provide the full dotted 'breadcrumb' to the member 
+        ///     to exclude, e.g. new List&lt;string&gt;{"Id","SomeProperty.SomePropertyOfThat.FieldName"} 
+        /// </param>
+        /// <returns><see cref="BoolWithString.True"/> if the Members of <paramref name="left"/> and <paramref name="right"/>
+        /// —excluding those named in <paramref name="exclusionList"/>— are equal by value, or a
+        /// <see cref="BoolWithString.False"/> bearing a description of the first discrepancy if not.</returns>
         public static BoolWithString EqualsByValueExceptFor(this object left, object right, IEnumerable<string> exclusionList)
         {
             return MemberCompare(left, right, exclusionList: exclusionList, includeOnlyList: null, typesMustAlsoBeSame: false);
         }
 
+        /// <summary>Uses <see cref="MemberCompare"/> to recursively compare the values of
+        /// the specified Members on <paramref name="left"/> and <paramref name="right"/>
+        /// and reports the first discrepancy, if any.
+        /// Named Properties (public or not), and public Fields, are considered in the comparison.</summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <param name="exclusionList">a possibly empty list of Member names to exclude for the purposes of this 
+        ///     comparison. To exclude members of child members, provide the full dotted 'breadcrumb' to the member 
+        ///     to exclude, e.g. new List&lt;string&gt;{"Id","SomeProperty.SomePropertyOfThat.FieldName"} 
+        /// </param>
+        /// <param name="floatTolerance"></param>
+        /// <returns><see cref="BoolWithString.True"/> if the Members of <paramref name="left"/> and <paramref name="right"/>
+        /// —excluding those named in <paramref name="exclusionList"/>— are equal by value, or else a
+        /// <see cref="BoolWithString.False"/> which includes a description and the location of the first discrepancy found.</returns>
         public static BoolWithString EqualsByValueExceptFor(this object left, object right, List<string> exclusionList, double floatTolerance)
         {
             return MemberCompare(left, right, exclusionList: exclusionList, includeOnlyList: null, floatTolerance: floatTolerance, typesMustAlsoBeSame: false);
         }
 
+
+        /// <summary>Synonym for <see cref="MemberCompare"/>
+        /// Compare two objects by recursively iterating over their elements (if they are Enumerable) 
+        /// and over their properties —whether public or private— and over their public fields.
+        /// Recursion stops at value types and at types (including string) which override Equals()
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns>A <see cref="BoolWithString"/> which, in case of mismatch, includes a description and the location of the first mismatch found.</returns>
         public static BoolWithString AreEqual(object left, object right)
         {
             return MemberCompare(left, right, includeOnlyList: null, typesMustAlsoBeSame: false);
         }
+
+        /// <summary>Synonym for <see cref="MemberCompare"/>
+        /// Compare two objects by recursively iterating over their elements (if they are Enumerable) 
+        /// and over their properties —whether public or private— and over their public fields.
+        /// Recursion stops at value types and at types (including string) which override Equals()
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <param name="floatTolerance">The tolerance to apply to floating point equality comparison</param>
+        /// <returns>A <see cref="BoolWithString"/> which, in case of mismatch, includes a description and the location of the first mismatch found</returns>
         public static BoolWithString AreEqual(object left, object right, double floatTolerance)
         {
             return MemberCompare(left, right, exclusionList: null, includeOnlyList: null, floatTolerance: floatTolerance, typesMustAlsoBeSame: false);
@@ -128,19 +274,22 @@ namespace TestBase
 
         /// <summary>
         /// Compare two objects by recursively iterating over their elements (if they are Enumerable) 
-        /// and properties (public or private) and public fields.
-        /// Recursion stops at value types and at types (including string) which override Equals()
+        /// and over their properties —whether public or private— and over their public fields.
+        /// Recursion stops when it arrives at either a value type, or at a type (such as <see cref="String"/>) which override <see cref="object.Equals(object)"/>
         /// </summary>
         /// <param name="left"></param>
         /// <param name="right"></param>
-        /// <param name="exclusionList">a possibly empty list of field names to exclude for the purposes of this 
-        ///     comparison. To exclude fields of fields, provide the full dotted 'breadcrumb' to the property 
+        /// <param name="exclusionList">a possibly empty list of Member names to exclude for the purposes of this 
+        ///     comparison. To exclude members of child members, provide the full dotted 'breadcrumb' to the member 
         ///     to exclude, e.g. new List&lt;string&gt;{"Id","SomeProperty.SomePropertyOfThat.FieldName"} 
         /// </param>
-        /// <param name="includeOnlyList"></param>
+        /// <param name="includeOnlyList">a possibly empty list of Member names to restrict the comparisons to only those members.
+        /// To specify members of child members, provide the full dotted 'breadcrumb' to the member 
+        /// to include, e.g. new List&lt;string&gt;{"Id","SomeProperty.SomePropertyOfThat.FieldName"} </param>
         /// <param name="floatTolerance">The tolerance to apply to floating point equality comparison</param>
-        /// <param name="typesMustAlsoBeSame"></param>
-        /// <returns>a <see cref="BoolWithString"/>. In case of failure, the reason for failure is returned.</returns>
+        /// <param name="typesMustAlsoBeSame">If <c>true</c> then objects of different types may still compare as equal if their properties are all recursively equal by value.
+        /// If false, then <paramref name="left"/> and <paramref name="right"/> must also be of the same <see cref="Type"/> to be considered equal.</param>
+        /// <returns>A <see cref="BoolWithString"/> which, in case of a mismatch, includes a description and the location of the first mismatch found</returns>
         public static BoolWithString MemberCompare(object left, object right, IEnumerable<string> exclusionList = null, IEnumerable<string> includeOnlyList = null, double floatTolerance = 1e-14d, bool typesMustAlsoBeSame=false)
         {
             var breadCrumb = new List<string>();
@@ -301,7 +450,7 @@ namespace TestBase
             {
                 var breadCrumbAsDottedMember = string.Join(".", breadcrumb.Union(new[]{leftInfo.Name}));
                 if (exclusionList.Contains(breadCrumbAsDottedMember)){ continue; }
-                var mustInclude = includeOnlyList==null || includeOnlyList.Contains(breadCrumbAsDottedMember);
+                var mustInclude = includeOnlyList == null || includeOnlyList.Any(s => breadCrumbAsDottedMember.StartsWith(s));
                 if (!mustInclude) { continue; }
                 try
                 {
@@ -338,7 +487,7 @@ namespace TestBase
             {
                 var breadCrumbAsDottedMember = string.Join(".", breadcrumb.Union(new[] { leftInfo.Name }));
                 if (exclusionList.Contains(breadCrumbAsDottedMember)){ continue; }
-                var mustInclude = includeOnlyList == null || includeOnlyList.Contains(breadCrumbAsDottedMember);
+                var mustInclude = includeOnlyList == null || includeOnlyList.Any(s => breadCrumbAsDottedMember.StartsWith(s));
                 if (!mustInclude) { continue; }
                 try
                 {
@@ -374,7 +523,7 @@ namespace TestBase
             {
                 var breadCrumbAsDottedMember = string.Join(".", breadcrumb.Union(new[] { rightInfo.Name }));
                 if (exclusionList.Contains(breadCrumbAsDottedMember)){ continue; }
-                var mustInclude = includeOnlyList == null || includeOnlyList.Contains(breadCrumbAsDottedMember);
+                var mustInclude =includeOnlyList == null || includeOnlyList.Any(s => breadCrumbAsDottedMember.StartsWith(s));
                 if (!mustInclude) { continue; }
                 try
                 {
@@ -394,7 +543,7 @@ namespace TestBase
             {
                 var breadCrumbAsDottedMember = string.Join(".", breadcrumb.Union(new[] { rightInfo.Name }));
                 if (exclusionList.Contains(breadCrumbAsDottedMember)) { continue; }
-                var mustInclude = includeOnlyList == null || includeOnlyList.Contains(breadCrumbAsDottedMember);
+                var mustInclude =includeOnlyList == null || includeOnlyList.Any(s => breadCrumbAsDottedMember.StartsWith(s));
                 if (!mustInclude) { continue; }
                 try
                 {
