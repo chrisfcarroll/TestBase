@@ -57,7 +57,8 @@ namespace Extensions.Logging.ListOfString
     {
         /// <summary>
         /// The single instance of <see cref="StringListLogger"/> which will be returned by <see cref="StringListLoggerProvider"/>, 
-        /// and by extension from an <see cref="ILoggerFactory"/> which has called <see cref="StringListLoggerFactoryExtension.AddStringListLogger"/>
+        /// and by extension from an <see cref="ILoggerFactory"/> which has called
+        /// <see cref="StringListLoggerFactoryExtension.AddStringListLogger(ILoggerFactory,List{string},bool,Func{string,LogLevel,bool})"/>
         /// 
         /// Use e.g. <code>StringListLogger.Instance.LoggedLines</code> to inspect or assert on logged lines.
         /// </summary>

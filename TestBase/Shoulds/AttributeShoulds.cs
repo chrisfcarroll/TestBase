@@ -9,9 +9,19 @@ namespace TestBase
 {
     public static class AttributeShoulds
     {
+        /// <summary>Assert that <paramref name="@this"/> has a
+        /// Property named<paramref name="property"/> which is Attributed by <paramref name="attribute"/> 
+        /// </summary>
+        /// <param name="this"></param>
+        /// <param name="property"></param>
+        /// <param name="attribute"></param>
+        /// <returns><paramref name="@this"/></returns>
         public static Type ShouldValidateProperty(this Type @this, string property, Type attribute)
         {
-            @this.GetProperty(property).GetCustomAttributes(attribute,true).Count().ShouldBeGreaterThan<int>(0);
+            @this.GetProperty(property)
+                .ShouldNotBeNull($"Type {@this} doesn't have a property called {property}")
+                .GetCustomAttributes(attribute,true)
+                .Length.ShouldBeGreaterThan(0, $"Type {@this}.{property} has no Attribute of type {attribute}");
             return @this;
         }
 

@@ -1,99 +1,81 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <AssemblyVersion>4.1.2.7</AssemblyVersion>
-    <AssemblyFileVersion>4.1.2.7</AssemblyFileVersion>
-    <PackageVersion>4.1.2.7</PackageVersion>
+    <AssemblyVersion>4.1.3.1</AssemblyVersion>
+    <AssemblyFileVersion>4.1.3.1</AssemblyFileVersion>
+    <PackageVersion>4.1.3.1</PackageVersion>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Title>TestBase – Rich, fluent assertions and tools for testing with heavyweight dependencies: AspNetCore, AdoNet, HttpClient, AspNet.Mvc, Streams, Logging</Title>
     <PackageDescription><![CDATA[*TestBase* gives you a flying start with 
 - fluent assertions that are easy to extend
 - sharp error messages
 - tools to help you test with “heavyweight” dependencies on 
-    - AspNet.Mvc or AspNetCore Contexts
-	- HttpClient
-	- Ado.Net
-	- Streams & Logging
+  - AspNetCore.Mvc, AspNet.Mvc or WebApi Contexts
+  - HttpClient
+  - Ado.Net
+  - Streams & Logging
+- Mix & match with your favourite test runners & assertions.
 
-Mix & match with your favourite test runners & assertions. Chainable fluent assertions get you to the point concisely:
 ```
 UnitUnderTest.Action()
   .ShouldNotBeNull()
   .ShouldEqualByValueExceptFor(new {Id=1, Descr=expected}, ignoreList )
   .Payload
     .ShouldMatchIgnoringCase("I expected this")
-	.Should(someOtherPredicate);
-	.Items
-      .ShouldAll(predicate)
-	  .ShouldContain(item)
-	  .ShouldNotContain(predicate)
-	  .Where(predicate)
-	  .SingleOrAssertFail()
+    .Should(someOtherPredicate);
+  .Items
+    .ShouldAll(predicate)
+    .ShouldContain(item)
+    .ShouldNotContain(predicate)
+    .Where(predicate)
+    .SingleOrAssertFail()
 
-.ShouldEqualByValue().ShouldEqualByValueExceptFor(...) work with all kinds of object and collections, and report what differed.
+.ShouldEqualByValue().ShouldEqualByValueExceptFor(...).ShouldEqualByValueOnMembers() 
+  work with all kinds of object and collections, and report what differed.
 string.ShouldMatch(pattern).ShouldNotMatch().ShouldBeEmpty().ShouldNotBeEmpty()
 .ShouldNotBeNullOrEmptyOrWhiteSpace().ShouldEqualIgnoringCase()
-.ShouldContain().ShouldStartWith().ShouldEndWith().ShouldBeContainedIn().ShouldBeOneOf().ShouldNotBeOneOf()…
+.ShouldContain().ShouldStartWith().ShouldEndWith().ShouldBeContainedIn(), ...
 numeric.ShouldBeBetween().ShouldEqualWithTolerance()....GreaterThan....LessThan...GreaterOrEqualTo ...
 ienumerable.ShouldAll().ShouldContain().ShouldNotContain().ShouldBeEmpty().ShouldNotBeEmpty() ...
 stream.ShouldHaveSameStreamContentAs().ShouldContain()
 value.ShouldBe().ShouldNotBe().ShouldBeOfType().ShouldBeAssignableTo()...
 ```
 
-See Also
-
 TestBase.HttpClient.Fake
-TestBase.AdoNet
-TestBase.AspNetCore.Mvc
-TestBase-Mvc for Mvc 3-5
-Extensions.Logging.ListOfString
-Serilog.Sinks.ListOfString
-
-TestBase.HttpClient.Fake
-------------------------
 
 ```
-[Test]
-public async Task Should_MatchTheRightExpectationAndReturnTheSetupResponse__GivenMultipleSetups()
-{
-  var httpClient = new FakeHttpClient()
-    .Setup(x=>x.Method==HttpMethod.Put).Returns(new HttpResponseMessage(HttpStatusCode.Accepted))
-    .Setup(x=>x.RequestUri.PathAndQuery.StartsWith("/this")).Returns(thisResponse)
-    .Setup(x=>x.RequestUri.PathAndQuery.StartsWith("/that")).Returns(thatResponse)
-    .Setup(x=>x.RequestUri.PathAndQuery.StartsWith("/forbidden")).Returns(new HttpResponseMessage(HttpStatusCode.Forbidden));
-
-  (await httpClient.GetAsync("http://localhost/that")).ShouldEqualByValue(thatResponse);
-  (await httpClient.GetAsync("http://localhost/forbidden")).StatusCode.ShouldBe(HttpStatusCode.Forbidden);
-
-  httpClient.Verify(x=>x.Method==HttpMethod.Put);
-  httClient.VerifyAll();     
-}
+new FakeHttpClient()
+      .Setup(x=>x.RequestUri.PathAndQuery.StartsWith("/this"))
+        .Returns(response)
+      .Setup(x=>x.Method==HttpMethod.Put)
+        .Returns(new HttpResponseMessage(HttpStatusCode.Accepted));
 ```
 
 TestBase.AdoNet
 ------------------
- 
-```
-- fakeDbConnection.SetupForQuery(IEnumerable<TFakeData>; )
-- fakeDbConnection.SetupForQuery(IEnumerable<Tuple<TFakeDataForTable1,TFakeDataForTable2>> )
-- fakeDbConnection.SetupForQuery(fakeData, new[] {"FieldName1", FieldName2"})
-- fakeDbConnection.SetupForExecuteNonQuery(rowsAffected)
-- fakeDbConnection.ShouldHaveUpdated("tableName", [Optional] fieldList, whereClauseField)
-- fakeDbConnection.ShouldHaveSelected("tableName", [Optional] fieldList, whereClauseField)
-- fakeDbConnection.ShouldHaveUpdated("tableName", [Optional] fieldList, whereClauseField)
-- fakeDbConnection.ShouldHaveDeleted("tableName", whereClauseField)
-- fakeDbConnection.ShouldHaveInvoked(cmd => predicate(cmd))
-- fakeDbConnection.ShouldHaveXXX().ShouldHaveParameter("name", value)
-- fakeDbConnection.Verify(x=>x.CommandText.Matches("Insert [case] .*") && x.Parameters["id"].Value==1)
-```
-
-* `new RecordingDbConnection(IDbConnection)` helps you profile Ado.Net Db calls
-
-TestBase.AspNetCore.Mvc & TestBase-Mvc
---------------------------------------
+`FakeDbConnection` 
 
 ```
-ControllerUnderTest.Action()
+- db.SetupForQuery(…)
+- db.SetupForExecuteNonQuery(…)
+- db.ShouldHaveUpdated("tableName", …)
+- db.ShouldHaveSelected("tableName", …)
+- db.ShouldHaveDeleted("tableName", …)
+- db.Verify( x=>x.CommandText.Matches("Insert [case] .*") 
+             && x.Parameters["id"].Value==1 )
+- db
+    .ShouldHaveInvoked(cmd => predicate(cmd))
+    .ShouldHaveParameter("name", value)
+```
+
+`RecordingDbConnection`
+
+TestBase.Mvc.AspNetCore & TestBase.Mvc for Mvc 4 & Mvc 5
+--------------------------------------------------------
+
+```
+ControllerUnderTest.WithControllerContext()
+  .Action()
   .ShouldbeViewResult()
   .ShouldHaveModel<TModel>()
   .ShouldEqualByValue(expected)
@@ -104,120 +86,55 @@ ControllerUnderTest.Action()
 ShouldHaveViewDataContaining(), ShouldBeJsonResult() etc.
 ```
 
-Quickly test AspNetCore controllers with zero setup, even with Action dependencies on HttpContext, Request, Response, ViewData, UrlHelper using `controllerUnderTest.WithControllerContext()` :
+
+- Test AspNetCore controllers with zero setup using 
+  `controllerUnderTest.WithControllerContext(actionUnderTest)`
+- Test more complex AspNetCore controller/application dependencies using 
+  `HostedMvcTestFixtureBase` and specify your MVCApplications `Startup` class.
 
 ```
-[TestFixture]
-public class WhenTestingControllersUsingFakeControllerContext
+[TestCase("/dummy")]
+public async Task Put_Should_ReturnA(string url)
 {
-    [Test]
-    public void ShouldBeViewWithModel_ShouldAssertViewResultAndNameAndModel_And_UrlHelper_ShouldWork()
-    {
-        var controllerUnderTest = 
-            new AController()
-                .WithControllerContext();
+    var httpClient=GivenClientForRunningServer<Startup>();
+    GivenRequestHeaders(httpClient, "CustomHeader", "HeaderValue1");
 
-        var result= controllerUnderTest
-                .Action("SomeController","SomeAction",other:1)
-                .ShouldBeViewWithModel<AClass>("ViewName");
-                    .FooterLink
-                    .ShouldBe("/Controller/Action?other=1");
-    }
+    var result = await httpClient.PutAsync(url, json);
+
+    result.ShouldBe_202Accepted();
 }
 ```
 
-... Or test against complex application dependencies using `HostedMvcTestFixtureBase` and specify your `Startup` class:
-
-```
-[TestFixture]
-public class WhenTestingControllersUsingAspNetCoreTestTestServer : HostedMvcTestFixtureBase
-{
-
-    [TestCase("/dummy/action?id={id}")]
-    public async Task Get_Should_ReturnActionResult(string url)
-    {
-        var id=Guid.NewGuid();
-        var httpClient=GivenClientForRunningServer<Startup>();
-        GivenRequestHeaders(httpClient, "CustomHeader", "HeaderValue1");
-            
-        var result= await httpClient.GetAsync(url.Formatz(new {id}));
-
-        result
-            .ShouldBe_200Ok()
-            .Content.ReadAsStringAsync().Result
-            .ShouldBe("Content");
-    }
-
-    [TestCase("/dummy")]
-    public async Task Put_Should_ReturnA(string url)
-    {
-        var something= new Fixture().Create<Something>();
-        var jsonBody= new StringContent(something.ToJSon(), Encoding.UTF8, "application/json");
-        var httpClient=GivenClientForRunningServer<Startup>();
-        GivenRequestHeaders(httpClient, "CustomHeader", "HeaderValue1");
-
-        var result = await httpClient.PutAsync(url, jsonBody);
-
-        result.ShouldBe_202Accepted();
-        DummyController.Putted.ShouldEqualByValue( something );
-    }
-}
-```
-
-TestBase.Mvc for Mvc4 and Mvc 5
-------------------
-Use the `Controller.WithHttpContextAndRoutes()` extension methods to fake the 
-http request &amp; context. And, by injecting the RegisterRoutes method of your
-MvcApplication, you can use and test Controller.Url with your application's configured routes.
+For Mvc4 and Mvc 5, fake your http request &amp; context, and use the `RegisterRoutes` method 
+of your actual application to set up `Controller.Url`
 
 ```
 ControllerUnderTest
   .WithHttpContextAndRoutes(
-    [Optional] Action&lt;RouteCollection&gt; mvcApplicationRoutesRegistration, 
-    [optional] string requestUrl,
-    [Optional] string query = "",
-    [Optional] string appVirtualPath = "/",
-    [Optional] HttpApplication applicationInstance)
+    RouteConfig.RegisterRoutes, 
+    "/incomingurl"
+  );
 
-ApiControllerUnderTest.WithWebApiHttpContext&lt;T&gt;(
-    HttpMethod httpMethod, 
-    [Optional] string requestUri,
-    [Optional] string routeTemplate)
+ApiControllerUnderTest.WithWebApiHttpContext<T>(
+    httpMethod, 
+    requestUri,
+    routeTemplate)
 ```
 
+Testable Logging
 
-Testable Logging with ListOfString
---------------------------------------
-`Extensions.Logging.ListOfString` for Microsoft.Extensions.Logging.Abstractions:
 ```
-var logger= new LoggerFactory.AddProvider(new StringListLoggerProvider()).CreateLogger("Test1");
-// of
-var logLines = new StringListLogger();
-var loggerFactory = new LoggerFactory().AddStringListLogger(logLines);
-// or
-var loggedLines = new List<string>();
-var logger= new LoggerFactory().AddStringListLogger(loggedLines).CreateLogger("Test2");
- ... ;
-StringListLogger.Instance
-	.LoggedLines
-	.ShouldContain(x=>x.Matches("kilroy was here"));
-```
-`Serilog.Sinks.ListOfString` for Serilog:
-```
-var loglines= new List<String>();
-var logger=new LoggerConfiguration().WriteTo.StringList(loglines).CreateLogger();
-... ;
-logLines.ShouldContain(x=>x.Matches("kilroy was here"));
-```
+// Extensions.Logging.ListOfString
+var log = new List<String>();
+ILogger mslogger= new LoggerFactory().AddStringListLogger(log).CreateLogger("Test2");
 
-PDFs
-----
-`TestBase.Pdf.DocumentWithLineOfText(myLineOfText)` gives you a small but well-formed PDF document to play with.
-(taken from https://www.cafe-encounter.net/p521/a-very-small-editable-pdf-for-testing)
-]]></PackageDescription>
+// Serilog.Sinks.ListOfString
+Serilog.Logger slogger= new LoggerConfiguration().WriteTo.StringList(log).CreateLogger();
+```]]></PackageDescription>
     <PackageReleaseNotes>ChangeLog
-----------
-4.1.2.7 Added item.ShouldBeOneOf / .ShouldNotBeOneOf      
+---------
+4.1.3.1 Corrected Assertion.ToString() to show BoolWithString detail. Added ShouldEqualByValueOnMembers()
+4.1.2.7 Added item.ShouldBeOneOf / .ShouldNotBeOneOf
 4.1.2.6 Added String.ShouldContainEachOf()
 4.1.2.5 Make Extensions.Logging.ListOfString Scopes public       
 4.1.2.4 TestBase.AdoNet providers VerifyFirst(), VerifyLast(), VerifySingle(). Added ToCodeString() overload

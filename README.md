@@ -1,13 +1,14 @@
 *TestBase* gives you a flying start with 
 - fluent assertions that are easy to extend
 - sharp error messages
-- tools to help you test with ‚Äúheavyweight‚Äù dependencies on 
+- tools to help you test with “heavyweight” dependencies on 
     - AspNet.Mvc or AspNetCore Contexts
 	- HttpClient
 	- Ado.Net
 	- Streams & Logging
+- Mix & match with your favourite test runners and assertions.
 
-Mix & match with your favourite test runners & assertions. Chainable fluent assertions get you to the point concisely:
+Chainable fluent assertions get you to the point concisely:
 ```
 UnitUnderTest.Action()
   .ShouldNotBeNull()
@@ -22,10 +23,11 @@ UnitUnderTest.Action()
 	  .Where(predicate)
 	  .SingleOrAssertFail()
 
-.ShouldEqualByValue().ShouldEqualByValueExceptFor(...) work with all kinds of object and collections, and report what differed.
+.ShouldEqualByValue().ShouldEqualByValueExceptFor(...).ShouldEqualByValueOnMembers()
+  work with all kinds of object and collections, and report what differed.
 string.ShouldMatch(pattern).ShouldNotMatch().ShouldBeEmpty().ShouldNotBeEmpty()
 .ShouldNotBeNullOrEmptyOrWhiteSpace().ShouldEqualIgnoringCase()
-.ShouldContain().ShouldStartWith().ShouldEndWith().ShouldBeContainedIn().ShouldBeOneOf().ShouldNotBeOneOf()‚Ä¶
+.ShouldContain().ShouldStartWith().ShouldEndWith().ShouldBeContainedIn().ShouldBeOneOf().ShouldNotBeOneOf()…
 numeric.ShouldBeBetween().ShouldEqualWithTolerance()....GreaterThan....LessThan...GreaterOrEqualTo ...
 ienumerable.ShouldAll().ShouldContain().ShouldNotContain().ShouldBeEmpty().ShouldNotBeEmpty() ...
 stream.ShouldHaveSameStreamContentAs().ShouldContain()
@@ -183,7 +185,7 @@ Testable Logging with ListOfString
 `Extensions.Logging.ListOfString` for Microsoft.Extensions.Logging.Abstractions:
 ```
 var logger= new LoggerFactory.AddProvider(new StringListLoggerProvider()).CreateLogger("Test1");
-// of
+// or
 var logLines = new StringListLogger();
 var loggerFactory = new LoggerFactory().AddStringListLogger(logLines);
 // or
@@ -206,3 +208,4 @@ PDFs
 ----
 `TestBase.Pdf.DocumentWithLineOfText(myLineOfText)` gives you a small but well-formed PDF document to play with.
 (taken from https://www.cafe-encounter.net/p521/a-very-small-editable-pdf-for-testing)
+

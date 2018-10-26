@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Linq.Expressions;
+using ExpressionToCodeLib;
 
 namespace TestBase
 {
+    /// <summary>A set of <see cref="Expression{FuncFromObjectToBool}"/> Predicates with a simple fluent syntax
+    /// Intended to provide self-explanatory code when expanded by <see cref="ExpressionToCode"/></summary>
     public static class Is
     {
         public static Expression<Func<object,bool>> Null { get; } = x => x == null;
@@ -13,12 +16,18 @@ namespace TestBase
 
         public static Expression<Func<object,bool>> EqualTo<TRight>(TRight expected)
         {
-            return x => (x ==null && expected ==null) || x.Equals(expected);
+            if (expected == null)
+                return x => x == null;
+            else
+                return x => x!=null && x.Equals(expected);
         }
 
         public static Expression<Func<object,bool>> NotEqualTo<TRight>(TRight expected)
         {
-            return x => (x ==null && expected !=null) || !x.Equals(expected);
+            if (expected == null)
+                return x => x != null;
+            else
+                return x =>  x==null || !x.Equals(expected);
         }
 
         public static Expression<Func<IComparable<T>,bool>> InRange<T>(T left, T right)

@@ -24,7 +24,7 @@ namespace TestBase
         /// <returns><paramref name="actual"/></returns>
         public static void ShouldBeNullOrEmpty(this string actual, string message=null, params object[] args)
         {
-            Assert.That(String.IsNullOrEmpty(actual), message?? nameof(ShouldBeNullOrEmpty), args);
+            Assert.That(string.IsNullOrEmpty(actual), message?? nameof(ShouldBeNullOrEmpty), args);
         }
 
         /// <summary>Asserts that <code>actual.Length==0</code></summary>
@@ -43,26 +43,40 @@ namespace TestBase
 
         /// <summary>Asserts that <code>string.IsNullOrWhitespace(actual.ToString())</code></summary>
         /// <returns><paramref name="actual"/></returns>
-        public static void ShouldBeNullOrEmptyOrWhitespace(this object actual, string message=null, params object[] args)
+        public static object ShouldBeNullOrEmptyOrWhitespace(this object actual, string message=null, params object[] args)
         {
-            Assert.That(actual == null || actual.ToString().Trim().Length == 0, message??nameof(ShouldBeNullOrEmptyOrWhitespace), args);
+            if (actual == null)
+                return null;
+            else
+            {
+                var trimmed = actual.ToString().Trim();
+                return Assert.That(actual, x => trimmed.Length == 0, message ?? nameof(ShouldBeNullOrEmptyOrWhitespace), args);
+            }
         }
 
         /// <summary>Asserts that <code>string.IsNullOrWhitespace(actual.ToString())</code> would fail.</summary>
         /// <returns><paramref name="actual"/></returns>
-        public static void ShouldNotBeNullOrEmptyOrWhitespace(this object actual, string message=null, params object[] args)
+        public static object ShouldNotBeNullOrEmptyOrWhitespace(this object actual, string message=null, params object[] args)
         {
-            Assert.That(actual != null && actual.ToString().Trim().Length != 0, message ?? nameof(ShouldNotBeNullOrEmptyOrWhitespace), args);
+            Assert.That(actual, x=> x!= null, message ?? nameof(ShouldNotBeNullOrEmptyOrWhitespace), args);
+            var trimmed = actual.ToString().Trim();
+            return Assert.That(actual, x=> trimmed.Length != 0, message ?? nameof(ShouldNotBeNullOrEmptyOrWhitespace), args);
         }
 
         /// <summary>Asserts that <paramref name="actual"/>.Equals(<paramref name="expected"/>) or else that <paramref name="actual"/> and <paramref name="expected"/> are both null.</summary>
         /// <returns><paramref name="actual"/></returns>
         public static T ShouldBe<T>(this T actual, T expected, string message=null, params object[] args)
         {
-            Assert.That(actual,  
-                        x=> (x==null && expected==null) || x.Equals(expected), 
-                        message ?? $"{nameof(ShouldBe)}\n\n{expected}", args);
-            return actual;
+            if (actual == null && expected == null)
+                return actual;
+            else if (expected == null)
+                return (T) Assert.That(actual, Is.Null, message ?? $"{nameof(ShouldBe)} null", args);
+            else if(actual==null)
+                return Assert.That(actual, x=> false && x.Equals(expected) , message ?? $"{nameof(ShouldBe)} null", args);
+            else {
+                Assert.That(actual, x => x.Equals(expected), message ?? $"{nameof(ShouldBe)}\n{expected}", args);
+                return actual;
+            }
         }
 
         /// <summary>Asserts that <code>actual.Equals(expected)</code> would fail (or else that <paramref name="actual"/> is null and <paramref name="notExpected"/> is not).</summary>
@@ -77,7 +91,7 @@ namespace TestBase
         /// <returns><paramref name="actual"/></returns>
         public static T ShouldEqual<T>(this T actual, object expected, string comment=null, params object[] args)
         {
-            return Assert.That(actual, a=>a.Equals(expected), comment ?? $"{nameof(ShouldEqual)}\n\n{expected}", args);
+            return Assert.That(actual, a=>a.Equals(expected), comment ?? $"{nameof(ShouldEqual)}\n{expected}", args);
         }
 
         /// <summary>Asserts that <code>!<paramref name="actual"/>.Equals(<paramref name="notExpected"/>)</code></summary>
@@ -100,18 +114,26 @@ namespace TestBase
         /// <returns><paramref name="actual"/></returns>
         public static T ShouldBeTrue<T>(this T actual, string message=null, params object[] args)
         {
-            Assert.That( actual, 
-                         x=>x!=null&&x.Equals(true),
-                         message ??nameof(ShouldBeTrue), args);
-            return actual;
+            if (actual == null) 
+                return Assert.That(actual, x => x != null, message??nameof(ShouldBeTrue), args);
+            else
+            {
+                Assert.That(actual, x => x.Equals(true), message ?? nameof(ShouldBeTrue), args);
+                return actual;
+            }
         }
 
         /// <summary>Asserts that <code><paramref name="actual"/>.Equals(false)</code></summary>
         /// /// <returns><paramref name="actual"/></returns>
         public static T ShouldBeFalse<T>( this T actual, string message=null, params object[] args )
         {
-            Assert.That(actual, x=> x!=null&&x.Equals(false), message??nameof(ShouldBeFalse), args);
-            return actual;
+            if (actual == null) 
+                return Assert.That(actual, x => x != null, message??nameof(ShouldBeFalse), args);
+            else
+            {
+                Assert.That(actual, x => x.Equals(false), message ?? nameof(ShouldBeFalse), args);
+                return actual;
+            }
         }
 
         /// <summary>Asserts that <paramref name="actual"/> is GreaterThan <paramref name="expected"/>
