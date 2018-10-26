@@ -2,9 +2,15 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>TestBase</RootNamespace>
-    <AssemblyVersion>4.1.3.0</AssemblyVersion>
-    <AssemblyFileVersion>4.1.3.0</AssemblyFileVersion>
-    <PackageVersion>4.1.3.0</PackageVersion>
+<<<<<<< HEAD
+    <AssemblyVersion>4.2.0.0</AssemblyVersion>
+    <AssemblyFileVersion>4.2.0.0</AssemblyFileVersion>
+    <PackageVersion>4.2.0.0</PackageVersion>
+=======
+    <AssemblyVersion>4.1.2.4</AssemblyVersion>
+    <AssemblyFileVersion>4.1.2.4</AssemblyFileVersion>
+    <PackageVersion>4.1.2.4</PackageVersion>
+>>>>>>> 54b050cefe83d54e2a7e2ea8bafaecb54526406a
     <Title>TestBase – Rich, fluent assertions and tools for testing with heavyweight dependencies: AspNetCore, AdoNet, HttpClient, AspNet.Mvc, Streams, Logging</Title>
     <PackageDescription><![CDATA[*TestBase* gives you a flying start with 
 - fluent assertions that are easy to extend
@@ -118,7 +124,7 @@ See also
  - Extensions.Logging.ListOfString]]></PackageDescription>
     <PackageReleaseNotes>ChangeLog
 ---------
-4.1.3.0 Corrected Assertion.ToString() to show BoolWithString detail. Added ShouldEqualByValueOnMembers()
+4.2.0.0 Corrected Assertion.ToString() to show BoolWithString detail. Added ShouldEqualByValueOnMembers()
 4.1.2.3 TestBase.Mvc.AspNetCore renamed to TestBase.AspNetCore.Mvc
 4.1.2.0 TestBase.Mvc.AspNetCore provides WithControllerContext() and TestServerBuilder
 4.0.7.0 Added TestBase.FakeHttpClient. Added Should(predicate,...) as synonym of ShouldHave(predicate,...)

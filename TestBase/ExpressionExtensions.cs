@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
+using ExpressionToCodeLib;
 
 namespace TestBase
 {
@@ -27,6 +28,31 @@ namespace TestBase
                 new SwapVisitor(outer.Parameters[0], inner.Body).Visit(outer.Body),
                 inner.Parameters
             );
+        }
+
+        /// <summary>
+        /// A better ToString() method for Expressions
+        /// </summary>
+        /// <typeparam name="TExpr"></typeparam>
+        /// <param name="expression"></param>
+        /// <returns></returns>
+        public static String ToCodeString<TExpr>(this TExpr expression) where TExpr : Expression
+        {
+            return ExpressionToCode.ToCode(expression);
+        }
+        /// <summary>
+        /// A better ToString() method for Expressions, which returns a multi-lined, annotated output
+        /// </summary>
+        public static String ToAnnotatedCodeString<TExpr>(this TExpr expression) where TExpr : Expression
+        {
+            return ExpressionToCode.AnnotatedToCode(expression);
+        }
+        /// <summary>
+        /// A better ToString() method for Expressions
+        /// </summary>
+        public static String ToValuedCodeString<TResult>(this Expression<Func<TResult>> expression)
+        {
+            return ExpressionToCode.ToValuedCode(expression);
         }
     }
 

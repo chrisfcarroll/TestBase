@@ -22,8 +22,14 @@
 //
 namespace TestBase
 {
+    /// <summary>
+    /// A bool with an explanation. <see cref="BoolWithString"/> is convertible to and from <see cref="bool"/>
+    /// </summary>
     public struct BoolWithString
     {
+        /// <summary>True if both value and <see cref="ToString"/> match.</summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
         public bool Equals(BoolWithString other)
         {
             return value==other.value && message==other.message;

@@ -3,9 +3,9 @@
   <PropertyGroup>
     <TargetFramework>netstandard1.1</TargetFramework>
     <RootNamespace>Extensions.Logging.ListOfString</RootNamespace>
-    <AssemblyVersion>4.1.0.0</AssemblyVersion>
-    <AssemblyFileVersion>4.1.0.0</AssemblyFileVersion>
-    <PackageVersion>4.1.0.0</PackageVersion>
+    <AssemblyVersion>4.1.2.4</AssemblyVersion>
+    <AssemblyFileVersion>4.1.2.4</AssemblyFileVersion>
+    <PackageVersion>4.1.2.4</PackageVersion>
     <Title>Extensions.Logging.ListOfString : Test your logging with new StringListLogger().Log(...)</Title>
     <PackageDescription><![CDATA[Extensions.Logging.ListOfString logs to a list of string so you can test your logging :
 ```
@@ -54,8 +54,8 @@ tools for testing with dependencies on AspNetMvc, HttpClient, Ado.Net, Streams a
     <Copyright>(c) Chris F. Carroll, 2013-2018</Copyright>
     <Authors>Chris F Carroll</Authors>
     <Owners>Chris F Carroll</Owners>
-    <PackageProjectUrl>http://github.com/chrisfcarroll/TestBase</PackageProjectUrl>
-    <RepositoryUrl>http://github.com/chrisfcarroll/TestBase</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/chrisfcarroll/TestBase</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/chrisfcarroll/TestBase</RepositoryUrl>
     <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
     <IncludeSymbols>true</IncludeSymbols>
     <PackageTags>nunit;test;unittest;tdd;mock;logging;serilog</PackageTags>

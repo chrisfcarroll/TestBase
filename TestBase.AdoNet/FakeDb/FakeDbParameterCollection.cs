@@ -96,7 +96,7 @@ namespace TestBase.AdoNet.FakeDb
 
         public override bool Contains(string value)
         {
-            return parameters.Any(x => value == (string) x.Value);
+            return parameters.Any(x => value == Convert.ToString(x.Value));
         }
 
         public override void CopyTo(Array array, int index)

@@ -1,10 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <AssemblyVersion>4.1.3.0</AssemblyVersion>
-    <AssemblyFileVersion>4.1.3.0</AssemblyFileVersion>
-    <PackageVersion>4.1.3.0</PackageVersion>
-    <PackageVersion>4.1.3.0</PackageVersion>
+<<<<<<< HEAD
+    <AssemblyVersion>4.2.0.0</AssemblyVersion>
+    <AssemblyFileVersion>4.2.0.0</AssemblyFileVersion>
+    <PackageVersion>4.2.0.0</PackageVersion>
+    <PackageVersion>4.2.0.0</PackageVersion>
+=======
+    <AssemblyVersion>4.1.2.4</AssemblyVersion>
+    <AssemblyFileVersion>4.1.2.4</AssemblyFileVersion>
+    <PackageVersion>4.1.2.4</PackageVersion>
+    <PackageVersion>4.1.2.4</PackageVersion>
+>>>>>>> 54b050cefe83d54e2a7e2ea8bafaecb54526406a
   </PropertyGroup>
   <PropertyGroup>
     <Title>TestBase – Rich, fluent assertions and tools for testing with heavyweight dependencies: AdoNet, HttpClient, AspNetCore, AspNet.Mvc, Streams, Logging</Title>
@@ -42,8 +49,11 @@ See also
     <ReleaseNotes><![CDATA[
 ChangeLog
 ---------
-4.1.3.0 Corrected Assertion.ToString() to show BoolWithString detail. Added ShouldEqualByValueOnMembers()
+<<<<<<< HEAD
+4.2.0.0 Corrected Assertion.ToString() to show BoolWithString detail. Added ShouldEqualByValueOnMembers()
+=======
 4.1.2.4 TestBase.AdoNet providers VerifyFirst(), VerifyLast(), VerifySingle()
+>>>>>>> 54b050cefe83d54e2a7e2ea8bafaecb54526406a
 4.1.0.0 [ExpressionToCodeLib](https://www.nuget.org/packages/ExpressionToCodeLib/) and [FastExpressionCompiler](https://www.nuget.org/packages/FastExpressionCompiler/) ftw. Awesomer, and faster, assertions.
 4.0.9.0 Remove dependency on net4 version of Mono.Linq.Expressions
 4.0.8.0 Separated `Serilog.Sinks.ListOfString` and `Extensions.Logging.StringListLogger`

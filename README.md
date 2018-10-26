@@ -22,7 +22,7 @@ UnitUnderTest.Action()
 	  .Where(predicate)
 	  .SingleOrAssertFail()
 
-.ShouldEqualByValue().ShouldEqualByValueExceptFor(...) 
+.ShouldEqualByValue().ShouldEqualByValueExceptFor(...).ShouldEqualByValueOnMembers()
   work with all kinds of object and collections, and report what differed.
 string.ShouldMatch(pattern).ShouldNotMatch().ShouldBeEmpty().ShouldNotBeEmpty()
 .ShouldNotBeNullOrEmptyOrWhiteSpace().ShouldEqualIgnoringCase()
