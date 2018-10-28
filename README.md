@@ -1,7 +1,7 @@
 *TestBase* gives you a flying start with 
 - fluent assertions that are easy to extend
 - sharp error messages
-- tools to help you test with “heavyweight” dependencies on 
+- tools to help you test with "heavyweight" dependencies on 
     - AspNet.Mvc or AspNetCore Contexts
 	- HttpClient
 	- Ado.Net
@@ -27,7 +27,7 @@ UnitUnderTest.Action()
   work with all kinds of object and collections, and report what differed.
 string.ShouldMatch(pattern).ShouldNotMatch().ShouldBeEmpty().ShouldNotBeEmpty()
 .ShouldNotBeNullOrEmptyOrWhiteSpace().ShouldEqualIgnoringCase()
-.ShouldContain().ShouldStartWith().ShouldEndWith().ShouldBeContainedIn().ShouldBeOneOf().ShouldNotBeOneOf()…
+.ShouldContain().ShouldStartWith().ShouldEndWith().ShouldBeContainedIn().ShouldBeOneOf().ShouldNotBeOneOf()
 numeric.ShouldBeBetween().ShouldEqualWithTolerance()....GreaterThan....LessThan...GreaterOrEqualTo ...
 ienumerable.ShouldAll().ShouldContain().ShouldNotContain().ShouldBeEmpty().ShouldNotBeEmpty() ...
 stream.ShouldHaveSameStreamContentAs().ShouldContain()
@@ -208,4 +208,3 @@ PDFs
 ----
 `TestBase.Pdf.DocumentWithLineOfText(myLineOfText)` gives you a small but well-formed PDF document to play with.
 (taken from https://www.cafe-encounter.net/p521/a-very-small-editable-pdf-for-testing)
-
