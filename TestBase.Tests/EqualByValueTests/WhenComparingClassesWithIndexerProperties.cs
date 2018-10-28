@@ -1,33 +1,39 @@
 ﻿using NUnit.Framework;
 
-namespace TestBase.Tests.ComparerEqualsByValueTests
+namespace TestBase.Tests.EqualByValueTests
 {
     [TestFixture]
-    public class WhenComparingClassesByValue
+    public class WhenComparingClassesWithIndexerProperties
     {
+        public class AClass
+        {
+            public string this[string key]
+            {
+                get { return key; }
+            }
+            public int Id { get; set; }
+            public string Name { get; set; }
+        }
+
         static readonly AClass object1 = new AClass
-        {
-            Id = 1,
-            Name = "1",
-            More = new BClass { More = 1, EvenMore = "Evenmore1" }
-        };
+            {
+                    Id=1,
+                    Name = "1",
+            };
         static readonly AClass object1again = new AClass
-        {
-            Id = 1,
-            Name = "1",
-            More = new BClass { More = 1, EvenMore = "Evenmore1" }
-        };
+            {
+                    Id=1,
+                    Name = "1",
+            };
         static readonly AClass object2 = new AClass
         {
             Id = 1,
-            Name = "1",
-            More = new BClass { EvenMore = "Evenmore2" }
+            Name = "2",
         };
         static readonly AClass object3 = new AClass
         {
             Id = 1,
-            Name = "1",
-            More = new BClass { More = 2, EvenMore = "Evenmore1" }
+            Name = "2",
         };
 
         [Test]

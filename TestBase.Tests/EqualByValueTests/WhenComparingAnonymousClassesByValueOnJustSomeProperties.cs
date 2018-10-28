@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using NUnit.Framework;
 
-namespace TestBase.Tests.ComparerEqualsByValueTests
+namespace TestBase.Tests.EqualByValueTests
 {
     [TestFixture]
     public class WhenComparingAnonymousClassesByValueOnJustSomeMembers
@@ -31,6 +31,19 @@ namespace TestBase.Tests.ComparerEqualsByValueTests
             Assert.Throws<Assertion>(
                       () => objectL.ShouldEqualByValueOnMembers(objectR, mismatchedMembers)
                     );
+        }
+
+        [Test]
+        public void Should_not_be_fooled_by_members_with_overlapping_names()
+        {
+            //A
+            var objectL = new { Id = 1, Name = "1", NameOhDear="Did we compare on field NameOhDear?" };
+            var objectR = new { Id = 1, Name = "1", NameOhDear="Oh Dear!" };
+            var matchedMembers    = new List<string> {"Name"};
+
+            //A & A
+            objectL.EqualsByValuesJustOnMembersNamed(objectR, matchedMembers).ShouldBeTrue();
+            objectL.ShouldEqualByValueOnMembers(objectR, matchedMembers);
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using NUnit.Framework;
 
-namespace TestBase.Tests.ComparerEqualsByValueTests
+namespace TestBase.Tests.EqualByValueTests
 {
     [TestFixture]
     public class WhenComparingAnonymousClassesByValueWithExclusions
@@ -15,7 +15,7 @@ namespace TestBase.Tests.ComparerEqualsByValueTests
             var exclusionList = new List<string> {"IrrelevantExclusion", "Nested.NestedName"};
 
             //A & A
-            objectL.EqualsByValueOrDiffersExceptFor(objectR, exclusionList).AsBool.ShouldBeTrue();
+            objectL.EqualsByValueOrDiffersExceptFor(objectR, exclusionList).ShouldBeTrue();
             objectL.ShouldEqualByValueExceptFor(objectR, exclusionList);
             objectL.EqualsByValueExceptFor(objectR, exclusionList).ShouldBeTrue();
         }
@@ -28,7 +28,7 @@ namespace TestBase.Tests.ComparerEqualsByValueTests
             var exclusionList = new List<string> {"Nested.NestedName"};
 
             //A&A
-            objectL.EqualsByValueOrDiffersExceptFor(objectR, exclusionList).AsBool.ShouldBeFalse();
+            objectL.EqualsByValueOrDiffersExceptFor(objectR, exclusionList).ShouldBeFalse();
             Assert.Throws<Assertion>(
                       () => objectL.ShouldEqualByValueExceptFor(objectR, exclusionList)
                     );

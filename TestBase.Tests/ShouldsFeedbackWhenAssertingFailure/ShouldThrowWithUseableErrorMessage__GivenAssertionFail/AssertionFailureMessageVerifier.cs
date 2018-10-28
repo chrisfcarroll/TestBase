@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TestBase.Tests.ShouldsFeedbackWhenAsserting.ShouldThrowWithUseableErrorMessage__GivenAssertionFail
+namespace TestBase.Tests.ShouldsFeedbackWhenAssertingFailure.ShouldThrowWithUseableErrorMessage__GivenAssertionFail
 {
     public static class AssertionFailureMessageVerifier
     {
