@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Mvc;
 using NUnit.Framework;
 
-namespace TestBase.Tests.ShouldsFeedbackWhenAsserting.ShouldThrowWithUseableErrorMessage__GivenAssertionFail
+namespace TestBase.Tests.ShouldsFeedbackWhenAssertingFailure.ShouldThrowWithUseableErrorMessage__GivenAssertionFail
 {
     [TestFixture]
     public partial class GivenAssertionFail

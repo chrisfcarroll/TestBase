@@ -5,7 +5,7 @@ using Extensions.Logging.ListOfString;
 using Microsoft.Extensions.Logging;
 using NUnit.Framework;
 
-namespace TestBase.Tests
+namespace TestBase.Tests.ListOfStringLogging
 {
     [TestFixture]
     public class StringListLoggerShould

@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using NUnit.Framework;
 
-namespace TestBase.Tests
+namespace TestBase.Tests.Pdfs
 {
     [TestFixture]
     public class PdfShoulds

@@ -1,10 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Reflection;
 using FastExpressionCompiler;
-using Newtonsoft.Json;
-using ExpressionToCodeLib;
 
 namespace TestBase
 {
@@ -145,6 +141,7 @@ namespace TestBase
         /// Asserts that <code><paramref name="predicate"/>( <paramref name="actual"/> )</code> throws a <typeparamref name="TE"/>, catching the exception and returning it.
         /// </summary>
         /// <typeparam name="TE"></typeparam>
+        /// <typeparam name="T"></typeparam>
         /// <returns>The caught exception</returns>
         /// <exception cref="ShouldHaveThrownException">is thrown if <paramref name="predicate"/> does not throw.</exception>
         public static T Throws<T,TE>(T actual, Expression<Func<T,bool>> predicate, TE dummyForTypeInference=null, string comment = null, params object[] commentArgs) where TE : Exception
@@ -189,292 +186,39 @@ namespace TestBase
             return action;
         }
 
-        internal static class BestEffortJsonSerializerSettings
-        {
-            public static readonly JsonSerializerSettings Serializer =
-                new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore, MissingMemberHandling = MissingMemberHandling.Ignore, ReferenceLoopHandling = ReferenceLoopHandling.Ignore };
-
-            static BestEffortJsonSerializerSettings()
-            {
-                Serializer.Converters.Add(new DBNullConverter());
-            }
-
-            /// <summary>Converts <see cref="DBNull" /> to and from its name string value.</summary>
-            public class DBNullConverter : JsonConverter
-            {
-                /// <summary>Writes the JSON representation of the object.</summary>
-                /// <param name="writer">The <see cref="T:Newtonsoft.Json.JsonWriter" /> to write to.</param>
-                /// <param name="value">The value.</param>
-                /// <param name="serializer">The calling serializer.</param>
-                public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-                {
-                    writer.WriteNull();
-                }
-
-                /// <summary>Reads the JSON representation of the object.</summary>
-                /// <param name="reader">The <see cref="T:Newtonsoft.Json.JsonReader" /> to read from.</param>
-                /// <param name="objectType">Type of the object.</param>
-                /// <param name="existingValue">The existing value of object being read.</param>
-                /// <param name="serializer">The calling serializer.</param>
-                /// <returns>The object value.</returns>
-                public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-                {
-                    return DBNull.Value;
-                }
-
-                /// <summary>
-                /// Determines whether this instance can convert the specified object type.
-                /// </summary>
-                /// <param name="objectType">Type of the object.</param>
-                /// <returns>
-                /// <c>true</c> if this instance can convert the specified object type; otherwise, <c>false</c>.
-                /// </returns>
-                public override bool CanConvert(Type objectType)
-                {
-                    return objectType == typeof(DBNull);
-                }
-            }
-        }
-
-        public static void Fail(string format, params object[] args)
-        {
-            throw new Assertion(string.Format(format, args));
-        }
+        /// <summary>Immediately throws a new <see cref="Assertion"/> with message formatted from <paramref name="format"/> and <see cref="args"/></summary>
+        /// <param name="format"></param>
+        /// <param name="args"></param>
+        /// <exception cref="Assertion"></exception>
+        public static void Fail(string format, params object[] args) => throw new Assertion(string.Format(format, args));
     }
+
 
     /// <summary>
     /// An Exception indicating that an Exception was expected but was not thrown.
     /// </summary>
     public class ShouldHaveThrownException : Exception
     {
+        /// <summary>Creates a new <see cref="ShouldHaveThrownException"/> with message <paramref name="message"/></summary>
+        /// <param name="message"></param>
         public ShouldHaveThrownException(string message) : base(message){}
 
-        public static ShouldHaveThrownException For<T>(Assertion<T> assertion)
-        {
-            return new ShouldHaveThrownException(assertion.Message);
-        }
 
-        public static ShouldHaveThrownException For<T>(T actual, Expression<Func<T,bool>> predicate, string comment=null, params object[] args)
-        {
-            return new ShouldHaveThrownException( new Assertion<T>(actual, predicate, comment, args).Message );
-        }
-    }
-    /// <summary>
-    /// An Exception thrown when <see cref="Assert.DoesNotThrow"/> finds that an Assertion <em>was</em> thrown.
-    /// </summary>
-    public class ShouldNotThrowException : Exception
-    {
-        public ShouldNotThrowException(string message) : base(message) { }
-        public ShouldNotThrowException(Exception a) : base(a.Message){}
-        public static ShouldNotThrowException For<T>(T actual, Expression<Func<T,bool>> predicate, string comment = null, params object[] args)
-        {
-            return new ShouldNotThrowException(new Assertion<T>(actual, predicate, comment, args).Message);
-        }
-
-        public static Exception For(Expression<Action> action, string comment, object[] commentArgs)
-        {
-            return new ShouldNotThrowException(Assertion.New(action, a=> BoolWithString.False( "Threw:" +ExpressionToCodeLib.ExpressionToCode.ToCode(action)), comment, commentArgs));
-        }
-    }
-
-    /// <summary>A Precondition is an Assertion. Calling it a precondition is presumed to indicate that it is to be understood as a precondition</summary>
-    /// <typeparam name="T"></typeparam>
-    public class Precondition<T> : Assertion<T>
-    {
-        public Precondition(T actual, Expression<Func<T,bool>> predicate, string comment = null, params object[] commentArgs) : base(actual, predicate, comment, commentArgs){}
-    }
-    
-    /// <summary>An Assertion is throwable (it inherits from Exception) but need not indicate an assertion <em>failure</em>; it might hold an assertion pass.</summary>
-    public class Assertion : Exception
-    {
-        public static Assertion<T> New<T>(T actual, Expression<Func<T, bool>> predicate, string comment,object[] commentArgs)
-        {
-            return new Assertion<T>(actual, predicate, comment, commentArgs);
-        }
-
-        public static Assertion<T> New<T>(T actual, Expression<Func<T, BoolWithString>> predicate, string comment,object[] commentArgs)
-        {
-            return new Assertion<T>(actual, predicate, comment, commentArgs);
-        }
-
-        protected Assertion(){ } 
-        public Assertion(string message):base(message) { }
-    }
-
-    /// <summary>An Assertion about an instance. 
-    /// An Assertion is throwable (it inherits from Exception) but need not indicate an assertion failure; it might hold an assertion pass.</summary>
-    /// <typeparam name="T"></typeparam>
-    public class Assertion<T> : Assertion
-    {
-        static readonly string nl = Environment.NewLine;
-        public string Actual { get; }
-        public string Asserted { get; }
-        public bool? Result { get; }
-        public bool DidPass => Result.HasValue && Result.Value;
-        public Exception Exception { get; }
-        public string Comment { get; }
-        public override string Message => ToStringEvenIfPassed();
-
-        /// <summary>
-        /// Evaluates whether <paramref name="predicate"/> is true of <paramref name="actual"/>, and stores the result of the evaluation or, if 
-        /// an exception is thrown during evaluation, catches and stores the exception instead.
-        /// </summary>
-        /// <param name="actual">The value under assertion</param>
-        /// <param name="comparedTo">The expected value, or the 'comparable' value to be used in <paramref name="predicate"/>(actual,expected).</param>
-        /// <param name="predicate">The predicate to apply</param>
-        /// <param name="comment">Occurrences of "{{actual}}" in the comment string will be replace with <paramref name="actual"/>?.ToString()</param>
-        /// <param name="commentArgs">will be inserted into <paramref name="comment"/> using string.Format()</param>
-        public Assertion(T actual,  T comparedTo, Expression<Func<T,T,bool>> predicate, string comment, object[] commentArgs)
-        {
-            try
-            {
-                Actual=ActualToString(actual);
-                Comment=CommentFormatted(Actual, comment, commentArgs);
-                var assertActual = Expression.Lambda(predicate.Body, false, Expression.Parameter(actual?.GetType()??typeof(T), "actual"));
-                Asserted= ExpressionToCodeConfiguration.DefaultAssertionConfiguration
-                    .WithPrintedListLengthLimit(15)
-                    .WithMaximumValueLength(80)
-                    .WithOmitImplicitCasts(true)
-                    .GetAnnotatedToCode().AnnotatedToCode(assertActual);
-                var result = predicate.CompileFast()(actual,comparedTo);
-                Result = result;
-            }
-            catch (Exception e)
-            {
-                Exception = e;
-            }
-        }
-        /// <summary>
-        /// Evaluates whether <paramref name="predicate"/> is true of <paramref name="actual"/>, and stores the result of the evaluation or, if 
-        /// an exception is thrown during evaluation, catches and stores the exception instead.
-        /// </summary>
-        /// <param name="actual">The value under assertion</param>
-        /// <param name="predicate">The predicate to apply</param>
-        /// <param name="comment">Occurrences of "{{actual}}" in the comment string will be replace with <paramref name="actual"/>?.ToString()</param>
-        /// <param name="commentArgs">will be inserted into <paramref name="comment"/> using string.Format()</param>
-        public Assertion(T actual, Expression<Func<T,bool>> predicate, string comment, object[] commentArgs)
-        {
-            try
-            {
-                Actual=ActualToString(actual);
-                Comment=CommentFormatted(Actual, comment, commentArgs);
-                var assertActual = Expression.Lambda(predicate.Body, false, Expression.Parameter(actual?.GetType()??typeof(T), "actual"));
-                Asserted= ExpressionToCodeConfiguration.DefaultAssertionConfiguration
-                    .WithPrintedListLengthLimit(15)
-                    .WithMaximumValueLength(80)
-                    .WithOmitImplicitCasts(true)
-                    .GetAnnotatedToCode().AnnotatedToCode(assertActual);
-                var result = predicate.CompileFast()(actual);
-                Result = result;
-            }
-            catch (Exception e)
-            {
-                Exception = e;
-            }
-        }
-        /// <summary>
-        /// Evaluates whether <paramref name="predicate"/> is true of <paramref name="actual"/>, and stores the result of the evaluation or, if 
-        /// an exception is thrown during evaluation, catches and stores the exception instead.
-        /// </summary>
-        /// <param name="actual">The value under assertion</param>
-        /// <param name="predicate">The predicate to apply</param>
-        /// <param name="comment">Occurrences of "{{actual}}" in the comment string will be replace with <paramref name="actual"/>?.ToString()</param>
-        /// <param name="commentArgs">will be inserted into <paramref name="comment"/> using string.Format()</param>
-        public Assertion(T actual, Expression<Func<T, BoolWithString>> predicate, string comment = null, params object[] commentArgs)
-        {
-            try
-            {
-                Actual=ActualToString(actual);
-                Comment=CommentFormatted(Actual, comment, commentArgs);
-                var result = predicate.CompileFast()(actual);
-                Result = result;
-                Asserted = result.ToString();
-            }
-            catch (Exception e)
-            {
-                Exception = e;
-            }
-        }
-
-        string CommentFormatted(string actual, string comment, object[] commentArgs)
-        {
-            var commentFormatted = comment?.Replace("{{actual}}", actual);
-            if (commentFormatted != null && commentArgs?.Length > 0) { commentFormatted = string.Format(commentFormatted, commentArgs); }
-            return commentFormatted;
-        }
-        
-        static string ActualToString(T actual)
-        {
-            foreach (var toString in PreferredToStringMethod)
-                try
-                {
-                    return StringifyMethods[toString](actual);
-                }
-                catch{}
-            try { return actual.ToString(); }
-            catch { return "actual"; }
-        }
-
-        /// <summary>
-        /// Called by <seealso cref="ActualToString"/>. Modify this if you want to change the method used to Stringify actual.
-        /// </summary>
-        public static StringifyMethod[] PreferredToStringMethod =
-        {
-            StringifyMethod.DeclaredToStringElseThrow,
-            StringifyMethod.ExpressionToCodeStringify,
-            StringifyMethod.NewtonsoftJsonSerialize,
-            StringifyMethod.InheritedToString,
-        };
-
-        static Dictionary<StringifyMethod, Func<object, string>> StringifyMethods = new Dictionary<StringifyMethod, Func<object, string>>
-        {
-            {
-                StringifyMethod.DeclaredToStringElseThrow,
-                o => o==null ? "<null>" : o.GetType().GetMethod("ToString", BindingFlags.Instance |BindingFlags.DeclaredOnly | BindingFlags.Public) !=null ? o.ToString() : throw new ArgumentNullException("actual")
-            },
-            {StringifyMethod.ExpressionToCodeStringify, ObjectStringify.Default.PlainObjectToCode},
-            {StringifyMethod.NewtonsoftJsonSerialize, o => JsonConvert.SerializeObject(o, Assert.BestEffortJsonSerializerSettings.Serializer)},
-            {StringifyMethod.InheritedToString, o=>o.ToString()},
-        };
-
-
-        /// <summary>Treat an <see cref="Assertion"/> as a <c>Boolean</c></summary>
+        /// <summary>Creates a new <see cref="ShouldHaveThrownException"/> with message taken from <paramref name="assertion"/></summary>
         /// <param name="assertion"></param>
-        /// <returns><c>assertion.Result.HasValue && assertion.Result.Value</c></returns>
-        public static implicit operator bool(Assertion<T> assertion) { return assertion.Result.HasValue && assertion.Result.Value; }
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static ShouldHaveThrownException For<T>(Assertion<T> assertion) => new ShouldHaveThrownException(assertion.Message);
 
-        /// <summary>Treat an <see cref="Assertion"/> as a <see cref="BoolWithString"/></summary>
-        /// <param name="assertion"></param>
-        /// <returns>A <see cref="BoolWithString"/> which, if the assertion has failed, will contain the assertion failure description.</returns>
-        public static implicit operator BoolWithString(Assertion<T> assertion) { return new BoolWithString(assertion.DidPass, assertion.ToString()); }
-
-        /// <returns>A description of the failed assertion.</returns>
-        public override string ToString()
-        {
-            return ToStringEvenIfPassed();
-        }
-
-        /// <returns>A description of the assertion.</returns>
-        public string ToStringEvenIfPassed()
-        {
-            var resultHeader = DidPass ? "Passed : " : "Failed : ";
-            const string actualHeader = "Actual : ";
-            const string assertedHeader = "Asserted : ";
-            const string divider = "----------------------------";
-            return Result.HasValue
-                ? string.Join(nl, resultHeader , Comment, actualHeader, divider, Actual, divider, assertedHeader + Asserted)
-                : string.Join(nl, resultHeader , Comment, actualHeader, divider, Actual, divider, assertedHeader + Asserted, Exception.ToString());
-        }
-
-#pragma warning disable 1591
-        public enum StringifyMethod
-        {
-            DeclaredToStringElseThrow=0,
-            ExpressionToCodeStringify=1,
-            NewtonsoftJsonSerialize=2,
-            InheritedToString=3
-        }
-#pragma warning restore 1591
-
+        /// <summary>Creates a new <see cref="ShouldHaveThrownException"/> with message constructed
+        /// by Asserting <paramref name="predicate"/> with comment,args=<paramref name="comment"/>,<paramref name="args"/>  </summary>
+        /// <param name="actual"></param>
+        /// <param name="predicate"></param>
+        /// <param name="comment"></param>
+        /// <param name="args"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static ShouldHaveThrownException For<T>(T actual, Expression<Func<T,bool>> predicate, string comment=null, params object[] args) 
+                        => new ShouldHaveThrownException( new Assertion<T>(actual, predicate, comment, args).Message );
     }
 }

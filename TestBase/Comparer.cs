@@ -293,11 +293,20 @@ namespace TestBase
         public static BoolWithString MemberCompare(object left, object right, IEnumerable<string> exclusionList = null, IEnumerable<string> includeOnlyList = null, double floatTolerance = 1e-14d, bool typesMustAlsoBeSame=false)
         {
             var breadCrumb = new List<string>();
-            return MemberCompare(left, right, new List<object>(), ref breadCrumb, exclusionList ?? new string[0], includeOnlyList, floatTolerance, typesMustAlsoBeSame);
+            var exclusionListArray = (exclusionList ?? new string[0]).ToArray();
+            var includeOnlyListArray = includeOnlyList?.ToArray();
+            return MemberCompare(left, right, new List<object>(), ref breadCrumb, exclusionListArray, includeOnlyListArray, floatTolerance, typesMustAlsoBeSame);
         }
 
-        static BoolWithString MemberCompare(object left, object right, List<object> done, ref List<string> breadcrumb, IEnumerable<string> exclusionList, IEnumerable<string> includeOnlyList, double floatTolerance, bool typesMustAlsoBeSame)
+        static BoolWithString MemberCompare(object left, object right, List<object> done, ref List<string> breadcrumb, string[] exclusionList, string[] includeOnlyList, double floatTolerance, bool typesMustAlsoBeSame)
         {
+            bool IsInIncludeList(string breadCrumbAsDottedMember)
+            {
+                return includeOnlyList == null 
+                       || includeOnlyList.Any(s => breadCrumbAsDottedMember.StartsWith(s + ".")) 
+                       || includeOnlyList.Contains(breadCrumbAsDottedMember);
+            }
+
             // null checking
             if (left == null && right == null
                 || left == DBNull.Value && right == null
@@ -450,7 +459,7 @@ namespace TestBase
             {
                 var breadCrumbAsDottedMember = string.Join(".", breadcrumb.Union(new[]{leftInfo.Name}));
                 if (exclusionList.Contains(breadCrumbAsDottedMember)){ continue; }
-                var mustInclude = includeOnlyList == null || includeOnlyList.Any(s => breadCrumbAsDottedMember.StartsWith(s));
+                var mustInclude = IsInIncludeList(breadCrumbAsDottedMember);
                 if (!mustInclude) { continue; }
                 try
                 {
@@ -487,7 +496,7 @@ namespace TestBase
             {
                 var breadCrumbAsDottedMember = string.Join(".", breadcrumb.Union(new[] { leftInfo.Name }));
                 if (exclusionList.Contains(breadCrumbAsDottedMember)){ continue; }
-                var mustInclude = includeOnlyList == null || includeOnlyList.Any(s => breadCrumbAsDottedMember.StartsWith(s));
+                var mustInclude = IsInIncludeList(breadCrumbAsDottedMember);
                 if (!mustInclude) { continue; }
                 try
                 {
@@ -523,7 +532,7 @@ namespace TestBase
             {
                 var breadCrumbAsDottedMember = string.Join(".", breadcrumb.Union(new[] { rightInfo.Name }));
                 if (exclusionList.Contains(breadCrumbAsDottedMember)){ continue; }
-                var mustInclude =includeOnlyList == null || includeOnlyList.Any(s => breadCrumbAsDottedMember.StartsWith(s));
+                var mustInclude = IsInIncludeList(breadCrumbAsDottedMember);
                 if (!mustInclude) { continue; }
                 try
                 {
@@ -543,7 +552,7 @@ namespace TestBase
             {
                 var breadCrumbAsDottedMember = string.Join(".", breadcrumb.Union(new[] { rightInfo.Name }));
                 if (exclusionList.Contains(breadCrumbAsDottedMember)) { continue; }
-                var mustInclude =includeOnlyList == null || includeOnlyList.Any(s => breadCrumbAsDottedMember.StartsWith(s));
+                var mustInclude = IsInIncludeList(breadCrumbAsDottedMember);
                 if (!mustInclude) { continue; }
                 try
                 {
