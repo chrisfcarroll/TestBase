@@ -40,7 +40,7 @@ namespace TestBase
         readonly bool value;
         readonly string message;
 
-        BoolWithString(bool value, string message)
+        public BoolWithString(bool value, string message)
         {
             this.value = value;
             this.message = message;

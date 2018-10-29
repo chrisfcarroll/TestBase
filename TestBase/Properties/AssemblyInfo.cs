@@ -2,6 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
+[assembly:InternalsVisibleTo("TestBase.AdoNet")]
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
@@ -48,6 +49,7 @@ It identifies constructor dependencies by name and type, looking in the followin
 
 ChangeLog
 ---------
+4.0.0.2 Net 4.6.2 in order to use ExpressionToCodeLib which relies on netstandard20
 3.0.3.0 Improves FakeDb setup
 3.0.x.0 adds and/or corrects missing Shoulds()
 2.0.5.0 adds some intellisense and FakeDbConnection.Verify(..., message,args) overload

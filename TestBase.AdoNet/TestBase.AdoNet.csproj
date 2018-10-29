@@ -1,0 +1,83 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net462</TargetFramework>
+    <AssemblyVersion>4.1.2.0</AssemblyVersion>
+    <AssemblyFileVersion>4.1.2.0</AssemblyFileVersion>
+    <PackageVersion>4.1.2.0</PackageVersion>
+    <PackageVersion>4.1.2.0</PackageVersion>
+  </PropertyGroup>
+  <PropertyGroup>
+    <Title>TestBase – Rich, fluent assertions and tools for testing with heavyweight dependencies: AdoNet, HttpClient, AspNetCore, AspNet.Mvc, Streams, Logging</Title>
+    <PackageDescription><![CDATA[TestBase.AdoNet
+
+TestBase.FakeDb
+------------------
+Fake and verify AdoNet queries and commands
+```
+- fakeDbConnection.SetupForQuery(IEnumerable<TFakeData>; )
+- fakeDbConnection.SetupForQuery(IEnumerable<Tuple<TFakeDataForTable1,TFakeDataForTable2>> )
+- fakeDbConnection.SetupForQuery(fakeData, new[] {"FieldName1", FieldName2"})
+- fakeDbConnection.SetupForExecuteNonQuery(rowsAffected)
+- fakeDbConnection.ShouldHaveUpdated("tableName", [Optional] fieldList, whereClauseField)
+- fakeDbConnection.ShouldHaveSelected("tableName", [Optional] fieldList, whereClauseField)
+- fakeDbConnection.ShouldHaveUpdated("tableName", [Optional] fieldList, whereClauseField)
+- fakeDbConnection.ShouldHaveDeleted("tableName", whereClauseField)
+- fakeDbConnection.ShouldHaveInvoked(cmd => predicate(cmd))
+- fakeDbConnection.ShouldHaveXXX().ShouldHaveParameter("name", value)
+- fakeDbConnection.Verify(x=>x.CommandText.Matches("Insert [case] .*") && x.Parameters["id"].Value==1)
+```
+
+TestBase.RecordingDb
+--------------------
+* `new RecordingDbConnection(IDbConnection)` helps you profile Ado.Net Db calls
+
+
+See also
+ - TestBase
+ - TestBase.Mvc
+ - TestBase.AdoNet
+ - Serilog.Sinks.ListOfString 
+ - Extensions.Logging.ListOfString
+]]></PackageDescription>
+    <ReleaseNotes><![CDATA[
+ChangeLog
+---------
+4.1.0.0 [ExpressionToCodeLib](https://www.nuget.org/packages/ExpressionToCodeLib/) and [FastExpressionCompiler](https://www.nuget.org/packages/FastExpressionCompiler/) ftw. Awesomer, and faster, assertions.
+4.0.9.0 Remove dependency on net4 version of Mono.Linq.Expressions
+4.0.8.0 Separated `Serilog.Sinks.ListOfString` and `Extensions.Logging.StringListLogger`
+4.0.7.0 Added `TestBase.FakeHttpClient` Added `Should(predicate,...)` as synonym of `ShouldHave(predicate,...)`
+4.0.6.2 TestBase.Mvc can run controller actions on aspnetcore using controller.WithControllerContext()
+4.0.5.2 TestBase.Mvc partially ported to netstandard20 / AspNetCore
+4.0.4.0 Stream Shoulds
+4.0.3.0 Port to NetCore
+3.0.3.0 Improves FakeDb setup
+3.0.x.0 adds and/or corrects missing Shoulds()
+2.0.5.0 adds some intellisense and FakeDbConnection.Verify(..., message,args) overload]]>
+    </ReleaseNotes>
+    <Copyright>(c) Chris F. Carroll, 2013-2018</Copyright>
+    <Authors>Chris F Carroll</Authors>
+    <Owners>Chris F Carroll</Owners>
+    <PackageProjectUrl>http://github.com/chrisfcarroll/TestBase</PackageProjectUrl>
+    <RepositoryUrl>http://github.com/chrisfcarroll/TestBase</RepositoryUrl>
+    <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
+    <IncludeSymbols>true</IncludeSymbols>
+    <Tags>nunit;test;unittest;tdd;fluent assertions;mock;ado.net</Tags>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <NoWarn>1701;1702;1705;NU1701</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <NoWarn>1701;1702;1705;NU1701</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="FakeDb\" />
+    <Folder Include="RecordingDb\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="ExpressionToCodeLib" Version="3.1.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TestBase\TestBase.csproj" />
+  </ItemGroup>
+</Project>

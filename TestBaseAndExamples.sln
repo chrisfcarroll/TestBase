@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2026
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestBase", "TestBase\TestBase.csproj", "{ED632396-B0B3-49B4-8F92-5EB3CAE9C91B}"
 EndProject
@@ -14,6 +14,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExampleMvc4", "Example.Mvc\ExampleMvc\ExampleMvc4.csproj", "{0DB1023C-1008-4754-B249-3B0DFC2FC386}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExampleMvc.Tests", "Example.Mvc\ExampleMvc.Tests\ExampleMvc.Tests.csproj", "{9F6980F2-DFC6-42AC-9CCB-8A8B080D6E70}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestBase.AdoNet", "TestBase.AdoNet\TestBase.AdoNet.csproj", "{D72F3563-7C16-4992-B073-9E7C78BA25D3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,8 +47,15 @@ Global
 		{9F6980F2-DFC6-42AC-9CCB-8A8B080D6E70}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9F6980F2-DFC6-42AC-9CCB-8A8B080D6E70}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9F6980F2-DFC6-42AC-9CCB-8A8B080D6E70}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D72F3563-7C16-4992-B073-9E7C78BA25D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D72F3563-7C16-4992-B073-9E7C78BA25D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D72F3563-7C16-4992-B073-9E7C78BA25D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D72F3563-7C16-4992-B073-9E7C78BA25D3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F72CF94F-E94F-4F31-90BE-375B452E8BA7}
 	EndGlobalSection
 EndGlobal

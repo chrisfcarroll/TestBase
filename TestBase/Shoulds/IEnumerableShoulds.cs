@@ -14,20 +14,20 @@ namespace TestBase.Shoulds
         public static IDictionary<TKey,TValue> ShouldContainKey<TKey,TValue>(this IDictionary<TKey,TValue> @this, TKey key, [Optional] string message, params object[] args)
         {
             message = message ?? string.Format("Expected IDictionary to contain key {0}", key);
-            Assert.True(@this.ContainsKey(key), message, args);
+            NUnit.Framework.Assert.True(@this.ContainsKey(key), message, args);
             return @this;
         }
 
         public static IDictionary<TKey, TValue> ShouldNotContainKey<TKey, TValue>(this IDictionary<TKey, TValue> @this, TKey key, [Optional] string message, params object[] args)
         {
             message = message ?? string.Format("Expected IDictionary to not contain key {0}", key);
-            Assert.False(@this.ContainsKey(key), message, args);
+            NUnit.Framework.Assert.False(@this.ContainsKey(key), message, args);
             return @this;
         }
 
         public static IEnumerable<T> ShouldContain<T>(this IEnumerable<T> @this, T item, [Optional] string message, params object[] args)
         {
-            Assert.That(@this, Contains.Item(item), message, args);
+            NUnit.Framework.Assert.That(@this, Contains.Item(item), message, args);
             return @this;
         }
 
@@ -41,7 +41,7 @@ namespace TestBase.Shoulds
         {
             foreach (var item in @this)
             {
-                Assert.That(itemAssertion(item), Is.Not.True, message?? "Shouldn't contain an item satisfying the condition but did : {0}", args.Length>0?args:new object[]{item});
+                NUnit.Framework.Assert.That(itemAssertion(item), Is.Not.True, message?? "Shouldn't contain an item satisfying the condition but did : {0}", args.Length>0?args:new object[]{item});
             }
             return @this;
         }
@@ -50,32 +50,32 @@ namespace TestBase.Shoulds
         {
             foreach (var item in subset)
             {
-                Assert.That(@this, Contains.Item(item), message, args);
+                NUnit.Framework.Assert.That(@this, Contains.Item(item), message, args);
             }
             return @this;
         }
 
         public static T ShouldBeEmpty<T>(this T @this, [Optional] string message, params object[] args) where T : IEnumerable
         {
-            Assert.That(@this, Is.Empty, message, args);
+            NUnit.Framework.Assert.That(@this, Is.Empty, message, args);
             return @this;
         }
 
         public static IEnumerable<T> ShouldBeEmpty<T>(this IEnumerable<T> @this, [Optional] string message, params object[] args)
         {
-            Assert.That(@this, Is.Empty, message, args);
+            NUnit.Framework.Assert.That(@this, Is.Empty, message, args);
             return @this;
         }
 
         public static T ShouldNotBeEmpty<T>(this T @this, [Optional] string message, params object[] args) where T : IEnumerable
         {
-            Assert.That(@this, Is.Not.Empty, message, args);
+            NUnit.Framework.Assert.That(@this, Is.Not.Empty, message, args);
             return @this;
         }
 
         public static IEnumerable<T> ShouldNotBeEmpty<T>(this IEnumerable<T> @this, [Optional] string message, params object[] args)
         {
-            Assert.That(@this, Is.Not.Empty, message, args);
+            NUnit.Framework.Assert.That(@this, Is.Not.Empty, message, args);
             return @this;
         }
 
@@ -109,11 +109,11 @@ namespace TestBase.Shoulds
             foreach (var item in @this)
             {
                 var r = function(item);
-                try { Assert.That(r, constraintPerItem); }
+                try { NUnit.Framework.Assert.That(r, constraintPerItem); }
                 catch (AssertionException e)
                 {
                     var innerMessage = e.Message;
-                    Assert.That(
+                    NUnit.Framework.Assert.That(
                             item,
                             new PredicateConstraint<T>(i => false),
                             message + " : " + innerMessage,
@@ -127,7 +127,7 @@ namespace TestBase.Shoulds
         {
             foreach (var item in @this)
             {
-                Assert.That(item, new PredicateConstraint<T>(function), message, args);
+                NUnit.Framework.Assert.That(item, new PredicateConstraint<T>(function), message, args);
             }
             return @this;
         }

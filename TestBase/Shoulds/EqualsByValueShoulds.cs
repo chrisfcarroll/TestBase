@@ -10,7 +10,7 @@ namespace TestBase.Shoulds
     {
         public static T ShouldEqualByValue<T>(this T @this, T expectedValue, [Optional] string message, params object[] args)
         {
-            Assert.That(@this, new EqualsByValueConstraint(expectedValue), message, args);
+            NUnit.Framework.Assert.That(@this, new EqualsByValueConstraint(expectedValue), message, args);
             return @this;
         }
         /// <summary>
@@ -22,7 +22,7 @@ namespace TestBase.Shoulds
         /// <exception cref="NUnit.Framework.AssertionException">Returns a message indicating where the comparision failed</exception>
         public static T ShouldEqualByValue<T>(this T actual, object expectedValue, [Optional] string message, params object[] args)
         {
-            Assert.That(actual, new EqualsByValueConstraint(expectedValue), message, args);
+            NUnit.Framework.Assert.That(actual, new EqualsByValueConstraint(expectedValue), message, args);
             return actual;
         }
 
@@ -40,7 +40,7 @@ namespace TestBase.Shoulds
         public static T ShouldEqualByValueExceptFor<T>(this T actual, 
                                 object expectedValue, IEnumerable<string> exclusions, [Optional] string message, params object[] args)
         {
-            Assert.That(actual, new EqualsByValueExceptForConstraint(expectedValue, exclusions), message, args);
+            NUnit.Framework.Assert.That(actual, new EqualsByValueExceptForConstraint(expectedValue, exclusions), message, args);
             return actual;
         }
 
