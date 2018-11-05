@@ -35,6 +35,7 @@ namespace TestBase
             return value==other.value && message==other.message;
         }
 
+        /// <inheritdoc />
         public override int GetHashCode()
         {
             unchecked
@@ -46,11 +47,14 @@ namespace TestBase
         readonly bool value;
         readonly string message;
 
+        /// <summary>Create a <see cref="BoolWithString"/></summary>
         public BoolWithString(bool value, string message)
         {
             this.value = value;
             this.message = message;
         }
+
+        /// <inheritdoc />
         public override string ToString()
         {
             return string.IsNullOrEmpty(message) 

@@ -38,8 +38,8 @@ namespace TestBase
     /// </summary>
     public static class Comparer
     {
-        /// <remarks>A synonym for <see cref="EqualsByValueJustOnCommonPublicReadableProperties"/></remarks>
-        /// <summary>Uses <see cref="MemberCompare"/> to recursively compare the values of
+        /// <remarks>A synonym for <see cref="EqualsByValueJustOnCommonPublicReadableProperties(object,object)"/></remarks>
+        /// <summary>Uses <see cref="MemberCompare(object,object,IEnumerable{string},IEnumerable{string},double,bool)"/> to recursively compare the values of
         /// the public readable Members of <paramref name="left"/> and <paramref name="right"/> with identical names,
         /// and reports the first discrepancy, if any.</summary>
         /// <param name="left"></param>
@@ -54,7 +54,7 @@ namespace TestBase
         }
 
         ///<remarks>Can be abbreviated to <see cref="PropertiesMatch"/></remarks>
-        /// <summary>Uses <see cref="MemberCompare"/> to recursively compare the values of
+        /// <summary>Uses <see cref="MemberCompare(object,object,IEnumerable{string},IEnumerable{string},double,bool)"/> to recursively compare the values of
         /// the public readable Members of <paramref name="left"/> and <paramref name="right"/> with identical names,
         /// and reports the first discrepancy, if any.</summary>
         /// <param name="left"></param>
@@ -68,7 +68,7 @@ namespace TestBase
             return EqualsByValueJustOnCommonPropertiesSatisfying(left, right, p=>p.CanRead);
         }
 
-        /// <summary>Uses <see cref="MemberCompare"/> to recursively compare the values of
+        /// <summary>Uses <see cref="MemberCompare(object,object,IEnumerable{string},IEnumerable{string},double,bool)"/> to recursively compare the values of
         /// the writeable Members of <paramref name="left"/> and <paramref name="right"/>
         /// and reports the first discrepancy, if any.</summary>
         /// <param name="left"></param>
@@ -84,9 +84,9 @@ namespace TestBase
             return EqualsByValueJustOnCommonPropertiesSatisfying(left, right, p => p.CanWrite);
         }
 
-        /// <summary>Uses <see cref="MemberCompare"/> to recursively compare the values of
+        /// <summary>Uses <see cref="MemberCompare(object,object,IEnumerable{string},IEnumerable{string},double,bool)"/> to recursively compare the values of
         /// those Members on <paramref name="left"/> and <paramref name="right"/>
-        /// which satisfy <see cref="predicate"/> and reports the first discrepancy, if any.
+        /// which satisfy <paramref name="predicate"/> and reports the first discrepancy, if any.
         /// All Properties (public or not), and public Fields, are considered in the comparison.</summary>
         /// <param name="left"></param>
         /// <param name="right"></param>
@@ -102,7 +102,7 @@ namespace TestBase
             return MemberCompare(left, right, exclusionList: null, includeOnlyList: commonProperties, typesMustAlsoBeSame: false);
         }
 
-        /// <summary>Uses <see cref="MemberCompare"/> to recursively compare the values of
+        /// <summary>Uses <see cref="MemberCompare(object,object,IEnumerable{string},IEnumerable{string},double,bool)"/> to recursively compare the values of
         /// the specified Members on <paramref name="left"/> and <paramref name="right"/>
         /// and reports the first discrepancy, if any.
         /// Named Properties (public or not), and public Fields, are considered in the comparison.</summary>
@@ -120,7 +120,7 @@ namespace TestBase
             return EqualsByValuesJustOnMembersNamed(left, right, propertiesToCompare);
         }
 
-        /// <summary>Uses <see cref="MemberCompare"/> to recursively compare the values of
+        /// <summary>Uses <see cref="MemberCompare(object,object,IEnumerable{string},IEnumerable{string},double,bool)"/> to recursively compare the values of
         /// the specified Members on <paramref name="left"/> and <paramref name="right"/>
         /// and reports the first discrepancy, if any.
         /// Named Properties (public or not), and public Fields, are considered in the comparison.</summary>
@@ -138,7 +138,7 @@ namespace TestBase
         }
 
         /// <summary>A synonym for <see cref="EqualsByValue(object,object)"/>
-        /// Uses <see cref="MemberCompare"/> to recursively compare the values of
+        /// Uses <see cref="MemberCompare(object,object,IEnumerable{string},IEnumerable{string},double,bool)"/> to recursively compare the values of
         /// the Members of <paramref name="left"/> and <paramref name="right"/>
         /// and reports the first discrepancy, if any.
         /// All Properties (public or not), and public Fields, are considered in the comparison.
@@ -154,7 +154,7 @@ namespace TestBase
             return MemberCompare(left, right, exclusionList: null, includeOnlyList: null, floatTolerance: floatTolerance, typesMustAlsoBeSame: false);
         }
 
-        /// <summary>Uses <see cref="MemberCompare"/> to recursively compare the values of
+        /// <summary>Uses <see cref="MemberCompare(object,object,IEnumerable{string},IEnumerable{string},double,bool)"/> to recursively compare the values of
         /// the specified Members on <paramref name="left"/> and <paramref name="right"/>
         /// and reports the first discrepancy, if any.
         /// Named Properties (public or not), and public Fields, are considered in the comparison.
@@ -175,7 +175,7 @@ namespace TestBase
             return MemberCompare(left, right, exclusionList: exclusionList, includeOnlyList: null, floatTolerance: floatTolerance, typesMustAlsoBeSame: false);
         }
 
-        /// <summary>Uses <see cref="MemberCompare"/> to recursively compare the values of
+        /// <summary>Uses <see cref="MemberCompare(object,object,IEnumerable{string},IEnumerable{string},double,bool)"/> to recursively compare the values of
         /// the specified Members on <paramref name="left"/> and <paramref name="right"/>
         /// and reports the first discrepancy, if any.
         /// Named Properties (public or not), and public Fields, are considered in the comparison.
@@ -191,7 +191,7 @@ namespace TestBase
             return MemberCompare(left, right, includeOnlyList: null, typesMustAlsoBeSame: false);
         }
 
-        /// <summary>Uses <see cref="MemberCompare"/> to recursively compare the values of
+        /// <summary>Uses <see cref="MemberCompare(object,object,IEnumerable{string},IEnumerable{string},double,bool)"/> to recursively compare the values of
         /// the specified Members on <paramref name="left"/> and <paramref name="right"/>
         /// and reports the first discrepancy, if any.
         /// Named Properties (public or not), and public Fields, are considered in the comparison.
@@ -199,6 +199,7 @@ namespace TestBase
         /// which override <see cref="object.Equals(object)"/></summary>
         /// <param name="left"></param>
         /// <param name="right"></param>
+        /// <param name="floatTolerance"></param>
         /// <returns><see cref="BoolWithString.True"/> if the Members of <paramref name="left"/> and <paramref name="right"/>
         /// are equal by value, or a
         /// <see cref="BoolWithString.False"/> bearing a description of the first discrepancy if not.</returns>
@@ -207,7 +208,7 @@ namespace TestBase
             return MemberCompare(left, right, exclusionList: null,includeOnlyList: null, floatTolerance: floatTolerance, typesMustAlsoBeSame: false);
         }
 
-        /// <summary>Uses <see cref="MemberCompare"/> to recursively compare the values of
+        /// <summary>Uses <see cref="MemberCompare(object,object,IEnumerable{string},IEnumerable{string},double,bool)"/> to recursively compare the values of
         /// the specified Members on <paramref name="left"/> and <paramref name="right"/>
         /// and reports the first discrepancy, if any.
         /// Named Properties (public or not), and public Fields, are considered in the comparison.</summary>
@@ -225,7 +226,7 @@ namespace TestBase
             return MemberCompare(left, right, exclusionList: exclusionList, includeOnlyList: null, typesMustAlsoBeSame: false);
         }
 
-        /// <summary>Uses <see cref="MemberCompare"/> to recursively compare the values of
+        /// <summary>Uses <see cref="MemberCompare(object,object,IEnumerable{string},IEnumerable{string},double,bool)"/> to recursively compare the values of
         /// the specified Members on <paramref name="left"/> and <paramref name="right"/>
         /// and reports the first discrepancy, if any.
         /// Named Properties (public or not), and public Fields, are considered in the comparison.</summary>
@@ -245,7 +246,7 @@ namespace TestBase
         }
 
 
-        /// <summary>Synonym for <see cref="MemberCompare"/>
+        /// <summary>Synonym for <see cref="MemberCompare(object,object,IEnumerable{string},IEnumerable{string},double,bool)"/>
         /// Compare two objects by recursively iterating over their elements (if they are Enumerable) 
         /// and over their properties —whether public or private— and over their public fields.
         /// Recursion stops at value types and at types (including string) which override Equals()
@@ -258,7 +259,7 @@ namespace TestBase
             return MemberCompare(left, right, includeOnlyList: null, typesMustAlsoBeSame: false);
         }
 
-        /// <summary>Synonym for <see cref="MemberCompare"/>
+        /// <summary>Synonym for <see cref="MemberCompare(object,object,IEnumerable{string},IEnumerable{string},double,bool)"/>
         /// Compare two objects by recursively iterating over their elements (if they are Enumerable) 
         /// and over their properties —whether public or private— and over their public fields.
         /// Recursion stops at value types and at types (including string) which override Equals()
@@ -388,7 +389,7 @@ namespace TestBase
                 try { return (long)left == (long)right; }
                 catch (Exception) { /*comparing as long failed, so swallow the exception and carry on*/ }
             }
-            if (left is ValueType && !left.GetType().IsGenericType /*ValueType comparison isn't always reliable*/)
+            if (left is ValueType && !left.GetType().GetTypeInfo().IsGenericType /*ValueType comparison isn't always reliable*/)
             {
                 // do a field comparison, or use the override if Equals is implemented: 
                 return left.EqualsOrDiffers(right);

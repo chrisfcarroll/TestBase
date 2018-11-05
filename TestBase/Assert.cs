@@ -186,7 +186,7 @@ namespace TestBase
             return action;
         }
 
-        /// <summary>Immediately throws a new <see cref="Assertion"/> with message formatted from <paramref name="format"/> and <see cref="args"/></summary>
+        /// <summary>Immediately throws a new <see cref="Assertion"/> with message formatted from <paramref name="format"/> and <paramref name="args"/></summary>
         /// <param name="format"></param>
         /// <param name="args"></param>
         /// <exception cref="Assertion"></exception>

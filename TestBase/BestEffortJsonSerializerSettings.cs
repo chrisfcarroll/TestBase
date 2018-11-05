@@ -43,7 +43,7 @@ namespace TestBase
             /// <returns>The object value.</returns>
             public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
             {
-                return DBNull.Value;
+                return value;
             }
 
             /// <summary>
@@ -55,8 +55,13 @@ namespace TestBase
             /// </returns>
             public override bool CanConvert(Type objectType)
             {
-                return objectType == typeof(DBNull);
+                return objectType.FullName == "System.DBNull";
             }
+
+            /// <summary>
+            /// Polyfill for the fact that NetStandard 1.3 is missing System.DBNull, although NetFx has it since v1.1
+            /// </summary>
+            public static readonly object value = TestBase.DBNull.Value;
         }
     }
 }

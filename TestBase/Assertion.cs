@@ -79,7 +79,7 @@ namespace TestBase
         /// <remarks>If an Exception is thrown during evaluation, then <see cref="Exception"/> will contain the Exception thrown.</remarks>
         public bool? Result { get; }
 
-        /// <summary>Synonym for <c>Result.HasValue && Result.Value</c></summary>
+        /// <summary>Synonym for <c>Result.HasValue &amp;&amp; Result.Value</c></summary>
         public bool DidPass => Result.HasValue && Result.Value;
 
         /// <summary>If an Exception is thrown when attempting to evaluate the assertion, it will be recorded and exposed here.</summary>
@@ -218,7 +218,7 @@ namespace TestBase
 
         /// <summary>Treat an <see cref="Assertion"/> as a <c>Boolean</c></summary>
         /// <param name="assertion"></param>
-        /// <returns><c>assertion.Result.HasValue && assertion.Result.Value</c></returns>
+        /// <returns><c>assertion.Result.HasValue &amp;&amp; assertion.Result.Value</c></returns>
         public static implicit operator bool(Assertion<T> assertion) { return assertion.Result.HasValue && assertion.Result.Value; }
 
         /// <summary>Treat an <see cref="Assertion"/> as a <see cref="BoolWithString"/></summary>

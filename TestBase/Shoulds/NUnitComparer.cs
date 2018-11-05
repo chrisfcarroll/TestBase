@@ -23,6 +23,7 @@
 
 using System;
 using System.Collections;
+using System.Reflection;
 
 namespace TestBase
 {
@@ -60,10 +61,10 @@ namespace TestBase
             Type xType = x.GetType();
             Type yType = y.GetType();
 
-            var method = xType.GetMethod("CompareTo", new Type[] { yType });
+            var method = xType.GetTypeInfo().GetMethod("CompareTo", new Type[] { yType });
             if (method != null)return (int)method.Invoke(x, new object[] { y });
 
-            method = yType.GetMethod("CompareTo", new Type[] { xType });
+            method = yType.GetTypeInfo().GetMethod("CompareTo", new Type[] { xType });
             if (method != null)return -(int)method.Invoke(y, new object[] { x });
 
             throw new ArgumentException("Neither value implements IComparable or IComparable<T>");

@@ -1,9 +1,11 @@
+using System;
 using System.Collections;
 using System.IO;
 using Newtonsoft.Json;
 
 namespace TestBase
 {
+    /// <summary>A wrapper for <see cref="Console.Out"/> which writes objects as Json.</summary>
     public static class ConsoleJson
     {
         /// <summary>

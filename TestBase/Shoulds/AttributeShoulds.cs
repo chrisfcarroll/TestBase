@@ -21,7 +21,7 @@ namespace TestBase
             @this.GetProperty(property)
                 .ShouldNotBeNull($"Type {@this} doesn't have a property called {property}")
                 .GetCustomAttributes(attribute,true)
-                .Length.ShouldBeGreaterThan(0, $"Type {@this}.{property} has no Attribute of type {attribute}");
+                .Count().ShouldBeGreaterThan(0, $"Type {@this}.{property} has no Attribute of type {attribute}");
             return @this;
         }
 
@@ -55,7 +55,7 @@ namespace TestBase
 
         public static Type ShouldHaveAttribute<T>(this Type @this)
         {
-            @this.GetCustomAttributes(typeof(T), true)
+            @this.GetTypeInfo().GetCustomAttributes(typeof(T), true)
                 .FirstOrDefault(a => a.GetType() == typeof(T))
                 .ShouldNotBeNull();
             return @this;
@@ -63,7 +63,7 @@ namespace TestBase
 
         public static Type ShouldNotHaveAttribute<T>(this Type @this)
         {
-            @this.GetCustomAttributes(typeof (T), true).Count(a => a.GetType() == typeof (T))
+            @this.GetTypeInfo().GetCustomAttributes(typeof (T), true).Count(a => a.GetType() == typeof (T))
                   .ShouldEqual(0,"Expected to not find attribute {0} on type {1}", typeof(T), @this);
             return @this;
         }
