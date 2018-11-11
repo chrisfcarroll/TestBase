@@ -11,8 +11,10 @@ namespace PredicateDictionary.Specs
         [Fact]
         public void GivenAKeyNotSatisfyingAnyPredicates()
         {
-            var uut=new Dictionary<string, int>();
+            var uut=new PredicateDictionary<string, int>();
+            
             Assert.Throws<KeyNotFoundException>(() => uut[""]);
+            Assert.Throws<KeyNotFoundException>(() => uut[s=>true]);
         }
         
     }
