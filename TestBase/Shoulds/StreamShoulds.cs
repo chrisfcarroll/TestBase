@@ -7,7 +7,7 @@ namespace TestBase
 {
     public static class StreamShoulds
     {
-        public static int MaxExpectedBytesToShowInFailureOutput=30;
+        public static readonly int MaxExpectedBytesToShowInFailureOutput=30;
         
         /// <summary>Assert this <paramref name="@this"/>, considered as a byte[], contains <paramref name="expected"/> as a substring.</summary>
         /// <returns>@this</returns>

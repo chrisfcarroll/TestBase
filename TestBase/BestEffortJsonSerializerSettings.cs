@@ -11,11 +11,21 @@ namespace TestBase
     /// </summary>
     public static class BestEffortJsonSerializerSettings
     {
+        /// <summary><c>new JsonSerializerSettings
+        /// {
+        /// NullValueHandling = NullValueHandling.Ignore, 
+        /// MissingMemberHandling = MissingMemberHandling.Ignore, 
+        /// ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+        /// Error = (sender, args) =&gt; { }
+        /// }<c/> 
+        /// </summary>
         public static readonly JsonSerializerSettings Serializer =
             new JsonSerializerSettings
             {
-                NullValueHandling = NullValueHandling.Ignore, MissingMemberHandling = MissingMemberHandling.Ignore, ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                
+                NullValueHandling = NullValueHandling.Ignore, 
+                MissingMemberHandling = MissingMemberHandling.Ignore, 
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                Error = (sender, args) => { }
             };
 
         static BestEffortJsonSerializerSettings()

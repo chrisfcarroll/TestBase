@@ -3,6 +3,8 @@ using Newtonsoft.Json;
 
 namespace TestBase
 {
+    /// <summary>Create a <see cref="Dictionary{string,object}"/ of an object's properties.
+    /// </summary>
     public static class AnonymousObjectInspector
     {
         /// <summary>Inspect the public properties of <paramref name="obj"/> and return a dictionary using the Property name as

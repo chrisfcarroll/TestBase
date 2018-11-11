@@ -25,6 +25,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestBase.AspNetCore.Mvc", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestBase.Mvc.AspNetCore.GuineaPig", "TestBase.AspNetCore.Mvc.GuineaPig\TestBase.Mvc.AspNetCore.GuineaPig.csproj", "{2462C9FD-9F47-44C9-A4DC-068E799EBA4C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PredicateDictionary", "PredicateDictionary\PredicateDictionary.csproj", "{7BECD140-D58C-42C2-B192-36DFAC3E0F67}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PredicateDictionary.Specs", "PredicateDictionary.Specs\PredicateDictionary.Specs.csproj", "{944D668E-385C-480B-BF84-454E112CEC7F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +67,14 @@ Global
 		{2462C9FD-9F47-44C9-A4DC-068E799EBA4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2462C9FD-9F47-44C9-A4DC-068E799EBA4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2462C9FD-9F47-44C9-A4DC-068E799EBA4C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7BECD140-D58C-42C2-B192-36DFAC3E0F67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7BECD140-D58C-42C2-B192-36DFAC3E0F67}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7BECD140-D58C-42C2-B192-36DFAC3E0F67}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7BECD140-D58C-42C2-B192-36DFAC3E0F67}.Release|Any CPU.Build.0 = Release|Any CPU
+		{944D668E-385C-480B-BF84-454E112CEC7F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{944D668E-385C-480B-BF84-454E112CEC7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{944D668E-385C-480B-BF84-454E112CEC7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{944D668E-385C-480B-BF84-454E112CEC7F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
