@@ -20,6 +20,7 @@ namespace PredicateDictionary
     ///  </c></example>
     public class PredicateDictionary<T, TValue> : List<KeyValuePair<Func<T, bool>, TValue>>, IReadOnlyDictionary<T, TValue>
     {
+        public IEnumerable<KeyValuePair<Func<T, bool>, TValue>> AsEnumerable => this; 
         /// <inheritdoc />
         ///<summary>Returns <c>true</> if <paramref name="key"/> satisfies any of the predicates in
         /// the <see cref="PredicateDictionary{T,TValue}"/> 
@@ -35,7 +36,7 @@ namespace PredicateDictionary
         /// </param>
         public bool TryGetValue(T key, out TValue value)
         {
-            var rows = this.Where<KeyValuePair<Func<T, bool>, TValue>>(kv => kv.Key(key)).Take(1).ToArray();
+            var rows = AsEnumerable.Where(kv => kv.Key(key)).Take(1).ToArray();
             if ( rows.Length==1 )
             {
                 value = rows[0].Value;
@@ -62,7 +63,7 @@ namespace PredicateDictionary
         {
             get
             {
-                try{ return this.First<KeyValuePair<Func<T, bool>, TValue>>(kv => kv.Key(key)).Value; }
+                try{ return AsEnumerable.First(kv => kv.Key(key)).Value; }
                 catch (InvalidOperationException e)
                 { throw new KeyNotFoundException("Sequence contains no matching element."); }
             }
@@ -87,7 +88,7 @@ namespace PredicateDictionary
         {
             get
             {
-                try{ return this.First<KeyValuePair<Func<T, bool>, TValue>>(kv => kv.Key == keyPredicate).Value; }
+                try{ return AsEnumerable.First(kv => kv.Key == keyPredicate).Value; }
                 catch (InvalidOperationException e)
                 { throw new KeyNotFoundException("Sequence contains no matching element."); }
             }
@@ -110,12 +111,12 @@ namespace PredicateDictionary
         /// </summary>
         public IEnumerable<Func<T, bool>> KeyPredicates
             => (ICollection<Func<T, bool>>)
-                this.Select<KeyValuePair<Func<T, bool>, TValue>, Func<T, bool>>(kv => kv.Key);
+                AsEnumerable.Select(kv => kv.Key);
 
         /// <inheritdoc />
         public IEnumerable<TValue> Values
             => (ICollection<TValue>)
-                this.Select<KeyValuePair<Func<T, bool>, TValue>, TValue>(kv => kv.Value);
+                AsEnumerable.Select(kv => kv.Value);
         
 
         /// <exception cref="NotImplementedException">
