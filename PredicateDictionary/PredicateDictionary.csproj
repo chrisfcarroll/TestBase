@@ -1,5 +1,37 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard1.0</TargetFramework>
+    <AssemblyVersion>0.1.0.0</AssemblyVersion>
+    <AssemblyFileVersion>0.1.0.0</AssemblyFileVersion>
+    <PackageVersion>0.1.0.0</PackageVersion>
+    <Title>PredicateDictionary: A kind of dictionary using tests, not constant values, for keys.</Title>
+    <PackageDescription><![CDATA[PredicateDictionary: A kind of dictionary using predicates, not constant values, for its keys.
+    ```
+    var pdict = new PredicateDictionary<int,string>();
+    pdict.Add(i => i==0, "No points");
+    pdict.Add(i => i > 0 && i < 100, "bingo");
+    pdict.Add(i => i < 0, "Don't go there");
+
+    pdict[1].ShouldBe("bingo");
+    pdict[42].ShouldBe("bingo");
+    pdict[0].ShouldBe("No points");
+    pdict[-1234].ShouldBe("Don't go there");
+    Assert.Throws<KeyNotFoundException>(() => pdict[101] = pdict[101]);
+    ```
+]]></PackageDescription>
+    <PackageReleaseNotes>ChangeLog
+---------
+0.1.0.0
+</PackageReleaseNotes>
+    <Copyright>(c) Chris F. Carroll, 2018</Copyright>
+    <Authors>Chris F Carroll</Authors>
+    <Owners>Chris F Carroll</Owners>
+    <PackageProjectUrl>https://github.com/chrisfcarroll/TestBase</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/chrisfcarroll/TestBase</RepositoryUrl>
+    <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
+    <IncludeSymbols>true</IncludeSymbols>
+    <PackageTags>test;fake;</PackageTags>
+    
   </PropertyGroup>
+
 </Project>

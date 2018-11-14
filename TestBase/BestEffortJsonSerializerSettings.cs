@@ -17,7 +17,7 @@ namespace TestBase
         /// MissingMemberHandling = MissingMemberHandling.Ignore, 
         /// ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
         /// Error = (sender, args) =&gt; { }
-        /// }<c/> 
+        /// }</c> 
         /// </summary>
         public static readonly JsonSerializerSettings Serializer =
             new JsonSerializerSettings

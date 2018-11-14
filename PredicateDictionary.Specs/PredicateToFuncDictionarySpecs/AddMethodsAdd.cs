@@ -26,7 +26,7 @@ namespace PredicateDictionary.Specs.PredicateToFuncDictionarySpecs
 
             Func<string, bool> predicate = s => s.StartsWith("1");
             Func<string, int> func = s => 1;
-            uut.Add(predicate, s=>1);
+            uut.Add(predicate, func);
             uut.Contains(new KeyValuePair<Func<string, bool>, Func<string,int>>(predicate, func)).ShouldBeTrue();
         }
         

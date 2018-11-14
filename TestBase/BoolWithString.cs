@@ -23,7 +23,7 @@
 namespace TestBase
 {
     /// <summary>
-    /// A bool with an explanation. <see cref="BoolWithString"/> is convertible to and from <see cref="bool"/>
+    /// A  with an explanation. <see cref="BoolWithString"/> is convertible to and from <see cref="bool"/>
     /// </summary>
     public struct BoolWithString
     {
@@ -64,10 +64,20 @@ namespace TestBase
 
         public bool AsBool => value;
 
-        public static implicit operator bool(BoolWithString value) { return value.value; }
-        public static implicit operator BoolWithString(bool value) { return new BoolWithString(value, ""); }
+        /// <summary>Return the inner <see cref="bool"/> value of <paramref name="value"/></summary>
+        /// <param name="value"></param>
+        public static implicit operator bool(BoolWithString value) => value.value;
 
+        /// <summary>Create a new <see cref="BoolWithString"/> equal to <paramref name="value"/>, with a blank message</summary>
+        /// <param name="value"></param>
+        public static implicit operator BoolWithString(bool value) => new BoolWithString(value, "");
+
+        /// <summary>Create a new <see cref="BoolWithString"/> equal to <c>false</c>, with the given <paramref name="message"/></summary>
+        /// <param name="message"></param>
         public static BoolWithString False(string message="") { return new BoolWithString(false, message); }
+
+        /// <summary>Create a new <see cref="BoolWithString"/> equal to <c>true</c>, with the given <paramref name="message"/></summary>
+        /// <param name="message"></param>
         public static BoolWithString True(string message="") { return new BoolWithString(true, message); }
 
         public static bool operator ==(BoolWithString left, BoolWithString right){return left.Equals(right);}

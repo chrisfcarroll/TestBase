@@ -6,7 +6,7 @@ namespace TestBase
     public static class EqualsByValueShoulds
     {
         /// <summary>
-        /// Assert equality-by-value by recursively iterating over all elements (if the actual & expected are Enumerable) 
+        /// Assert equality-by-value by recursively iterating over all elements (if the actual &amp; expected are Enumerable) 
         /// and all properties. Recursion stops at value types and at types (including string) which override Equals()
         /// <see cref="TestBase.Comparer.MemberCompare"/>
         /// </summary>
@@ -19,7 +19,7 @@ namespace TestBase
         }
 
         /// <summary>
-        /// Assert equality-by-value by recursively iterating over all elements (if the actual & expected are Enumerable) 
+        /// Assert equality-by-value by recursively iterating over all elements (if the actual &amp; expected are Enumerable) 
         /// and all properties. Recursion stops at value types and at types (including string) which override Equals()
         /// <see cref="TestBase.Comparer.MemberCompare"/>
         /// </summary>
@@ -32,7 +32,7 @@ namespace TestBase
         }
 
         /// <summary>
-        /// Assert equality-by-value by recursively iterating over all elements (if the actual & expected are Enumerable) 
+        /// Assert equality-by-value by recursively iterating over all elements (if the actual &amp; expected are Enumerable) 
         /// and then over all properties specified by <paramref name="propertiesToCompare"/>.
         /// Recursion stops at value types and at types (including string) which override Equals()
         /// <see cref="TestBase.Comparer.MemberCompare"/>
@@ -51,7 +51,7 @@ namespace TestBase
         }
 
         /// <summary>Synonym for <see cref="ShouldEqualByValueExceptFor{T}(T,object,System.Collections.Generic.IEnumerable{string},string,object[])"/>.
-        /// Assert equality-by-value by recursively iterating over all elements (if the actual & expected are Enumerable) 
+        /// Assert equality-by-value by recursively iterating over all elements (if the actual &amp; expected are Enumerable) 
         /// and then over all properties specified by <paramref name="propertiesToCompare"/>.
         /// Recursion stops at value types and at types (including string) which override Equals()
         /// <see cref="TestBase.Comparer.MemberCompare"/>
@@ -68,7 +68,7 @@ namespace TestBase
         }
 
         /// <summary>
-        /// Assert equality-by-value by recursively iterating over all elements (if the actual & expected are Enumerable) 
+        /// Assert equality-by-value by recursively iterating over all elements (if the actual &amp; expected are Enumerable) 
         /// and all properties. Recursion stops at value types and at types (including string) which override Equals()
         /// <see cref="TestBase.Comparer.MemberCompare"/>
         /// </summary>
@@ -89,7 +89,7 @@ namespace TestBase
         }
 
         /// <summary>Synonym for <see cref="ShouldEqualByValueExceptFor{T}(T,object,System.Collections.Generic.IEnumerable{string},string,object[])"/>.
-        /// Assert equality-by-value by recursively iterating over all elements (if the actual & expected are Enumerable) 
+        /// Assert equality-by-value by recursively iterating over all elements (if the actual &amp; expected are Enumerable) 
         /// and all properties. Recursion stops at value types and at types (including string) which override Equals()
         /// <see cref="TestBase.Comparer.MemberCompare"/>
         /// </summary>
@@ -108,7 +108,7 @@ namespace TestBase
         }
 
         /// <summary>
-        /// Assert equality-by-value by recursively iterating over all elements (if the actual & expected are Enumerable) 
+        /// Assert equality-by-value by recursively iterating over all elements (if the actual &amp; expected are Enumerable) 
         /// and all properties. Recursion stops at value types and at types (including string) which override Equals()
         /// <see cref="TestBase.Comparer.MemberCompare"/>
         /// </summary>

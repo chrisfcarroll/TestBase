@@ -4,6 +4,7 @@ using ExpressionToCodeLib;
 
 namespace TestBase
 {
+    /// <summary>Extension methods for <see cref="Expression"/></summary>
     public static class ExpressionHelper 
     {
         public static Expression<Func<TFrom, TTo>> Chain<TFrom, TMiddle, TTo>(this Expression<Func<TFrom, TMiddle>> inner, Expression<Func<TMiddle, TTo>> outer ) 

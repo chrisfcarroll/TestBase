@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace TestBase
 {
-    /// <summary>Create a <see cref="Dictionary{string,object}"/ of an object's properties.
+    /// <summary>Create a <see cref="Dictionary{String,Object}"/> of an object's properties.
     /// </summary>
     public static class AnonymousObjectInspector
     {
@@ -12,7 +12,7 @@ namespace TestBase
         /// </summary>
         /// <param name="obj"></param>
         /// <param name="jsonReferenceLoopHandling"></param>
-        /// <returns>a <see cref="Dictionary{T,T}"/>&lt;string,object&gt; of property name values</returns>
+        /// <returns>a <see cref="Dictionary{String,Object}"/>of property name values</returns>
         public static Dictionary<string, object> ToPropertyDictionary(this object obj, ReferenceLoopHandling jsonReferenceLoopHandling=ReferenceLoopHandling.Ignore)
         {
             return JsonConvert.DeserializeObject<Dictionary<string, object>>(
