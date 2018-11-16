@@ -167,7 +167,7 @@ MvcApplication, you can use and test Controller.Url with your application's conf
 ```
 ControllerUnderTest
   .WithHttpContextAndRoutes(
-    [Optional] Action&lt;RouteCollection&gt; mvcApplicationRoutesRegistration, 
+    [Optional] Action<RouteCollection> mvcApplicationRoutesRegistration, 
     [optional] string requestUrl,
     [Optional] string query = "",
     [Optional] string appVirtualPath = "/",
