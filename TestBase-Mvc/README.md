@@ -39,6 +39,9 @@ ApiControllerUnderTest.WithWebApiHttpContext&lt;T&gt;(
     [Optional] string requestUri,
     [Optional] string routeTemplate)
 ```
+
+Chainable fluent assertions get you to the point concisely:
+
 ```    
 ControllerUnderTest.Action()
   .ShouldbeViewResult()
@@ -49,24 +52,6 @@ ControllerUnderTest.Action()
   .ShouldHaveRouteValue("expectedKey", [Optional] "expectedValue");
 
 ShouldHaveViewDataContaining(), ShouldBeJsonResult() etc.
-```
-
-
-Chainable fluent assertions get you to the point concisely:
-
-```
-UnitUnderTest.Action()
-  .ShouldNotBeNull()
-  .ShouldEqualByValueExceptFor(new {Id=1, Descr=expected}, ignoreList )
-  .Payload
-    .ShouldMatchIgnoringCase("I expected this")
-	.Should(someOtherPredicate);
-	.Items
-      .ShouldAll(predicate)
-	  .ShouldContain(item)
-	  .ShouldNotContain(predicate)
-	  .Where(predicate)
-	  .SingleOrAssertFail()
 
 .ShouldEqualByValue().ShouldEqualByValueExceptFor(...).ShouldEqualByValueOnMembers()
   work with all kinds of object and collections, and report what differed.
