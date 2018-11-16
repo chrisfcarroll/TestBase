@@ -22,8 +22,9 @@ namespace TestBase
             return actual;
         }
         /// <summary>
-        /// <para>Returns a property on <paramref name="actual"/> named �where named can also mean a dotted path to a property name� <paramref name="jsonexpression"/></para>
-        /// <para>The property value is extracted using <see cref="JToken.SelectToken(string)"/> and <see cref="JToken.ToObject"/></para>
+        /// <para>Returns a property on <paramref name="actual"/> named --where named can also mean a dotted path to a property name--
+        /// <paramref name="jsonexpression"/></para>
+        /// <para>The property value is extracted using <see cref="JToken.SelectToken(string)"/> and <see cref="JToken.ToObject{T}()"/></para>
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="actual">the value being tested</param>

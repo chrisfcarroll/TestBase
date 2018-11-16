@@ -21,15 +21,15 @@ namespace TestBase
 
             server.Setup(s => s.MachineName).Returns(System.Environment.MachineName);
             server.Setup(s => s.MapPath(It.IsAny<string>()))
-                  .Returns((string s) =>
-                      {
-                          var s1 = s.StartsWith("~")
-                                           ? ".\\" + s.Substring(1)
-                                           : s.StartsWith(appVirtualDir)
-                                                     ? ".\\" + s.Substring(appVirtualDir.Length)
-                                                     : s;
-                          return s1.Replace('/', '\\');
-                      });
+                .Returns((string s) =>
+                {
+                    var s1 = s.StartsWith("~")
+                        ? ".\\" + s.Substring(1)
+                        : s.StartsWith(appVirtualDir)
+                            ? ".\\" + s.Substring(appVirtualDir.Length)
+                            : s;
+                    return s1.Replace('/', '\\');
+                });
 
             context.Setup(ctx => ctx.Request).Returns(request.Object);
             context.Setup(ctx => ctx.Response).Returns(response.Object);
@@ -39,6 +39,7 @@ namespace TestBase
 
             return context.Object;
         }
+
         public static HttpContext MockHttpContext(string requestUrl, string query = "", string appVirtualDir = "/")
         {
             var context = new Mock<HttpContext>();
@@ -50,15 +51,15 @@ namespace TestBase
 
             server.Setup(s => s.MachineName).Returns(Environment.MachineName);
             server.Setup(s => s.MapPath(It.IsAny<string>()))
-                  .Returns((string s) =>
-                  {
-                      var s1 = s.StartsWith("~")
-                                       ? ".\\" + s.Substring(1)
-                                       : s.StartsWith(appVirtualDir)
-                                                 ? ".\\" + s.Substring(appVirtualDir.Length)
-                                                 : s;
-                      return s1.Replace('/', '\\');
-                  });
+                .Returns((string s) =>
+                {
+                    var s1 = s.StartsWith("~")
+                        ? ".\\" + s.Substring(1)
+                        : s.StartsWith(appVirtualDir)
+                            ? ".\\" + s.Substring(appVirtualDir.Length)
+                            : s;
+                    return s1.Replace('/', '\\');
+                });
 
             context.Setup(ctx => ctx.Request).Returns(request.Object);
             context.Setup(ctx => ctx.Response).Returns(response.Object);
@@ -75,9 +76,9 @@ namespace TestBase
         /// </summary>
         public static HttpContext FakeHttpContext(string requestUrl, string query = "", string appVirtualDir = "/")
         {
-            var httpRequest = new HttpRequest("", new UriBuilder("http","http://localhost",80, appVirtualDir + requestUrl).Uri.ToString(), query);
+            var httpRequest = new HttpRequest("", new UriBuilder("http", "http://localhost", 80, appVirtualDir + requestUrl).Uri.ToString(), query);
             var httpResponse = new HttpResponse(new StringWriter());
-            var httpContext= new HttpContext(httpRequest, httpResponse);
+            var httpContext = new HttpContext(httpRequest, httpResponse);
             httpContext.User = new WindowsPrincipal(WindowsIdentity.GetCurrent());
             httpContext.Items["AspSession"] = CreateSession();
             return httpContext;
@@ -90,17 +91,16 @@ namespace TestBase
         private static HttpSessionState CreateSession()
         {
             var sessionContainer = new HttpSessionStateContainer("id", new SessionStateItemCollection(),
-                                                                 new HttpStaticObjectsCollection(), 10, true,
-                                                                 HttpCookieMode.AutoDetect,
-                                                                 SessionStateMode.InProc, false);
+                new HttpStaticObjectsCollection(), 10, true,
+                HttpCookieMode.AutoDetect,
+                SessionStateMode.InProc, false);
 
-            return (HttpSessionState)typeof(HttpSessionState).GetConstructor(
-                                                                             BindingFlags.NonPublic | BindingFlags.Instance,
-                                                                             null, CallingConventions.Standard,
-                                                                             new[] { typeof(HttpSessionStateContainer) },
-                                                                             null)
-                                                             .Invoke(new object[] { sessionContainer });
+            return (HttpSessionState) typeof(HttpSessionState).GetConstructor(
+                    BindingFlags.NonPublic | BindingFlags.Instance,
+                    null, CallingConventions.Standard,
+                    new[] {typeof(HttpSessionStateContainer)},
+                    null)
+                .Invoke(new object[] {sessionContainer});
         }
-        
     }
 }

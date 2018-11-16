@@ -53,7 +53,7 @@ namespace TestBase
         /// </summary>
         public static String ToValuedCodeString<TResult>(this Expression<Func<TResult>> expression)
         {
-            return ExpressionToCode.ToValuedCode(expression);
+            return expression.ToValuedCode();
         }
     }
 

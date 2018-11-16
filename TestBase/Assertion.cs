@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
-using ExpressionToCodeLib;
+#if NETSTANDARD
 using FastExpressionCompiler;
+#endif
+using ExpressionToCodeLib;
 using Newtonsoft.Json;
 
 namespace TestBase

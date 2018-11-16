@@ -49,7 +49,6 @@ namespace TestBase
         public static T ShouldHaveAttribute<T>(this PropertyInfo @this) where T : Attribute
         {
             @this.GetCustomAttribute<T>().ShouldNotBeNull();
-
             return @this.GetCustomAttribute<T>();
         }
 

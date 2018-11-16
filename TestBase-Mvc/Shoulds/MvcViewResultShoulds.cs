@@ -1,7 +1,5 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Web.Mvc;
-using NUnit.Framework;
 
 namespace TestBase.Shoulds
 {
@@ -11,6 +9,7 @@ namespace TestBase.Shoulds
         {
             return @this.ShouldBeViewResultNamed(viewName).ViewData.Model.ShouldBeOfType<T>();
         }
+
         public static T ShouldBeViewWithModel<T>(this ActionResult @this)
         {
             return @this.ShouldBeViewResult().ViewData.Model.ShouldBeOfType<T>();
@@ -31,9 +30,8 @@ namespace TestBase.Shoulds
 
         public static object ShouldHaveViewDataForKey(this ViewResultBase @this, string key)
         {
-            Assert.That(@this.ViewData.ContainsKey(key), Is.True,
-                        String.Format("Keys present: {0}",
-                                      String.Join(";", @this.ViewData.Keys.ToArray())));
+            Assert.That(@this.ViewData, x=>x.ContainsKey(key),
+                string.Format("Keys present: {0}",string.Join(";", @this.ViewData.Keys.ToArray())));
             return @this.ViewData[key];
         }
 
@@ -43,6 +41,7 @@ namespace TestBase.Shoulds
             {
                 @this.ShouldHaveViewDataForKey(key);
             }
+
             return @this;
         }
 

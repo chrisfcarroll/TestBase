@@ -1,6 +1,8 @@
 using System;
 using System.Linq.Expressions;
+#if NETSTANDARD
 using FastExpressionCompiler;
+#endif
 
 namespace TestBase
 {

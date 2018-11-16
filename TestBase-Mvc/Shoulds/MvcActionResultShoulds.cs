@@ -12,11 +12,13 @@ namespace TestBase.Shoulds
             {
                 result.Url.ShouldEqual(url, "Expected the RedirectResult.Url to be {0}", url);
             }
+
             if (permanent.HasValue)
             {
                 result.Permanent.ShouldEqual(permanent, "Expected the RedirectResult to {0} be permanent",
-                                             permanent.Value ? "" : "not ");
+                    permanent.Value ? "" : "not ");
             }
+
             return result;
         }
 
@@ -58,6 +60,7 @@ namespace TestBase.Shoulds
                     "Expected ActionResult to be Redirect to default action, but a controller, '{0}', was specified.",
                     result.RouteValues["controller"]);
             }
+
             result.ShouldBeRedirectToDefaultAction();
 
             return result;
@@ -69,7 +72,10 @@ namespace TestBase.Shoulds
 
             var action = @this.RouteValues["action"].ToString();
 
-            if (!String.IsNullOrEmpty(action)) { MvcRouteResultShoulds.ShouldHaveRouteValue(@this, "action", "index"); }
+            if (!String.IsNullOrEmpty(action))
+            {
+                MvcRouteResultShoulds.ShouldHaveRouteValue(@this, "action", "index");
+            }
 
             return @this;
         }
@@ -79,8 +85,8 @@ namespace TestBase.Shoulds
             var result = @this.ShouldBeOfType<RedirectToRouteResult>();
 
             result.RouteValues.ContainsKey("controller")
-                  .ShouldBeFalse(String.Format("Controller redirect found '{0}' not none expected.",
-                                               result.RouteValues["controller"]));
+                .ShouldBeFalse(String.Format("Controller redirect found '{0}' not none expected.",
+                    result.RouteValues["controller"]));
 
             result.ShouldBeRedirectToAction(action);
 

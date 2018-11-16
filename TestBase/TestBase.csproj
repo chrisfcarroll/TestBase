@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netstandard1.6</TargetFramework>
+    <TargetFrameworks>netstandard1.6;net40</TargetFrameworks>
     <AssemblyVersion>4.1.4.1</AssemblyVersion>
     <AssemblyFileVersion>4.1.4.1</AssemblyFileVersion>
     <PackageVersion>4.1.4.1</PackageVersion>
@@ -167,21 +167,31 @@ Serilog.Logger slogger= new LoggerConfiguration().WriteTo.StringList(log).Create
     <IncludeSymbols>true</IncludeSymbols>
     <PackageTags>nunit;test;unittest;tdd;fluent assertions;mock;ado.net;mvc;aspnetmvc;aspnetcore;aspnetcoremvc</PackageTags>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <NoWarn>1701;1702;1705;NU1701</NoWarn>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <NoWarn>1701;1702;1705;NU1701</NoWarn>
-  </PropertyGroup>
+  
   <ItemGroup>
     <Compile Remove="TestLogger.cs" />
     <Compile Remove="WindsorExtensions.cs" />
     <Compile Remove="GivenMockEventStore.cs" />
   </ItemGroup>
-  <ItemGroup>
+  
+  <PropertyGroup>
+    <NoWarn>1591;1701;1702;1705;NU1701</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard1.6'">
+    <DefineConstants>NETSTANDARD</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.6' ">
     <PackageReference Include="ExpressionToCodeLib" Version="2.7.0" />
     <PackageReference Include="FastExpressionCompiler" Version="1.7.1" />
-    <PackageReference Include="Newtonsoft.Json" Version="11.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="4.4.1" />
   </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net40' ">
+    <PackageReference Include="Newtonsoft.Json" Version="7.0.1" />
+    <PackageReference Include="ExpressionToCodeLib" Version="2.7.0" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+  </ItemGroup>
+
 </Project>

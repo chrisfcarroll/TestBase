@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
@@ -47,4 +46,3 @@ ApiControllerUnderTest.WithWebApiHttpContext&lt;T&gt;(
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("8640aff7-2dc9-4b70-92ed-d24a574e56bb")]
-

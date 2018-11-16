@@ -13,29 +13,35 @@ namespace TestBase
     public partial class HttpRequestOverridableWrapper : HttpRequestWrapper
     {
         readonly string appVirtualDir;
+
         public HttpRequestOverridableWrapper(HttpRequest httpRequest, string appVirtualDir)
             : base(httpRequest)
         {
             this.appVirtualDir = appVirtualDir;
         }
 
-        public override string ApplicationPath { get { return appVirtualDir; } }
+        public override string ApplicationPath
+        {
+            get { return appVirtualDir; }
+        }
     }
 
     public static class MockHttpContextHelper
     {
-        public static T WithHttpContextAndRoutes<T>(this T @this, Action<RouteCollection> mvcApplicationRoutesRegistration = null, string requestUrl = null, string query = "", string appVirtualPath = "/", HttpApplication applicationInstance = null) where T : Controller
+        public static T WithHttpContextAndRoutes<T>(this T @this, Action<RouteCollection> mvcApplicationRoutesRegistration = null,
+            string requestUrl = null, string query = "", string appVirtualPath = "/", HttpApplication applicationInstance = null) where T : Controller
         {
             string requestUrl1 = requestUrl ?? @this.GetType().Name;
             HttpApplication applicationInstance1 = applicationInstance ?? new HttpApplication();
             return @this.WithHttpContextAndRoutes(
-                            MockHttpContextBase(
-                                FakeHttpContextCurrent(appVirtualPath, requestUrl1, query, applicationInstance1),
-                                appVirtualPath),
-                            mvcApplicationRoutesRegistration);
+                MockHttpContextBase(
+                    FakeHttpContextCurrent(appVirtualPath, requestUrl1, query, applicationInstance1),
+                    appVirtualPath),
+                mvcApplicationRoutesRegistration);
         }
 
-        public static T WithHttpContextAndRoutes<T>(this T @this, HttpContextBase httpContextBase, Action<RouteCollection> mvcApplicationRoutesRegistration) where T : Controller
+        public static T WithHttpContextAndRoutes<T>(this T @this, HttpContextBase httpContextBase,
+            Action<RouteCollection> mvcApplicationRoutesRegistration) where T : Controller
         {
             var routes = new RouteCollection();
             var routeData = routes.GetRouteData(httpContextBase) ?? new RouteData();
@@ -60,7 +66,7 @@ namespace TestBase
         }
 
         static HttpContext FakeHttpContextCurrent(string appVirtualPath, string requestUrl, string query,
-                                                  HttpApplication applicationInstance)
+            HttpApplication applicationInstance)
         {
             var httpContext = FakeHttpContext(requestUrl, query, appVirtualPath, applicationInstance ?? new HttpApplication());
             HttpContext.Current = httpContext;
@@ -72,23 +78,23 @@ namespace TestBase
             var server = new Mock<HttpServerUtilityBase>();
             server.Setup(s => s.MachineName).Returns(Environment.MachineName);
             server.Setup(s => s.MapPath(It.IsAny<string>()))
-                  .Returns((string s) =>
-                  {
-                      var s1 = s.StartsWith("~")
-                                   ? ".\\" + s.Substring(1)
-                                   : s.StartsWith(appVirtualDir)
-                                         ? ".\\" + s.Substring(appVirtualDir.Length)
-                                         : s;
-                      return s1.Replace('/', '\\');
-                  });
+                .Returns((string s) =>
+                {
+                    var s1 = s.StartsWith("~")
+                        ? ".\\" + s.Substring(1)
+                        : s.StartsWith(appVirtualDir)
+                            ? ".\\" + s.Substring(appVirtualDir.Length)
+                            : s;
+                    return s1.Replace('/', '\\');
+                });
             return server;
         }
 
         public static HttpContext FakeHttpContext(string requestUrl, string query, string appVirtualDir, HttpApplication applicationInstance)
         {
             var request = new HttpRequest("",
-                                          new UriBuilder("http", "localhost", 80, appVirtualDir + requestUrl).Uri.ToString(),
-                                          query);
+                new UriBuilder("http", "localhost", 80, appVirtualDir + requestUrl).Uri.ToString(),
+                query);
 
             //request.Headers.Add("Referer",referer);Can't do this, throws a System.PlatformNotSupportedException : Operation is not supported on this platform 
 
@@ -104,17 +110,16 @@ namespace TestBase
         public static HttpSessionState CreateSession()
         {
             var sessionContainer = new HttpSessionStateContainer("id", new SessionStateItemCollection(),
-                                                                 new HttpStaticObjectsCollection(), 10, true,
-                                                                 HttpCookieMode.AutoDetect,
-                                                                 SessionStateMode.InProc, false);
+                new HttpStaticObjectsCollection(), 10, true,
+                HttpCookieMode.AutoDetect,
+                SessionStateMode.InProc, false);
 
-            return (HttpSessionState)typeof(HttpSessionState).GetConstructor(
-                BindingFlags.NonPublic | BindingFlags.Instance,
-                null, CallingConventions.Standard,
-                new[] { typeof(HttpSessionStateContainer) },
-                null)
-                                                             .Invoke(new object[] { sessionContainer });
+            return (HttpSessionState) typeof(HttpSessionState).GetConstructor(
+                    BindingFlags.NonPublic | BindingFlags.Instance,
+                    null, CallingConventions.Standard,
+                    new[] {typeof(HttpSessionStateContainer)},
+                    null)
+                .Invoke(new object[] {sessionContainer});
         }
-
     }
 }
