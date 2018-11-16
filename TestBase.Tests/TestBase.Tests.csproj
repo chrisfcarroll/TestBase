@@ -28,6 +28,6 @@
     <ProjectReference Include="..\TestBase.AdoNet\TestBase.AdoNet.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\A\ViewName.cshtml" />
+    <Content Include="Views\AnotherTest\ViewName.cshtml" />
   </ItemGroup>
 </Project>

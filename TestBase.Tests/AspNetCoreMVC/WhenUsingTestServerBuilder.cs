@@ -1,5 +1,4 @@
 ﻿#if NETCOREAPP2_0
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NUnit.Framework;
 

@@ -1,5 +1,4 @@
-﻿#if NETSTANDARD2_0
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -96,6 +95,7 @@ namespace TestBase
             controller.ObjectValidator = new DefaultObjectValidator(metadataProvider, new List<IModelValidatorProvider>());
             controller.Url = new UrlHelper(actionContext);
             controller.ControllerContext = new ControllerContext {HttpContext = httpContext};
+
             return controller;
         }
 
@@ -165,7 +165,7 @@ namespace TestBase
             {
                 new DefaultBindingMetadataProvider(),
                 new DefaultValidationMetadataProvider(),
-                new DataAnnotationsMetadataProvider(new TestOptionsManager<MvcDataAnnotationsLocalizationOptions>(), stringLocalizerFactory),
+                new DataAnnotationsMetadataProvider(new TestOptionsManager<MvcDataAnnotationsLocalizationOptions>(), stringLocalizerFactory)
                 //new DataMemberRequiredBindingMetadataProvider(),
             };
 
@@ -175,11 +175,11 @@ namespace TestBase
 
         public static IModelMetadataProvider CreateDefaultProvider(IList<IMetadataDetailsProvider> providers)
         {
-            var detailsProviders = new List<IMetadataDetailsProvider>()
+            var detailsProviders = new List<IMetadataDetailsProvider>
             {
                 new DefaultBindingMetadataProvider(),
                 new DefaultValidationMetadataProvider(),
-                new DataAnnotationsMetadataProvider(new TestOptionsManager<MvcDataAnnotationsLocalizationOptions>(), stringLocalizerFactory: null),
+                new DataAnnotationsMetadataProvider(new TestOptionsManager<MvcDataAnnotationsLocalizationOptions>(), stringLocalizerFactory: null)
                 //new DataMemberRequiredBindingMetadataProvider(),
             };
 
@@ -296,9 +296,9 @@ namespace TestBase
 
         class MetadataBuilder : IMetadataBuilder
         {
-            List<Action<BindingMetadata>> _bindingActions = new List<Action<BindingMetadata>>();
-            List<Action<DisplayMetadata>> _displayActions = new List<Action<DisplayMetadata>>();
-            List<Action<ValidationMetadata>> _valiationActions = new List<Action<ValidationMetadata>>();
+            readonly List<Action<BindingMetadata>> _bindingActions = new List<Action<BindingMetadata>>();
+            readonly List<Action<DisplayMetadata>> _displayActions = new List<Action<DisplayMetadata>>();
+            readonly List<Action<ValidationMetadata>> _valiationActions = new List<Action<ValidationMetadata>>();
 
             readonly ModelMetadataIdentity _key;
 
@@ -414,4 +414,3 @@ namespace TestBase
         }
     }
 }
-#endif

@@ -72,9 +72,9 @@ namespace TestBase
             else if (expected == null)
                 return (T) Assert.That(actual, Is.Null, message ?? $"{nameof(ShouldBe)} null", args);
             else if(actual==null)
-                return Assert.That(actual, x=> false && x.Equals(expected) , message ?? $"{nameof(ShouldBe)} null", args);
+                return Assert.That(actual, x=> false && x.Equals(expected) , message ?? $"{nameof(ShouldBe)} {expected}", args);
             else {
-                Assert.That(actual, x => x.Equals(expected), message ?? $"{nameof(ShouldBe)}\n{expected}", args);
+                Assert.That(actual, x => x.Equals(expected), message ?? $"{nameof(ShouldBe)} {expected}", args);
                 return actual;
             }
         }
@@ -83,7 +83,7 @@ namespace TestBase
         /// <returns><paramref name="actual"/></returns>
         public static T ShouldNotBe<T>(this T actual, T notExpected, string message=null, params object[] args)
         {
-            Assert.That(actual, Is.NotEqualTo(notExpected),  message ?? $"{nameof(ShouldNotBe)}\n\n{notExpected}", args);
+            Assert.That(actual, Is.NotEqualTo(notExpected),  message ?? $"{nameof(ShouldNotBe)} {notExpected}", args);
             return actual;
         }
 
@@ -91,14 +91,14 @@ namespace TestBase
         /// <returns><paramref name="actual"/></returns>
         public static T ShouldEqual<T>(this T actual, object expected, string comment=null, params object[] args)
         {
-            return Assert.That(actual, a=>a.Equals(expected), comment ?? $"{nameof(ShouldEqual)}\n{expected}", args);
+            return Assert.That(actual, a=>a.Equals(expected), comment ?? $"{nameof(ShouldEqual)} {expected}", args);
         }
 
         /// <summary>Asserts that <code>!<paramref name="actual"/>.Equals(<paramref name="notExpected"/>)</code></summary>
         /// <returns><paramref name="actual"/></returns>
         public static T ShouldNotEqual<T>(this T actual, T notExpected, string comment=null, params object[] args)
         {
-            return Assert.That(actual, a => !a.Equals(notExpected), comment ?? $"{nameof(ShouldNotEqual)}\n\n{notExpected}", args);
+            return Assert.That(actual, a => !a.Equals(notExpected), comment ?? $"{nameof(ShouldNotEqual)} {notExpected}", args);
         }
 
         /// <summary>Asserts that <paramref name="actual"/> is between <paramref name="left"/> and <paramref name="right"/> inclusively.</summary>
