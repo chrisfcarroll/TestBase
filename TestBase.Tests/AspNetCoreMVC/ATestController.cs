@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System.Text;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace TestBase.Tests.AspNetCoreMVC
@@ -16,6 +17,11 @@ namespace TestBase.Tests.AspNetCoreMVC
                 LinkToOther= Url.Action(thing,other)
             };
             return View(ViewName,model);
+        }
+
+        public IActionResult AFileResult(string someContent, string contentTypeToReturn, string downloadFileNametoUse)
+        {
+            return File(Encoding.UTF8.GetBytes(someContent), contentTypeToReturn, downloadFileNametoUse);
         }
 
         public string SomethingWithCookies(string cookie1, string allCookiesNewValue, string newCookie)
