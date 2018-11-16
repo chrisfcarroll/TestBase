@@ -4,6 +4,9 @@ using System.Web.Routing;
 using NUnit.Framework;
 using TestBase;
 
+// ReSharper disable Mvc.ActionNotResolved
+// ReSharper disable Mvc.ControllerNotResolved
+
 namespace TestBaseMvc.Tests
 {
     [TestFixture]

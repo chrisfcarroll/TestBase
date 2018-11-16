@@ -2,6 +2,7 @@
 <Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\packages\NUnit.3.11.0\build\NUnit.props" Condition="Exists('..\packages\NUnit.3.11.0\build\NUnit.props')" />
   <PropertyGroup>
+		<IsTestProject>true</IsTestProject>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{FDEDC6A4-D54B-4D9C-80A9-20A91C07DBBD}</ProjectGuid>
@@ -77,7 +78,6 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewResultsShouldsTests.cs" />
-    <Compile Include="WhenFakingContextForAnAspNetCoreController.cs" />
     <Compile Include="WhenMockingAndFakingHttpContextForAnMVC4or5ControllerOnNet4.cs" />
   </ItemGroup>
   <ItemGroup>

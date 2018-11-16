@@ -10,6 +10,23 @@ using TestBase.Shoulds;
 
 namespace TestBaseMvc.Tests
 {
+    [TestFixture]
+    public class ViewResultShoulds
+    {
+        [Test]
+        public void ShouldBeViewWithModel_ShouldAssertViewResultAndNameAndModel()
+        {
+            var controllerUnderTest = new AController(new IDependency()).WithHttpContextAndRoutes();
+
+            var viewModel= 
+                controllerUnderTest.ActionName("parameter", "Other", "Thing").ShouldBeViewWithModel<MyViewModel>("ViewName");
+
+            viewModel.YouPassedIn.ShouldBe("parameter");
+            viewModel.LinkToSelf.ShouldBe("/AController/ActionName");
+            viewModel.LinkToOther.ShouldBe("/Other/Thing");
+        }
+    }
+
     public class MyViewModel
     {
         public string YouPassedIn { get; set; }
@@ -34,23 +51,6 @@ namespace TestBaseMvc.Tests
                 LinkToOther= Url.Action(thing,other)
             };
             return View(ViewName,model);
-        }
-    }
-
-    [TestFixture]
-    public class ControllersShouldBeTestable__GivenDependencyOnUrlHelper
-    {
-        [Test]
-        public void ShouldBeViewWithModel_ShouldAssertViewResultAndNameAndModel()
-        {
-            var controllerUnderTest = new AController(new IDependency()).WithHttpContextAndRoutes();
-
-            var viewModel= 
-                controllerUnderTest.ActionName("parameter", "Other", "Thing").ShouldBeViewWithModel<MyViewModel>("ViewName");
-
-            viewModel.YouPassedIn.ShouldBe("parameter");
-            viewModel.LinkToSelf.ShouldBe("/AController/ActionName");
-            viewModel.LinkToOther.ShouldBe("/Other/Thing");
         }
     }
 }
