@@ -1,9 +1,19 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
 
-// General Information about an assembly is controlled through the following 
-// set of attributes. Change these attribute values to modify the information
-// associated with an assembly.
+[assembly: AssemblyCompany("Chris F Carroll @ https://github.com/chrisfcarroll/TestBase and https://www.nuget.org/profiles/chrisfcarroll")]
+[assembly: AssemblyProduct("TestBase")]
+[assembly: AssemblyCopyright("(c) Chris F. Carroll, 2013-2018")]
+[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCulture("")]
+
+[assembly: ComVisible(false)]
+
+[assembly: Guid("fdedc6a4-d54b-4d9c-80a9-20a91c07dbbd")]
+
+[assembly: AssemblyVersion("4.0.0.0-preview")]
+[assembly: AssemblyFileVersion("4.0.0.0-preview")]
+
 [assembly: AssemblyTitle("TestBase-Mvc")]
 [assembly: AssemblyDescription(@"*TestBase* gets you off to a flying start when unit testing projects with dependencies.
 TestBase-Mvc adds a rich extensible set of fluent assertions for verifying Mvc ActionResults and for easy setup of ControllerContext and HttpContext for both Mvc and WebApi
