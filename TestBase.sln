@@ -36,6 +36,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestBase-Mvc", "TestBase-Mv
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestBase-Mvc.Tests", "TestBase-Mvc.Tests\TestBase-Mvc.Tests.csproj", "{FDEDC6A4-D54B-4D9C-80A9-20A91C07DBBD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestBase.FixtureBase", "TestBase.FixtureBase\TestBase.FixtureBase.csproj", "{3D673246-6690-4CB3-823A-4BA4502DC1B1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -90,6 +92,10 @@ Global
 		{FDEDC6A4-D54B-4D9C-80A9-20A91C07DBBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FDEDC6A4-D54B-4D9C-80A9-20A91C07DBBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FDEDC6A4-D54B-4D9C-80A9-20A91C07DBBD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D673246-6690-4CB3-823A-4BA4502DC1B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D673246-6690-4CB3-823A-4BA4502DC1B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D673246-6690-4CB3-823A-4BA4502DC1B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D673246-6690-4CB3-823A-4BA4502DC1B1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

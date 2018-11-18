@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Linq.Expressions;
+#if NETSTANDARD
 using FastExpressionCompiler;
-using ExpressionToCodeLib;
+#endif
 
 namespace TestBase.AdoNet.FakeDb
 {
