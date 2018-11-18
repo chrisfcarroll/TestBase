@@ -1,3 +1,5 @@
+using ActivateAnything;
+
 namespace TestBase.FixtureBase
 {
     /// <summary>
