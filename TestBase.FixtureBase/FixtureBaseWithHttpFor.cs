@@ -14,7 +14,7 @@ namespace TestBase.FixtureBase
     /// <typeparam name="T">The <see cref="System.Type" /> of the <see cref="UnitUnderTest" /></typeparam>
     public class FixtureBase
     {
-        object locker=new object();
+        readonly object aalocker=new object();
         bool activateIsStale = true;
         AnythingActivator activator;
 
@@ -24,7 +24,7 @@ namespace TestBase.FixtureBase
         {
             get
             {
-                if (activateIsStale || activator==null)
+                if (activateIsStale || activator==null)lock(aalocker)if (activateIsStale || activator==null)
                 {
                     activator = AnythingActivator.FromDefaultAndSearchAnchorRulesAnd(this, new ActivateInstances(Instances));
                     activateIsStale = false;
@@ -34,9 +34,30 @@ namespace TestBase.FixtureBase
         }
         protected FixtureBase() { Instances.CollectionChanged += (sender, args) => activateIsStale = true; }
     }
+
+    public class FixtureBaseFor<T> : FixtureBase
+    {
+        readonly object uutlocker=new object();
+        bool uutIsStale = true;
+        T uut;
+
+        public T UnitUnderTest
+        {
+            get
+            {
+                if (uutIsStale || uut==null)lock(uutlocker)if (uutIsStale || uut==null)
+                {
+                    uut = Activator.New<T>();
+                    uutIsStale = false;
+                }
+                return uut;
+            }
+        }
+        protected FixtureBaseFor() { Instances.CollectionChanged += (sender, args) => uutIsStale = true; }
+    }
     
     /// <inheritdoc cref="FixtureBase"/>
-    public class FixtureBaseWithHttpFor<T> :FixtureBase
+    public class FixtureBaseWithHttpFor<T> : FixtureBaseFor<T>
     {
         public readonly FakeHttpClient HttpClient = new FakeHttpClient();
         
@@ -44,19 +65,19 @@ namespace TestBase.FixtureBase
     }
     
     /// <inheritdoc cref="FixtureBase"/>
-    public class FixtureBaseWithDbFor<T> :FixtureBase
+    public class FixtureBaseWithDbFor<T> : FixtureBaseFor<T>
     {
         public readonly FakeDbConnection FakeDbConnection = new FakeDbConnection();
         
-        protected FixtureBaseWithDbFor():base(){Instances.Add(FakeDbConnection);}
+        protected FixtureBaseWithDbFor(){Instances.Add(FakeDbConnection);}
     }
     
     /// <inheritdoc cref="FixtureBase"/>
-    public class FixtureBaseWithDbAndHttpFor<T> :FixtureBase
+    public class FixtureBaseWithDbAndHttpFor<T> :FixtureBaseFor<T>
     {
         public readonly FakeDbConnection Db = new FakeDbConnection();
         public readonly FakeHttpClient HttpClient = new FakeHttpClient();
         
-        protected FixtureBaseWithDbAndHttpFor():base(){Instances.Add(Db);Instances.Add(HttpClient);}
+        protected FixtureBaseWithDbAndHttpFor(){Instances.Add(Db);Instances.Add(HttpClient);}
     }
 }

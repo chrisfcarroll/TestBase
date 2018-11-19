@@ -11,6 +11,7 @@
   <ItemGroup>
     <PackageReference Include="AutoFixture" Version="3.50.2" />
     <PackageReference Include="Dapper" Version="1.50" />
+    <PackageReference Include="Microsoft.Net.Http" Version="2.0.20710" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.5.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="1.1.18" />
     <PackageReference Include="MSTest.TestFramework" Version="1.1.18" />
@@ -28,5 +29,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ShouldsFeedbackWhenAssertingFailure\ShouldReturnTheActualBeingAsserted__Given_AssertionPass\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System.Net.Http" />
   </ItemGroup>
 </Project>
