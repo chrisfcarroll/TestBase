@@ -37,7 +37,11 @@ namespace TestBase.Tests.FakeDbAndMockDbTests
             cmd.ExecuteNonQuery();
             //
             UnitUnderTest.Invocations[0].CommandText.ShouldBe(text);
+#if MONO
+            UnitUnderTest.Invocations[0].Parameters[0].ShouldEqualByValueOnProperties(p,"ParameterName","Value");
+#else            
             UnitUnderTest.Invocations[0].Parameters[0].ShouldEqualByValue(p);
+#endif            
             UnitUnderTest.Invocations[0].Parameters[0].ShouldNotBe(p);
         }
 
@@ -59,9 +63,15 @@ namespace TestBase.Tests.FakeDbAndMockDbTests
             cmd.ExecuteNonQuery();
             //
             UnitUnderTest.Invocations[0].CommandText.ShouldBe(text1);
-            UnitUnderTest.Invocations[0].Parameters[0].ShouldEqualByValue(p1);
             UnitUnderTest.Invocations[1].CommandText.ShouldBe(text1);
-            UnitUnderTest.Invocations[1].Parameters[0].ShouldEqualByValue(p2);
+#if MONO
+            UnitUnderTest.Invocations[0].Parameters[0].ShouldEqualByValueOnProperties(p1, "ParameterName","Value");
+            UnitUnderTest.Invocations[1].Parameters[0].ShouldEqualByValueOnProperties(p2, "ParameterName","Value");
+#else            
+            UnitUnderTest.Invocations[0].Parameters[0].ShouldEqualByValue(p1);
+            UnitUnderTest.Invocations[1].Parameters[0].ShouldEqualByValue(p2);            
+#endif            
+            
         }
 
 

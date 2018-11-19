@@ -32,7 +32,7 @@ namespace TestBase.Tests.RecordingDbTests
         }
 
         [Test]
-        public void Should_record_DbParameters()
+        public void Should_record_DbParameters_by_copying_not_by_reference()
         {
             var text = "Command 1";
             fakeDbConnection.SetUpForExecuteNonQuery(1);
@@ -44,10 +44,12 @@ namespace TestBase.Tests.RecordingDbTests
             cmd.ExecuteNonQuery();
             //
             fakeDbConnection.Invocations[0].CommandText.ShouldBe(text);
-            fakeDbConnection.Invocations[0].Parameters[0].ShouldEqualByValue(p);
+            fakeDbConnection.Invocations[0].Parameters[0].ParameterName.ShouldBe(p.ParameterName);
+            fakeDbConnection.Invocations[0].Parameters[0].Value.ShouldBe(p.Value);
             fakeDbConnection.Invocations[0].Parameters[0].ShouldNotBe(p);
             UnitUnderTest.Invocations[0].CommandText.ShouldBe(text);
-            UnitUnderTest.Invocations[0].Parameters[0].ShouldEqualByValue(p);
+            UnitUnderTest.Invocations[0].Parameters[0].ParameterName.ShouldBe(p.ParameterName);
+            UnitUnderTest.Invocations[0].Parameters[0].Value.ShouldBe(p.Value);
             UnitUnderTest.Invocations[0].Parameters[0].ShouldNotBe(p);
         }
 
@@ -70,12 +72,19 @@ namespace TestBase.Tests.RecordingDbTests
             //
             fakeDbConnection.Invocations[0].CommandText.ShouldBe(text1);
             UnitUnderTest.Invocations[0].CommandText.ShouldBe(text1);
-            fakeDbConnection.Invocations[0].Parameters[0].ShouldEqualByValue(p1);
-            UnitUnderTest.Invocations[0].Parameters[0].ShouldEqualByValue(p1);
             fakeDbConnection.Invocations[1].CommandText.ShouldBe(text1);
             UnitUnderTest.Invocations[1].CommandText.ShouldBe(text1);
+#if MONO
+            fakeDbConnection.Invocations[0].Parameters[0].ShouldEqualByValueOnProperties(p1,"ParameterName", "Value");
+            UnitUnderTest.Invocations[0].Parameters[0].ShouldEqualByValueOnProperties(p1, "ParameterName", "Value");
+            fakeDbConnection.Invocations[1].Parameters[0].ShouldEqualByValueOnProperties(p2,"ParameterName", "Value");
+            UnitUnderTest.Invocations[1].Parameters[0].ShouldEqualByValueOnProperties(p2,"ParameterName", "Value");
+#else            
+            fakeDbConnection.Invocations[0].Parameters[0].ShouldEqualByValue(p1);
+            UnitUnderTest.Invocations[0].Parameters[0].ShouldEqualByValue(p1);
             fakeDbConnection.Invocations[1].Parameters[0].ShouldEqualByValue(p2);
             UnitUnderTest.Invocations[1].Parameters[0].ShouldEqualByValue(p2);
+#endif            
         }
     }
 }

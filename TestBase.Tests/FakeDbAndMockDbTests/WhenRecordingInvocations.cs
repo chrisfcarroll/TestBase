@@ -25,7 +25,7 @@ namespace TestBase.Tests.FakeDbAndMockDbTests
         }
 
         [Test]
-        public void Should_record_DbParameters()
+        public void Should_record_DbParameters_by_copying_not_by_reference()
         {
             var text = "Command 1";
             UnitUnderTest.SetUpForExecuteNonQuery(1);

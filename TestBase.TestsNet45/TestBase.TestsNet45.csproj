@@ -33,4 +33,9 @@
   <ItemGroup>
     <Reference Include="System.Net.Http" />
   </ItemGroup>
+
+  <PropertyGroup Condition="$(TargetFramework.StartsWith('net4')) and '$(OS)' == 'Unix'">
+    <DefineConstants>MONO</DefineConstants>
+  </PropertyGroup>
+  
 </Project>

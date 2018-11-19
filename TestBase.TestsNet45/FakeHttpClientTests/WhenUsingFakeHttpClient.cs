@@ -26,9 +26,9 @@ namespace TestBase.Tests.FakeHttpClientTests
                 .ShouldEqualByValue(cannedResponse);
         }
 
-        [TestCase("heresapath")]
-        [TestCase("heresapath/and/a?query=")]
-        public void Should_MatchAnExpectationAndReturnTheSetupResponse__GivenResponseFunction(string pathandquery)
+        [TestCase("/heresapath")]
+        [TestCase("/heresapath/and/a?query=")]
+        public async Task Should_MatchAnExpectationAndReturnTheSetupResponse__GivenResponseFunction(string pathandquery)
         {
             var uut = new FakeHttpClient();
 
@@ -36,13 +36,11 @@ namespace TestBase.Tests.FakeHttpClientTests
                 .Setup(x=>x.RequestUri.PathAndQuery.StartsWith("/here"))
                 .Returns(rm=> new HttpResponseMessage(HttpStatusCode.OK){Content=new StringContent(rm.RequestUri.PathAndQuery)});
 
-            uut.GetAsync("http://localhost/" + pathandquery)
-                .ConfigureAwait(false).GetAwaiter()
-                .GetResult()
-                .ShouldEqualByValueExceptFor(
-                    new HttpResponseMessage(HttpStatusCode.OK){Content=new StringContent(pathandquery)},
-                    "Content.Headers"
-                    );
+            var result = await uut.GetAsync("http://localhost" + pathandquery);
+            
+            result.ShouldEqualByValueExceptFor(new HttpResponseMessage(HttpStatusCode.OK),"Content");
+
+            (await result.Content.ReadAsStringAsync()).ShouldBe(pathandquery);
         }
 
         [TestCase("theredifferentpath")]
