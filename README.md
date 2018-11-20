@@ -2,8 +2,8 @@
 - fluent assertions that are easy to extend
 - sharp error messages
 - tools to help you test with "heavyweight" dependencies on 
-    - AspNet.Mvc or AspNetCore Contexts
-	- HttpClient
+	- AspNet.Mvc or AspNetCore Contexts
+ 	- HttpClient
 	- Ado.Net
 	- Streams & Logging
 - Mix & match with your favourite test runners and assertions.
@@ -165,20 +165,9 @@ http request &amp; context. And, by injecting the RegisterRoutes method of your
 MvcApplication, you can use and test Controller.Url with your application's configured routes.
 
 ```
-ControllerUnderTest
-  .WithHttpContextAndRoutes(
-    [Optional] Action<RouteCollection> mvcApplicationRoutesRegistration, 
-    [optional] string requestUrl,
-    [Optional] string query = "",
-    [Optional] string appVirtualPath = "/",
-    [Optional] HttpApplication applicationInstance)
-
-ApiControllerUnderTest.WithWebApiHttpContext&lt;T&gt;(
-    HttpMethod httpMethod, 
-    [Optional] string requestUri,
-    [Optional] string routeTemplate)
+ControllerUnderTest.WithHttpContextAndRoutes()
+ApiControllerUnderTest.WithWebApiHttpContext<T>()
 ```
-
 
 Testable Logging with ListOfString
 --------------------------------------
