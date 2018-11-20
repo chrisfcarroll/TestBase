@@ -35,8 +35,6 @@ value.ShouldBe().ShouldNotBe().ShouldBeOfType().ShouldBeAssignableTo()...
 ```
 
 See Also
-
-See also
  - [TestBase](https://www.nuget.org/packages/TestBase)
  - [TestBase.AspNetCore.Mvc](https://www.nuget.org/packages/TestBase.AspNetCore.Mvc)
  - [TestBase-Mvc](https://www.nuget.org/packages/TestBase-Mvc)
