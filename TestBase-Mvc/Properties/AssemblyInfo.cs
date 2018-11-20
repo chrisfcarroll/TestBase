@@ -6,8 +6,8 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCopyright("(c) Chris F. Carroll, 2013-2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-[assembly: AssemblyVersion("4.0.0.1")]
-[assembly: AssemblyFileVersion("4.0.0.1")]
+[assembly: AssemblyVersion("4.1.4.3")]
+[assembly: AssemblyFileVersion("4.1.4.3")]
 
 [assembly: AssemblyTitle("TestBase-Mvc")]
 [assembly: AssemblyDescription(@"*TestBase* gets you off to a flying start when unit testing projects with dependencies.
