@@ -1,43 +1,25 @@
-*TestBase* gives you a flying start with 
+﻿*TestBase* gives you a flying start with 
 - fluent assertions that are easy to extend
 - sharp error messages
-- tools to help you test with "heavyweight" dependencies on 
-    - AspNet.Mvc or AspNetCore Contexts
-	- HttpClient
-	- Ado.Net
-	- Streams & Logging
-- Mix & match with your favourite test runners and assertions.
+- tools to help you test with “heavyweight” dependencies on 
+  - AspNetCore.Mvc, AspNet.Mvc or WebApi Contexts
+  - HttpClient
+  - Ado.Net
+  - Streams & Logging
+- Mix & match with your favourite test runners & assertions.
 
-TestBase.Mvc for Mvc4 and Mvc5
--------------------------------
-Use the `Controller.WithHttpContextAndRoutes()` extension methods to fake the 
-http request &amp; context, enabling you to unit test with dependecies on 
-`Controller.Url()`, `Request.Cookies`, `Response.Cookies` `Request.QueryString` 
-and more. By passing in your own `MvcApplication`'s actual `RegisterRoutes()` 
-method , you can verify `Controller.Url` with your application's 
-actual routes.
+TestBase.HttpClient.Fake
+------------------------
 
 ```
-var controllerUnderTest = new AController().WithHttpContextAndRoutes();
+var httpClient = new FakeHttpClient()
+      .Setup(x=>x.RequestUri.PathAndQuery.StartsWith("/this")).Returns(response)
+      .Setup(x=>x.Method==HttpMethod.Put).Returns(new HttpResponseMessage(HttpStatusCode.Accepted));
 
-controllerUnderTest
-    .Action("SomeController","SomeAction",other:1)
-    .ShouldBeViewWithModel<AClass>("ViewName");
-        .FooterLink
-        .ShouldBe("/Controller/Action?other=1");
+...tests...;
 
-ControllerUnderTest
-  .WithHttpContextAndRoutes(
-    [Optional] Action<RouteCollection> mvcApplicationRoutesRegistration, 
-    [optional] string requestUrl,
-    [Optional] string query = "",
-    [Optional] string appVirtualPath = "/",
-    [Optional] HttpApplication applicationInstance)
-
-ApiControllerUnderTest.WithWebApiHttpContext&lt;T&gt;(
-    HttpMethod httpMethod, 
-    [Optional] string requestUri,
-    [Optional] string routeTemplate)
+httpClient.Verify(x=>x.Method==HttpMethod.Put);
+httClient.VerifyAll();     
 ```
 
 Chainable fluent assertions get you to the point concisely:

@@ -8,37 +8,29 @@
 	- Streams & Logging
 - Mix & match with your favourite test runners and assertions.
 
-TestBase.Mvc for Mvc4 and Mvc5
--------------------------------
-Use the `Controller.WithHttpContextAndRoutes()` extension methods to fake the 
-http request &amp; context, enabling you to unit test with dependecies on 
-`Controller.Url()`, `Request.Cookies`, `Response.Cookies` `Request.QueryString` 
-and more. By passing in your own `MvcApplication`'s actual `RegisterRoutes()` 
-method , you can verify `Controller.Url` with your application's 
-actual routes.
+TestBase.AdoNet
 
+TestBase.FakeDb
+------------------
+Fake and verify AdoNet queries and commands
 ```
-var controllerUnderTest = new AController().WithHttpContextAndRoutes();
-
-controllerUnderTest
-    .Action("SomeController","SomeAction",other:1)
-    .ShouldBeViewWithModel<AClass>("ViewName");
-        .FooterLink
-        .ShouldBe("/Controller/Action?other=1");
-
-ControllerUnderTest
-  .WithHttpContextAndRoutes(
-    [Optional] Action<RouteCollection> mvcApplicationRoutesRegistration, 
-    [optional] string requestUrl,
-    [Optional] string query = "",
-    [Optional] string appVirtualPath = "/",
-    [Optional] HttpApplication applicationInstance)
-
-ApiControllerUnderTest.WithWebApiHttpContext&lt;T&gt;(
-    HttpMethod httpMethod, 
-    [Optional] string requestUri,
-    [Optional] string routeTemplate)
+- fakeDbConnection.SetupForQuery(IEnumerable<TFakeData>; )
+- fakeDbConnection.SetupForQuery(IEnumerable<Tuple<TFakeDataForTable1,TFakeDataForTable2>> )
+- fakeDbConnection.SetupForQuery(fakeData, new[] {"FieldName1", FieldName2"})
+- fakeDbConnection.SetupForExecuteNonQuery(rowsAffected)
+- fakeDbConnection.ShouldHaveUpdated("tableName", [Optional] fieldList, whereClauseField)
+- fakeDbConnection.ShouldHaveSelected("tableName", [Optional] fieldList, whereClauseField)
+- fakeDbConnection.ShouldHaveUpdated("tableName", [Optional] fieldList, whereClauseField)
+- fakeDbConnection.ShouldHaveDeleted("tableName", whereClauseField)
+- fakeDbConnection.ShouldHaveInvoked(cmd => predicate(cmd))
+- fakeDbConnection.ShouldHaveXXX().ShouldHaveParameter("name", value)
+- fakeDbConnection.Verify(x=>x.CommandText.Matches("Insert [case] .*") && x.Parameters["id"].Value==1)
 ```
+
+TestBase.RecordingDb
+--------------------
+* `new RecordingDbConnection(IDbConnection)` helps you profile Ado.Net Db calls
+
 
 Chainable fluent assertions get you to the point concisely:
 ```
@@ -71,5 +63,6 @@ See also
  - [TestBase.AspNetCore.Mvc](https://www.nuget.org/packages/TestBase.AspNetCore.Mvc)
  - [TestBase-Mvc](https://www.nuget.org/packages/TestBase-Mvc)
  - [TestBase.AdoNet](https://www.nuget.org/packages/TestBase.AdoNet)
+ - [TestBase.HttpClient.Fake](https://www.nuget.org/packages/TestBase.HttpClient.Fake)
  - [Serilog.Sinks.ListOfString](https://www.nuget.org/packages/Serilog.Sinks.Listofstring)
  - [Extensions.Logging.ListOfString](https://www.nuget.org/packages/Extensions.Logging.ListOfString)

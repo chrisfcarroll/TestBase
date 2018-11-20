@@ -78,11 +78,24 @@ DummyController.Putted.ShouldEqualByValue( something );
 }
 }
 ```
- 
+
+Simple, easy-to-extend fluent assertions:
+```
+.ShouldEqualByValue().ShouldEqualByValueExceptFor(...).ShouldEqualByValueOnMembers()
+  work with all kinds of object and collections, and report what differed.
+string.ShouldMatch(pattern).ShouldNotMatch().ShouldBeEmpty().ShouldNotBeEmpty()
+.ShouldNotBeNullOrEmptyOrWhiteSpace().ShouldEqualIgnoringCase()
+.ShouldContain().ShouldStartWith().ShouldEndWith().ShouldBeContainedIn().ShouldBeOneOf().ShouldNotBeOneOf()
+numeric.ShouldBeBetween().ShouldEqualWithTolerance()....GreaterThan....LessThan...GreaterOrEqualTo ...
+ienumerable.ShouldAll().ShouldContain().ShouldNotContain().ShouldBeEmpty().ShouldNotBeEmpty() ...
+stream.ShouldHaveSameStreamContentAs().ShouldContain()
+value.ShouldBe().ShouldNotBe().ShouldBeOfType().ShouldBeAssignableTo()...
+```
+
 See also
--   TestBase
--   TestBase.Mvc for Mvc4 and Mvc 5
--   TestBase.HttpClient.Fake
--   TestBase.AdoNet
--   Serilog.Sinks.ListOfString
--   Extensions.Logging.ListOfString
+ - [TestBase](https://www.nuget.org/packages/TestBase)
+ - [TestBase.AspNetCore.Mvc](https://www.nuget.org/packages/TestBase.AspNetCore.Mvc)
+ - [TestBase-Mvc](https://www.nuget.org/packages/TestBase-Mvc)
+ - [TestBase.AdoNet](https://www.nuget.org/packages/TestBase.AdoNet)
+ - [Serilog.Sinks.ListOfString](https://www.nuget.org/packages/Serilog.Sinks.Listofstring)
+ - [Extensions.Logging.ListOfString](https://www.nuget.org/packages/Extensions.Logging.ListOfString)

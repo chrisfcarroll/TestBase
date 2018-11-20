@@ -36,12 +36,14 @@ value.ShouldBe().ShouldNotBe().ShouldBeOfType().ShouldBeAssignableTo()...
 
 See Also
 
-TestBase.HttpClient.Fake
-TestBase.AdoNet
-TestBase.AspNetCore.Mvc
-TestBase-Mvc for Mvc 3-5
-Extensions.Logging.ListOfString
-Serilog.Sinks.ListOfString
+See also
+ - [TestBase](https://www.nuget.org/packages/TestBase)
+ - [TestBase.AspNetCore.Mvc](https://www.nuget.org/packages/TestBase.AspNetCore.Mvc)
+ - [TestBase-Mvc](https://www.nuget.org/packages/TestBase-Mvc)
+ - [TestBase.AdoNet](https://www.nuget.org/packages/TestBase.AdoNet)
+ - [TestBase.HttpClient.Fake](https://www.nuget.org/packages/TestBase.HttpClient.Fake)
+ - [Serilog.Sinks.ListOfString](https://www.nuget.org/packages/Serilog.Sinks.Listofstring)
+ - [Extensions.Logging.ListOfString](https://www.nuget.org/packages/Extensions.Logging.ListOfString)
 
 TestBase.HttpClient.Fake
 ------------------------
