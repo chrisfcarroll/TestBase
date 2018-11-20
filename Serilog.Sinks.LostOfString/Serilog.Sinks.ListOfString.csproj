@@ -18,10 +18,7 @@ var testLogger= new LoggerConfiguration().WriteTo.StringList(log).CreateLogger()
 log.ShouldContain( x=>x.Matches("kilroy was here") );
 
 ```
-This is for Serilog. For Microsoft.Extensions.Logging.Abstractions see also https://www.nuget.org/packages/Extensions.Logging.ListOfString/
-
-Part of [https://www.nuget.org/packages/TestBase](https://www.nuget.org/packages/TestBase). *TestBase* gives you a flying start to unit testing with fluent assertions that are easy to extend, and 
-tools for testing with dependencies on AspNetMvc, HttpClient, Ado.Net, Streams and Loggers.
+This is for Serilog. For Microsoft.Extensions.Logging.Abstractions see [Extensions.Logging.ListOfString](https://www.nuget.org/packages/Extensions.Logging.ListOfString)
 
 See Also
  - [TestBase.AspNetCore.Mvc](https://www.nuget.org/packages/TestBase.AspNetCore.Mvc)
@@ -29,7 +26,10 @@ See Also
  - [TestBase.AdoNet](https://www.nuget.org/packages/TestBase.AdoNet)
  - [TestBase.HttpClient.Fake](https://www.nuget.org/packages/TestBase.HttpClient.Fake)
  - [Serilog.Sinks.ListOfString](https://www.nuget.org/packages/Serilog.Sinks.Listofstring)
- - [Extensions.Logging.ListOfString](https://www.nuget.org/packages/Extensions.Logging.ListOfString)]]></PackageDescription>
+ - [Extensions.Logging.ListOfString](https://www.nuget.org/packages/Extensions.Logging.ListOfString)
+
+Part of [https://www.nuget.org/packages/TestBase](https://www.nuget.org/packages/TestBase). *TestBase* gives you a flying start to unit testing with fluent assertions that are easy to extend, and 
+tools for testing with dependencies on AspNetMvc, HttpClient, Ado.Net, Streams and Loggers.]]></PackageDescription>
     <PackageReleaseNotes>ChangeLog
 ---------
 4.1.4.3 Release for both netstandard and net45
