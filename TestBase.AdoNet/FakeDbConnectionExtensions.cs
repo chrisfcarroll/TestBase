@@ -102,6 +102,25 @@ namespace TestBase.AdoNet
         /// either the protected <see cref="DbCommand.ExecuteDbDataReader"/> or the public 
         /// <see cref="DbCommand.ExecuteReader()"/> is called on it.
         /// 
+        /// This overload will return a result set with a single column named <paramref name="columnName"/> 
+        /// and with <see cref="dataToReturn"/>.Count() rows.
+        /// 
+        /// The FakeDbCommands are (in the current version) queued and must be invoked in the order they were setup.
+        /// </summary>
+        /// <param name="dataToReturn">A scalar data item</param>
+        /// <param name="columnName">The column name used in the metadata of the returned resultset.</param>
+        /// <returns>Itself, for chaining</returns>
+        public static FakeDbConnection SetUpForQuerySingleColumn<T>(this FakeDbConnection fakeDbConnection, IEnumerable<T> dataToReturn, string columnName="Column1")
+        {
+            fakeDbConnection.QueueCommand( FakeDbCommand.ForExecuteSingleColumnQuery(dataToReturn, columnName) );
+            return fakeDbConnection;
+        }
+
+        /// <summary>
+        /// Sets up the Fake DbConnection to return a FakeDbCommand which is itself set up to return <see cref="dataToReturn"/> when 
+        /// either the protected <see cref="DbCommand.ExecuteDbDataReader"/> or the public 
+        /// <see cref="DbCommand.ExecuteReader()"/> is called on it.
+        /// 
         /// This overload will return a result set with a column per public read-writeable property of typeof(T1) 
         /// followed by a column per public read-writeable property of typeof(T2)
         /// and with <see cref="dataToReturn"/>.Count() rows.

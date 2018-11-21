@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net45</TargetFrameworks>
-    <AssemblyVersion>4.1.4.3</AssemblyVersion>
-    <AssemblyFileVersion>4.1.4.3</AssemblyFileVersion>
-    <PackageVersion>4.1.4.3</PackageVersion>
-    <PackageVersion>4.1.4.3</PackageVersion>
+    <AssemblyVersion>4.1.5.0</AssemblyVersion>
+    <AssemblyFileVersion>4.1.5.0</AssemblyFileVersion>
+    <PackageVersion>4.1.5.0</PackageVersion>
+    <PackageVersion>4.1.5.0</PackageVersion>
   </PropertyGroup>
   <PropertyGroup>
     <Title>TestBase – Rich, fluent assertions and tools for testing with heavyweight dependencies: AdoNet, HttpClient, AspNetCore, AspNet.Mvc, Streams, Logging</Title>
@@ -42,6 +42,7 @@ See also
     <ReleaseNotes><![CDATA[
 ChangeLog
 ---------
+4.1.5.0 TestBase.AdoNet.FakeDbConnection.SetupForQuerySingleColumn()
 4.1.4.3 Release for both netstandard and net45
 4.1.3.1 Corrected Assertion.ToString() to show BoolWithString detail. Added ShouldEqualByValueOnMembers()
 4.1.2.4 TestBase.AdoNet providers VerifyFirst(), VerifyLast(), VerifySingle()

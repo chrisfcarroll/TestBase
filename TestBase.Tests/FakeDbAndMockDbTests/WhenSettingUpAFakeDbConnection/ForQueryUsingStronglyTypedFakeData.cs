@@ -5,7 +5,7 @@ using TestBase.AdoNet.FakeDb;
 
 namespace TestBase.Tests.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection
 {
-    class IdAndName { public int Id { get; set; } public string Name { get; set; } }
+    public class IdAndName { public int Id { get; set; } public string Name { get; set; } }
     class WithJoin { public int Id { get; set; } public IdAndName IdAndName { get; set; } }
 
     [TestFixture]

@@ -18,9 +18,9 @@ namespace TestBase.AdoNet
             Connection = connection;
         }
 
-        public static FakeDbCommand ForExecuteSingleColumnQuery<T>(IEnumerable<T> dataToReturn)
+        public static FakeDbCommand ForExecuteSingleColumnQuery<T>(IEnumerable<T> dataToReturn, string columnName="col1")
         {
-            return ForExecuteQuery(dataToReturn.Select(x=>new object[]{x}), "col1");
+            return ForExecuteQuery (dataToReturn.Select(x=>new object[]{x}).ToArray(), columnName );
         }
 
         public static FakeDbCommand ForExecuteQuery(IEnumerable<object[]> dataToReturn, params string[] columnNames)
