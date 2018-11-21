@@ -17,6 +17,8 @@ Fake and verify AdoNet queries and commands
 - fakeDbConnection.SetupForQuery(IEnumerable<TFakeData>; )
 - fakeDbConnection.SetupForQuery(IEnumerable<Tuple<TFakeDataForTable1,TFakeDataForTable2>> )
 - fakeDbConnection.SetupForQuery(fakeData, new[] {"FieldName1", FieldName2"})
+- fakeDbConnection.SetupForQuerySingleColumn(new []{"1","row2"})
+- fakeDbConnection.SetupForQuerySingleScaler("Scalar")
 - fakeDbConnection.SetupForExecuteNonQuery(rowsAffected)
 - fakeDbConnection.ShouldHaveUpdated("tableName", [Optional] fieldList, whereClauseField)
 - fakeDbConnection.ShouldHaveSelected("tableName", [Optional] fieldList, whereClauseField)
