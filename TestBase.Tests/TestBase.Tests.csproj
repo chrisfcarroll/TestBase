@@ -19,7 +19,6 @@
     <PackageReference Include="Moq" Version="4.8.2" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\ActivateAnything\ActivateAnything\ActivateAnything.csproj" />
     <ProjectReference Include="..\Extensions.Logging.ListOfString\Extensions.Logging.ListOfString.csproj" />
     <ProjectReference Include="..\Serilog.Sinks.LostOfString\Serilog.Sinks.ListOfString.csproj" />
     <ProjectReference Include="..\TestBase.AspNetCore.Mvc.GuineaPig\TestBase.Mvc.AspNetCore.GuineaPig.csproj" />
