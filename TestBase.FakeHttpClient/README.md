@@ -1,48 +1,59 @@
 ﻿*TestBase* gives you a flying start with 
-- fluent assertions that are easy to extend
+- fluent assertions that are simple to extend
 - sharp error messages
 - tools to help you test with “heavyweight” dependencies on 
-  - AspNetCore.Mvc, AspNet.Mvc or WebApi Contexts
+  - AspNetCore.Mvc, AspNet.Mvc 3-5, or WebApi Contexts
   - HttpClient
   - Ado.Net
   - Streams & Logging
 - Mix & match with your favourite test runners & assertions.
 
-TestBase.HttpClient.Fake
-------------------------
+# TestBase.HttpClient.Fake
 
 ```
+//Arrange
 var httpClient = new FakeHttpClient()
-                .SetupGetUrl("https://host.*/")
-                .Returns("string content")
+                .SetupGetUrl("https://host.*/").Returns(request=> "Got:" + request.RequestUri)
                 
-                .SetupGetPath("/uripattern/")
-                .Returns("string content")
+                .SetupGetPath("/uri[Pp]attern/").Returns("stringcontent")
                 
+                .SetupPost(".*").Returns(response)
+
+                .SetupPost(".*", new byte[]{1,2,3}).Returns(otherResponse)
+
                 .SetupPost(".*", "a=1&b=2")
-                .Returns(request => ...)
+                .Returns(
+                            request => "You said : " + request.Content.ReadAsStringAsync().ConfigureFalseGetResult(),
+                            HttpStatusCode.Accepted)
+
+                .Setup(x=>x.RequestUri.PathAndQuery.StartsWith("/this")).Returns(response)
                 
-                .SetupPost(".*", new byte[]{1,2,3})
-                .Returns(request=> ... )
-                
-                .SetupPost(".*", new StreamContent( ... ))
-                .Returns(response)
-                
-                .Setup(x=>x.RequestUri.PathAndQuery.StartsWith("/this"))
-                .Returns(response)
-                
-                .Setup(x=>x.Method==HttpMethod.Put)
+                .Setup(x=>x.Method ==HttpMethod.Put)
                 .Returns(new HttpResponseMessage(HttpStatusCode.Accepted));
 
-...tests...;
+// Act
+var putResponse = await httpClient.PutAsync("http://localhost/thing", new StringContent("{a=1,b=2}"));
+var postResponse= await httpClient.PostAsync("http://[::1]/", new StringContent("a=1&b=2"));
 
-httpClient.Verify(x=>x.Method==HttpMethod.Put);
+//Debug
+httpClient.Invocations
+            .ForEach(async i =>Console.WriteLine("{0} {1}",i.RequestUri, 
+                                                await i.Content.ReadAsStringAsync()));
 
+            
+//Assert
+putResponse.StatusCode.ShouldBe(HttpStatusCode.Accepted);
+postResponse.ShouldBe(response); // ==> SetupPost(".*").Returns(response) was the first 
+                                    // matched setup. Setups are tried in first-to-last order.                                            
+
+httpClient.Verify(x=>x.Method ==HttpMethod.Put, "Expected Put, but no matching invocations.");
 httpClient.Verify(
-            x=> x.Method==HttpMethod.Post 
-                && (await x.Content.ReadStringAsync())=="expected" );
-                
-httClient.VerifyAll();     
+                    x=>x.Method ==HttpMethod.Post 
+                    && x.Content.ReadAsStringAsync().ConfigureFalseGetResult()=="a=1&b=2",
+                    "Expected Post a=1&b=2");
+
+httpClient.VerifyAll(); // ==> "Exception : 4 unmatched expectations"
+
 ```
 
 ### TestBase

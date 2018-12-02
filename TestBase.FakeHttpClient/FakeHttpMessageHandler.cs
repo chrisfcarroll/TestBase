@@ -10,8 +10,8 @@ namespace TestBase.HttpClient.Fake
 {
     /// <summary>
     /// A low-level Fake for <see cref="HttpMessageHandler"/>. 
-    /// Setup expectations using <see cref="FakeHttpMessageHandler.Setup"/>,
-    /// Verify with <see cref="FakeHttpMessageHandler.Verify"/>
+    /// Setup expectations using <see cref="Setup(System.Func{System.Net.Http.HttpRequestMessage,bool},System.Func{System.Net.Http.HttpRequestMessage,System.Net.Http.HttpResponseMessage})"/>,
+    /// Verify with <see cref="Verify(System.Func{System.Net.Http.HttpRequestMessage,bool})"/>
     /// Used by <see cref="FakeHttpClient"/>
     /// </summary>
     public class FakeHttpMessageHandler : HttpMessageHandler
@@ -28,13 +28,29 @@ namespace TestBase.HttpClient.Fake
             Expectations.Add(messageMatchesPredicate, r=>desiredResponse);
             return this;
         }
+
         /// <summary>Find the first invocation that satisfies <paramref name="messageMatchesPredicate"/>, or throw if none is found.</summary>
-        /// <param name="messageMatchesPredicate">A predicate that the incoming <see cref="HttpRequestMessage"/> should have satisfied.
+        /// <param name="messageMatchesPredicate">A predicate that the incoming <see cref="HttpRequestMessage"/> should have satisfied.</param>
         /// <returns>Both the recorded incoming Request, and the outgoing response that returned for it.</returns>
+        /// <exception cref="Exception">Thrown if no matching invocation is found.</exception>
         public KeyValuePair<HttpRequestMessage, HttpResponseMessage> Verify(Func<HttpRequestMessage, bool> messageMatchesPredicate)
         {
             try { return InvocationResults.First(i => messageMatchesPredicate(i.Key)); }
             catch{ throw new Exception("No matching invocations were recorded");}
+        }
+
+        /// <summary>Find the first invocation that satisfies <paramref name="messageMatchesPredicate"/>, or throw if none is found.</summary>
+        /// <param name="messageMatchesPredicate">A predicate that the incoming <see cref="HttpRequestMessage"/> should have satisfied.</param>
+        /// <param name="failureMessage">optional Exception message to show in case of failure</param>
+        /// <param name="failureMessageArgs"></param>
+        /// <returns>Both the recorded incoming Request, and the outgoing response that returned for it.</returns>
+        /// <exception cref="Exception">Thrown if no matching invocation is found.</exception>
+        public KeyValuePair<HttpRequestMessage, HttpResponseMessage> Verify(Func<HttpRequestMessage, bool> messageMatchesPredicate, 
+                                                                            string failureMessage=null, 
+                                                                            params object[] failureMessageArgs)
+        {
+            try { return InvocationResults.First(i => messageMatchesPredicate(i.Key)); }
+            catch{ throw new Exception( string.Format(failureMessage??"No matching invocations were recorded",failureMessageArgs));}
         }
         
         /// <summary>Throws if any <see cref="Expectations"/> were set but not met.</summary>
