@@ -133,6 +133,7 @@ Serilog.Logger slogger= new LoggerConfiguration().WriteTo.StringList(log).Create
 ```]]></PackageDescription>
     <PackageReleaseNotes>ChangeLog
 ---------
+4.2.0   TestBase.FakeHttpClient.SetupGet() and SetupPost() overloads
 4.1.4.3 Release for both netstandard and net45
 4.1.4.2 TestBase fix typos. TestBase.AspNetCore.Mvc added Request.SetRequestCookies()
 4.1.4.1 TestBase stepped down to netstandard 1.6

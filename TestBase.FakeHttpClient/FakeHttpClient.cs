@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 
 namespace TestBase.HttpClient.Fake
@@ -14,15 +15,18 @@ namespace TestBase.HttpClient.Fake
     public class FakeHttpClient : System.Net.Http.HttpClient
     {
         /// <summary>
-        /// Sets up this Client to return <paramref name="desiredResponse"/>(<see cref="HttpRequestMessage"/>) if 
-        /// the incoming <see cref="HttpRequestMessage"/> satisfies the predicate <paramref name="messageMatchesPredicate"/>
+        /// Start to set up this Client to return a desired <see cref="HttpResponseMessage"/> in response to an incoming
+        /// <see cref="HttpRequestMessage"/> which satisfies the predicate <paramref name="messageMatchesPredicate"/>
+        /// <example>
+        ///    <c>fakehttpClient.Setup(m=>m.Uri="..." && m.Method=HttpMethod.Post).Returns(m=> fakeResponse(m) )</c>
+        /// </example>
         /// </summary>
         /// <param name="messageMatchesPredicate">The test to apply to incoming messages</param>
-        /// <param name="desiredResponse">The function to generate a response, if the incoming message satisfies the <paramref name="messageMatchesPredicate"/>.</param>
-        /// <returns>this</returns>
-        public SetupStillNeedsResponse Setup(Func<HttpRequestMessage, bool> messageMatchesPredicate)
+        /// <returns>this, wrapped awaiting the <see cref="FakeHttpClientSetup.Returns(System.Net.Http.HttpResponseMessage)"/>
+        /// call to specify the response</returns>
+        public FakeHttpClientSetup Setup(Func<HttpRequestMessage, bool> messageMatchesPredicate)
         {
-            return new SetupStillNeedsResponse(this, messageMatchesPredicate);
+            return new FakeHttpClientSetup(this, messageMatchesPredicate);
         }
 
         /// <summary>A list of incoming messages received, paired with the response that was sent to them.</summary>
@@ -46,12 +50,12 @@ namespace TestBase.HttpClient.Fake
         /// <param name="handler">Otional. Provide an existing <see cref="FakeHttpMessageHandler"/> to handle requests</param>
         public FakeHttpClient(FakeHttpMessageHandler handler=null) : base(handler=handler??new FakeHttpMessageHandler()){FakeHttpMessageHandler = handler;}
 
-        public class SetupStillNeedsResponse
+        public class FakeHttpClientSetup
         {
             readonly FakeHttpClient client;
             readonly Func<HttpRequestMessage, bool> messageMatchesPredicate;
 
-            public SetupStillNeedsResponse(FakeHttpClient client, Func<HttpRequestMessage, bool> messageMatchesPredicate)
+            public FakeHttpClientSetup(FakeHttpClient client, Func<HttpRequestMessage, bool> messageMatchesPredicate)
             {
                 this.client = client;
                 this.messageMatchesPredicate = messageMatchesPredicate;
@@ -79,6 +83,25 @@ namespace TestBase.HttpClient.Fake
             public FakeHttpClient Returns(Func<HttpResponseMessage> desiredResponse)
             {
                 client.FakeHttpMessageHandler.Expectations.Add(messageMatchesPredicate, rm=>desiredResponse());
+                return client;
+            }
+
+            /// <summary>Specify a <see cref="StringContent"/> response to return for incoming messages matching
+            /// the current setup</summary>
+            /// <param name="desiredResponse">Specify a function of no parameters to create the resulting <see cref="HttpResponseMessage"/></param>
+            /// <param name="statusCode"></param>
+            /// <returns>The <see cref="FakeHttpClient"/> being setup.</returns>
+            public FakeHttpClient Returns(
+                                    Func<HttpRequestMessage,string> desiredResponseStringContent,
+                                    HttpStatusCode statusCode= HttpStatusCode.OK)
+            {
+                client.FakeHttpMessageHandler
+                      .Expectations
+                      .Add(messageMatchesPredicate, 
+                           rm=>new HttpResponseMessage(statusCode)
+                           {
+                               Content =new StringContent(desiredResponseStringContent(rm)) 
+                           });
                 return client;
             }
         }

@@ -13,29 +13,49 @@ TestBase.HttpClient.Fake
 
 ```
 var httpClient = new FakeHttpClient()
-      .Setup(x=>x.RequestUri.PathAndQuery.StartsWith("/this")).Returns(response)
-      .Setup(x=>x.Method==HttpMethod.Put).Returns(new HttpResponseMessage(HttpStatusCode.Accepted));
+                .SetupGetUrl("https://host.*/")
+                .Returns("string content")
+                
+                .SetupGetPath("/uripattern/")
+                .Returns("string content")
+                
+                .SetupPost(".*", "a=1&b=2")
+                .Returns(request => ...)
+                
+                .SetupPost(".*", new byte[]{1,2,3})
+                .Returns(request=> ... )
+                
+                .SetupPost(".*", new StreamContent( ... ))
+                .Returns(response)
+                
+                .Setup(x=>x.RequestUri.PathAndQuery.StartsWith("/this"))
+                .Returns(response)
+                
+                .Setup(x=>x.Method==HttpMethod.Put)
+                .Returns(new HttpResponseMessage(HttpStatusCode.Accepted));
 
 ...tests...;
 
 httpClient.Verify(x=>x.Method==HttpMethod.Put);
+
+httpClient.Verify(
+            x=> x.Method==HttpMethod.Post 
+                && (await x.Content.ReadStringAsync())=="expected" );
+                
 httClient.VerifyAll();     
 ```
 
-Chainable fluent assertions get you to the point concisely:
+### TestBase
+
+Chainable fluent assertions get you to the point concisely.
+
 ```
 UnitUnderTest.Action()
   .ShouldNotBeNull()
   .ShouldEqualByValueExceptFor(new {Id=1, Descr=expected}, ignoreList )
   .Payload
-    .ShouldMatchIgnoringCase("I expected this")
+  .ShouldMatchIgnoringCase("I expected this")
 	.Should(someOtherPredicate);
-	.Items
-      .ShouldAll(predicate)
-	  .ShouldContain(item)
-	  .ShouldNotContain(predicate)
-	  .Where(predicate)
-	  .SingleOrAssertFail()
 
 .ShouldEqualByValue().ShouldEqualByValueExceptFor(...).ShouldEqualByValueOnMembers()
   work with all kinds of object and collections, and report what differed.
@@ -46,6 +66,8 @@ numeric.ShouldBeBetween().ShouldEqualWithTolerance()....GreaterThan....LessThan.
 ienumerable.ShouldAll().ShouldContain().ShouldNotContain().ShouldBeEmpty().ShouldNotBeEmpty() ...
 stream.ShouldHaveSameStreamContentAs().ShouldContain()
 value.ShouldBe().ShouldNotBe().ShouldBeOfType().ShouldBeAssignableTo()...
+.ShouldAll(predicate), .SingleOrAssertFail()...
+
 ```
 
 See also

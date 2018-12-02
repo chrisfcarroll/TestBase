@@ -16,6 +16,7 @@ namespace TestBase.Tests.FakeHttpClientTests
         public void Should_MatchAnExpectationAndReturnTheSetupResponse__GivenCannedResponse()
         {
             var cannedResponse = new HttpResponseMessage(HttpStatusCode.Accepted){Content = new StringContent("I Expected this")};
+            
             var uut = new FakeHttpClient()
                             .Setup(x=>x.RequestUri.PathAndQuery.StartsWith("/iexpectedthis"))
                             .Returns(cannedResponse);
