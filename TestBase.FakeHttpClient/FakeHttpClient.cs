@@ -6,16 +6,20 @@ using System.Net.Http;
 namespace TestBase.HttpClient.Fake
 {
     /// <summary>
-    /// A Fake HttpClient which matches incoming <see cref="HttpRequestMessage"/>s against 
-    /// the expectations that were setup in <see cref="TestFwk.StubbedHttpMessageHandler.Expectations"/>
+    /// A <c>FakeHttpClient</c> can be used to test code written for a <see cref="HttpClient"/>. It matches incoming
+    /// <see cref="HttpRequestMessage"/>s against the setup expectations. If a match  is found it returns the setup
+    /// <see cref="HttpResponseMessage"/> or,  more generally, applies a given
+    /// <see cref="Func{HttpRequestMessage,HttpResponseMessage}"/> to generate a <see cref="HttpRequestMessage"/> based on
+    /// the incoming <see cref="HttpRequestMessage"/>.
     /// 
-    /// Use <see cref="SetupForSendAsync"/> to setup expectations
-    /// Use <see cref="OnNoMatchesReturn"/> to set up a response for when an incoming message matches no expectation.
+    /// Use overloads of <see cref="Setup"/> to setup expectations.
+    /// Set <see cref="OnNoMatchesReturn"/> to set up a response for when an incoming message matches no expectation.
+    /// Call <see cref="Verify"/> or <see cref="VerifyAll"/> for verifying whether an expectation was matched.
+    /// Examine <see cref="Invocations"/> to see what was actually invoked on the <c>FakeHttpClient</c>
     /// </summary>
     public class FakeHttpClient : System.Net.Http.HttpClient
     {
-        /// <summary>
-        /// Start to set up this Client to return a desired <see cref="HttpResponseMessage"/> in response to an incoming
+        /// <summary>Setup this FakeHttpClient to return a desired <see cref="HttpResponseMessage"/> in response to a
         /// <see cref="HttpRequestMessage"/> which satisfies the predicate <paramref name="messageMatchesPredicate"/>
         /// <example>
         ///    <c>fakehttpClient.Setup(m=>m.Uri="..." && m.Method=HttpMethod.Post).Returns(m=> fakeResponse(m) )</c>
@@ -50,6 +54,7 @@ namespace TestBase.HttpClient.Fake
         /// <param name="handler">Otional. Provide an existing <see cref="FakeHttpMessageHandler"/> to handle requests</param>
         public FakeHttpClient(FakeHttpMessageHandler handler=null) : base(handler=handler??new FakeHttpMessageHandler()){FakeHttpMessageHandler = handler;}
 
+        
         public class FakeHttpClientSetup
         {
             readonly FakeHttpClient client;
@@ -86,9 +91,8 @@ namespace TestBase.HttpClient.Fake
                 return client;
             }
 
-            /// <summary>Specify a <see cref="StringContent"/> response to return for incoming messages matching
-            /// the current setup</summary>
-            /// <param name="desiredResponse">Specify a function of no parameters to create the resulting <see cref="HttpResponseMessage"/></param>
+            /// <summary>Specify a <see cref="StringContent"/> response to return for incoming messages matching the current setup</summary>
+            /// <param name="desiredResponseStringContent">Specify a function of no parameters to create the resulting <see cref="HttpResponseMessage"/></param>
             /// <param name="statusCode"></param>
             /// <returns>The <see cref="FakeHttpClient"/> being setup.</returns>
             public FakeHttpClient Returns(
@@ -104,6 +108,8 @@ namespace TestBase.HttpClient.Fake
                            });
                 return client;
             }
+
+            public FakeHttpClient Returns(string desiredResponseStringContent) => Returns(m => desiredResponseStringContent);
         }
 
         public FakeHttpClient VerifyAll()
@@ -115,6 +121,12 @@ namespace TestBase.HttpClient.Fake
         public FakeHttpClient Verify(Func<HttpRequestMessage, bool> messageMatchesPredicate)
         {
             FakeHttpMessageHandler.Verify(messageMatchesPredicate);
+            return this;
+        }
+
+        public FakeHttpClient Verify(Func<HttpRequestMessage, bool> messageMatchesPredicate, string failureMessage, params object[] args)
+        {
+            FakeHttpMessageHandler.Verify(messageMatchesPredicate, failureMessage);
             return this;
         }
     }
