@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 
-namespace TestBase.AdoNet.FakeDb
+namespace TestBase.AdoNet
 {
     public static class DbCommandExtensions
     {

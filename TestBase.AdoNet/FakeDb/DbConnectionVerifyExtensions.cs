@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using FastExpressionCompiler;
 #endif
 
-namespace TestBase.AdoNet.FakeDb
+namespace TestBase.AdoNet
 {
     public static class DbConnectionVerifyExtensions
     {
