@@ -9,7 +9,7 @@ namespace TestBase.AdoNet
     {
         ///<summary>
         /// A method to simplify the creation of MetaData for return by <see cref="FakeDbCommand"/> so that 
-        /// overloads of <see cref="FakeDbCommand.ForExecuteQuery"/> which deduce MetaData by reflection
+        /// overloads of <see cref="FakeDbCommand.ForExecuteQuery(System.Collections.Generic.IEnumerable{object[]},string[])"/> which deduce MetaData by reflection
         /// </summary>
         /// <returns>A list of names of properties of <paramref name="type"/> which can be rehydrated 
         /// from a SQL select from a 'typical' SQL database, namely ValueTypes and Strings, but not complex types.

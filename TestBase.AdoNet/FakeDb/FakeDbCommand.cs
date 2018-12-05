@@ -6,7 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 
-namespace TestBase.AdoNet.FakeDb
+namespace TestBase.AdoNet
 {
     public class FakeDbCommand : DbCommand
     {
@@ -18,9 +18,9 @@ namespace TestBase.AdoNet.FakeDb
             Connection = connection;
         }
 
-        public static FakeDbCommand ForExecuteSingleColumnQuery<T>(IEnumerable<T> dataToReturn)
+        public static FakeDbCommand ForExecuteSingleColumnQuery<T>(IEnumerable<T> dataToReturn, string columnName="col1")
         {
-            return ForExecuteQuery(dataToReturn.Select(x=>new object[]{x}), "col1");
+            return ForExecuteQuery (dataToReturn.Select(x=>new object[]{x}).ToArray(), columnName );
         }
 
         public static FakeDbCommand ForExecuteQuery(IEnumerable<object[]> dataToReturn, params string[] columnNames)
@@ -84,7 +84,7 @@ namespace TestBase.AdoNet.FakeDb
         /// having rows of data populated from <paramref name="dataToReturn"/>
         /// and MetaData (i.e. column properties) taken from <paramref name="propertyNames"/>,
         /// </summary>
-        /// <typeparam name="T">The properties of T named by <paramref name="propertyNames"/> should be compatible with your database, e.g. int, string, DateTime ... </typeparam>
+        /// <typeparam name="T">The properties of T named by <paramref name="propertyNames"/> should be types which can be returned from columns of your database, e.g. int, string, DateTime ... </typeparam>
         /// <param name="dataToReturn"></param>
         /// <param name="propertyNames">Will be used as the column names for the returned DataReader</param>
         /// <returns>A <see cref="FakeDbCommand"/> which will yield a DataReader containing the given <paramref name="dataToReturn"/></returns>
@@ -92,8 +92,7 @@ namespace TestBase.AdoNet.FakeDb
         {
             var rows = dataToReturn.Count();
             var fakeDbCommand = new FakeDbCommand();
-            var newCaseRefDbDataReader = new FakeDbResultSet();
-            newCaseRefDbDataReader.Data = new object[rows, propertyNames.Length];
+            var newCaseRefDbDataReader = new FakeDbResultSet {Data = new object[rows, propertyNames.Length]};
             int i = 0;
             foreach (var row in dataToReturn)
             {
@@ -120,6 +119,66 @@ namespace TestBase.AdoNet.FakeDb
             fakeDbCommand.ExecuteQueryResultDbDataReader = newCaseRefDbDataReader;
             return fakeDbCommand;
         }
+
+        /// <summary>
+        /// Abbreviation for <code>ForExecuteQuery(new[]{dataToReturn})</code>. 
+        /// See <see cref="ForExecuteQuery{T}(IEnumerable{T})"/>
+        /// Creates a FakeDbCommand which, when executeQuery is called on it, will return a data reader 
+        /// having one row of data populated from <paramref name="dataToReturn"/>
+        /// and MetaData (i.e. column properties) taken from typeof(<typeparam name="T"></typeparam>).<see cref="DbRehydrationExtensions.GetDbRehydratablePropertyNames"/>()
+        /// </summary>
+        /// <typeparam name="T">The properties of T should be types which can be returned from columns of your database, e.g. int, string, DateTime ... </typeparam>
+        /// <param name="dataToReturn"></param>
+        /// <returns>A <see cref="FakeDbCommand"/> which will yield a DataReader containing the given <paramref name="dataToReturn"/></returns>
+        public static FakeDbCommand ForExecuteQueryReturningOneRow<T>(T dataToReturn)
+        {
+            return ForExecuteQuery( new[]{dataToReturn});
+        }
+        /// <summary>
+        /// Abbreviation for <code>ForExecuteQuery(new[]{dataToReturn})</code>. 
+        /// See <see cref="ForExecuteQuery{T1,T2}(IEnumerable{Tuple{T1,T2}})"/>
+        /// Creates a FakeDbCommand which, when executeQuery is called on it, will return a data reader 
+        /// having one row of data populated from <paramref name="dataToReturn"/>
+        /// and MetaData (i.e. column properties) taken from typeof(<typeparam name="T1"></typeparam>) & typeof(<typeparam name="T2"></typeparam>).
+        /// <see cref="DbRehydrationExtensions.GetDbRehydratablePropertyNames"/>()
+        /// </summary>
+        /// <typeparam name="T1">The properties of T1 should be types which can be returned from columns of your database, e.g. int, string, DateTime ... </typeparam>
+        /// <typeparam name="T2">The properties of T2 should be types which can be returned from columns of your database, e.g. int, string, DateTime ... </typeparam>
+        /// <param name="dataToReturn"></param>
+        /// <returns>A <see cref="FakeDbCommand"/> which will yield a DataReader containing the given <paramref name="dataToReturn"/></returns>
+        public static FakeDbCommand ForExecuteQueryReturningOneRow<T1,T2>(Tuple<T1, T2> dataToReturn)
+        {
+            return ForExecuteQuery(new[] { dataToReturn });
+        }
+        /// <summary>
+        /// Abbreviation for <code>ForExecuteQuery(new[]{dataToReturn})</code>. 
+        /// See <see cref="ForExecuteQuery{T1,T2,T3}(IEnumerable{Tuple{T1,T2,T3}})"/>
+        /// Creates a FakeDbCommand which, when executeQuery is called on it, will return a data reader 
+        /// having one row of data populated from <paramref name="dataToReturn"/>
+        /// and MetaData (i.e. column properties) taken from typeof(<typeparam name="T1"></typeparam>) & typeof(<typeparam name="T2"></typeparam>).
+        /// </summary>
+        /// <typeparam name="T1">The properties of T1 should be types which can be returned from columns of your database, e.g. int, string, DateTime ... </typeparam>
+        /// <typeparam name="T2">The properties of T2 should be types which can be returned from columns of your database, e.g. int, string, DateTime ... </typeparam>
+        /// <typeparam name="T3">The properties of T3 should be types which can be returned from columns of your database, e.g. int, string, DateTime ... </typeparam>
+        /// <param name="dataToReturn"></param>
+        /// <returns>A <see cref="FakeDbCommand"/> which will yield a DataReader containing the given <paramref name="dataToReturn"/></returns>
+        public static FakeDbCommand ForExecuteQueryReturningOneRow<T1, T2,T3>(Tuple<T1, T2, T3> dataToReturn)
+        {
+            return ForExecuteQuery(new[] { dataToReturn });
+        }
+        /// <summary>
+        /// Creates a FakeDbCommand which, when executeQuery is called on it, will return a data reader 
+        /// having rows of data populated from <paramref name="dataToReturn"/>
+        /// and MetaData (i.e. column properties) taken from typeof(<typeparam name="T"></typeparam>).<see cref="DbRehydrationExtensions.GetDbRehydratablePropertyNames"/>()
+        /// </summary>
+        /// <typeparam name="T">The properties of T should be types which can be returned from columns of your database, e.g. int, string, DateTime ... </typeparam>
+        /// <param name="dataToReturn"></param>
+        /// <returns>A <see cref="FakeDbCommand"/> which will yield a DataReader containing the given <paramref name="dataToReturn"/></returns>
+        public static FakeDbCommand ForExecuteQuery<T>(IEnumerable<T> dataToReturn)
+        {
+            var propertyNames = typeof(T).GetDbRehydratablePropertyNames().ToArray();
+            return ForExecuteQuery(dataToReturn, propertyNames);
+        }
         /// <summary>
         /// Creates a FakeDbCommand which, when executeQuery is called on it, will return a DataReader 
         /// having rows of data populated from <paramref name="dataToReturn"/>.
@@ -128,12 +187,10 @@ namespace TestBase.AdoNet.FakeDb
         /// by <paramref name="dataToReturn"/>.Item2, and MetaData (i.e. column properties) from first the reflected Properties 
         /// of <paramref name="dataToReturn"/>.Item1, followed by <paramref name="dataToReturn"/>.Item2
         /// 
-        /// Only writeable ValueTypes and strings will be used: See <see cref="FakeDbRehydrationExtensions.GetDbRehydratableProperties"/> and https://github.com/chrisfcarroll/TestBase/blob/master/TestBase/FakeDb/FakeDbRehydrationExtensions.cs
+        /// Only writeable ValueTypes and strings will be used: See <see cref="DbRehydrationExtensions.GetDbRehydratableProperties"/> and https://github.com/chrisfcarroll/TestBase/blob/master/TestBase/FakeDb/FakeDbRehydrationExtensions.cs
         /// 
         /// </summary>
-        /// <typeparam name="T">The properties of T named by <paramref name="propertyNames"/> should be compatible with your database, e.g. int, string, DateTime ... </typeparam>
         /// <param name="dataToReturn"></param>
-        /// <param name="propertyNames">Will be used as the column names for the returned DataReader</param>
         /// <returns>A <see cref="FakeDbCommand"/> which will yield a DataReader containing the given <paramref name="dataToReturn"/></returns>
         public static FakeDbCommand ForExecuteQuery<T1, T2>(IEnumerable<Tuple<T1, T2>> dataToReturn)
         {
@@ -153,12 +210,13 @@ namespace TestBase.AdoNet.FakeDb
         /// by <paramref name="dataToReturn"/>.Item2, and MetaData (i.e. column properties) from first the reflected Properties 
         /// of <paramref name="dataToReturn"/>.Item1, followed by <paramref name="dataToReturn"/>.Item2
         /// 
-        /// Only writeable ValueTypes and strings will be used: See <see cref="FakeDbRehydrationExtensions.GetDbRehydratableProperties"/> and https://github.com/chrisfcarroll/TestBase/blob/master/TestBase/FakeDb/FakeDbRehydrationExtensions.cs
+        /// Only writeable ValueTypes and strings will be used: See <see cref="DbRehydrationExtensions.GetDbRehydratableProperties"/> and https://github.com/chrisfcarroll/TestBase/blob/master/TestBase/FakeDb/FakeDbRehydrationExtensions.cs
         /// 
         /// </summary>
-        /// <typeparam name="T">The properties of T named by <paramref name="propertyNames"/> should be compatible with your database, e.g. int, string, DateTime ... </typeparam>
+        /// <typeparam name="T1">The properties of T should be types which can be returned from columns of your database, e.g. int, string, DateTime ... </typeparam>
+        /// <typeparam name="T2">The properties of T should be types which can be returned from columns of your database, e.g. int, string, DateTime ... </typeparam>
+        /// <typeparam name="T3">The properties of T should be types which can be returned from columns of your database, e.g. int, string, DateTime ... </typeparam>
         /// <param name="dataToReturn"></param>
-        /// <param name="propertyNames">Will be used as the column names for the returned DataReader</param>
         /// <returns>A <see cref="FakeDbCommand"/> which will yield a DataReader containing the given <paramref name="dataToReturn"/></returns>
         public static FakeDbCommand ForExecuteQuery<T1, T2,T3>(IEnumerable<Tuple<T1, T2, T3>> dataToReturn)
         {
@@ -179,12 +237,14 @@ namespace TestBase.AdoNet.FakeDb
         /// by <paramref name="dataToReturn"/>.Item2, and MetaData (i.e. column properties) from first the reflected Properties 
         /// of <paramref name="dataToReturn"/>.Item1, followed by <paramref name="dataToReturn"/>.Item2
         /// 
-        /// Only writeable ValueTypes and strings will be used: See <see cref="FakeDbRehydrationExtensions.GetDbRehydratableProperties"/> and https://github.com/chrisfcarroll/TestBase/blob/master/TestBase/FakeDb/FakeDbRehydrationExtensions.cs
+        /// Only writeable ValueTypes and strings will be used: See <see cref="DbRehydrationExtensions.GetDbRehydratableProperties"/> and https://github.com/chrisfcarroll/TestBase/blob/master/TestBase/FakeDb/FakeDbRehydrationExtensions.cs
         /// 
         /// </summary>
-        /// <typeparam name="T">The properties of T named by <paramref name="propertyNames"/> should be compatible with your database, e.g. int, string, DateTime ... </typeparam>
+        /// <typeparam name="T1">The properties of T should be types which can be returned from columns of your database, e.g. int, string, DateTime ... </typeparam>
+        /// <typeparam name="T2">The properties of T should be types which can be returned from columns of your database, e.g. int, string, DateTime ... </typeparam>
+        /// <typeparam name="T3">The properties of T should be types which can be returned from columns of your database, e.g. int, string, DateTime ... </typeparam>
+        /// <typeparam name="T4">The properties of T should be types which can be returned from columns of your database, e.g. int, string, DateTime ... </typeparam>
         /// <param name="dataToReturn"></param>
-        /// <param name="propertyNames">Will be used as the column names for the returned DataReader</param>
         /// <returns>A <see cref="FakeDbCommand"/> which will yield a DataReader containing the given <paramref name="dataToReturn"/></returns>
         public static FakeDbCommand ForExecuteQuery<T1, T2, T3, T4>(IEnumerable<Tuple<T1, T2, T3, T4>> dataToReturn)
         {
@@ -249,7 +309,7 @@ namespace TestBase.AdoNet.FakeDb
             return new FakeDbCommand { ExecuteNonQueryRowsAffected = rowsAffected };
         }
 
-        public static FakeDbCommand forExecuteScalarResult(object executeScalarResult)
+        public static FakeDbCommand ForExecuteScalarResult(object executeScalarResult)
         {
             return new FakeDbCommand { ExecuteScalarResult = executeScalarResult };
         }
@@ -260,6 +320,7 @@ namespace TestBase.AdoNet.FakeDb
         public object ExecuteScalarResult = 0;
         public FakeDbParameterCollection ParameterCollectionToReturn;
         public FakeDbResultSet ExecuteQueryResultDbDataReader;
+        bool _isPretendingToBePartOfMars;
 
         public override void Prepare()
         {
@@ -271,14 +332,20 @@ namespace TestBase.AdoNet.FakeDb
         public override CommandType CommandType { get; set; }
         public override UpdateRowSource UpdatedRowSource { get; set; }
         protected override DbConnection DbConnection { get; set; }
-
-        protected override DbParameterCollection DbParameterCollection
-        {
-            get { return ParameterCollectionToReturn; }
-        }
+        protected override DbParameterCollection DbParameterCollection => ParameterCollectionToReturn;
 
         protected override DbTransaction DbTransaction { get; set; }
         public override bool DesignTimeVisible { get; set; }
+
+        public bool IsPretendingToBePartOfMars
+        {
+            get => _isPretendingToBePartOfMars;
+            set
+            {
+                Assert.That(value,v=> !v || Connection is FakeDbConnection, $"IsPretendingToBePartOfMars can only be set true if {nameof(Connection)} is a {nameof(FakeDbConnection)}");
+                _isPretendingToBePartOfMars = value;
+            }
+        }
 
         public override void Cancel()
         {
@@ -289,23 +356,20 @@ namespace TestBase.AdoNet.FakeDb
             }
         }
 
-        protected override DbParameter CreateDbParameter()
-        {
-            return new FakeDbParameter();
-        }
+        protected override DbParameter CreateDbParameter() => new FakeDbParameter();
+
+        internal DbDataReader ExecuteDbDataReaderAsNextMarsResult() => ExecuteDbDataReader(CommandBehavior.Default);
 
         protected override DbDataReader ExecuteDbDataReader(CommandBehavior behavior)
         {
-            RecordInvocation();
+            RecordInvocation(behavior);
+            var reader = ExecuteQueryResultDbDataReader != null
+                            ? (DbDataReader) new FakeDbResultSetReader {Resultset = ExecuteQueryResultDbDataReader}
+                            : new DataTableReader(ExecuteQueryResultTable);
 
-            if (ExecuteQueryResultDbDataReader != null)
-            {
-                return new FakeDataReader {Resultset = ExecuteQueryResultDbDataReader};
-            }
-            else
-            {
-                return new DataTableReader(ExecuteQueryResultTable);
-            }
+            return IsPretendingToBePartOfMars 
+                ? new FakeMarsDataReader(reader, (FakeDbConnection)Connection) 
+                : reader;
         }
 
         public override int ExecuteNonQuery()
@@ -320,7 +384,7 @@ namespace TestBase.AdoNet.FakeDb
             return ExecuteScalarResult;
         }
 
-        private void RecordInvocation()
+        private void RecordInvocation(CommandBehavior behavior=default(CommandBehavior))
         {
             var copiedParameters = new FakeDbParameterCollection().WithAddRange(ParameterCollectionToReturn.Cast<FakeDbParameter>());
 
@@ -328,7 +392,8 @@ namespace TestBase.AdoNet.FakeDb
                                 CommandText = CommandText,
                                 CommandType = CommandType,
                             },
-                            copiedParameters);
+                            copiedParameters,
+                            behavior);
 
             if (Connection is FakeDbConnection)
             {

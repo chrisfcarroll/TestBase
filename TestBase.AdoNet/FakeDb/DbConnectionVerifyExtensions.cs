@@ -5,13 +5,14 @@ using System.Linq.Expressions;
 using FastExpressionCompiler;
 #endif
 
-namespace TestBase.AdoNet.FakeDb
+namespace TestBase.AdoNet
 {
     public static class DbConnectionVerifyExtensions
     {
         /// <summary>
         /// Verifies that the <see cref="FakeDbConnection"/> was asked to execute a command matching the given predicate
         /// </summary>
+        /// <param name="this">The FakeDbConnection</param>
         /// <param name="commandInvocationPredicate">A predicate, which may examine the command (and its parameters) sent</param>
         /// <param name="expectedInvocationsCount">Optional, defaults to 1</param>
         /// <param name="exactly">Should the <see cref="expectedInvocationsCount"/>be treated as requiring an exact match or an 'at least' match?</param>
@@ -29,25 +30,27 @@ namespace TestBase.AdoNet.FakeDb
             {
                 @this.Invocations
                      .Where(commandInvocationPredicate)
-                     .Count().ShouldBe(expectedInvocationsCount,
-                               message ?? "Expected to be called exactly {0} times",
-                               args.Length == 0 ? new object[] {expectedInvocationsCount} : args);
+                     .Count()
+                     .ShouldBe(expectedInvocationsCount,
+                               string.Format(message ?? "Expected to be called exactly {0} times", args.Length == 0 ? new object[] {expectedInvocationsCount} : args)
+                               );
             }
             else
             {
                 @this.Invocations
                      .Where(commandInvocationPredicate)
-                     .Count().ShouldBeGreaterThanOrEqualTo(expectedInvocationsCount,
-                                                   message ?? "Expected to be called at least {0} times",
-                                                   args.Length == 0 ? new object[] {expectedInvocationsCount} : args);
+                     .Count()
+                     .ShouldBeGreaterThanOrEqualTo(expectedInvocationsCount,
+                                                   string.Format(message ?? "Expected to be called at least {0} times",args.Length == 0 ? new object[] {expectedInvocationsCount} : args)
+                                                   );
             }
             return @this;
         }
-
-        /// <summary>
+       /// <summary>
         /// Verifies that the <see cref="FakeDbConnection"/> was asked to execute a command matching the given predicate,
         /// and returns the first such command.
         /// </summary>
+       /// <param name="this">The FakeDbConnection</param>
         /// <param name="commandInvocationPredicate">A predicate, which may examine the command (and its parameters) sent</param>
         /// <param name="message">Optional custom failure message</param>
         /// <param name="args">Optional customer failure message format arguments</param>
@@ -70,6 +73,7 @@ namespace TestBase.AdoNet.FakeDb
         /// Verifies that the <see cref="FakeDbConnection"/> was asked to execute a command matching the given predicate,
         /// and returns the last such command.
         /// </summary>
+        /// <param name="this">The FakeDbConnection</param>
         /// <param name="commandInvocationPredicate">A predicate, which may examine the command (and its parameters) sent</param>
         /// <param name="message">Optional custom failure message</param>
         /// <param name="args">Optional customer failure message format arguments</param>
@@ -88,10 +92,9 @@ namespace TestBase.AdoNet.FakeDb
                     args);
         }
 
-        /// <summary>
-        /// Verifies that the <see cref="FakeDbConnection"/> was asked exactly once to execute a command matching the given predicate
-        /// and returns that single invocation.
-        /// </summary>
+        /// <summary>Verifies that the <see cref="FakeDbConnection"/> was asked exactly once to execute a command matching the given
+        /// predicate and returns that single invocation. </summary>
+        /// <param name="this">The FakeDbConnection</param>
         /// <param name="commandInvocationPredicate">A predicate, which may examine the command (and its parameters) sent</param>
         /// <param name="message">Optional custom failure message</param>
         /// <param name="args">Optional customer failure message format arguments</param>
@@ -108,6 +111,5 @@ namespace TestBase.AdoNet.FakeDb
                         message ?? $"Expected exactly one command matching {commandInvocationPredicate.ToCodeString()}", args);
 
             return @this.Invocations.Where(commandInvocationPredicate.CompileFast()).Single();
-        }
-    }
+        }    }
 }

@@ -8,7 +8,7 @@ namespace TestBase.AdoNet.RecordingDb
 {
     public class RecordingDbConnection : DbConnection
     {
-        public readonly List<FakeDb.FakeDbCommand> Invocations = new List<FakeDb.FakeDbCommand>();
+        public readonly List<FakeDbCommand> Invocations = new List<FakeDbCommand>();
         public readonly DbConnection innerConnection;
 
         public RecordingDbConnection(DbConnection innerConnection) 

@@ -1,10 +1,7 @@
-﻿using System;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Data;
 using Dapper;
 using NUnit.Framework;
-using TestBase.AdoNet.FakeDb;
+using TestBase.AdoNet;
 
 namespace TestBase.Tests.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection
 {

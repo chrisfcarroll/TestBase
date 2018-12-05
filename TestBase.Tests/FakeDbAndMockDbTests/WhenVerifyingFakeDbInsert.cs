@@ -1,5 +1,5 @@
 using NUnit.Framework;
-using TestBase.AdoNet.FakeDb;
+using TestBase.AdoNet;
 
 namespace TestBase.Tests.FakeDbAndMockDbTests
 {
@@ -33,7 +33,7 @@ namespace TestBase.Tests.FakeDbAndMockDbTests
 
                 conn.ShouldHaveInserted("ATableName", new AClass {Name = "Boo1", Id = 1});
                 conn.ShouldHaveInserted("ATableName", new[] {"Name", "Id"});
-                conn.ShouldHaveInserted("ATableName", "");
+                conn.ShouldHaveInserted("ATableName");
                 Assert.Throws<Assertion>(() => { conn.ShouldHaveInserted("ATableName", new AClass {Name = "Boo1", Id = 222}); });
                 Assert.Throws<Assertion>(() => { conn.ShouldHaveInserted("ATableName", new[] {"WrongCol", "Name"}); });
                 Assert.Throws<Assertion>(() => { conn.ShouldHaveInserted("WrongTableName", new AClass {Name = "Boo1", Id = 1}); });

@@ -76,7 +76,7 @@ namespace TestBase.AdoNet.RecordingDb
 
         protected override DbDataReader ExecuteDbDataReader(CommandBehavior behavior)
         {
-            RecordInvocation();
+            RecordInvocation(behavior:behavior);
             return innerCommand.ExecuteReader(behavior);
         }
 
@@ -92,20 +92,21 @@ namespace TestBase.AdoNet.RecordingDb
             return RecordE(() => innerCommand.ExecuteScalar());
         }
 
-        private void RecordInvocation()
+        void RecordInvocation(CommandBehavior behavior= default(CommandBehavior))
         {
-            var copiedParameters = new FakeDb.FakeDbParameterCollection().WithAddRange(DbParameterCollection.Cast<DbParameter>());
+            var copiedParameters = new FakeDbParameterCollection().WithAddRange(DbParameterCollection.Cast<DbParameter>());
 
-            Invocations.Add(new FakeDb.FakeDbCommand{
+            Invocations.Add(new FakeDbCommand{
                                 CommandText = innerCommand.CommandText,
                                 CommandType = innerCommand.CommandType,
                             },
-                            copiedParameters);
+                            copiedParameters,
+                            behavior);
 
             if (recordingDbConnection!=null)
             {
                 recordingDbConnection.Invocations.Add(
-                    new FakeDb.FakeDbCommand{
+                    new FakeDbCommand{
                         CommandText = CommandText,
                         CommandTimeout = CommandTimeout,
                         CommandType = CommandType,
@@ -115,6 +116,6 @@ namespace TestBase.AdoNet.RecordingDb
             }
         }
 
-        public readonly FakeDb.DbCommandInvocationList Invocations = new FakeDb.DbCommandInvocationList();
+        public readonly DbCommandInvocationList Invocations = new DbCommandInvocationList();
     }
 }

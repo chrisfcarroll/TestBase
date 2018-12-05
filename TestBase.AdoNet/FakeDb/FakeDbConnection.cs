@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
-using System.Linq;
 using System.Runtime.InteropServices;
 
-namespace TestBase.AdoNet.FakeDb
+namespace TestBase.AdoNet
 {
     public class FakeDbConnection : DbConnection
     {
@@ -15,9 +14,12 @@ namespace TestBase.AdoNet.FakeDb
         public FakeDbConnection QueueCommand(FakeDbCommand command)
         {
             command.Connection = this;
+            command.IsPretendingToBePartOfMars = IsQueueingCommandsWithPretendingToBePartOfAsMars;
             DbCommandsQueued.Enqueue(command);
             return this;
         }
+
+        public bool IsQueueingCommandsWithPretendingToBePartOfAsMars { get; set; }
 
         public FakeDbConnection([Optional] FakeDbCommand dbCommandToReturn)
         {
@@ -37,18 +39,27 @@ namespace TestBase.AdoNet.FakeDb
 
         public override string ConnectionString { get; set; }
 
-        public override string Database { get { return "FakeDatabase"; } }
+        public override string Database => "FakeDatabase";
 
-        public override ConnectionState State { get { return _state; } }
+        public override ConnectionState State => _state;
 
-        public override string DataSource { get { return "FakeDatasource"; } }
+        public override string DataSource => "FakeDatasource";
 
-        public override string ServerVersion { get { return "FakeServerVersion"; } }
+        public override string ServerVersion => "FakeServerVersion";
 
         protected override DbCommand CreateDbCommand()
         {
-            var result =  DbCommandsQueued.Any() ? DbCommandsQueued.Dequeue() : new FakeDbCommand{Connection = this};
-            result.ParameterCollectionToReturn= new FakeDbParameterCollection();
+            return NextCommand();
+        }
+
+        public FakeDbCommand NextCommand()
+        {
+            if (DbCommandsQueued.Count==0)
+            {
+                QueueCommand(FakeDbCommand.ForExecuteQuery(new string[0]));
+            }
+            var result = DbCommandsQueued.Dequeue();
+            result.ParameterCollectionToReturn = new FakeDbParameterCollection();
             return result;
         }
     }

@@ -5,7 +5,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 using ExpressionToCodeLib;
-using TestBase.AdoNet.FakeDb;
 
 namespace TestBase.AdoNet.RecordingDb
 {
@@ -36,7 +35,7 @@ namespace TestBase.AdoNet.RecordingDb
                     ? "Expected to invoke a SQL command matching " + ExpressionToCode.ToCode((Expression) predicate) 
                     : string.Format(message, args);
 
-            throw new Assertion<List<FakeDb.FakeDbCommand>>(invocations,
+            throw new Assertion<List<FakeDbCommand>>(invocations,
                         x => false,
                         message
                        );
@@ -97,7 +96,7 @@ namespace TestBase.AdoNet.RecordingDb
             }
             exceptProperties = exceptProperties ?? new string[0];
             var dbParameterisablePropertyNames =
-                FakeDbRehydrationExtensions.GetDbRehydratablePropertyNames(typeof(T)).Where(s => !exceptProperties.Contains(s, StringComparer.InvariantCultureIgnoreCase));
+            typeof(T).GetDbRehydratablePropertyNames().Where(s => !exceptProperties.Contains(s, StringComparer.InvariantCultureIgnoreCase));
             return ShouldHaveInserted(recordingDbConnection, tableName, dbParameterisablePropertyNames, updateSource);
         }
 
@@ -152,11 +151,11 @@ namespace TestBase.AdoNet.RecordingDb
                 else
                 {
                     cmd.Parameters
-                        .Cast<FakeDb.FakeDbParameter>()
+                        .Cast<FakeDbParameter>()
                         .SingleOrAssertFail(p => p.ParameterName.Equals(fieldName, StringComparison.InvariantCultureIgnoreCase),
                                 "Found Insert command {0} but with parameters\n:{1}\n\nExpected: Parameter named {2}",
                                 cmd.CommandText,
-                                FakeDb.DbParameterToStringExtensions.ToStringPerLine(cmd.Parameters),
+                                DbParameterToStringExtensions.ToStringPerLine(cmd.Parameters),
                             fieldName);
                 }
             }
@@ -215,7 +214,7 @@ namespace TestBase.AdoNet.RecordingDb
         public static DbCommand ShouldHaveUpdatedNRows<T>(this RecordingDbConnection recordingDbConnection, string tableName, T updateSource, int times = 1)
         {
             var dbRehydratablePropertyNamesExIdFields =
-                FakeDbRehydrationExtensions.GetDbRehydratablePropertyNames(updateSource.GetType()).Where(s => !s.EndsWith("id", true, null));
+            updateSource.GetType().GetDbRehydratablePropertyNames().Where(s => !s.EndsWith("id", true, null));
 
             return ShouldHaveUpdatedNRows(recordingDbConnection, tableName, dbRehydratablePropertyNamesExIdFields, times);
         }
@@ -254,7 +253,7 @@ namespace TestBase.AdoNet.RecordingDb
         public static DbCommand ShouldHaveUpdated<T>(this RecordingDbConnection recordingDbConnection, string tableName, T updateSource, string whereClauseProperty)
         {
             var dbParameterisablePropertyNamesExWhereClause =
-                    FakeDbRehydrationExtensions.GetDbRehydratablePropertyNames(updateSource.GetType()).Where(s => s != whereClauseProperty);
+                    updateSource.GetType().GetDbRehydratablePropertyNames().Where(s => s != whereClauseProperty);
 
             var whereClausePropInfo = updateSource.GetType().GetProperty(whereClauseProperty);
             var expectedWhereValue = (whereClausePropInfo != null) ? whereClausePropInfo.GetPropertyValue(updateSource, whereClauseProperty) : null;
@@ -280,7 +279,7 @@ namespace TestBase.AdoNet.RecordingDb
 
             var invocation = recordingDbConnection.ShouldHaveInvoked(
                     ii => ii.CommandText.Matches(verbandtablepattern, sqlRegexOpts)
-                       && ii.Parameters.Cast<FakeDb.FakeDbParameter>().Any(p => p.ParameterName == whereClauseProperty && p.Value.Equals(whereClausePropertyExpectedValue)),
+                       && ii.Parameters.Cast<FakeDbParameter>().Any(p => p.ParameterName == whereClauseProperty && p.Value.Equals(whereClausePropertyExpectedValue)),
                     "Expected to Update {0} but found no matching update command.", tableName);
 
             var commandText = invocation.CommandText;
@@ -324,7 +323,7 @@ namespace TestBase.AdoNet.RecordingDb
                     found,
                     string.Format(
                     "\n\nExpected:\n\nclause: '{0} = @{0}'\n\nwith actual value: @{0}='{1}'\n\nBut was:\n\n{2}",
-                    parameterName, expectedValue, FakeDb.DbParameterToStringExtensions.ToStringTextAndParams(dbCommand)));
+                    parameterName, expectedValue, DbParameterToStringExtensions.ToStringTextAndParams(dbCommand)));
             return dbCommand;
         }
     }

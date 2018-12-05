@@ -1,5 +1,5 @@
 using NUnit.Framework;
-using TestBase.AdoNet.FakeDb;
+using TestBase.AdoNet;
 
 namespace TestBase.Tests.FakeDbAndMockDbTests
 {
@@ -18,16 +18,21 @@ namespace TestBase.Tests.FakeDbAndMockDbTests
                 cmd.CommandText = verb + " ATableName Set Field=@field where Id=@Id ";
                 var param1 = cmd.CreateParameter();
                 cmd.Parameters.Add(param1);
-                param1.ParameterName = "Id";
+                param1.ParameterName = "Field";
 
-                param1.Value = 111;
+                var param2 = cmd.CreateParameter();
+                cmd.Parameters.Add(param2);
+                param2.ParameterName = "Id";
+
+                param2.Value = 111;
                 cmd.ExecuteNonQuery();
-                param1.Value = 222;
+                param2.Value = 222;
                 cmd.ExecuteNonQuery();
-                param1.Value = 333;
+                param2.Value = 333;
                 cmd.ExecuteNonQuery();
 
                 cmd.ShouldHaveExecutedNTimes(3);
+
                 conn.ShouldHaveExecutedNTimes(verb,"",new{Field=111}, times:3);
                 conn.ShouldHaveExecutedNTimes(verb, "ATableName", "Field".Split(), 3);
 

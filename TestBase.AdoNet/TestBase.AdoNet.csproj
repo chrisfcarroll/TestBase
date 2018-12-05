@@ -75,7 +75,6 @@ ChangeLog
     <NoWarn>1701;1702;1705;NU1701</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <Folder Include="FakeDb\" />
     <Folder Include="RecordingDb\" />
   </ItemGroup>
   

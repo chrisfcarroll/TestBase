@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
 
-namespace TestBase.AdoNet.FakeDb
+namespace TestBase.AdoNet
 {
     public class FakeDbParameterCollection : DbParameterCollection
     {
-        private List<DbParameter> parameters= new List<DbParameter>();
+        List<DbParameter> parameters= new List<DbParameter>();
 
         public override int Add(object value)
         {
@@ -16,10 +16,9 @@ namespace TestBase.AdoNet.FakeDb
             return parameters.Count;
         }
 
-        public override bool Contains(object value)
-        {
-            return parameters.Contains(AsDbParameterOrThrow(value));
-        }
+        public override bool Contains(object value) => parameters.Any(p=>p.Value ==value);
+
+        public override bool Contains(string value) => parameters.Any(x => x.ParameterName == value);
 
         public override void Clear()
         {
@@ -62,15 +61,27 @@ namespace TestBase.AdoNet.FakeDb
             parameters[IndexOf(parameterName)] = value;
         }
 
-        public override int Count => parameters.Count;
+        public override int Count
+        {
+            get { return parameters.Count; }
+        }
 
-        public override object SyncRoot { get; } = new object();
+        public override object SyncRoot => new Object();
 
-        public override bool IsFixedSize => false;
+        public override bool IsFixedSize
+        {
+            get { return false; }
+        }
 
-        public override bool IsReadOnly => false;
+        public override bool IsReadOnly
+        {
+            get { return false; }
+        }
 
-        public override bool IsSynchronized => false;
+        public override bool IsSynchronized
+        {
+            get { return false; }
+        }
 
         public override int IndexOf(string parameterName)
         {
@@ -90,18 +101,13 @@ namespace TestBase.AdoNet.FakeDb
         protected override DbParameter GetParameter(string parameterName)
         {
             var parameter = parameters.FirstOrDefault(x => x.ParameterName.ToLower() == parameterName.ToLower());
-            BasicShoulds.ShouldNotBeNull(parameter, "Attempted to get parameter {0} from DbParameters, but there wasn't a parameter with that name",parameterName);
+            parameter.ShouldNotBeNull(string.Format("Attempted to get parameter {0} from DbParameters, but there wasn't a parameter with that name",parameterName));
             return parameter;
-        }
-
-        public override bool Contains(string value)
-        {
-            return parameters.Any(x => value == Convert.ToString(x.Value));
         }
 
         public override void CopyTo(Array array, int index)
         {
-            if( !(array is DbParameter[])) throw new ArgumentException("array must be a DbParameter array","array");
+            if( !(array is DbParameter[])) throw new ArgumentException("array must be a DbParameter array",nameof(array));
             parameters.CopyTo((DbParameter[]) array, index);
         }
 
@@ -109,7 +115,7 @@ namespace TestBase.AdoNet.FakeDb
         {
             foreach (var p in values)
             {
-                if (p == null) { throw new ArgumentNullException("values","values contained a null element");}
+                if (p == null) { throw new ArgumentNullException(nameof(values),"values contained a null element");}
                 if (!(p is FakeDbParameter))
                 {
                     throw new ArgumentException(string.Format("values must be an Array of FakeDbParameter but contained an element of Type {0}", p.GetType()));
@@ -133,13 +139,20 @@ namespace TestBase.AdoNet.FakeDb
                     Size = p.Size,
                     SourceColumn = p.SourceColumn,
                     SourceColumnNullMapping = p.SourceColumnNullMapping,
-                    SourceVersion = p.SourceVersion,
                     Value = p.Value,
                 }); 
             }
             return this;
         }
 
+        public override string ToString()
+        {
+            return string.Join(Environment.NewLine, this.Cast<FakeDbParameter>().Select(p=>p.ToString()));
+        }
+        public string ToString(Func<DbParameter,string> format)
+        {
+            return string.Join(Environment.NewLine, this.Cast<FakeDbParameter>().Select(p => format(p)));
+        }
 
         static DbParameter AsDbParameterOrThrow(object value)
         {

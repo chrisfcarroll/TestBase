@@ -1,7 +1,7 @@
 ﻿using System.Data;
 using Moq;
 using NUnit.Framework;
-using TestBase.AdoNet.FakeDb;
+using TestBase.AdoNet;
 
 namespace TestBase.Tests.FakeDbAndMockDbTests
 {

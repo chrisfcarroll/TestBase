@@ -4,7 +4,7 @@ using System.Data.Common;
 using System.Linq;
 using System.Text;
 
-namespace TestBase.AdoNet.FakeDb
+namespace TestBase.AdoNet
 {
     public static class DbParameterToStringExtensions
     {

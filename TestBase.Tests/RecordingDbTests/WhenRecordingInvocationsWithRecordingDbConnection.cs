@@ -1,5 +1,5 @@
 ﻿using NUnit.Framework;
-using TestBase.AdoNet.FakeDb;
+using TestBase.AdoNet;
 using TestBase.AdoNet.RecordingDb;
 
 namespace TestBase.Tests.RecordingDbTests

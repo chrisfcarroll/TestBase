@@ -1,5 +1,5 @@
 ﻿using NUnit.Framework;
-using TestBase.AdoNet.FakeDb;
+using TestBase.AdoNet;
 
 namespace TestBase.Tests.FakeDbAndMockDbTests
 {
