@@ -61,27 +61,15 @@ namespace TestBase.AdoNet
             parameters[IndexOf(parameterName)] = value;
         }
 
-        public override int Count
-        {
-            get { return parameters.Count; }
-        }
+        public override int Count => parameters.Count;
 
         public override object SyncRoot => new Object();
 
-        public override bool IsFixedSize
-        {
-            get { return false; }
-        }
+        public override bool IsFixedSize => false;
 
-        public override bool IsReadOnly
-        {
-            get { return false; }
-        }
+        public override bool IsReadOnly => false;
 
-        public override bool IsSynchronized
-        {
-            get { return false; }
-        }
+        public override bool IsSynchronized => false;
 
         public override int IndexOf(string parameterName)
         {

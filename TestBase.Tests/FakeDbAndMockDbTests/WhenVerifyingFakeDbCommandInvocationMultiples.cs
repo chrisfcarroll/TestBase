@@ -32,6 +32,7 @@ namespace TestBase.Tests.FakeDbAndMockDbTests
                 cmd.ExecuteNonQuery();
 
                 cmd.ShouldHaveExecutedNTimes(3);
+
                 conn.ShouldHaveExecutedNTimes(verb,"",new{Field=111}, times:3);
                 conn.ShouldHaveExecutedNTimes(verb, "ATableName", "Field".Split(), 3);
 

@@ -76,7 +76,7 @@ namespace TestBase.AdoNet.RecordingDb
 
         protected override DbDataReader ExecuteDbDataReader(CommandBehavior behavior)
         {
-            RecordInvocation(behavior:behavior);
+            RecordInvocation(behavior);
             return innerCommand.ExecuteReader(behavior);
         }
 

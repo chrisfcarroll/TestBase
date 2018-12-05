@@ -301,7 +301,7 @@ namespace TestBase.AdoNet
                         var field_ = field;
                         var fieldOrQuotedField = string.Format(@"({0}|\[{0}\]|""{0}"")", field_);
                         afterVerbAndTable.ShouldMatch(
-                                    string.Format(@"({0}|{1}){2}\s*=\s*\@{3}", set, comma, fieldOrQuotedField, field),
+                                                      string.Format(@"({0}|{1}){2}\s*=\s*\@{3}", set, comma, fieldOrQuotedField, field),
                                     SqlRegexOpts,
                                     "Expected to {0} field {1} but didn't see it", verb, field);
                         cmd.Parameters.Cast<DbParameter>().SingleOrAssertFail(p => p.ParameterName == field_);
@@ -437,7 +437,7 @@ namespace TestBase.AdoNet
             invocation.ShouldHaveUpdatedFields(fieldList,true);
             ShouldHaveWhereClauseWithColumnEqualsExpected(invocation, whereClauseColumnName, whereClausePropertyExpectedValue);
             return invocation;
-        }
+            }
 
         public static DbCommand ShouldHaveWhereClauseWithColumnEqualsExpected<T>(this DbCommand invocation, string expectedWhereClauseColumnName, T expectedValue)
         {
