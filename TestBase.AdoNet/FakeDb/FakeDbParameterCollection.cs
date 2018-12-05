@@ -18,7 +18,7 @@ namespace TestBase.AdoNet
 
         public override bool Contains(object value)
         {
-            return parameters.Contains(AsDbParameterOrThrow(value));
+            return parameters.Any(p=>p.Value==value);
         }
 
         public override void Clear()
@@ -94,10 +94,7 @@ namespace TestBase.AdoNet
             return parameter;
         }
 
-        public override bool Contains(string value)
-        {
-            return parameters.Any(x => value == Convert.ToString(x.Value));
-        }
+        public override bool Contains(string value) { return parameters.Any(x => x.ParameterName == value); }
 
         public override void CopyTo(Array array, int index)
         {
