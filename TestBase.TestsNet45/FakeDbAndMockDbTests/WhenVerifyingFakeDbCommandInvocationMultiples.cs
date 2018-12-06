@@ -6,10 +6,10 @@ namespace TestBase.Tests.FakeDbAndMockDbTests
     [TestFixture]
     public class WhenVerifyingFakeDbInvocationMultiples
     {
-        [TestCase("Update",  "Select","Insert","Delete")]
-        [TestCase("Select",  "Insert", "Delete","Update")]
-        [TestCase("Insert",  "Delete", "Update", "Select")]
-        [TestCase("Delete",  "Update", "Select","Insert")]
+        [TestCase("Update", "Select", "Insert", "Delete")]
+        [TestCase("Select", "Insert", "Delete", "Update")]
+        [TestCase("Insert", "Delete", "Update", "Select")]
+        [TestCase("Delete", "Update", "Select", "Insert")]
         public void Should_VerifyInvocationCount(string verb, params string[] verbsNotExecuted)
         {
             using (var conn = new FakeDbConnection().SetUpForExecuteNonQuery(0))
@@ -33,15 +33,26 @@ namespace TestBase.Tests.FakeDbAndMockDbTests
 
                 cmd.ShouldHaveExecutedNTimes(3);
 
-                conn.ShouldHaveExecutedNTimes(verb,"",new{Field=111}, times:3);
-                conn.ShouldHaveExecutedNTimes(verb, "ATableName", "Field".Split(), 3);
+                conn.ShouldHaveExecutedNTimes(verb, "",           new {Field = 111}, 3);
+                conn.ShouldHaveExecutedNTimes(verb, "ATableName", "Field".Split(),   3);
 
                 foreach (var otherVerb in verbsNotExecuted)
                 {
-                    Assert.Throws<Assertion>(() => { conn.ShouldHaveExecutedNTimes(otherVerb, "", new{Field=111}, 3); });
-                    Assert.Throws<Assertion>(() => { conn.ShouldHaveExecutedNTimes(otherVerb, "", "Field".Split(), 3); });
-                    Assert.Throws<Assertion>(() => { conn.ShouldHaveExecutedNTimes(otherVerb, "ATableName", "Field".Split(), 3); });
-                    
+                    Assert.Throws<Assertion>(() =>
+                                             {
+                                                 conn.ShouldHaveExecutedNTimes(otherVerb, "", new {Field = 111}, 3);
+                                             });
+                    Assert.Throws<Assertion>(() =>
+                                             {
+                                                 conn.ShouldHaveExecutedNTimes(otherVerb, "", "Field".Split(), 3);
+                                             });
+                    Assert.Throws<Assertion>(() =>
+                                             {
+                                                 conn.ShouldHaveExecutedNTimes(otherVerb,
+                                                                               "ATableName",
+                                                                               "Field".Split(),
+                                                                               3);
+                                             });
                 }
             }
         }

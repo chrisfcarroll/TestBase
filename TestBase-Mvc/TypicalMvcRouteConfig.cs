@@ -6,8 +6,8 @@ namespace TestBase
     public class TypicalMvcRouteConfig
     {
         /// <summary>
-        /// Creates the typical route mappings supplied out of the box by Visual Studio MVC Project Wizards:
-        /// <code>
+        ///     Creates the typical route mappings supplied out of the box by Visual Studio MVC Project Wizards:
+        ///     <code>
         /// routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
         /// routes.MapRoute(
         ///    name: "Default",
@@ -21,10 +21,10 @@ namespace TestBase
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
             routes.MapRoute(
-                name: "Default",
-                url: "{controller}/{action}/{id}",
-                defaults: new {controller = "Home", action = "Index", id = UrlParameter.Optional}
-            );
+                            "Default",
+                            "{controller}/{action}/{id}",
+                            new {controller = "Home", action = "Index", id = UrlParameter.Optional}
+                           );
         }
     }
 }

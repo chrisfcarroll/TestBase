@@ -1,8 +1,5 @@
-using System;
 using System.Collections.Generic;
 using Xunit;
-using TestBase;
-using Assert = Xunit.Assert;
 
 namespace PredicateDictionary.Specs
 {
@@ -11,11 +8,10 @@ namespace PredicateDictionary.Specs
         [Fact]
         public void GivenAKeyNotSatisfyingAnyPredicates()
         {
-            var uut=new PredicateDictionary<string, int>();
-            
+            var uut = new PredicateDictionary<string, int>();
+
             Assert.Throws<KeyNotFoundException>(() => uut[""]);
-            Assert.Throws<KeyNotFoundException>(() => uut[s=>true]);
+            Assert.Throws<KeyNotFoundException>(() => uut[s => true]);
         }
-        
     }
 }

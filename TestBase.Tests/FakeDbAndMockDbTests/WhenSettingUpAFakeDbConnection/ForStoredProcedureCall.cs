@@ -1,7 +1,4 @@
-﻿using System;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Data;
 using Dapper;
 using NUnit.Framework;
 using TestBase.AdoNet;
@@ -11,25 +8,27 @@ namespace TestBase.Tests.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection
     [TestFixture]
     public class ForStoredProcedureCall
     {
-
-        [Test] public void ShouldWorkWithDapperDynamicParameters()
+        [Test]
+        public void ShouldWorkWithDapperDynamicParameters()
         {
             var parms = new
-            {
-                id = 1,
-                name = "FakeName",
-                dooble = 123d,
-                dekimal= 123m,
-                boool= true,
-            };
+                        {
+                        id      = 1,
+                        name    = "FakeName",
+                        dooble  = 123d,
+                        dekimal = 123m,
+                        boool   = true
+                        };
             var parameters = new DynamicParameters(parms);
-            
+
             var connection = new FakeDbConnection();
 
             connection.Open();
             connection.Execute("StoredProcedureName", parameters, commandType: CommandType.StoredProcedure);
 
-            var invokedCommand=connection.VerifySingle(c =>c.CommandType == CommandType.StoredProcedure && c.CommandText == "StoredProcedureName");
+            var invokedCommand =
+            connection.VerifySingle(c => c.CommandType == CommandType.StoredProcedure
+                                      && c.CommandText == "StoredProcedureName");
 
             var pars = invokedCommand.Parameters;
             pars["id"].Value.ShouldBe(1);

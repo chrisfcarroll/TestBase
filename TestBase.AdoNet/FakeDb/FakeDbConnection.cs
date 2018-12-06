@@ -7,35 +7,16 @@ namespace TestBase.AdoNet
 {
     public class FakeDbConnection : DbConnection
     {
+        ConnectionState _state = ConnectionState.Closed;
         public Queue<FakeDbCommand> DbCommandsQueued = new Queue<FakeDbCommand>();
         public List<FakeDbCommand> Invocations = new List<FakeDbCommand>();
-        ConnectionState _state= ConnectionState.Closed;
-
-        public FakeDbConnection QueueCommand(FakeDbCommand command)
-        {
-            command.Connection = this;
-            command.IsPretendingToBePartOfMars = IsQueueingCommandsWithPretendingToBePartOfAsMars;
-            DbCommandsQueued.Enqueue(command);
-            return this;
-        }
-
-        public bool IsQueueingCommandsWithPretendingToBePartOfAsMars { get; set; }
 
         public FakeDbConnection([Optional] FakeDbCommand dbCommandToReturn)
         {
-            if(dbCommandToReturn!=null){QueueCommand(dbCommandToReturn);}
+            if (dbCommandToReturn != null) QueueCommand(dbCommandToReturn);
         }
 
-        protected override DbTransaction BeginDbTransaction(IsolationLevel isolationLevel)
-        {
-            return new FakeDbTransaction(this);
-        }
-
-        public override void Close(){_state=ConnectionState.Open;}
-
-        public override void ChangeDatabase(string databaseName){}
-
-        public override void Open(){ _state=ConnectionState.Open;}
+        public bool IsQueueingCommandsWithPretendingToBePartOfAsMars { get; set; }
 
         public override string ConnectionString { get; set; }
 
@@ -47,17 +28,30 @@ namespace TestBase.AdoNet
 
         public override string ServerVersion => "FakeServerVersion";
 
-        protected override DbCommand CreateDbCommand()
+        public FakeDbConnection QueueCommand(FakeDbCommand command)
         {
-            return NextCommand();
+            command.Connection                 = this;
+            command.IsPretendingToBePartOfMars = IsQueueingCommandsWithPretendingToBePartOfAsMars;
+            DbCommandsQueued.Enqueue(command);
+            return this;
         }
+
+        protected override DbTransaction BeginDbTransaction(IsolationLevel isolationLevel)
+        {
+            return new FakeDbTransaction(this);
+        }
+
+        public override void Close() { _state = ConnectionState.Open; }
+
+        public override void ChangeDatabase(string databaseName) { }
+
+        public override void Open() { _state = ConnectionState.Open; }
+
+        protected override DbCommand CreateDbCommand() { return NextCommand(); }
 
         public FakeDbCommand NextCommand()
         {
-            if (DbCommandsQueued.Count==0)
-            {
-                QueueCommand(FakeDbCommand.ForExecuteQuery(new string[0]));
-            }
+            if (DbCommandsQueued.Count == 0) QueueCommand(FakeDbCommand.ForExecuteQuery(new string[0]));
             var result = DbCommandsQueued.Dequeue();
             result.ParameterCollectionToReturn = new FakeDbParameterCollection();
             return result;

@@ -10,24 +10,22 @@ namespace TestBase.Tests.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection
     [TestFixture]
     public class ForQueryUsingEmptyObjectArrayFakeData
     {
-
         [Test]
         public void Should_return_the_setup_data__Given_empty_array_and_a_column_name()
         {
             //A
-            var uut= new FakeDbConnection().SetUpForQuery(new object[][] {}, "PdmsId");
+            var uut = new FakeDbConnection().SetUpForQuery(new object[][] { }, "PdmsId");
             //A
-            uut.Query<int>("").ShouldEqualByValue(new int[] {});
-
+            uut.Query<int>("").ShouldEqualByValue(new int[] { });
         }
 
         [Test]
         public async Task Should_return_the_setup_data__Given_empty_array_and_a_column_name__GivenQueryAsync()
         {
             //A
-            var uut= new FakeDbConnection().SetUpForQuery(new object[][] {}, "PdmsId");
+            var uut = new FakeDbConnection().SetUpForQuery(new object[][] { }, "PdmsId");
             //A
-            (await uut.QueryAsync<int>("")).ShouldEqualByValue(new int[] {});
+            (await uut.QueryAsync<int>("")).ShouldEqualByValue(new int[] { });
         }
 
         [Test]
@@ -35,10 +33,10 @@ namespace TestBase.Tests.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection
         {
             //A
             var metaData = new FakeDbResultSet.MetaData[2]
-                {
-                    new FakeDbResultSet.MetaData("",typeof(int)),
-                    new FakeDbResultSet.MetaData("",typeof(string))
-                };
+                           {
+                           new FakeDbResultSet.MetaData("", typeof(int)),
+                           new FakeDbResultSet.MetaData("", typeof(string))
+                           };
             var uut = new FakeDbConnection().SetUpForQuery(new object[][] { }, metaData);
             //A
             uut.Query<KeyValuePair<int, string>>("").ShouldEqualByValue(new KeyValuePair<int, string>[] { });
@@ -49,14 +47,15 @@ namespace TestBase.Tests.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection
         {
             //A
             var metaData = new FakeDbResultSet.MetaData[2]
-            {
-                new FakeDbResultSet.MetaData("",typeof(int)),
-                new FakeDbResultSet.MetaData("",typeof(string))
-            };
+                           {
+                           new FakeDbResultSet.MetaData("", typeof(int)),
+                           new FakeDbResultSet.MetaData("", typeof(string))
+                           };
             var uut = new FakeDbConnection().SetUpForQuery(new object[][] { }, metaData);
             //A
 
-            (await uut.QueryAsync<KeyValuePair<int, string>>("")).ShouldEqualByValue(new KeyValuePair<int, string>[] { });
+            (await uut.QueryAsync<KeyValuePair<int, string>>(""))
+           .ShouldEqualByValue(new KeyValuePair<int, string>[] { });
         }
 
         [Test]
@@ -64,9 +63,9 @@ namespace TestBase.Tests.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection
         {
             //A
             Assert.Throws<InvalidOperationException>(
-                () => new FakeDbConnection().SetUpForQuery(new object[][] {})
-                ).Message.ShouldMatch("[Cc]an't .* metadata");
-
+                                                     () => new FakeDbConnection().SetUpForQuery(new object[][] { })
+                                                    )
+                  .Message.ShouldMatch("[Cc]an't .* metadata");
         }
     }
 }

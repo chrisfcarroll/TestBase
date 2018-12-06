@@ -2,6 +2,7 @@
 using System.Web.Routing;
 using NUnit.Framework;
 using TestBase;
+
 // ReSharper disable Mvc.ActionNotResolved
 // ReSharper disable Mvc.ControllerNotResolved
 // ReSharper disable Html.PathError
@@ -11,13 +12,14 @@ namespace TestBaseMvc.Tests
     [TestFixture]
     public class ControllerUrlShouldWork
     {
-        [Test]
-        public void Should_get_a_working_urlhelper__Given_custom_route_config()
+        public static void RegisterFakeRoutes(RouteCollection routes)
         {
-            var uut = new StubController().WithHttpContextAndRoutes(RegisterFakeRoutes);
-            uut.Url.Action("a", "c").ShouldEqual("/custom/c-a");
-            uut.Url.Action("a", "c", new { id = 1, otherparameter = "2" }).ShouldEqual("/custom/c-a/1?otherparameter=2");
-            uut.Url.Action("Index", "Home").ShouldEqual("/custom/Home-Index"); 
+            routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
+            routes.MapRoute(
+                            "Default",
+                            "custom/{controller}-{action}/{id}",
+                            new {controller = "CustomC", action = "CustomA", id = UrlParameter.Optional}
+                           );
         }
 
         [Test]
@@ -25,19 +27,18 @@ namespace TestBaseMvc.Tests
         {
             var appVirtualPath = "/OverriddenAppVirtualPath";
             //
-            var uut = new StubController().WithHttpContextAndRoutes(RegisterFakeRoutes, appVirtualPath:appVirtualPath);
+            var uut = new StubController().WithHttpContextAndRoutes(RegisterFakeRoutes, appVirtualPath: appVirtualPath);
             //
             uut.Url.Content("~/here.txt").ShouldBe(appVirtualPath + "/here.txt");
         }
 
-        public static void RegisterFakeRoutes(RouteCollection routes)
+        [Test]
+        public void Should_get_a_working_urlhelper__Given_custom_route_config()
         {
-            routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
-            routes.MapRoute(
-                name: "Default",
-                url: "custom/{controller}-{action}/{id}",
-                defaults: new { controller = "CustomC", action = "CustomA", id = UrlParameter.Optional }
-            );
+            var uut = new StubController().WithHttpContextAndRoutes(RegisterFakeRoutes);
+            uut.Url.Action("a", "c").ShouldEqual("/custom/c-a");
+            uut.Url.Action("a", "c", new {id = 1, otherparameter = "2"}).ShouldEqual("/custom/c-a/1?otherparameter=2");
+            uut.Url.Action("Index", "Home").ShouldEqual("/custom/Home-Index");
         }
     }
 }

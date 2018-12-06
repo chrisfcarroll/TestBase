@@ -20,11 +20,11 @@ namespace TestBase.Tests.FakeDbAndMockDbTests
                     cmd.CommandText = string.Format("Insert {0} (Id, Name) Values(@id, @name)", atablename);
                     var param1 = cmd.CreateParameter();
                     param1.ParameterName = "Id";
-                    param1.Value = 1;
+                    param1.Value         = 1;
 
                     var param2 = cmd.CreateParameter();
                     param2.ParameterName = "Name";
-                    param2.Value = "Boo1";
+                    param2.Value         = "Boo1";
 
                     cmd.Parameters.Add(param1);
                     cmd.Parameters.Add(param2);
@@ -34,9 +34,17 @@ namespace TestBase.Tests.FakeDbAndMockDbTests
                 conn.ShouldHaveInserted("ATableName", new AClass {Name = "Boo1", Id = 1});
                 conn.ShouldHaveInserted("ATableName", new[] {"Name", "Id"});
                 conn.ShouldHaveInserted("ATableName");
-                Assert.Throws<Assertion>(() => { conn.ShouldHaveInserted("ATableName", new AClass {Name = "Boo1", Id = 222}); });
+                Assert.Throws<Assertion>(() =>
+                                         {
+                                             conn.ShouldHaveInserted("ATableName",
+                                                                     new AClass {Name = "Boo1", Id = 222});
+                                         });
                 Assert.Throws<Assertion>(() => { conn.ShouldHaveInserted("ATableName", new[] {"WrongCol", "Name"}); });
-                Assert.Throws<Assertion>(() => { conn.ShouldHaveInserted("WrongTableName", new AClass {Name = "Boo1", Id = 1}); });
+                Assert.Throws<Assertion>(() =>
+                                         {
+                                             conn.ShouldHaveInserted("WrongTableName",
+                                                                     new AClass {Name = "Boo1", Id = 1});
+                                         });
 
                 Assert.Throws<Assertion>(() => { conn.ShouldHaveSelected("ATableName"); });
                 Assert.Throws<Assertion>(() => { conn.ShouldHaveUpdated("ATableName", "", ""); });

@@ -5,9 +5,8 @@ using System.Reflection;
 
 namespace TestBase.AdoNet
 {
-    
-#if NETSTANDARD
-#else
+    #if NETSTANDARD
+    #else
     /// <summary>
     /// Extension methods to ease net40«--»netstandard code sharing.
     /// Backfills methods in NetStandard but not in Net40
@@ -37,5 +36,5 @@ namespace TestBase.AdoNet
             return @this.GetCustomAttributes(typeof(T),true).Cast<T>().FirstOrDefault();
         }
     }
-#endif
+    #endif
 }

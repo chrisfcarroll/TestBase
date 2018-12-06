@@ -19,7 +19,7 @@ namespace TestBase.Tests.FakeDbAndMockDbTests
                     cmd.CommandText = string.Format("Select * from {0}", atablename);
                     var param = cmd.CreateParameter();
                     param.ParameterName = "PName";
-                    param.Value = "Boo";
+                    param.Value         = "Boo";
                     cmd.Parameters.Add(param);
                     cmd.ExecuteReader();
                 }

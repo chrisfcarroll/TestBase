@@ -8,18 +8,29 @@ namespace TestBase.AdoNet.RecordingDb
 {
     public class RecordingDbConnection : DbConnection
     {
-        public readonly List<FakeDbCommand> Invocations = new List<FakeDbCommand>();
         public readonly DbConnection innerConnection;
+        public readonly List<FakeDbCommand> Invocations = new List<FakeDbCommand>();
 
-        public RecordingDbConnection(DbConnection innerConnection) 
+        public RecordingDbConnection(DbConnection innerConnection) { this.innerConnection = innerConnection; }
+
+        public override string ConnectionString
         {
-            this.innerConnection = innerConnection;
+            get { return RecordE(() => innerConnection.ConnectionString); }
+            set { Record(() => innerConnection.ConnectionString = value); }
         }
 
-        void Record(Action action) { action(); }
-        T Record<T>(Func<T> funct) { return funct(); }
-        void RecordE(Expression<Action> action) { action.Compile()(); }
-        T RecordE<T>(Expression<Func<T>> funct) { return funct.Compile()(); }
+        public override string Database { get { return RecordE(() => innerConnection.Database); } }
+
+        public override ConnectionState State { get { return RecordE(() => innerConnection.State); } }
+
+        public override string DataSource { get { return RecordE(() => innerConnection.DataSource); } }
+
+        public override string ServerVersion { get { return RecordE(() => innerConnection.ServerVersion); } }
+
+        void Record(Action                  action) { action(); }
+        T    Record<T>(Func<T>              funct)  { return funct(); }
+        void RecordE(Expression<Action>     action) { action.Compile()(); }
+        T    RecordE<T>(Expression<Func<T>> funct)  { return funct.Compile()(); }
 
         protected override DbTransaction BeginDbTransaction(IsolationLevel isolationLevel)
         {
@@ -28,27 +39,21 @@ namespace TestBase.AdoNet.RecordingDb
 
         public override void Close() { RecordE(() => innerConnection.Close()); }
 
-        public override void ChangeDatabase(string databaseName) { RecordE(() => innerConnection.ChangeDatabase(databaseName)); }
+        public override void ChangeDatabase(string databaseName)
+        {
+            RecordE(() => innerConnection.ChangeDatabase(databaseName));
+        }
 
-        public override void Open() { RecordE(() => innerConnection.Open()); ;}
-
-        public override string ConnectionString 
-        { 
-            get { return RecordE(() => innerConnection.ConnectionString); }
-            set { Record(() => innerConnection.ConnectionString = value); } }
-
-        public override string Database { get { return RecordE(()=>innerConnection.Database); } }
-
-        public override ConnectionState State { get { return RecordE(() => innerConnection.State); } }
-
-        public override string DataSource { get { return RecordE(() => innerConnection.DataSource); } }
-
-        public override string ServerVersion { get { return RecordE(() => innerConnection.ServerVersion); } }
+        public override void Open()
+        {
+            RecordE(() => innerConnection.Open());
+            ;
+        }
 
         protected override DbCommand CreateDbCommand()
         {
             var innerCommand = RecordE(() => innerConnection.CreateCommand());
-            return new RecordingDbCommand(innerCommand,this);
+            return new RecordingDbCommand(innerCommand, this);
         }
     }
 }

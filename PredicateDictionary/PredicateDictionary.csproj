@@ -19,10 +19,11 @@
     Assert.Throws<KeyNotFoundException>(() => pdict[101] = pdict[101]);
     ```
 ]]></PackageDescription>
-    <PackageReleaseNotes>ChangeLog
----------
-0.1.0.0
-</PackageReleaseNotes>
+    <PackageReleaseNotes>
+      ChangeLog
+      ---------
+      0.1.0.0
+    </PackageReleaseNotes>
     <Copyright>(c) Chris F. Carroll, 2018</Copyright>
     <Authors>Chris F Carroll</Authors>
     <Owners>Chris F Carroll</Owners>
@@ -31,7 +32,7 @@
     <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
     <IncludeSymbols>true</IncludeSymbols>
     <PackageTags>test;fake;</PackageTags>
-    
+
   </PropertyGroup>
 
 </Project>

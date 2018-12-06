@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,10 +20,7 @@ namespace TestBase
             return ((RedirectToRouteResult) actionResult).RouteValues["action"].ToString();
         }
 
-        public static bool IsView(this ActionResult actionResult)
-        {
-            return actionResult is ViewResult;
-        }
+        public static bool IsView(this ActionResult actionResult) { return actionResult is ViewResult; }
 
         public static bool ViewNameIs(this ActionResult actionResult, string expectedViewName)
         {
@@ -32,7 +28,7 @@ namespace TestBase
         }
 
         public static TController WithModelStateIsInvalid<TController>(this TController @this)
-            where TController : Controller
+        where TController : Controller
         {
             @this.ModelState.AddModelError("SomeKey", @"Some error message");
 
@@ -61,26 +57,25 @@ namespace TestBase
             return ViewFile(controller, viewResult.ViewName + ".aspx", namespacePathToMvcRoot);
         }
 
-        public static string ViewFile<TC>(this TC controller, string viewFileName, string namespacePathToMvcRoot) where TC : Controller
+        public static string ViewFile<TC>(this TC controller, string viewFileName, string namespacePathToMvcRoot)
+        where TC : Controller
         {
-            var pathToViewFile = "..\\..\\..\\" +
-                                 controller.GetType().Namespace
-                                     .Replace(namespacePathToMvcRoot, "")
-                                     .Replace(".", "\\")
-                                     .Replace("\\Controllers", "\\Views\\") +
-                                 controller.GetType().Name.Replace("Controller", "\\");
+            var pathToViewFile = "..\\..\\..\\"
+                               + controller.GetType()
+                                           .Namespace
+                                           .Replace(namespacePathToMvcRoot, "")
+                                           .Replace(".",                    "\\")
+                                           .Replace("\\Controllers",        "\\Views\\")
+                               + controller.GetType().Name.Replace("Controller", "\\");
 
             var fi = new FileInfo(pathToViewFile + viewFileName);
             fi.Exists
-                .ShouldBeTrue(String.Format("Couldn't find viewfile {0} for controller {1}, view {2}",
-                    fi,
-                    controller.GetType().Name,
-                    viewFileName));
+              .ShouldBeTrue(string.Format("Couldn't find viewfile {0} for controller {1}, view {2}",
+                                          fi,
+                                          controller.GetType().Name,
+                                          viewFileName));
 
-            using (var viewFile = new StreamReader(fi.FullName))
-            {
-                return viewFile.ReadToEnd();
-            }
+            using (var viewFile = new StreamReader(fi.FullName)) { return viewFile.ReadToEnd(); }
         }
     }
 }

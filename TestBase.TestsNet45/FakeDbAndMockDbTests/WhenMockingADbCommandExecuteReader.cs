@@ -13,22 +13,22 @@ namespace TestBase.Tests.FakeDbAndMockDbTests
         {
             //A
             var fakeData = new[]
-                {
-                        new AClass{Id = 1,Name = "Name"},
-                        new AClass{Id = 2,Name = "Name2"},
-                };
+                           {
+                           new AClass {Id = 1, Name = "Name"},
+                           new AClass {Id = 2, Name = "Name2"}
+                           };
             var mockCommand = new Mock<IDbCommand>();
             //A
             mockCommand
-                    .Setup(x => x.ExecuteReader())
-                    .Returns(new DataTableReader(fakeData.ToDataTable(typeof(AClass))));
+           .Setup(x => x.ExecuteReader())
+           .Returns(new DataTableReader(fakeData.ToDataTable(typeof(AClass))));
 
             var reader = mockCommand.Object.ExecuteReader();
-            int i = 0;
+            var i      = 0;
             while (reader.Read())
             {
-                EqualsByValueShoulds.ShouldEqualByValue(reader.GetInt32(0), fakeData[i].Id);
-                EqualsByValueShoulds.ShouldEqualByValue(reader.GetString(1), fakeData[i].Name);
+                reader.GetInt32(0).ShouldEqualByValue(fakeData[i].Id);
+                reader.GetString(1).ShouldEqualByValue(fakeData[i].Name);
                 i++;
             }
         }

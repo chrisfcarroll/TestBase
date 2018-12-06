@@ -5,8 +5,17 @@ using TestBase.AdoNet;
 
 namespace TestBase.Tests.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection
 {
-    public class IdAndName { public int Id { get; set; } public string Name { get; set; } }
-    class WithJoin { public int Id { get; set; } public IdAndName IdAndName { get; set; } }
+    public class IdAndName
+    {
+        public int    Id   { get; set; }
+        public string Name { get; set; }
+    }
+
+    class WithJoin
+    {
+        public int       Id        { get; set; }
+        public IdAndName IdAndName { get; set; }
+    }
 
     [TestFixture]
     public class ForQueryUsingStronglyTypedFakeData
@@ -16,13 +25,13 @@ namespace TestBase.Tests.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection
         {
             //A
             var dataToReturn = new[]
-                {
-                    new IdAndName {Id = 11, Name = "cell 1,2"}, 
-                    new IdAndName {Id = 21, Name = "cell 2,2"}
-                };
+                               {
+                               new IdAndName {Id = 11, Name = "cell 1,2"},
+                               new IdAndName {Id = 21, Name = "cell 2,2"}
+                               };
 
             //A
-            var fakeConnection = new FakeDbConnection().SetUpForQuery(dataToReturn,new[] {"Id", "Name"});
+            var fakeConnection = new FakeDbConnection().SetUpForQuery(dataToReturn, new[] {"Id", "Name"});
 
             //A 
             //Dapper -- the easy way to read a DbDataReader.
@@ -34,30 +43,37 @@ namespace TestBase.Tests.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection
         {
             //A
             var dataToReturn = new[]
-                {
-                    new WithJoin{ Id=100, IdAndName = new IdAndName {Id = 11, Name = "cell 1,2"}}, 
-                    new WithJoin{ Id=200, IdAndName = new IdAndName {Id = 21, Name = "cell 2,2"}}
-                };
+                               {
+                               new WithJoin {Id = 100, IdAndName = new IdAndName {Id = 11, Name = "cell 1,2"}},
+                               new WithJoin {Id = 200, IdAndName = new IdAndName {Id = 21, Name = "cell 2,2"}}
+                               };
 
             //A
-            var fakeConnection = new FakeDbConnection().SetUpForQuery(dataToReturn, new[] { "Id", "IdAndName.Id", "IdAndName.Name" });
+            var fakeConnection =
+            new FakeDbConnection().SetUpForQuery(dataToReturn, new[] {"Id", "IdAndName.Id", "IdAndName.Name"});
 
             //A 
             //Dapper -- the easy way to read a DbDataReader.
-            fakeConnection.Query<WithJoin,IdAndName,WithJoin>(
-                "",
-                (w, i) => { w.IdAndName = i; return w; }
-                ).ShouldEqualByValue(dataToReturn);
+            fakeConnection.Query<WithJoin, IdAndName, WithJoin>(
+                                                                "",
+                                                                (w, i) =>
+                                                                {
+                                                                    w.IdAndName = i;
+                                                                    return w;
+                                                                }
+                                                               )
+                          .ShouldEqualByValue(dataToReturn);
         }
 
-        [Test] public void Should_return_the_setup_data__Given_some_nulls_but_non_nullable_id_field()
+        [Test]
+        public void Should_return_the_setup_data__Given_some_nulls_but_non_nullable_id_field()
         {
             //A
             var dataToReturn = new[]
-                {
-                    new WithJoin {Id = 100, IdAndName = new IdAndName {Id = 11, Name = null}},
-                    new WithJoin {Id = 200, IdAndName = null}
-                };
+                               {
+                               new WithJoin {Id = 100, IdAndName = new IdAndName {Id = 11, Name = null}},
+                               new WithJoin {Id = 200, IdAndName = null}
+                               };
 
             //A
             var fakeConnection = new FakeDbConnection().SetUpForQuery(dataToReturn,
@@ -67,11 +83,12 @@ namespace TestBase.Tests.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection
             //Dapper -- the easy way to read a DbDataReader.
             var result = fakeConnection.Query<WithJoin, IdAndName, WithJoin>("",
                                                                              (w, i) =>
-                                                                                 {
-                                                                                     w.IdAndName = i;
-                                                                                     return w;
-                                                                                 }
-                ).ToArray();
+                                                                             {
+                                                                                 w.IdAndName = i;
+                                                                                 return w;
+                                                                             }
+                                                                            )
+                                       .ToArray();
             result[0].Id.ShouldEqual(100);
             result[0].IdAndName.Id.ShouldEqual(11);
             result[0].IdAndName.Name.ShouldBeNull();
@@ -82,6 +99,5 @@ namespace TestBase.Tests.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection
             result[1].IdAndName.Id.ShouldEqual(0);
             result[1].IdAndName.Name.ShouldBeNull();
         }
-
     }
 }

@@ -26,178 +26,14 @@ using System;
 namespace TestBase
 {
     /// <summary>
-    /// The Numerics class contains common operations on numeric values.
+    ///     The Numerics class contains common operations on numeric values.
     /// </summary>
     public static class Numerics
     {
-        #region Numeric Type Recognition
-        /// <summary>
-        /// Checks the type of the object, returning true if
-        /// the object is a numeric type.
-        /// </summary>
-        /// <param name="obj">The object to check</param>
-        /// <returns>true if the object is a numeric type</returns>
-        public static bool IsNumericType(Object obj)
-        {
-            return IsFloatingPointNumeric(obj) || IsFixedPointNumeric(obj);
-        }
-
-        /// <summary>
-        /// Checks the type of the object, returning true if
-        /// the object is a floating point numeric type.
-        /// </summary>
-        /// <param name="obj">The object to check</param>
-        /// <returns>true if the object is a floating point numeric type</returns>
-        public static bool IsFloatingPointNumeric(Object obj)
-        {
-            if (null != obj)
-            {
-                if (obj is System.Double) return true;
-                if (obj is System.Single) return true;
-            }
-            return false;
-        }
-        /// <summary>
-        /// Checks the type of the object, returning true if
-        /// the object is a fixed point numeric type.
-        /// </summary>
-        /// <param name="obj">The object to check</param>
-        /// <returns>true if the object is a fixed point numeric type</returns>
-        public static bool IsFixedPointNumeric(Object obj)
-        {
-            if (null != obj)
-            {
-                if (obj is System.Byte) return true;
-                if (obj is System.SByte) return true;
-                if (obj is System.Decimal) return true;
-                if (obj is System.Int32) return true;
-                if (obj is System.UInt32) return true;
-                if (obj is System.Int64) return true;
-                if (obj is System.UInt64) return true;
-                if (obj is System.Int16) return true;
-                if (obj is System.UInt16) return true;
-                if (obj is System.Char) return true;
-            }
-            return false;
-        }
-        #endregion
-
-        #region Numeric Equality
-        /// <summary>
-        /// Test two numeric values for equality, performing the usual numeric 
-        /// conversions and using a provided or default tolerance. If the tolerance 
-        /// provided is Empty, this method may set it to a default tolerance.
-        /// </summary>
-        /// <param name="expected">The expected value</param>
-        /// <param name="actual">The actual value</param>
-        /// <param name="tolerance">A reference to the tolerance in effect</param>
-        /// <returns>True if the values are equal</returns>
-        public static bool AreEqual(object expected, object actual, double tolerance=1e-15)
-        {
-            if (expected is double || actual is double)
-                return AreEqual(Convert.ToDouble(expected), Convert.ToDouble(actual), tolerance);
-
-            if (expected is float || actual is float)
-                return AreEqual(Convert.ToSingle(expected), Convert.ToSingle(actual), tolerance);
-
-            if (expected is decimal || actual is decimal)
-                return AreEqual(Convert.ToDecimal(expected), Convert.ToDecimal(actual), tolerance);
-
-            if (expected is ulong || actual is ulong)
-                return AreEqual(Convert.ToUInt64(expected), Convert.ToUInt64(actual), tolerance);
-
-            if (expected is long || actual is long)
-                return AreEqual(Convert.ToInt64(expected), Convert.ToInt64(actual), tolerance);
-
-            if (expected is uint || actual is uint)
-                return AreEqual(Convert.ToUInt32(expected), Convert.ToUInt32(actual), tolerance);
-
-            return AreEqual(Convert.ToInt32(expected), Convert.ToInt32(actual), tolerance);
-        }
-
-        static bool AreEqual(double expected, double actual, double tolerance=1e-15)
-        {
-            if (double.IsNaN(expected) && double.IsNaN(actual))return true;
-
-            // Handle infinity specially since subtracting two infinite values gives 
-            // NaN and the following test fails. mono also needs NaN to be handled
-            // specially although ms.net could use either method. Also, handle
-            // situation where no tolerance is used.
-            if (double.IsInfinity(expected) || double.IsNaN(expected) || double.IsNaN(actual))
-            {
-                return expected.Equals(actual);
-            }
-
-            return Math.Abs(expected - actual) <= tolerance;
-        }
-
-        static bool AreEqual(float expected, float actual, double tolerance= 1e-15)
-        {
-            if (float.IsNaN(expected) && float.IsNaN(actual))return true;
-
-            // handle infinity specially since subtracting two infinite values gives 
-            // NaN and the following test fails. mono also needs NaN to be handled
-            // specially although ms.net could use either method.
-            if (float.IsInfinity(expected) || float.IsNaN(expected) || float.IsNaN(actual))
-            {
-                return expected.Equals(actual);
-            }
-
-            return Math.Abs(expected - actual) <= tolerance;
-        }
-
-
-        static bool AreEqual(decimal expected, decimal actual, double tolerance=1e-15)
-        {
-            var decimalTolerance = Convert.ToDecimal(tolerance);
-            if (decimalTolerance > 0m) return Math.Abs(expected - actual) <= decimalTolerance;
-            return expected == actual;
-        }
-
-        static bool AreEqual(ulong expected, ulong actual, double tolerance=0)
-        {
-            ulong ulongTolerance = Convert.ToUInt64(tolerance);
-            if (ulongTolerance > 0ul)
-            {
-                ulong diff = expected >= actual ? expected - actual : actual - expected;
-                return diff <= ulongTolerance;
-            }
-            return expected==actual;
-        }
-
-        static bool AreEqual(long expected, long actual, double tolerance=0)
-        {
-            var longTolerance = Convert.ToInt64(tolerance);
-            if (longTolerance > 0L) return Math.Abs(expected - actual) <= longTolerance;
-
-            return expected.Equals(actual);
-        }
-
-        static bool AreEqual(uint expected, uint actual, double tolerance=0)
-        {
-            uint uintTolerance = Convert.ToUInt32(tolerance);
-            if (uintTolerance > 0)
-            {
-                uint diff = expected >= actual ? expected - actual : actual - expected;
-                return diff <= uintTolerance;
-            }
-
-            return expected.Equals(actual);
-        }
-
-        static bool AreEqual(int expected, int actual, double tolerance=0)
-        {
-            int intTolerance = Convert.ToInt32(tolerance);
-            if (intTolerance > 0)return Math.Abs(expected - actual) <= intTolerance;
-
-            return expected.Equals(actual);
-        }
-        #endregion
-
         #region Numeric Comparisons
 
         /// <summary>
-        /// Compare two numeric values, performing the usual numeric conversions.
+        ///     Compare two numeric values, performing the usual numeric conversions.
         /// </summary>
         /// <param name="expected">The expected value</param>
         /// <param name="actual">The actual value</param>
@@ -224,6 +60,172 @@ namespace TestBase
 
             return Convert.ToInt32(expected).CompareTo(Convert.ToInt32(actual));
         }
+
+        #endregion
+
+        #region Numeric Type Recognition
+
+        /// <summary>
+        ///     Checks the type of the object, returning true if
+        ///     the object is a numeric type.
+        /// </summary>
+        /// <param name="obj">The object to check</param>
+        /// <returns>true if the object is a numeric type</returns>
+        public static bool IsNumericType(object obj) { return IsFloatingPointNumeric(obj) || IsFixedPointNumeric(obj); }
+
+        /// <summary>
+        ///     Checks the type of the object, returning true if
+        ///     the object is a floating point numeric type.
+        /// </summary>
+        /// <param name="obj">The object to check</param>
+        /// <returns>true if the object is a floating point numeric type</returns>
+        public static bool IsFloatingPointNumeric(object obj)
+        {
+            if (null != obj)
+            {
+                if (obj is double) return true;
+                if (obj is float) return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        ///     Checks the type of the object, returning true if
+        ///     the object is a fixed point numeric type.
+        /// </summary>
+        /// <param name="obj">The object to check</param>
+        /// <returns>true if the object is a fixed point numeric type</returns>
+        public static bool IsFixedPointNumeric(object obj)
+        {
+            if (null != obj)
+            {
+                if (obj is byte) return true;
+                if (obj is sbyte) return true;
+                if (obj is decimal) return true;
+                if (obj is int) return true;
+                if (obj is uint) return true;
+                if (obj is long) return true;
+                if (obj is ulong) return true;
+                if (obj is short) return true;
+                if (obj is ushort) return true;
+                if (obj is char) return true;
+            }
+
+            return false;
+        }
+
+        #endregion
+
+        #region Numeric Equality
+
+        /// <summary>
+        ///     Test two numeric values for equality, performing the usual numeric
+        ///     conversions and using a provided or default tolerance. If the tolerance
+        ///     provided is Empty, this method may set it to a default tolerance.
+        /// </summary>
+        /// <param name="expected">The expected value</param>
+        /// <param name="actual">The actual value</param>
+        /// <param name="tolerance">A reference to the tolerance in effect</param>
+        /// <returns>True if the values are equal</returns>
+        public static bool AreEqual(object expected, object actual, double tolerance = 1e-15)
+        {
+            if (expected is double || actual is double)
+                return AreEqual(Convert.ToDouble(expected), Convert.ToDouble(actual), tolerance);
+
+            if (expected is float || actual is float)
+                return AreEqual(Convert.ToSingle(expected), Convert.ToSingle(actual), tolerance);
+
+            if (expected is decimal || actual is decimal)
+                return AreEqual(Convert.ToDecimal(expected), Convert.ToDecimal(actual), tolerance);
+
+            if (expected is ulong || actual is ulong)
+                return AreEqual(Convert.ToUInt64(expected), Convert.ToUInt64(actual), tolerance);
+
+            if (expected is long || actual is long)
+                return AreEqual(Convert.ToInt64(expected), Convert.ToInt64(actual), tolerance);
+
+            if (expected is uint || actual is uint)
+                return AreEqual(Convert.ToUInt32(expected), Convert.ToUInt32(actual), tolerance);
+
+            return AreEqual(Convert.ToInt32(expected), Convert.ToInt32(actual), tolerance);
+        }
+
+        static bool AreEqual(double expected, double actual, double tolerance = 1e-15)
+        {
+            if (double.IsNaN(expected) && double.IsNaN(actual)) return true;
+
+            // Handle infinity specially since subtracting two infinite values gives 
+            // NaN and the following test fails. mono also needs NaN to be handled
+            // specially although ms.net could use either method. Also, handle
+            // situation where no tolerance is used.
+            if (double.IsInfinity(expected) || double.IsNaN(expected) || double.IsNaN(actual))
+                return expected.Equals(actual);
+
+            return Math.Abs(expected - actual) <= tolerance;
+        }
+
+        static bool AreEqual(float expected, float actual, double tolerance = 1e-15)
+        {
+            if (float.IsNaN(expected) && float.IsNaN(actual)) return true;
+
+            // handle infinity specially since subtracting two infinite values gives 
+            // NaN and the following test fails. mono also needs NaN to be handled
+            // specially although ms.net could use either method.
+            if (float.IsInfinity(expected) || float.IsNaN(expected) || float.IsNaN(actual))
+                return expected.Equals(actual);
+
+            return Math.Abs(expected - actual) <= tolerance;
+        }
+
+
+        static bool AreEqual(decimal expected, decimal actual, double tolerance = 1e-15)
+        {
+            var decimalTolerance = Convert.ToDecimal(tolerance);
+            if (decimalTolerance > 0m) return Math.Abs(expected - actual) <= decimalTolerance;
+            return expected      == actual;
+        }
+
+        static bool AreEqual(ulong expected, ulong actual, double tolerance = 0)
+        {
+            var ulongTolerance = Convert.ToUInt64(tolerance);
+            if (ulongTolerance > 0ul)
+            {
+                var diff = expected >= actual ? expected - actual : actual - expected;
+                return diff <= ulongTolerance;
+            }
+
+            return expected == actual;
+        }
+
+        static bool AreEqual(long expected, long actual, double tolerance = 0)
+        {
+            var longTolerance = Convert.ToInt64(tolerance);
+            if (longTolerance > 0L) return Math.Abs(expected - actual) <= longTolerance;
+
+            return expected.Equals(actual);
+        }
+
+        static bool AreEqual(uint expected, uint actual, double tolerance = 0)
+        {
+            var uintTolerance = Convert.ToUInt32(tolerance);
+            if (uintTolerance > 0)
+            {
+                var diff = expected >= actual ? expected - actual : actual - expected;
+                return diff <= uintTolerance;
+            }
+
+            return expected.Equals(actual);
+        }
+
+        static bool AreEqual(int expected, int actual, double tolerance = 0)
+        {
+            var intTolerance = Convert.ToInt32(tolerance);
+            if (intTolerance > 0) return Math.Abs(expected - actual) <= intTolerance;
+
+            return expected.Equals(actual);
+        }
+
         #endregion
     }
 }

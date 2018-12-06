@@ -7,22 +7,21 @@ namespace TestBase.Tests.Pdfs
     public class PdfShoulds
     {
         [Test]
-        public void PdfShouldInsertGivenLine()
+        public void PdfBytesShouldBeParseableAsAscii()
         {
-            Pdf.DocumentWithLineOfText("my line of text")
-                .ShouldStartWith("%PDF-")
-                .ShouldContain("my line of text");
+            var bytes = Pdf.AsciiBytes("my bite of text");
+
+            Encoding.ASCII.GetString(bytes)
+                    .ShouldStartWith("%PDF-")
+                    .ShouldContain("my bite of text");
         }
 
         [Test]
-        public void PdfBytesShouldBeParseableAsAscii()
+        public void PdfShouldInsertGivenLine()
         {
-            var bytes= Pdf.AsciiBytes("my bite of text");
-
-            Encoding.ASCII.GetString(bytes)
-                .ShouldStartWith("%PDF-")
-                .ShouldContain("my bite of text");
+            Pdf.DocumentWithLineOfText("my line of text")
+               .ShouldStartWith("%PDF-")
+               .ShouldContain("my line of text");
         }
-
     }
 }

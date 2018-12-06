@@ -1,7 +1,9 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyCompany("Chris F Carroll @ https://github.com/chrisfcarroll/TestBase and https://www.nuget.org/profiles/chrisfcarroll")]
+[assembly:
+    AssemblyCompany(
+        "Chris F Carroll @ https://github.com/chrisfcarroll/TestBase and https://www.nuget.org/profiles/chrisfcarroll")]
 [assembly: AssemblyProduct("TestBase")]
 [assembly: AssemblyCopyright("(c) Chris F. Carroll, 2013-2018")]
 [assembly: AssemblyTrademark("")]

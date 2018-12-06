@@ -7,58 +7,22 @@ namespace TestBase.Tests.RecordingDbTests
     [TestFixture]
     public class WhenRecordingInvocationsWithRecordingDbConnection
     {
-        RecordingDbConnection UnitUnderTest;
-        FakeDbConnection fakeDbConnection;
-
         [SetUp]
         public void SetUp()
         {
             fakeDbConnection = new FakeDbConnection();
-            UnitUnderTest = new RecordingDbConnection(fakeDbConnection);
+            UnitUnderTest    = new RecordingDbConnection(fakeDbConnection);
         }
 
-        [Test]
-        public void Should_record_DbCommand()
-        {
-            var text = "Command 1";
-            fakeDbConnection.SetUpForExecuteNonQuery(1);
-            //
-            var cmd= UnitUnderTest.CreateCommand();
-            cmd.CommandText = text;
-            cmd.ExecuteNonQuery();
-            //
-            fakeDbConnection.Invocations[0].CommandText.ShouldBe(text);
-            UnitUnderTest.Invocations[0].CommandText.ShouldBe(text);
-        }
-
-        [Test]
-        public void Should_record_DbParameters_by_copying_not_by_reference()
-        {
-            var text = "Command 1";
-            fakeDbConnection.SetUpForExecuteNonQuery(1);
-            //
-            var cmd = UnitUnderTest.CreateCommand();
-            cmd.CommandText = text;
-            var p = new FakeDbParameter{ParameterName = "p1", Value = "p1"};
-            cmd.Parameters.Add(p);
-            cmd.ExecuteNonQuery();
-            //
-            fakeDbConnection.Invocations[0].CommandText.ShouldBe(text);
-            fakeDbConnection.Invocations[0].Parameters[0].ParameterName.ShouldBe(p.ParameterName);
-            fakeDbConnection.Invocations[0].Parameters[0].Value.ShouldBe(p.Value);
-            fakeDbConnection.Invocations[0].Parameters[0].ShouldNotBe(p);
-            UnitUnderTest.Invocations[0].CommandText.ShouldBe(text);
-            UnitUnderTest.Invocations[0].Parameters[0].ParameterName.ShouldBe(p.ParameterName);
-            UnitUnderTest.Invocations[0].Parameters[0].Value.ShouldBe(p.Value);
-            UnitUnderTest.Invocations[0].Parameters[0].ShouldNotBe(p);
-        }
+        RecordingDbConnection UnitUnderTest;
+        FakeDbConnection fakeDbConnection;
 
         [Test]
         public void Should_DistinguishMultipleInvocationsOfOneCommand()
         {
             var text1 = "Command 1";
-            var p1 = new FakeDbParameter { ParameterName = "p1", Value = "p1" };
-            var p2 = new FakeDbParameter { ParameterName = "p2", Value = "p2" };
+            var p1    = new FakeDbParameter {ParameterName = "p1", Value = "p1"};
+            var p2    = new FakeDbParameter {ParameterName = "p2", Value = "p2"};
             fakeDbConnection.SetUpForExecuteNonQuery(1);
             //
             var cmd = UnitUnderTest.CreateCommand();
@@ -74,17 +38,53 @@ namespace TestBase.Tests.RecordingDbTests
             UnitUnderTest.Invocations[0].CommandText.ShouldBe(text1);
             fakeDbConnection.Invocations[1].CommandText.ShouldBe(text1);
             UnitUnderTest.Invocations[1].CommandText.ShouldBe(text1);
-#if MONO
+            #if MONO
             fakeDbConnection.Invocations[0].Parameters[0].ShouldEqualByValueOnProperties(p1,"ParameterName", "Value");
             UnitUnderTest.Invocations[0].Parameters[0].ShouldEqualByValueOnProperties(p1, "ParameterName", "Value");
             fakeDbConnection.Invocations[1].Parameters[0].ShouldEqualByValueOnProperties(p2,"ParameterName", "Value");
             UnitUnderTest.Invocations[1].Parameters[0].ShouldEqualByValueOnProperties(p2,"ParameterName", "Value");
-#else            
+            #else
             fakeDbConnection.Invocations[0].Parameters[0].ShouldEqualByValue(p1);
             UnitUnderTest.Invocations[0].Parameters[0].ShouldEqualByValue(p1);
             fakeDbConnection.Invocations[1].Parameters[0].ShouldEqualByValue(p2);
             UnitUnderTest.Invocations[1].Parameters[0].ShouldEqualByValue(p2);
-#endif            
+            #endif
+        }
+
+        [Test]
+        public void Should_record_DbCommand()
+        {
+            var text = "Command 1";
+            fakeDbConnection.SetUpForExecuteNonQuery(1);
+            //
+            var cmd = UnitUnderTest.CreateCommand();
+            cmd.CommandText = text;
+            cmd.ExecuteNonQuery();
+            //
+            fakeDbConnection.Invocations[0].CommandText.ShouldBe(text);
+            UnitUnderTest.Invocations[0].CommandText.ShouldBe(text);
+        }
+
+        [Test]
+        public void Should_record_DbParameters_by_copying_not_by_reference()
+        {
+            var text = "Command 1";
+            fakeDbConnection.SetUpForExecuteNonQuery(1);
+            //
+            var cmd = UnitUnderTest.CreateCommand();
+            cmd.CommandText = text;
+            var p = new FakeDbParameter {ParameterName = "p1", Value = "p1"};
+            cmd.Parameters.Add(p);
+            cmd.ExecuteNonQuery();
+            //
+            fakeDbConnection.Invocations[0].CommandText.ShouldBe(text);
+            fakeDbConnection.Invocations[0].Parameters[0].ParameterName.ShouldBe(p.ParameterName);
+            fakeDbConnection.Invocations[0].Parameters[0].Value.ShouldBe(p.Value);
+            fakeDbConnection.Invocations[0].Parameters[0].ShouldNotBe(p);
+            UnitUnderTest.Invocations[0].CommandText.ShouldBe(text);
+            UnitUnderTest.Invocations[0].Parameters[0].ParameterName.ShouldBe(p.ParameterName);
+            UnitUnderTest.Invocations[0].Parameters[0].Value.ShouldBe(p.Value);
+            UnitUnderTest.Invocations[0].Parameters[0].ShouldNotBe(p);
         }
     }
 }

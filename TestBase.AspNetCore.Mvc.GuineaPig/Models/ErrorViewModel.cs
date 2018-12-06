@@ -1,5 +1,3 @@
-using System;
-
 namespace TestBase.Mvc.AspNetCore.GuineaPig.Models
 {
     public class ErrorViewModel

@@ -12,10 +12,10 @@ namespace TestBase.Tests.AspNetCoreMVC
             var controllerUnderTest = new ATestController().WithControllerContext();
 
             var result =
-                controllerUnderTest.AFileResult("my words", "text/plain", "words.txt")
-                    .ShouldBeFileContentResult();
+            controllerUnderTest.AFileResult("my words", "text/plain", "words.txt")
+                               .ShouldBeFileContentResult();
 
-            result.FileContents.ShouldEqualByValue( Encoding.UTF8.GetBytes("my words") );
+            result.FileContents.ShouldEqualByValue(Encoding.UTF8.GetBytes("my words"));
             result.ContentType.ShouldBe("text/plain");
             result.FileDownloadName.ShouldBe("words.txt");
         }
@@ -26,8 +26,8 @@ namespace TestBase.Tests.AspNetCoreMVC
             var controllerUnderTest = new ATestController().WithControllerContext();
 
             var result =
-                controllerUnderTest.AFileResult("my words", "text/plain", "words.txt")
-                    .ShouldBeFileResult();
+            controllerUnderTest.AFileResult("my words", "text/plain", "words.txt")
+                               .ShouldBeFileResult();
 
             result.ContentType.ShouldBe("text/plain");
             result.FileDownloadName.ShouldBe("words.txt");

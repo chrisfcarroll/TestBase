@@ -10,6 +10,7 @@ namespace TestBase
         {
             return Enumerable.Range(1, count).Select(generator);
         }
+
         public static IEnumerable<T> Times<T>(this Func<int, T> generator, int count)
         {
             return Times(count, generator);

@@ -10,8 +10,8 @@ namespace TestBase.Tests.ListOfStringLogging
         [Test]
         public void LogAsSeriLogger()
         {
-            var myList= new List<string>();
-            var logger= myList.AsSeriLogger();
+            var myList = new List<string>();
+            var logger = myList.AsSeriLogger();
             //
             logger.Information("Information!");
             logger.Error("Error!");

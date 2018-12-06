@@ -23,24 +23,24 @@ namespace TestBase.Shoulds
 
         public static ViewResult ShouldBeDefaultView(this ActionResult @this)
         {
-            var @thisView = @this.ShouldBeViewResult();
-            Assert.That(thisView.ViewName == "" || thisView.ViewName.ToLower() == "index", "expected default view name, got {0}", thisView.ViewName);
+            var thisView = @this.ShouldBeViewResult();
+            Assert.That(thisView.ViewName == "" || thisView.ViewName.ToLower() == "index",
+                        "expected default view name, got {0}",
+                        thisView.ViewName);
             return thisView;
         }
 
         public static object ShouldHaveViewDataForKey(this ViewResultBase @this, string key)
         {
-            Assert.That(@this.ViewData, x=>x.ContainsKey(key),
-                string.Format("Keys present: {0}",string.Join(";", @this.ViewData.Keys.ToArray())));
+            Assert.That(@this.ViewData,
+                        x => x.ContainsKey(key),
+                        string.Format("Keys present: {0}", string.Join(";", @this.ViewData.Keys.ToArray())));
             return @this.ViewData[key];
         }
 
         public static object ShouldHaveViewDataForKeys(this ViewResultBase @this, params string[] keys)
         {
-            foreach (var key in keys)
-            {
-                @this.ShouldHaveViewDataForKey(key);
-            }
+            foreach (var key in keys) @this.ShouldHaveViewDataForKey(key);
 
             return @this;
         }

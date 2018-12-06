@@ -7,9 +7,14 @@ namespace TestBase
         /// <summary> Because PDF standard is ASCII</summary>
         /// <param name="line"></param>
         /// <returns></returns>
-        public static byte[] AsciiBytes(string line="This is a small text editable pdf") => Encoding.ASCII.GetBytes(DocumentWithLineOfText(line));
+        public static byte[] AsciiBytes(string line = "This is a small text editable pdf")
+        {
+            return Encoding.ASCII.GetBytes(DocumentWithLineOfText(line));
+        }
 
-        public static string DocumentWithLineOfText(string line="This is a small text editable pdf") => $@"%PDF-1.4
+        public static string DocumentWithLineOfText(string line = "This is a small text editable pdf")
+        {
+            return $@"%PDF-1.4
 1 0 obj
 << /Type /Catalog
 /Outlines 2 0 R
@@ -75,5 +80,6 @@ trailer
 startxref
 625
 %%EOF";
+        }
     }
 }

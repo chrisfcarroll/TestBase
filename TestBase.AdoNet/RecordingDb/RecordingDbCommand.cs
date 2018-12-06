@@ -9,46 +9,38 @@ namespace TestBase.AdoNet.RecordingDb
     public class RecordingDbCommand : DbCommand
     {
         readonly DbCommand innerCommand;
-        readonly RecordingDbConnection recordingDbConnection;
 
-        void Record(Action action) { action(); }
-        T Record<T>(Func<T> funct) { return funct(); }
-        void RecordE(Expression<Action> action) { action.Compile()(); }
-        T RecordE<T>(Expression<Func<T>> funct) { return funct.Compile()(); }
+        public readonly DbCommandInvocationList Invocations = new DbCommandInvocationList();
+        readonly RecordingDbConnection recordingDbConnection;
 
         public RecordingDbCommand(DbCommand innerCommand, RecordingDbConnection recordingDbConnection)
         {
-            this.innerCommand = innerCommand;
+            this.innerCommand          = innerCommand;
             this.recordingDbConnection = recordingDbConnection;
-        }
-
-        public override void Prepare()
-        {
-            RecordE(()=>innerCommand.Prepare());
         }
 
         public override string CommandText
         {
-            get { return RecordE(()=>innerCommand.CommandText); } 
-            set { Record(()=>innerCommand.CommandText = value); }
+            get { return RecordE(() => innerCommand.CommandText); }
+            set { Record(() => innerCommand.CommandText = value); }
         }
 
-        public override int CommandTimeout 
-        { 
-            get { return RecordE(()=>innerCommand.CommandTimeout); }
-            set { Record(()=>innerCommand.CommandTimeout = value); }
+        public override int CommandTimeout
+        {
+            get { return RecordE(() => innerCommand.CommandTimeout); }
+            set { Record(() => innerCommand.CommandTimeout = value); }
         }
 
-        public override CommandType CommandType 
+        public override CommandType CommandType
         {
             get { return RecordE(() => innerCommand.CommandType); }
-            set { Record(() => innerCommand.CommandType = value); } 
+            set { Record(() => innerCommand.CommandType = value); }
         }
 
-        public override UpdateRowSource UpdatedRowSource 
+        public override UpdateRowSource UpdatedRowSource
         {
             get { return RecordE(() => innerCommand.UpdatedRowSource); }
-            set { Record(() => innerCommand.UpdatedRowSource = value); } 
+            set { Record(() => innerCommand.UpdatedRowSource = value); }
         }
 
         protected override DbConnection DbConnection
@@ -57,10 +49,7 @@ namespace TestBase.AdoNet.RecordingDb
             set { Record(() => innerCommand.Connection = value); }
         }
 
-        protected override DbParameterCollection DbParameterCollection
-        {
-            get { return innerCommand.Parameters; }
-        }
+        protected override DbParameterCollection DbParameterCollection => innerCommand.Parameters;
 
         protected override DbTransaction DbTransaction
         {
@@ -69,6 +58,13 @@ namespace TestBase.AdoNet.RecordingDb
         }
 
         public override bool DesignTimeVisible { get; set; }
+
+        void Record(Action                  action) { action(); }
+        T    Record<T>(Func<T>              funct)  { return funct(); }
+        void RecordE(Expression<Action>     action) { action.Compile()(); }
+        T    RecordE<T>(Expression<Func<T>> funct)  { return funct.Compile()(); }
+
+        public override void Prepare() { RecordE(() => innerCommand.Prepare()); }
 
         public override void Cancel() { RecordE(() => innerCommand.Cancel()); }
 
@@ -83,7 +79,7 @@ namespace TestBase.AdoNet.RecordingDb
         public override int ExecuteNonQuery()
         {
             RecordInvocation();
-            return RecordE(()=>innerCommand.ExecuteNonQuery());
+            return RecordE(() => innerCommand.ExecuteNonQuery());
         }
 
         public override object ExecuteScalar()
@@ -92,30 +88,30 @@ namespace TestBase.AdoNet.RecordingDb
             return RecordE(() => innerCommand.ExecuteScalar());
         }
 
-        void RecordInvocation(CommandBehavior behavior= default(CommandBehavior))
+        void RecordInvocation(CommandBehavior behavior = default(CommandBehavior))
         {
-            var copiedParameters = new FakeDbParameterCollection().WithAddRange(DbParameterCollection.Cast<DbParameter>());
+            var copiedParameters =
+            new FakeDbParameterCollection().WithAddRange(DbParameterCollection.Cast<DbParameter>());
 
-            Invocations.Add(new FakeDbCommand{
-                                CommandText = innerCommand.CommandText,
-                                CommandType = innerCommand.CommandType,
+            Invocations.Add(new FakeDbCommand
+                            {
+                            CommandText = innerCommand.CommandText,
+                            CommandType = innerCommand.CommandType
                             },
                             copiedParameters,
                             behavior);
 
-            if (recordingDbConnection!=null)
-            {
+            if (recordingDbConnection != null)
                 recordingDbConnection.Invocations.Add(
-                    new FakeDbCommand{
-                        CommandText = CommandText,
-                        CommandTimeout = CommandTimeout,
-                        CommandType = CommandType,
-                        Connection = Connection,
-                    }.With(c=> c.ParameterCollectionToReturn=copiedParameters)
-                );
-            }
+                                                      new FakeDbCommand
+                                                      {
+                                                      CommandText    = CommandText,
+                                                      CommandTimeout = CommandTimeout,
+                                                      CommandType    = CommandType,
+                                                      Connection     = Connection
+                                                      }.With(c => c.ParameterCollectionToReturn =
+                                                                  copiedParameters)
+                                                     );
         }
-
-        public readonly DbCommandInvocationList Invocations = new DbCommandInvocationList();
     }
 }

@@ -8,10 +8,11 @@ namespace TestBase
 {
     public static class StringExtensions
     {
-        public static string TruncateTo(this string @this, int maxLength=99)
+        public static string TruncateTo(this string @this, int maxLength = 99)
         {
-            return @this?.Length <= maxLength ? @this : @this?.Substring(0,maxLength);
+            return @this?.Length <= maxLength ? @this : @this?.Substring(0, maxLength);
         }
+
         public static string WithWhiteSpaceRemoved(this string @this)
         {
             return @this?.Replace(" ", "").Replace("\n", "").Replace("\r", "").Replace("\t", "");
@@ -19,7 +20,7 @@ namespace TestBase
 
         public static string ReplaceWith(this string @this, string newValue, params string[] oldValues)
         {
-            return oldValues.Aggregate(@this, (s,oldValue)=> s.Replace(oldValue,newValue)  );
+            return oldValues.Aggregate(@this, (s, oldValue) => s.Replace(oldValue, newValue));
         }
 
         public static bool Matches(this string @this, string pattern, RegexOptions options = RegexOptions.None)
@@ -31,65 +32,75 @@ namespace TestBase
         {
             return Convert.ToBase64String(Encoding.UTF8.GetBytes(input));
         }
+
         public static string FromBase64(this string input)
         {
             return Encoding.UTF8.GetString(Convert.FromBase64String(input));
         }
     }
+
     public static class HenriFormatter
     {
         static string OutExpression(object source, string expression)
         {
-            string format = "";
+            var format = "";
 
-            int colonIndex = expression.IndexOf(':');
+            var colonIndex = expression.IndexOf(':');
             if (colonIndex > 0)
             {
-                format = expression.Substring(colonIndex + 1);
+                format     = expression.Substring(colonIndex + 1);
                 expression = expression.Substring(0, colonIndex);
             }
 
-            if (String.IsNullOrEmpty(format))
-            {
-                //return (DataBinder.Eval(source, expression) ?? "").ToString();
+            if (string.IsNullOrEmpty(format))
                 return source.ToJQueryable().SelectToken(expression).ToString();
-            }
             else if (format.Length > 1 && format[1] == '%')
-            {
                 switch (format[0])
                 {
-                    case 'i': return source.ToJQueryable().SelectToken(expression).ToObject<int>().ToString(format.Substring(2));
-                    case 'd': return source.ToJQueryable().SelectToken(expression).ToObject<decimal>().ToString(format.Substring(2));
-                    case 'n': return source.ToJQueryable().SelectToken(expression).ToObject<double>().ToString(format.Substring(2));
-                    case 't': return source.ToJQueryable().SelectToken(expression).ToObject<DateTime>().ToString(format.Substring(2));
+                    case 'i':
+                        return source.ToJQueryable()
+                                     .SelectToken(expression)
+                                     .ToObject<int>()
+                                     .ToString(format.Substring(2));
+                    case 'd':
+                        return source.ToJQueryable()
+                                     .SelectToken(expression)
+                                     .ToObject<decimal>()
+                                     .ToString(format.Substring(2));
+                    case 'n':
+                        return source.ToJQueryable()
+                                     .SelectToken(expression)
+                                     .ToObject<double>()
+                                     .ToString(format.Substring(2));
+                    case 't':
+                        return source.ToJQueryable()
+                                     .SelectToken(expression)
+                                     .ToObject<DateTime>()
+                                     .ToString(format.Substring(2));
                 }
-            }
             return source.ToJQueryable().SelectToken(expression).ToString();
             //return DataBinder.Eval(source, expression, "{0:" + format + "}") ?? "";
         }
 
         /// <summary>
-        /// String formatting based on names not numbers.
-        /// Example: "{name} {phone}".Formatz(new{name,phone});
+        ///     String formatting based on names not numbers.
+        ///     Example: "{name} {phone}".Formatz(new{name,phone});
         /// </summary>
         /// <param name="format">The string containing format names</param>
         /// <param name="source">The object with named properties</param>
         /// <returns></returns>
         public static string Formatz(this string format, object source)
         {
-            if (format == null)
-            {
-                throw new ArgumentNullException("format");
-            }
+            if (format == null) throw new ArgumentNullException("format");
 
-            StringBuilder result = new StringBuilder(format.Length * 2);
+            var result = new StringBuilder(format.Length * 2);
 
             using (var reader = new StringReader(format))
             {
-                StringBuilder expression = new StringBuilder();
-                int @char = -1;
+                var expression = new StringBuilder();
+                var @char      = -1;
 
-                State state = State.OutsideExpression;
+                var state = State.OutsideExpression;
                 do
                 {
                     switch (state)
@@ -108,9 +119,10 @@ namespace TestBase
                                     state = State.OnCloseBracket;
                                     break;
                                 default:
-                                    result.Append((char)@char);
+                                    result.Append((char) @char);
                                     break;
                             }
+
                             break;
                         case State.OnOpenBracket:
                             @char = reader.Read();
@@ -123,10 +135,11 @@ namespace TestBase
                                     state = State.OutsideExpression;
                                     break;
                                 default:
-                                    expression.Append((char)@char);
+                                    expression.Append((char) @char);
                                     state = State.InsideExpression;
                                     break;
                             }
+
                             break;
                         case State.InsideExpression:
                             @char = reader.Read();
@@ -137,12 +150,13 @@ namespace TestBase
                                 case '}':
                                     result.Append(OutExpression(source, expression.ToString()));
                                     expression.Length = 0;
-                                    state = State.OutsideExpression;
+                                    state             = State.OutsideExpression;
                                     break;
                                 default:
-                                    expression.Append((char)@char);
+                                    expression.Append((char) @char);
                                     break;
                             }
+
                             break;
                         case State.OnCloseBracket:
                             @char = reader.Read();
@@ -155,6 +169,7 @@ namespace TestBase
                                 default:
                                     throw new FormatException();
                             }
+
                             break;
                         default:
                             throw new InvalidOperationException("Invalid state.");
@@ -165,7 +180,7 @@ namespace TestBase
             return result.ToString();
         }
 
-        private enum State
+        enum State
         {
             OutsideExpression,
             OnOpenBracket,

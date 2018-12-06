@@ -4,72 +4,77 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 namespace TestBase
 {
     class TestableHttpListener : IDisposable
     {
-        public class RequestAndBody
-        {
-            public string RequestAsJson { get; set; }
-            public string RequestBody { get; set; }
-
-            public RequestAndBody(string requestAsJson, string requestBody)
-            {
-                RequestAsJson = requestAsJson;
-                RequestBody = requestBody;
-            }
-        }
+        static readonly byte[] EmptyUtf8String = Encoding.UTF8.GetBytes("");
+        readonly HttpListener listener;
 
         TextWriter consoleLogger = Console.Out;
-        readonly HttpListener listener;
-        static readonly byte[] EmptyUtf8String = Encoding.UTF8.GetBytes("");
         JsonSerializerSettings jsonSettingsIgnoreStreamsAndBody;
 
-        public TestableHttpListener(params string[] prefixes) : this((IEnumerable<string>) prefixes)
-        {
-        }
+        public TestableHttpListener(params string[] prefixes) : this((IEnumerable<string>) prefixes) { }
 
         public TestableHttpListener(IEnumerable<string> prefixes)
         {
             if (!HttpListener.IsSupported)
-            {
-                throw new NotImplementedException("Windows XP SP2 or Server 2003 is required to use the HttpListener class.");
-            }
+                throw new
+                NotImplementedException("Windows XP SP2 or Server 2003 is required to use the HttpListener class.");
 
             if (prefixes == null || !prefixes.Any())
-            {
                 throw new ArgumentException("Prefixes must not be null or empty", "prefixes");
-            }
 
             //
             jsonSettingsIgnoreStreamsAndBody = new JsonSerializerSettings
-            {
-                ContractResolver = new DeSerializeExcludingFieldsContractResolver(
-                    typeof(HttpListenerRequest),
-                    p => typeof(Stream).IsAssignableFrom(p.PropertyType)
-                         || typeof(EndPoint).IsAssignableFrom(p.PropertyType)
-                         || p.PropertyName.Matches("Certificate")
-                )
-            };
+                                               {
+                                               ContractResolver = new DeSerializeExcludingFieldsContractResolver(
+                                                                                                                 typeof(
+                                                                                                                     HttpListenerRequest
+                                                                                                                 ),
+                                                                                                                 p => typeof
+                                                                                                                      (Stream
+                                                                                                                      ).IsAssignableFrom(p.PropertyType)
+                                                                                                                   || typeof
+                                                                                                                      (EndPoint
+                                                                                                                      ).IsAssignableFrom(p.PropertyType)
+                                                                                                                   || p
+                                                                                                                     .PropertyName
+                                                                                                                     .Matches("Certificate")
+                                                                                                                )
+                                               };
             listener = new HttpListener();
-            foreach (var prefix in prefixes)
-            {
-                listener.Prefixes.Add(prefix);
-            }
+            foreach (var prefix in prefixes) listener.Prefixes.Add(prefix);
 
             listener.Start();
             consoleLogger.WriteLine("Listening...");
         }
 
+        public void Dispose()
+        {
+            if (listener != null)
+            {
+                listener.Stop();
+                ((IDisposable) listener).Dispose();
+            }
+
+            consoleLogger = null;
+        }
+
         /// <summary></summary>
-        /// <param name="responseString">defaults to "&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;body&gt;Hello world&lt;/body&gt;&lt;/html&gt;"</param>
+        /// <param name="responseString">
+        ///     defaults to "&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;body&gt;Hello world&lt;/body&gt;&lt;
+        ///     /html&gt;"
+        /// </param>
         /// <returns>
-        /// <see cref="JsonConvert.SerializeObject(object)"/>(<see cref="HttpListenerContext.Request"/>, <see cref="Formatting.Indented"/>)
+        ///     <see cref="JsonConvert.SerializeObject(object)" />(<see cref="HttpListenerContext.Request" />,
+        ///     <see cref="Formatting.Indented" />)
         /// </returns>
-        public /*async Task<*/ RequestAndBody FixedResponseAsync(Predicate<HttpListenerRequest> isRequestMatching, string responseString)
+        public /*async Task<*/ RequestAndBody FixedResponseAsync(
+            Predicate<HttpListenerRequest> isRequestMatching,
+            string                         responseString)
         {
             responseString = responseString ?? "<!DOCTYPE html><html><body>Hello world</body></html>";
             string requestJson = "", content = null;
@@ -99,15 +104,16 @@ namespace TestBase
             return new RequestAndBody(requestJson, content);
         }
 
-        public void Dispose()
+        public class RequestAndBody
         {
-            if (listener != null)
+            public RequestAndBody(string requestAsJson, string requestBody)
             {
-                listener.Stop();
-                ((IDisposable) listener).Dispose();
+                RequestAsJson = requestAsJson;
+                RequestBody   = requestBody;
             }
 
-            consoleLogger = null;
+            public string RequestAsJson { get; set; }
+            public string RequestBody   { get; set; }
         }
     }
 }

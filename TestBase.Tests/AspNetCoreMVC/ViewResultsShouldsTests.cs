@@ -15,8 +15,8 @@ namespace TestBase.Tests.AspNetCoreMVC
             var controllerUnderTest = new ATestController().WithControllerContext();
 
             var viewResult = controllerUnderTest
-                .AView("parameter", "Other", "Thing")
-                .ShouldBeViewResult();
+                            .AView("parameter", "Other", "Thing")
+                            .ShouldBeViewResult();
 
             viewResult.ShouldNotBeNull().ShouldBeViewNamed("ViewName");
         }
@@ -26,16 +26,14 @@ namespace TestBase.Tests.AspNetCoreMVC
         {
             var controllerUnderTest = new ATestController().WithControllerContext();
 
-            var viewModel= 
-                controllerUnderTest
-                    .AView("parameter", "Other", "Thing")
-                    .ShouldBeViewWithModel<MyViewModel>("ViewName");
+            var viewModel =
+            controllerUnderTest
+           .AView("parameter", "Other", "Thing")
+           .ShouldBeViewWithModel<MyViewModel>("ViewName");
 
             viewModel.YouPassedIn.ShouldBe("parameter");
             viewModel.LinkToSelf.ShouldBe("/ATest/AView");
             viewModel.LinkToOther.ShouldBe("/Other/Thing");
         }
-
-
     }
 }

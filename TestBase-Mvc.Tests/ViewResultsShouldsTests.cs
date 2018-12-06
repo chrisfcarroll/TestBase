@@ -17,8 +17,8 @@ namespace TestBaseMvc.Tests
         {
             var controllerUnderTest = new ATestController(new IDependency()).WithHttpContextAndRoutes();
 
-            var viewModel= 
-                controllerUnderTest.AView("parameter", "Other", "Thing").ShouldBeViewWithModel<MyViewModel>("ViewName");
+            var viewModel =
+            controllerUnderTest.AView("parameter", "Other", "Thing").ShouldBeViewWithModel<MyViewModel>("ViewName");
 
             viewModel.YouPassedIn.ShouldBe("parameter");
             viewModel.LinkToSelf.ShouldBe("/ATest/AView");

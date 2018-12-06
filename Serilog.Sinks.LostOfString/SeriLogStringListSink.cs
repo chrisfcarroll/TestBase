@@ -9,28 +9,33 @@ using Serilog.Formatting.Display;
 namespace Serilog.Sinks.ListOfString
 {
     /// <summary>
-    /// An <see cref="ILogEventSink"/> sink for Serilog which logs to a given <see cref="IList{T}"/> of string.
-    /// Each emitted <see cref="LogEvent"/> will be <see cref="ICollection{T}.Add"/>ed to the IList after being formatted 
-    /// by the given <see cref="ITextFormatter"/>
+    ///     An <see cref="ILogEventSink" /> sink for Serilog which logs to a given <see cref="IList{T}" /> of string.
+    ///     Each emitted <see cref="LogEvent" /> will be <see cref="ICollection{T}.Add" />ed to the IList after being formatted
+    ///     by the given <see cref="ITextFormatter" />
     /// </summary>
     /// <remarks>
-    /// You may wish to be careful to only use this for short-lived loggers if you use a <see cref="List{T}"/> 
-    /// or other in-memory structure as your <see cref="IList{T}"/>.
+    ///     You may wish to be careful to only use this for short-lived loggers if you use a <see cref="List{T}" />
+    ///     or other in-memory structure as your <see cref="IList{T}" />.
     /// </remarks>
     class ListOfStringSink : ILogEventSink
     {
-        readonly IList<string> stringList;
-        readonly ITextFormatter _textFormatter;
+        internal const string DefaultOutputTemplate =
+        "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level}] {Message}{NewLine}{Exception}";
+
         readonly object _syncRoot = new object();
+        readonly ITextFormatter _textFormatter;
+        readonly IList<string> stringList;
 
         /// <summary>
-        /// An <see cref="ILogEventSink"/> sink for Serilog which logs to a given <see cref="IList{T}"/> of string.
+        ///     An <see cref="ILogEventSink" /> sink for Serilog which logs to a given <see cref="IList{T}" /> of string.
         /// </summary>
-        /// <param name="stringList">You may wish to be careful to only use this for short-lived loggers, if you 
-        /// use a <see cref="List{T}"/> or other in-memory structure as your <see cref="IList{T}"/>.</param>
+        /// <param name="stringList">
+        ///     You may wish to be careful to only use this for short-lived loggers, if you
+        ///     use a <see cref="List{T}" /> or other in-memory structure as your <see cref="IList{T}" />.
+        /// </param>
         public ListOfStringSink(IList<string> stringList, ITextFormatter textFormatter)
         {
-            _textFormatter = textFormatter ?? throw new ArgumentNullException(nameof(textFormatter));
+            _textFormatter  = textFormatter ?? throw new ArgumentNullException(nameof(textFormatter));
             this.stringList = stringList;
         }
 
@@ -52,7 +57,5 @@ namespace Serilog.Sinks.ListOfString
             var formatter = new MessageTemplateTextFormatter(DefaultOutputTemplate, null);
             return new ListOfStringSink(stringList, formatter);
         }
-
-        internal const string DefaultOutputTemplate = "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level}] {Message}{NewLine}{Exception}";
     }
 }

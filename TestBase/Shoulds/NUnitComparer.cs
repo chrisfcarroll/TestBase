@@ -28,28 +28,28 @@ using System.Reflection;
 namespace TestBase
 {
     /// <summary>
-    /// NUnitComparer encapsulates NUnit's default behavior
-    /// in comparing two objects.
+    ///     NUnitComparer encapsulates NUnit's default behavior
+    ///     in comparing two objects.
     /// </summary>
     public class NUnitComparer : IComparer
     {
         /// <summary>
-        /// Returns the default NUnitComparer.
+        ///     Returns the default NUnitComparer.
         /// </summary>
         public static NUnitComparer Default => new NUnitComparer();
 
         /// <summary>
-        /// Compares two objects
+        ///     Compares two objects
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <returns></returns>
         public int Compare(object x, object y)
         {
-            if (x == null) return y == null ? 0 : -1;
+            if (x      == null) return y == null ? 0 : -1;
             else if (y == null) return +1;
 
-            if (x is char c && y is char) return c == (char)y ? 0 : 1;
+            if (x is char c && y is char) return c == (char) y ? 0 : 1;
 
             if (Numerics.IsNumericType(x) && Numerics.IsNumericType(y))
                 return Numerics.Compare(x, y);
@@ -58,14 +58,14 @@ namespace TestBase
 
             if (y is IComparable comparable1) return -comparable1.CompareTo(x);
 
-            Type xType = x.GetType();
-            Type yType = y.GetType();
+            var xType = x.GetType();
+            var yType = y.GetType();
 
-            var method = xType.GetTypeInfo().GetMethod("CompareTo", new Type[] { yType });
-            if (method != null)return (int)method.Invoke(x, new object[] { y });
+            var method = xType.GetTypeInfo().GetMethod("CompareTo", new[] {yType});
+            if (method != null) return (int) method.Invoke(x, new[] {y});
 
-            method = yType.GetTypeInfo().GetMethod("CompareTo", new Type[] { xType });
-            if (method != null)return -(int)method.Invoke(y, new object[] { x });
+            method = yType.GetTypeInfo().GetMethod("CompareTo", new[] {xType});
+            if (method != null) return -(int) method.Invoke(y, new[] {x});
 
             throw new ArgumentException("Neither value implements IComparable or IComparable<T>");
         }

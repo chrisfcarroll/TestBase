@@ -19,7 +19,7 @@ namespace TestBase.Tests.HttpContextTests
         [Test]
         public void Should_get_a_context_an_httpcontext_and_a_request()
         {
-            var uut= new FakeController().WithHttpContextAndRoutes();
+            var uut = new FakeController().WithHttpContextAndRoutes();
             uut.ControllerContext.ShouldNotBeNull();
             uut.ControllerContext.HttpContext.ShouldNotBeNull();
             uut.ControllerContext.HttpContext.Request.ShouldNotBeNull();
@@ -39,7 +39,7 @@ namespace TestBase.Tests.HttpContextTests
         {
             var uut = new FakeController().WithHttpContextAndRoutes();
             uut.Url.Action("a", "b").ShouldEqual("/b/a");
-            uut.Url.Action("a", "b", new {id=1, otherparameter="2"}).ShouldEqual("/b/a/1?otherparameter=2");
+            uut.Url.Action("a", "b", new {id = 1, otherparameter = "2"}).ShouldEqual("/b/a/1?otherparameter=2");
             uut.Url.Action("Index", "Home").ShouldEqual("/"); //because RouteConfig defines Home/Index as the default
         }
 
@@ -48,7 +48,8 @@ namespace TestBase.Tests.HttpContextTests
         {
             var uut = new FakeController().WithHttpContextAndRoutes(RegisterFakeRoutes);
             uut.Url.Action("a", "c").ShouldEqual("/custom/c-a");
-            uut.Url.Action("a", "c", new { id = 1, otherparameter = "2" }).ShouldEqual("/custom/c-a/1?otherparameter=2");
+            uut.Url.Action("a", "c", new { id = 1, otherparameter =
+ "2" }).ShouldEqual("/custom/c-a/1?otherparameter=2");
             uut.Url.Action("Index", "Home").ShouldEqual("/custom/Home-Index"); 
         }
 

@@ -5,9 +5,9 @@ namespace TestBase
 {
     public static class WithExtensions
     {
-        public static IEnumerable<T> Each<T>(this IEnumerable<T> ienumerable, Action<T> applyToEach) 
+        public static IEnumerable<T> Each<T>(this IEnumerable<T> ienumerable, Action<T> applyToEach)
         {
-            foreach (var i in ienumerable) { applyToEach(i); }
+            foreach (var i in ienumerable) applyToEach(i);
             return ienumerable;
         }
 
@@ -17,7 +17,9 @@ namespace TestBase
             return @this;
         }
 
-        public static TResult WithTransform<TSource, TResult>(this TSource @this, Func<TSource, TResult> transformFunction)
+        public static TResult WithTransform<TSource, TResult>(
+            this TSource           @this,
+            Func<TSource, TResult> transformFunction)
         {
             return transformFunction(@this);
         }

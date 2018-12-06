@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Linq.Expressions;
 using System.Reflection;
 
 namespace TestBase
 {
-#if NET40
+    #if NET40
     /// <summary>
     /// Extension methods to ease net40«--»netstandard code sharing.
     /// Backfills methods in NetStandard but not in Net40
@@ -40,7 +38,7 @@ namespace TestBase
 
 
     }
-#else
+    #else
 
-#endif
+    #endif
 }

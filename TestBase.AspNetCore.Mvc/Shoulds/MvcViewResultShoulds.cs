@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
@@ -25,32 +24,28 @@ namespace TestBase
 
         public static ViewResult ShouldBeDefaultView(this IActionResult @this)
         {
-            var @thisView = @this.ShouldBeViewResult();
-            Assert.That(thisView.ViewName == "" || thisView.ViewName.ToLower() == "index", "expected default view name, got {0}", thisView.ViewName);
+            var thisView = @this.ShouldBeViewResult();
+            Assert.That(thisView.ViewName == "" || thisView.ViewName.ToLower() == "index",
+                        "expected default view name, got {0}",
+                        thisView.ViewName);
             return thisView;
         }
 
         public static object ShouldHaveViewDataForKey(this ViewResult @this, string key)
         {
             Assert.That(@this.ViewData.ContainsKey(key),
-                String.Format("Keys present: {0}", String.Join(";", @this.ViewData.Keys.ToArray())));
+                        string.Format("Keys present: {0}", string.Join(";", @this.ViewData.Keys.ToArray())));
             return @this.ViewData[key];
         }
 
         public static object ShouldHaveViewDataForKeys(this ViewResult @this, params string[] keys)
         {
-            foreach (var key in keys)
-            {
-                @this.ShouldHaveViewDataForKey(key);
-            }
+            foreach (var key in keys) @this.ShouldHaveViewDataForKey(key);
 
             return @this;
         }
 
-        public static T ShouldHaveModel<T>(this ViewResult @this)
-        {
-            return @this.ViewData.Model.ShouldBeOfType<T>();
-        }
+        public static T ShouldHaveModel<T>(this ViewResult @this) { return @this.ViewData.Model.ShouldBeOfType<T>(); }
 
         public static ViewResult ShouldBeAValidModel(this ViewResult @this)
         {
