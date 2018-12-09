@@ -40,8 +40,8 @@ namespace PredicateDictionary
         {
             get
             {
-                try { return AsEnumerable.First(kv => kv.Key == keyPredicate).Value; } catch (InvalidOperationException
-                    e) { throw new KeyNotFoundException("Sequence contains no matching element."); }
+                try { return AsEnumerable.First(kv => kv.Key == keyPredicate).Value; } 
+                catch (InvalidOperationException) { throw new KeyNotFoundException("Sequence contains no matching element."); }
             }
         }
 
@@ -102,10 +102,8 @@ namespace PredicateDictionary
         {
             get
             {
-                try { return AsEnumerable.First(kv => kv.Key(key)).Value; } catch (InvalidOperationException e)
-                {
-                    throw new KeyNotFoundException("Sequence contains no matching element.");
-                }
+                try { return AsEnumerable.First(kv => kv.Key(key)).Value; } 
+                catch (InvalidOperationException){ throw new KeyNotFoundException("Sequence contains no matching element.");}
             }
             set
             {

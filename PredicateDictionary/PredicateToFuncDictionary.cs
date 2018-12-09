@@ -25,10 +25,8 @@ namespace PredicateDictionary
             get
             {
                 Func<T, TValue> func;
-                try { func = AsEnumerable.First(kv => kv.Key(key)).Value; } catch (InvalidOperationException e)
-                {
-                    throw new KeyNotFoundException("Sequence contains no matching element.");
-                }
+                try { func = AsEnumerable.First(kv => kv.Key(key)).Value; } 
+                catch (InvalidOperationException){ throw new KeyNotFoundException("Sequence contains no matching element.");}
 
                 return func(key);
             }
