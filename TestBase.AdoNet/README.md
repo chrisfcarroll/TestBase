@@ -25,6 +25,8 @@ Fake and verify AdoNet queries and commands
 - fakeDbConnection.ShouldHaveUpdated("tableName", [Optional] fieldList, whereClauseField)
 - fakeDbConnection.ShouldHaveDeleted("tableName", whereClauseField)
 - fakeDbConnection.ShouldHaveInvoked(cmd => predicate(cmd))
+- fakeDbConnection.ShouldHaveExecutedStoredProcedure("name", [Optional] predicate)
+- fakeDbConnection.ShouldHaveExecutedStoredProcedureWithParameter("name", predicateOnParameter)
 - fakeDbConnection.ShouldHaveXXX().ShouldHaveParameter("name", value)
 - fakeDbConnection.Verify(x=>x.CommandText.Matches("Insert [case] .*") && x.Parameters["id"].Value==1)
 ```
