@@ -2,10 +2,11 @@
 using System.Web.Routing;
 using NUnit.Framework;
 using TestBase;
-
 // ReSharper disable Mvc.ActionNotResolved
 // ReSharper disable Mvc.ControllerNotResolved
 // ReSharper disable Html.PathError
+
+#if !MONO
 
 namespace TestBaseMvc.Tests
 {
@@ -21,7 +22,7 @@ namespace TestBaseMvc.Tests
                             new {controller = "CustomC", action = "CustomA", id = UrlParameter.Optional}
                            );
         }
-
+        
         [Test]
         public void Should_get_a_urlHelper_which_respects_appVirtualPath()
         {
@@ -42,3 +43,5 @@ namespace TestBaseMvc.Tests
         }
     }
 }
+
+#endif
