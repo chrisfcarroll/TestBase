@@ -1,8 +1,8 @@
-*TestBase* gives you a flying start with 
+*TestBase* work on .Net, Mono, and .NetCore and gives you a flying start with 
 - fluent assertions that are easy to extend
 - sharp error messages
 - tools to help you test with "heavyweight" dependencies on 
-	- AspNet.Mvc or AspNetCore Contexts
+	- AspNet.Mvc or AspNetCore.Mvc Contexts
  	- HttpClient
 	- Ado.Net
 	- Streams & Logging
@@ -158,7 +158,7 @@ public class WhenTestingControllersUsingAspNetCoreTestTestServer : HostedMvcTest
 }
 ```
 
-TestBase.Mvc for Mvc4 and Mvc 5
+TestBase.Mvc for Mvc4 and Mvc 5 on .Net and Mono
 ------------------
 Use the `Controller.WithHttpContextAndRoutes()` extension methods to fake the 
 http request &amp; context. And, by injecting the RegisterRoutes method of your

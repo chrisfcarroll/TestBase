@@ -23,6 +23,7 @@ namespace TestBase
 
     public static class MockHttpContextHelper
     {
+        static MockHttpContextHelper(){MockHttpContextMonoAppDomainValues.Ensure();}
         public static T WithHttpContextAndRoutes<T>(
             this T                  @this,
             Action<RouteCollection> mvcApplicationRoutesRegistration = null,

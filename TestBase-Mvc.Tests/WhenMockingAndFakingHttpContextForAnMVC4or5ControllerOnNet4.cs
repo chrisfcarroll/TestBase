@@ -10,9 +10,7 @@ namespace TestBaseMvc.Tests
     [TestFixture]
     public class WhenMockingAndFakingHttpContextForAnMVC4or5ControllerOnNet4
     {
-#if !MONO        
         [Test]
-#endif
         public void Cookies_should_work()
         {
             var uut = new ATestController(new IDependency()).WithHttpContextAndRoutes();
@@ -42,9 +40,8 @@ namespace TestBaseMvc.Tests
             HttpContext.Current.ShouldNotBeNull();
             HttpContext.Current.Request.Url.ShouldEqual(uut.Request.Url);
         }
-#if !MONO
+
         [Test]
-#endif
         public void Should_get_a_working_urlhelper__Given_no_routeConfig()
         {
             var uut = new StubController().WithHttpContextAndRoutes();

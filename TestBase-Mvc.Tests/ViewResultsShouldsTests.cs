@@ -12,10 +12,6 @@ namespace TestBaseMvc.Tests
     [TestFixture]
     public class ViewResultShoulds
     {
-#if MONO
-        [Test]
-        public void SomeTestsDontYetRunOnMono(){}
-#else        
         [Test]
         public void ShouldBeViewWithModel_ShouldAssertViewResultAndNameAndModel()
         {
@@ -28,6 +24,5 @@ namespace TestBaseMvc.Tests
             viewModel.LinkToSelf.ShouldBe("/ATest/AView");
             viewModel.LinkToOther.ShouldBe("/Other/Thing");
         }
-#endif
     }
 }
