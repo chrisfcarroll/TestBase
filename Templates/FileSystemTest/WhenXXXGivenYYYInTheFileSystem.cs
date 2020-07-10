@@ -10,7 +10,7 @@ using Xunit;
 using TheoryAttribute=Xunit.TheoryAttribute;
 #endif
 
-namespace parentNamespace.FileSystemTest
+namespace FileSystemTest
 {
     public class WhenXXX
     {

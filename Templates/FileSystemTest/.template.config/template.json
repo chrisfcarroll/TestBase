@@ -5,7 +5,6 @@
   "identity": "testbase.filesystemtest",
   "name": "Testbase FileSystem Test",
   "shortName": "filesystemtest",
-  "preferNameDirectory": true,
   "sourceName": "FileSystemTest",
   "tags": {
     "language": "C#",
@@ -21,12 +20,6 @@
       "type": "parameter",
       "datatype": "bool",
       "defaultValue": "false"
-    },
-    "parentNamespaceDot":{
-      "type":"parameter",
-      "datatype": "string",
-      "defaultValue": "",
-      "replaces": "parentNamespace."
     }
   }
 }

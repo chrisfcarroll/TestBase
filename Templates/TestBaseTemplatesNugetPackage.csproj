@@ -1,0 +1,51 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <PackageType>Template</PackageType>
+    <PackageVersion>0.1</PackageVersion>
+    <PackageId>TestBase.Templates</PackageId>
+    <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/chrisfcarroll/TestBase</PackageProjectUrl>
+    <PackageTags>dotnet-new;templates;nunit;test;testbase</PackageTags>
+    <Copyright>(c) Chris F. Carroll, 2013-2020</Copyright>
+    <Authors>https://github.com/chrisfcarroll</Authors>
+    <Owners>Chris F Carroll</Owners>
+    <RepositoryUrl>https://github.com/chrisfcarroll/TestBase</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <Title>TestBase Template for a command-lineable component</Title>
+    <Description><![CDATA[–––*Prerelease*–––
+
+Item templates for test projects.
+
+Usage:
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+dotnet new filesystemtest [--name namespace]  [--xunit] [--nunit]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# --xunit : Generate an xunit test
+# --nunit : Generate an nunit test
+# --name  : The namespace to use in the generated file. Defaults to 
+#           just the current directory leaf name.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+https://github.com/chrisfcarroll/TestBase]]></Description>
+    <PackageReleaseNotes>
+      ChangeLog
+      ---------
+      1.0 First release for testbase, supports xunit, nunit
+    </PackageReleaseNotes>
+    <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <IncludeContentInPack>true</IncludeContentInPack>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <ContentTargetFolders>content</ContentTargetFolders>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="**\*" Exclude="*;bin\*;obj\*;**\.DS_Store;**\.*\**" />
+    <Compile Remove="**\*" />
+  </ItemGroup>
+
+</Project>
