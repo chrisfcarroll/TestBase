@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "https://github.com/chrisfcarroll",
+  "classifications": [ "Test","TestBase", "NUnit", "xUnit" ],
+  "identity": "testbase.filesystemtest",
+  "name": "Testbase FileSystem Test",
+  "shortName": "filesystemtest",
+  "preferNameDirectory": true,
+  "sourceName": "FileSystemTest",
+  "tags": {
+    "language": "C#",
+    "type": "item"
+  },
+  "symbols": {
+    "xunit": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "false"
+    },
+    "nunit": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "false"
+    },
+    "parentNamespaceDot":{
+      "type":"parameter",
+      "datatype": "string",
+      "defaultValue": "",
+      "replaces": "parentNamespace."
+    }
+  }
+}
