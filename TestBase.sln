@@ -10,8 +10,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{38482729-2B2B-4584-A129-208555C6F1F6}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
-		limbo.ps1 = limbo.ps1
-		NugetPackAllExpectTestBase-Mvc.ps1 = NugetPackAllExpectTestBase-Mvc.ps1
 		NugetPackTestBase-Mvc.cmd = NugetPackTestBase-Mvc.cmd
 		README.md = README.md
 	EndProjectSection
