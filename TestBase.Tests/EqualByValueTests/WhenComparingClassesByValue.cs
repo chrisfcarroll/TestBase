@@ -41,5 +41,19 @@ namespace TestBase.Tests.EqualByValueTests
         }
 
         [Test] public void Should_return_true_when_the_same() { object1.EqualsByValue(object1again).ShouldBeTrue(); }
+        
+        [Test]
+        public void Should_return_false_when_left_is_null_and_right_is_not()
+        {
+            (null as AClass).EqualsByValue(object1)
+                .ShouldBeFalse("Failed to distinguish left is not null from right=null");
+        }
+        
+        [Test]
+        public void Should_return_false_when_left_is_not_null_and_right_is_null()
+        {
+            object1.EqualsByValue(null as AClass)
+                .ShouldBeFalse("Failed to distinguish left=null right=not null");
+        }
     }
 }

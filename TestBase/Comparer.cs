@@ -466,22 +466,20 @@ namespace TestBase
             if (ReferenceEquals(left, right)) return true;
 
             if (left == null)
-                if (right is IEnumerable)
-                {
-                    if (((IEnumerable) right).HasAnyElements())
-                        return BoolWithString.False("Left is null IEnumerable, Right is non-empty");
-                    return true;
-                }
-
-            if (right == null)
-                if (left is IEnumerable leftasIEnumerable)
-                {
-                    if (leftasIEnumerable.HasAnyElements())
-                        return BoolWithString.False("Left is non-empty IEnumerable, Right is null IEnumerable");
-                    return true;
-                }
+                return right is IEnumerable && !(right as IEnumerable).HasAnyElements()
+                    ? (BoolWithString) true
+                    : BoolWithString.False(
+                        string.Format("Left is null, Right is {0} {1}",
+                            right.GetType(), right));
             
-            // probably not the same if types are different.
+            if (right == null)
+                return left is IEnumerable && !(left as IEnumerable).HasAnyElements()
+                    ? (BoolWithString) true
+                    : BoolWithString.False(
+                        string.Format("Left is {0} {1}, Right is null",
+                            left.GetType(), left));
+
+            // if we got here, neither left nor right are null
             var leftType  = left.GetType();
             var rightType = right.GetType();
 
