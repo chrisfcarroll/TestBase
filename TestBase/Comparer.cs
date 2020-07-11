@@ -27,6 +27,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 
@@ -237,7 +238,7 @@ namespace TestBase
         /// <param name="floatTolerance"></param>
         /// <returns>
         ///     <see cref="BoolWithString.True" /> if the Members of <paramref name="left" /> and <paramref name="right" />
-        ///     —excluding those named in <paramref name="exclusionList" />— are equal by value, or a
+        ///     ï¿½excluding those named in <paramref name="exclusionList" />ï¿½ are equal by value, or a
         ///     <see cref="BoolWithString.False" /> bearing a description of the first discrepancy if not.
         /// </returns>
         public static BoolWithString EqualsByValueOrDiffersExceptFor(
@@ -308,7 +309,7 @@ namespace TestBase
         /// </param>
         /// <returns>
         ///     <see cref="BoolWithString.True" /> if the Members of <paramref name="left" /> and <paramref name="right" />
-        ///     —excluding those named in <paramref name="exclusionList" />— are equal by value, or a
+        ///     ï¿½excluding those named in <paramref name="exclusionList" />ï¿½ are equal by value, or a
         ///     <see cref="BoolWithString.False" /> bearing a description of the first discrepancy if not.
         /// </returns>
         public static BoolWithString EqualsByValueExceptFor(
@@ -336,7 +337,7 @@ namespace TestBase
         /// <param name="floatTolerance"></param>
         /// <returns>
         ///     <see cref="BoolWithString.True" /> if the Members of <paramref name="left" /> and <paramref name="right" />
-        ///     —excluding those named in <paramref name="exclusionList" />— are equal by value, or else a
+        ///     ï¿½excluding those named in <paramref name="exclusionList" />ï¿½ are equal by value, or else a
         ///     <see cref="BoolWithString.False" /> which includes a description and the location of the first discrepancy found.
         /// </returns>
         public static BoolWithString EqualsByValueExceptFor(
@@ -352,7 +353,7 @@ namespace TestBase
         /// <summary>
         ///     Synonym for <see cref="MemberCompare(object,object,IEnumerable{string},IEnumerable{string},double,bool)" />
         ///     Compare two objects by recursively iterating over their elements (if they are Enumerable)
-        ///     and over their properties —whether public or private— and over their public fields.
+        ///     and over their properties ï¿½whether public or privateï¿½ and over their public fields.
         ///     Recursion stops at value types and at types (including string) which override Equals()
         /// </summary>
         /// <param name="left"></param>
@@ -369,7 +370,7 @@ namespace TestBase
         /// <summary>
         ///     Synonym for <see cref="MemberCompare(object,object,IEnumerable{string},IEnumerable{string},double,bool)" />
         ///     Compare two objects by recursively iterating over their elements (if they are Enumerable)
-        ///     and over their properties —whether public or private— and over their public fields.
+        ///     and over their properties ï¿½whether public or privateï¿½ and over their public fields.
         ///     Recursion stops at value types and at types (including string) which override Equals()
         /// </summary>
         /// <param name="left"></param>
@@ -386,7 +387,7 @@ namespace TestBase
 
         /// <summary>
         ///     Compare two objects by recursively iterating over their elements (if they are Enumerable)
-        ///     and over their properties —whether public or private— and over their public fields.
+        ///     and over their properties ï¿½whether public or privateï¿½ and over their public fields.
         ///     Recursion stops when it arrives at either a value type, or at a type (such as <see cref="String" />) which override
         ///     <see cref="object.Equals(object)" />
         /// </summary>
@@ -479,11 +480,23 @@ namespace TestBase
                         return BoolWithString.False("Left is non-empty IEnumerable, Right is null IEnumerable");
                     return true;
                 }
-
-            // not the same if types are different.
+            
+            // probably not the same if types are different.
             var leftType  = left.GetType();
             var rightType = right.GetType();
 
+            // avoid StackOverflows
+            if (left is FileSystemInfo && right is FileSystemInfo)
+            {
+                return (left as FileSystemInfo).EqualsOrDiffers(right as FileSystemInfo);
+            }
+            else if (left is FileSystemInfo || right is FileSystemInfo)
+            {
+                return BoolWithString.False(
+                    string.Format("Left is {0}, Right is {1}", leftType, rightType));
+            }
+
+            
             if (left is double || left is float || left is IComparable<double> || left is IComparable<float>)
                 try { return ((double) left).EqualsOrDiffers((double) right, floatTolerance); } catch (Exception)
                 {
@@ -755,6 +768,16 @@ namespace TestBase
                    : BoolWithString.False(
                                           string.Format("Values are different \"{0}\" vs \"{1}\"", left, right)
                                          );
+        }
+        
+        internal static BoolWithString EqualsOrDiffers<T>(this T left, T right) where T : FileSystemInfo
+        {
+            return left?.FullName==right?.FullName
+                ? (BoolWithString) true
+                : BoolWithString.False(
+                    string.Format("{0} Paths differ \"{1}\" vs \"{2}\"", 
+                        left.GetType().FullName,  left?.FullName, right?.FullName)
+                );
         }
     }
 }
