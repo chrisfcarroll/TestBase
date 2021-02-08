@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2036
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestBase.Tests", "TestBase.Tests\TestBase.Tests.csproj", "{E0A3157E-41C9-4E2A-8526-02B82537F868}"
 EndProject
@@ -35,8 +35,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestBase-Mvc.Tests", "TestBase-Mvc.Tests\TestBase-Mvc.Tests.csproj", "{FDEDC6A4-D54B-4D9C-80A9-20A91C07DBBD}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestBase.TestsNet45", "TestBase.TestsNet45\TestBase.TestsNet45.csproj", "{1CEBC199-358B-426C-87AB-45A2765E8C8C}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItemTemplates", "Templates\ItemTemplates.csproj", "{7AC49FAE-5F5A-4BA2-8FF1-FF39A75D4051}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -96,10 +94,6 @@ Global
 		{1CEBC199-358B-426C-87AB-45A2765E8C8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1CEBC199-358B-426C-87AB-45A2765E8C8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1CEBC199-358B-426C-87AB-45A2765E8C8C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7AC49FAE-5F5A-4BA2-8FF1-FF39A75D4051}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7AC49FAE-5F5A-4BA2-8FF1-FF39A75D4051}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7AC49FAE-5F5A-4BA2-8FF1-FF39A75D4051}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7AC49FAE-5F5A-4BA2-8FF1-FF39A75D4051}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
