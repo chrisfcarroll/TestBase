@@ -36,6 +36,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestBase.TestsNet45", "Test
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GuineaPig.AspNetCore2", "GuineaPig.AspNetCore2\GuineaPig.AspNetCore2.csproj", "{3AB5BB0F-EDB0-46E1-AE28-97A8B69F6A4A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestBase.AspNetCore3", "TestBase.AspNetCore3\TestBase.AspNetCore3.csproj", "{76E8ACA5-A883-482E-A909-E5D7BFD74C70}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -94,6 +96,10 @@ Global
 		{3AB5BB0F-EDB0-46E1-AE28-97A8B69F6A4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3AB5BB0F-EDB0-46E1-AE28-97A8B69F6A4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3AB5BB0F-EDB0-46E1-AE28-97A8B69F6A4A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{76E8ACA5-A883-482E-A909-E5D7BFD74C70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76E8ACA5-A883-482E-A909-E5D7BFD74C70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76E8ACA5-A883-482E-A909-E5D7BFD74C70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76E8ACA5-A883-482E-A909-E5D7BFD74C70}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
