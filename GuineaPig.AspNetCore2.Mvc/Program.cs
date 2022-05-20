@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
-namespace TestBase.Mvc.AspNetCore.GuineaPig
+namespace GuineaPig.AspNetCore2
 {
     public class Program
     {

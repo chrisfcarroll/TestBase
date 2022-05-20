@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace TestBase.Mvc.AspNetCore.GuineaPig
+namespace GuineaPig.AspNetCore2
 {
     public class Startup
     {

@@ -1,8 +1,8 @@
 ﻿using System.Diagnostics;
+using GuineaPig.AspNetCore2.Models;
 using Microsoft.AspNetCore.Mvc;
-using TestBase.Mvc.AspNetCore.GuineaPig.Models;
 
-namespace TestBase.Mvc.AspNetCore.GuineaPig.Controllers
+namespace GuineaPig.AspNetCore2.Controllers
 {
     public class HomeController : Controller
     {

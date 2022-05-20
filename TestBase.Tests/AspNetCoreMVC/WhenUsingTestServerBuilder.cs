@@ -13,7 +13,7 @@ namespace TestBase.Tests.AspNetCoreMVC
             Assert.DoesNotThrow(
                                 () =>
                                 TestServerBuilder
-                               .RunningServerUsingStartupAndContentRoot<Mvc.AspNetCore.GuineaPig.Startup>(
+                               .RunningServerUsingStartupAndContentRoot<GuineaPig.AspNetCore2.Startup>(
                                                                                                           null,
                                                                                                           "Development",
                                                                                                           null));
@@ -22,7 +22,7 @@ namespace TestBase.Tests.AspNetCoreMVC
         [Test]
         public void Should_get_services_configuredbyStartupClass()
         {
-            var server = TestServerBuilder.RunningServerUsingStartup<Mvc.AspNetCore.GuineaPig.Startup>();
+            var server = TestServerBuilder.RunningServerUsingStartup<GuineaPig.AspNetCore2.Startup>();
             server.Host.Services
                   .GetService(typeof(ILogger<WhenUsingTestServerBuilder>))
                   .ShouldBeOfType<Logger<WhenUsingTestServerBuilder>>();

@@ -24,8 +24,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Serilog.Sinks.ListOfString"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestBase.AspNetCore.Mvc", "TestBase.AspNetCore.Mvc\TestBase.AspNetCore.Mvc.csproj", "{7D3A3024-33EB-45E4-9FC7-0AAD095187E1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestBase.Mvc.AspNetCore.GuineaPig", "TestBase.AspNetCore.Mvc.GuineaPig\TestBase.Mvc.AspNetCore.GuineaPig.csproj", "{2462C9FD-9F47-44C9-A4DC-068E799EBA4C}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PredicateDictionary", "PredicateDictionary\PredicateDictionary.csproj", "{7BECD140-D58C-42C2-B192-36DFAC3E0F67}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PredicateDictionary.Specs", "PredicateDictionary.Specs\PredicateDictionary.Specs.csproj", "{944D668E-385C-480B-BF84-454E112CEC7F}"
@@ -35,6 +33,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestBase-Mvc.Tests", "TestBase-Mvc.Tests\TestBase-Mvc.Tests.csproj", "{FDEDC6A4-D54B-4D9C-80A9-20A91C07DBBD}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestBase.TestsNet45", "TestBase.TestsNet45\TestBase.TestsNet45.csproj", "{1CEBC199-358B-426C-87AB-45A2765E8C8C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GuineaPig.AspNetCore2", "GuineaPig.AspNetCore2.Mvc\GuineaPig.AspNetCore2.csproj", "{CAF0BEAF-358B-4F44-A0D1-FCF1F086ED22}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -70,10 +70,6 @@ Global
 		{7D3A3024-33EB-45E4-9FC7-0AAD095187E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7D3A3024-33EB-45E4-9FC7-0AAD095187E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7D3A3024-33EB-45E4-9FC7-0AAD095187E1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2462C9FD-9F47-44C9-A4DC-068E799EBA4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2462C9FD-9F47-44C9-A4DC-068E799EBA4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2462C9FD-9F47-44C9-A4DC-068E799EBA4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2462C9FD-9F47-44C9-A4DC-068E799EBA4C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7BECD140-D58C-42C2-B192-36DFAC3E0F67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7BECD140-D58C-42C2-B192-36DFAC3E0F67}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7BECD140-D58C-42C2-B192-36DFAC3E0F67}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -94,6 +90,10 @@ Global
 		{1CEBC199-358B-426C-87AB-45A2765E8C8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1CEBC199-358B-426C-87AB-45A2765E8C8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1CEBC199-358B-426C-87AB-45A2765E8C8C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CAF0BEAF-358B-4F44-A0D1-FCF1F086ED22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CAF0BEAF-358B-4F44-A0D1-FCF1F086ED22}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CAF0BEAF-358B-4F44-A0D1-FCF1F086ED22}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CAF0BEAF-358B-4F44-A0D1-FCF1F086ED22}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

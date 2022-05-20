@@ -1,4 +1,4 @@
-namespace TestBase.Mvc.AspNetCore.GuineaPig.Models
+namespace GuineaPig.AspNetCore2.Models
 {
     public class ErrorViewModel
     {

@@ -20,8 +20,8 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Extensions.Logging.ListOfString\Extensions.Logging.ListOfString.csproj" />
+    <ProjectReference Include="..\GuineaPig.AspNetCore2.Mvc\GuineaPig.AspNetCore2.csproj" />
     <ProjectReference Include="..\Serilog.Sinks.LostOfString\Serilog.Sinks.ListOfString.csproj" />
-    <ProjectReference Include="..\TestBase.AspNetCore.Mvc.GuineaPig\TestBase.Mvc.AspNetCore.GuineaPig.csproj" />
     <ProjectReference Include="..\TestBase.AspNetCore.Mvc\TestBase.AspNetCore.Mvc.csproj" />
     <ProjectReference Include="..\TestBase.FakeHttpClient\TestBase.HttpClient.Fake.csproj" />
     <ProjectReference Include="..\TestBase\TestBase.csproj" />
