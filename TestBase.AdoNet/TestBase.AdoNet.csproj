@@ -91,13 +91,13 @@ ChangeLog
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.6' ">
     <PackageReference Include="ExpressionToCodeLib" Version="2.7.0" />
     <PackageReference Include="FastExpressionCompiler" Version="1.7.1" />
-    <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="4.4.1" />
     <PackageReference Include="System.Data.Common" Version="4.3.0" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
-    <PackageReference Include="Newtonsoft.Json" Version="7.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="ExpressionToCodeLib" Version="2.7.0" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
   </ItemGroup>
