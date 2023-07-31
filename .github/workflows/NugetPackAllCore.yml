@@ -7,7 +7,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
+  Pack:
 
     runs-on: ubuntu-latest
 
@@ -21,6 +21,11 @@ jobs:
       run: dotnet restore
     - name: Build
       run: dotnet build --no-restore
+    - name: Show pwd
+      run: |
+        pwd
+        ls -l . 
+        ls -ld *
     - name: NugetPackAllCore.ps1
       run: NugetPackAllCore.ps1
       shell: pwsh
