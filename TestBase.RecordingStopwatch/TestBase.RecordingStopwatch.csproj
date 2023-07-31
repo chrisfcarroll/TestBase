@@ -5,5 +5,37 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+  
+  <PropertyGroup>
+    <AssemblyVersion>4.2.1</AssemblyVersion>
+    <AssemblyFileVersion>4.2.1</AssemblyFileVersion>
+    <PackageVersion>4.2.1</PackageVersion>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <Title>RecordingStopwatch - A Stopwatch which records a List&lt;(Event,Elapsed)&gt; of added events</Title>
+    <PackageDescription><![CDATA[
+```
+var timer= new RecordingStopwatch().Start();
+timer.Add("Event1");
+timer.Add("Event2");
+Console.Outline( timer.ToString() );
+var record= timer.Timings.Select(t=> (t.Event, t.SecondsElapse)).ToList();
+timer.Stop();
+timer.ClearAndStart();
+```]]></PackageDescription>
+    <PackageReleaseNotes>
+      ChangeLog
+      ---------
+      4.2.1   First release
+    </PackageReleaseNotes>
+    <Copyright>(c) Chris F. Carroll, 2023</Copyright>
+    <PackageLicenseExpression>MS-PL</PackageLicenseExpression>
+    <Authors>Chris F Carroll</Authors>
+    <Owners>Chris F Carroll</Owners>
+    <PackageProjectUrl>https://github.com/chrisfcarroll/TestBase/TestBase.RecordingStopwatch</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/chrisfcarroll/TestBase</RepositoryUrl>
+    <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
+    <IncludeSymbols>true</IncludeSymbols>
+    <PackageTags>stopwatch;logging;test;timer</PackageTags>    
+  </PropertyGroup>
 
 </Project>
