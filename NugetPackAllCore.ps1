@@ -22,8 +22,9 @@ echo > /dev/null <<"out-null" ###
 pushd $PSScriptRoot
 try
 {
-	gci -rec *.nupkg | %{ rm $_ }
+  gci -rec *.nupkg | %{ rm $_ }
   gci -Directory TestBase* | %{ dotnet pack $_.Name }
+  dotnet pack PredicateDictionary
 }
 finally{ popd }
 
