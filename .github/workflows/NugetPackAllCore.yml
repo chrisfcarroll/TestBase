@@ -27,5 +27,5 @@ jobs:
         ls -l . 
         ls -ld *
     - name: NugetPackAllCore.ps1
-      run: NugetPackAllCore.ps1
+      run: ./NugetPackAllCore.ps1
       shell: pwsh
