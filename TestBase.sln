@@ -36,6 +36,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestBase.RecordingStopwatch
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestBase.RecordingStopwatch.Specs", "TestBase.RecordingStopwatch.Specs\TestBase.RecordingStopwatch.Specs.csproj", "{87C890AE-323E-4211-B384-9FDB265E5F03}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TooString", "TooString\TooString.csproj", "{3D665453-947E-4A71-AF73-F9DCA08498DF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TooString.Specs", "TooString.Specs\TooString.Specs.csproj", "{01340417-7199-428E-806A-7CEA62EB8D4C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -94,6 +98,14 @@ Global
 		{87C890AE-323E-4211-B384-9FDB265E5F03}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{87C890AE-323E-4211-B384-9FDB265E5F03}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{87C890AE-323E-4211-B384-9FDB265E5F03}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D665453-947E-4A71-AF73-F9DCA08498DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D665453-947E-4A71-AF73-F9DCA08498DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D665453-947E-4A71-AF73-F9DCA08498DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D665453-947E-4A71-AF73-F9DCA08498DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{01340417-7199-428E-806A-7CEA62EB8D4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{01340417-7199-428E-806A-7CEA62EB8D4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{01340417-7199-428E-806A-7CEA62EB8D4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{01340417-7199-428E-806A-7CEA62EB8D4C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
