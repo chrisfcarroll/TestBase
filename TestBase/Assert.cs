@@ -1,8 +1,7 @@
 using System;
 using System.Linq.Expressions;
-#if NETSTANDARD
+#if NETSTANDARD || NET5_0_OR_GREATER
 using FastExpressionCompiler;
-
 #endif
 
 namespace TestBase

@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using ExpressionToCodeLib;
 using Newtonsoft.Json;
-#if NETSTANDARD
+#if NETSTANDARD || NET5_0_OR_GREATER
 using FastExpressionCompiler;
 #endif
 
@@ -114,10 +114,10 @@ namespace TestBase
         /// </summary>
         public static StringifyMethod[] PreferredToStringMethod =
         {
-        StringifyMethod.DeclaredToStringElseThrow,
-        StringifyMethod.ExpressionToCodeStringify,
-        StringifyMethod.NewtonsoftJsonSerialize,
-        StringifyMethod.InheritedToString
+            StringifyMethod.DeclaredToStringElseThrow,
+            StringifyMethod.ExpressionToCodeStringify,
+            StringifyMethod.NewtonsoftJsonSerialize,
+            StringifyMethod.InheritedToString
         };
 
         static readonly Dictionary<StringifyMethod, Func<object, string>> StringifyMethods =

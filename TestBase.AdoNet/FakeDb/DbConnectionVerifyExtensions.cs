@@ -3,7 +3,6 @@ using System.Linq;
 using System.Linq.Expressions;
 #if NETSTANDARD
 using FastExpressionCompiler;
-
 #endif
 
 namespace TestBase.AdoNet

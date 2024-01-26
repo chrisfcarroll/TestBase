@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <AssemblyVersion>4.1.3.1</AssemblyVersion>
     <AssemblyFileVersion>4.1.3.1</AssemblyFileVersion>
     <IsPackable>false</IsPackable>
@@ -22,7 +22,7 @@
     <ProjectReference Include="..\Extensions.Logging.ListOfString\Extensions.Logging.ListOfString.csproj" />
     <ProjectReference Include="..\GuineaPig.AspNetCore2\GuineaPig.AspNetCore2.csproj" />
     <ProjectReference Include="..\Serilog.Sinks.LostOfString\Serilog.Sinks.ListOfString.csproj" />
-    <ProjectReference Include="..\TestBase.AspNetCore.Mvc\TestBase.AspNetCore.Mvc.csproj" />
+    <ProjectReference Include="..\TestBase.AspNetCore.Mvc.4.1\TestBase.AspNetCore.Mvc.4.1.csproj" />
     <ProjectReference Include="..\TestBase.FakeHttpClient\TestBase.HttpClient.Fake.csproj" />
     <ProjectReference Include="..\TestBase\TestBase.csproj" />
     <ProjectReference Include="..\TestBase.AdoNet\TestBase.AdoNet.csproj" />

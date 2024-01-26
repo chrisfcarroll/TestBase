@@ -5,8 +5,7 @@ using System.Reflection;
 
 namespace TestBase.AdoNet
 {
-    #if NETSTANDARD
-    #else
+    #if !NETSTANDARD
     /// <summary>
     /// Extension methods to ease net40«--»netstandard code sharing.
     /// Backfills methods in NetStandard but not in Net40
