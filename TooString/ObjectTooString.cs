@@ -1,6 +1,7 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
 namespace TooString;
@@ -40,8 +41,13 @@ public static class ObjectTooString
 {
     public const string Null = "null";
 
-    public const string RegexVariableName =
-        @"@?[_\p{L}\p{Nl}][\p{L}\p{Nl}\p{Mn}\p{Mc}\p{Nd}\p{Pc}\p{Cf}]*";
+    const string RegexVariableName =
+        @"@?[_\p{L}\p{Nl}][\p{L}\p{Nl}\p{Mn}\p{Mc}\p{Nd}\p{Pc}\p{Cf}\.]*";
+    
+    const string RegexTypeOrIdentifierNameCharsOnly =
+        @"^[_\p{L}\p{Nl}\p{Mn}\p{Mc}\p{Nd}\p{Pc}\p{Cf}\.\`]+$";
+    
+    
 
     public static string TooString<T>(this T value,
                                       TooStringMethod tooStringMethod =
@@ -53,6 +59,7 @@ public static class ObjectTooString
                {
                    TooStringMethod.BestEffort => ChooseExpressionOrJson(),
                    TooStringMethod.ArgumentExpression => argumentExpression,
+                   TooStringMethod.SystemTextJson => ToJson(value),
                    TooStringMethod.Reflection => TooReflectedString(value),
 
                    _ => value?.ToString()
@@ -62,36 +69,77 @@ public static class ObjectTooString
 
         string ChooseExpressionOrJson()
         {
-            return (Regex.IsMatch(argumentExpression, RegexVariableName))
+            return (Regex.IsMatch(argumentExpression, RegexTypeOrIdentifierNameCharsOnly))
                 ? value.ToJson()
                 : argumentExpression;
         }
     }
 
-    public static string ToJson(this object value)
+    public static string ToJson<T>(this T? value, bool writeIndented=false)
     {
-        return JsonSerializer.Serialize(value);
+        if (typeof(T).FullName == "System.Type" 
+            || 
+            typeof(T).FullName?.StartsWith("System.Reflection") is true)
+        {
+            return TooReflectedString(value, 
+                        writeIndented:writeIndented,
+                        quotePropertyNames:true);
+        }
+
+        try
+        {
+            return JsonSerializer.Serialize(
+                value,
+                new JsonSerializerOptions(JsonSerializerDefaults.General)
+                {
+                    ReferenceHandler = ReferenceHandler.IgnoreCycles,
+                    MaxDepth = 99,
+                    WriteIndented = writeIndented,
+                }
+            );
+        }
+        catch
+        {
+            return TooReflectedString(value, 
+                        writeIndented:writeIndented,
+                        quotePropertyNames:true);
+        }
     }
 
     public static string TooReflectedString<T>(this T? obj,
+                                               bool writeIndented = false,
+                                               bool quotePropertyNames = false,
                                                BindingFlags whichProperties =
                                                    BindingFlags.Instance |
                                                    BindingFlags.Public)
     {
         if (obj is null) return Null;
+        var delimiter = writeIndented ? ",\n" : ",";
+        Func<string,string> q = quotePropertyNames 
+            ? s => $"\"{s?.Replace("`","\\u0060")}\"" 
+            : s => s;
         try
         {
-            return "{ Type=" + nameof(T) + ", " +
-                   string.Join(", ",
+            return "{" + 
+                    q("Type") + $":\"{typeof(T).FullName}\"" + 
+                   delimiter +
+                   string.Join(",",
                        obj.GetType()
                            .GetTypeInfo()
                            .GetProperties(whichProperties)
-                           .Select(p => $"{p.Name}={p.GetValue(obj)}"))
+                           .Where(p=>p.CanRead)
+                           .Select(p => $"{q(p.Name)}:\"{TryGetValue(p).ToString().Replace("`","\\u0060")}\""))
                    + "}";
         }
-        catch (Exception e)
+        catch
         {
-            return obj.ToString();
+            return obj.ToString()??Null;
+        }
+
+        object? TryGetValue(PropertyInfo p)
+        { 
+            try{ return p.GetValue(obj)??"null" ;}
+            catch{return "cantretrieve";}
         }
     }
 }

@@ -1,3 +1,4 @@
+using System.Numerics;
 using static System.Math;
 
 namespace TooString.Specs;
@@ -38,4 +39,13 @@ public class TooStringArgumentExpressionReturnsLiteralCode
             Is.EqualTo( "expectedOneOf.Any(e=> e==actual)" ) );
     }
     
+    [Test]
+    public void GivenAnObjectInitializer()
+    {
+        Assert.That( 
+            ( new CompositeA { A = "boo", B = new Complex(123,45) }  )
+                .TooString(TooStringMethod.ArgumentExpression), 
+            Is.EqualTo( "new CompositeA { A = \"boo\", B = new Complex(123,45) }" ) );
+        
+    }
 }
