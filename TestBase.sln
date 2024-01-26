@@ -22,7 +22,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Extensions.Logging.ListOfSt
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Serilog.Sinks.ListOfString", "Serilog.Sinks.LostOfString\Serilog.Sinks.ListOfString.csproj", "{E0FF5F10-2CB6-4245-8B0D-115FAE80EFBF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestBase.AspNetCore.Mvc", "TestBase.AspNetCore.Mvc\TestBase.AspNetCore.Mvc.csproj", "{7D3A3024-33EB-45E4-9FC7-0AAD095187E1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestBase.AspNetCore.Mvc.4.1", "TestBase.AspNetCore.Mvc.4.1\TestBase.AspNetCore.Mvc.4.1.csproj", "{7D3A3024-33EB-45E4-9FC7-0AAD095187E1}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PredicateDictionary", "PredicateDictionary\PredicateDictionary.csproj", "{7BECD140-D58C-42C2-B192-36DFAC3E0F67}"
 EndProject
