@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
@@ -8,7 +9,7 @@ namespace TooString;
 
 public enum TooStringMethod
 {
-    /// <summary>If <see cref="ArgumentExpression"/> returns more than just a parameter
+    /// <summary>If <see cref="CallerArgument"/> returns more than just a parameter
     /// name, then use it.
     /// Otherwise use <see cref="JsonSerializer"/> 
     /// </summary>
@@ -17,7 +18,7 @@ public enum TooStringMethod
     /// <summary>Use
     /// <see cref="CallerArgumentExpressionAttribute"/> available on Net5.0 and above
     /// </summary>
-    ArgumentExpression,
+    CallerArgument,
 
     /// <summary>Use
     /// <see cref="JsonSerializer.Serialize(object?,System.Type,System.Text.Json.JsonSerializerOptions?)"/>
@@ -55,91 +56,180 @@ public static class ObjectTooString
                                       [CallerArgumentExpression("value")]
                                       string? argumentExpression = null)
     {
-        return tooStringMethod switch
-               {
-                   TooStringMethod.BestEffort => ChooseExpressionOrJson(),
-                   TooStringMethod.ArgumentExpression => argumentExpression,
-                   TooStringMethod.SystemTextJson => ToJson(value),
-                   TooStringMethod.Reflection => TooReflectedString(value),
+        return TooString(value,
+            TooStringOptions.Default with
+            {
+                PreferenceOrder = TooStringOptions
+                    .Default.PreferenceOrder.Prepend(tooStringMethod)
+            }, 
+            argumentExpression);
+    }
 
+    static string TooString<T>(T value,
+                                TooStringOptions tooStringOptions,
+                                [CallerArgumentExpression("value")]
+                                string? argumentExpression = null)
+    {
+        return tooStringOptions.PreferenceOrder.FirstOrDefault() switch
+               {
+                   TooStringMethod.BestEffort => CallerArgumentOrNextPreference(),
+                   TooStringMethod.CallerArgument => argumentExpression,
+                   TooStringMethod.SystemTextJson => ToJson(value,tooStringOptions),
+                   TooStringMethod.Reflection => ToReflectedString(value,tooStringOptions),
                    _ => value?.ToString()
                }
                ??
                Null;
 
-        string ChooseExpressionOrJson()
+        string CallerArgumentOrNextPreference()
         {
-            return (Regex.IsMatch(argumentExpression, RegexTypeOrIdentifierNameCharsOnly))
-                ? value.ToJson()
-                : argumentExpression;
+            foreach (var pref in tooStringOptions.PreferenceOrder.Skip(1))
+            {
+                //Only choose CallerArgument if we captured an expression
+                if (pref== TooStringMethod.CallerArgument
+                    && argumentExpression is not null
+                    && !Regex.IsMatch(argumentExpression,
+                        RegexTypeOrIdentifierNameCharsOnly))
+                    return argumentExpression;
+
+                if (pref == TooStringMethod.Reflection)
+                    return ToReflectedString(value, tooStringOptions);
+
+                if (pref == TooStringMethod.SystemTextJson)
+                    return ToJson(value, tooStringOptions);
+            }
+            return ToJson(value, tooStringOptions);
         }
     }
 
-    public static string ToJson<T>(this T? value, bool writeIndented=false)
+    public static string ToJson<T>(this T? value, TooStringOptions tooStringOptions)
     {
         if (typeof(T).FullName == "System.Type" 
             || 
             typeof(T).FullName?.StartsWith("System.Reflection") is true)
         {
-            return TooReflectedString(value, 
-                        writeIndented:writeIndented,
-                        quotePropertyNames:true);
+            return ToReflectedString(value, tooStringOptions);
         }
 
         try
         {
-            return JsonSerializer.Serialize(
-                value,
-                new JsonSerializerOptions(JsonSerializerDefaults.General)
-                {
-                    ReferenceHandler = ReferenceHandler.IgnoreCycles,
-                    MaxDepth = 99,
-                    WriteIndented = writeIndented,
-                }
-            );
+            return JsonSerializer.Serialize(value,tooStringOptions.JsonOptions);
         }
         catch
         {
-            return TooReflectedString(value, 
-                        writeIndented:writeIndented,
-                        quotePropertyNames:true);
+            return ToReflectedString(value,tooStringOptions);
         }
     }
 
-    public static string TooReflectedString<T>(this T? obj,
-                                               bool writeIndented = false,
-                                               bool quotePropertyNames = false,
-                                               BindingFlags whichProperties =
-                                                   BindingFlags.Instance |
-                                                   BindingFlags.Public)
+    public static string ToJson<T>(this T? value, bool writeIndented = false)
+        => ToJson(value,
+            TooStringOptions.Default with
+            {
+                JsonOptions =
+                TooStringOptions.DefaultJsonOptions.With(o
+                    => o.WriteIndented = writeIndented)
+            });
+
+    static string ToReflectedString<T>(T? value, TooStringOptions options)
+        => ToReflectedString(value, new OptionsWithState(0, options));
+
+    static string ToReflectedString<T>(T? value, OptionsWithState options)
     {
-        if (obj is null) return Null;
-        var delimiter = writeIndented ? ",\n" : ",";
-        Func<string,string> q = quotePropertyNames 
-            ? s => $"\"{s?.Replace("`","\\u0060")}\"" 
-            : s => s;
+        if (value is null) return Null;
+        Func<string,string> q = 
+            options.ReflectionOptions.Style==SerializationStyle.Json 
+                ? s => $"\"{s?.Replace("`","\\u0060")}\"" 
+                : s => s;
+        
+        var indent = 
+            (options.ReflectionOptions.Style, options.JsonOptions.WriteIndented) switch
+            {
+                (SerializationStyle.CSharp,_)=>" ",
+                (_,true) => "\n",
+                (_,_)=>"",
+            };
+        
         try
         {
-            return "{" + 
-                    q("Type") + $":\"{typeof(T).FullName}\"" + 
-                   delimiter +
-                   string.Join(",",
-                       obj.GetType()
+            return "{" 
+                   + indent 
+                   + string.Join("," + indent,
+                       value.GetType()
                            .GetTypeInfo()
-                           .GetProperties(whichProperties)
+                           .GetProperties(options.ReflectionOptions.WhichProperties)
                            .Where(p=>p.CanRead)
-                           .Select(p => $"{q(p.Name)}:\"{TryGetValue(p).ToString().Replace("`","\\u0060")}\""))
+                           .Select(
+                               p => options.ReflectionOptions.Style switch
+                               {
+                                   SerializationStyle.CSharp => $"{p.Name}:\"{TryGetValue(p)}\"",
+                                   _ => $"{q(p.Name)}:\"{TryGetValue(p).Replace("`","\\u0060")}\"",
+                               })
+                   )
                    + "}";
         }
-        catch
+        catch { return value.ToString()??Null; }
+        
+        string TryGetValue(PropertyInfo p)
         {
-            return obj.ToString()??Null;
+            try
+            {
+                if (p.PropertyType.IsPrimitive
+                    || p.PropertyType == typeof(string)
+                    || (options.Depth > options.ReflectionOptions.MaxDepth)
+                    || p.PropertyType == typeof(Type))
+                    return PrimitiveToShortReflectedString(p.GetValue(value) ?? "null");
+                if (p.PropertyType.IsPrimitive
+                    || p.PropertyType == typeof(string)
+                    || (options.Depth > options.ReflectionOptions.MaxDepth)
+                    || p.PropertyType == typeof(Type))
+                    return PrimitiveToShortReflectedString(p.GetValue(value) ?? "null");
+                else
+                    return ToReflectedString(
+                        p.GetValue(value) ?? "null",
+                        options with { Depth = options.Depth + 1 });
+            }
+            catch
+            {
+                return "\"cantretrievevalue\"";
+            }
         }
+    }
 
-        object? TryGetValue(PropertyInfo p)
-        { 
-            try{ return p.GetValue(obj)??"null" ;}
-            catch{return "cantretrieve";}
-        }
+    public static string ToReflectedString<T>(this T? value,
+                                              bool writeIndented = false,
+                                              bool quotePropertyNames = false,
+                                              BindingFlags whichProperties =
+                                                  BindingFlags.Instance |
+                                                  BindingFlags.Public)
+        => ToReflectedString(
+            value,
+            new OptionsWithState(0,
+                TooStringOptions.Default with
+                {
+                    JsonOptions = TooStringOptions.DefaultJsonOptions
+                        .With(o=> o.WriteIndented=writeIndented),
+                    ReflectionOptions = ReflectionSerializerOptions.Default with
+                    {
+                        Style = quotePropertyNames 
+                            ? SerializationStyle.Json 
+                            : SerializationStyle.CSharp
+                    }
+                })
+        );
+
+    static string PrimitiveToShortReflectedString(object? value)
+    {
+        if(value is null) return Null;
+        if(value is string s) return s;
+        if(value is Type t) return t.FullName??$"{t.Namespace}.{t.Name}";
+        if (value.GetType().IsTypeDefinition) return value.ToString()!;
+        if (value.GetType().IsEnum) return value.ToString()!;
+        if (value.GetType().IsPrimitive) return value.ToString()!;
+        if (value.GetType().IsArray) return "[]";
+        //if (value.GetType().IsAssignableTo(typeof(IEnumerable<>))) return "[]";
+        //if (value.GetType().IsAssignableTo(typeof(IEnumerable))) return "[]";
+        
+        try{ return value.ToString()??Null ;}
+        catch{ return "\"cantretrievevalue\"";}
     }
 }
