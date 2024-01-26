@@ -40,6 +40,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TooString", "TooString\TooS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TooString.Specs", "TooString.Specs\TooString.Specs.csproj", "{01340417-7199-428E-806A-7CEA62EB8D4C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GuineaPig.AspNetCore6", "GuineaPig.AspNetCore6\GuineaPig.AspNetCore6.csproj", "{F1AD4771-B4C8-4134-ABDE-B3CA858D2744}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -106,6 +108,10 @@ Global
 		{01340417-7199-428E-806A-7CEA62EB8D4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{01340417-7199-428E-806A-7CEA62EB8D4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{01340417-7199-428E-806A-7CEA62EB8D4C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F1AD4771-B4C8-4134-ABDE-B3CA858D2744}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1AD4771-B4C8-4134-ABDE-B3CA858D2744}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1AD4771-B4C8-4134-ABDE-B3CA858D2744}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1AD4771-B4C8-4134-ABDE-B3CA858D2744}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
