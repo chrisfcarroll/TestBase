@@ -1,4 +1,7 @@
+using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 
 namespace TooString;
 
@@ -46,4 +49,23 @@ public static class Extensions
         }
         return @this;
     }
+
+    [return: NotNullIfNotNull("input")]
+    public static string? ReplaceRegex(this string? input,
+                                       string pattern,
+                                       string replacement,
+                                       RegexOptions options = RegexOptions.None)
+        => input is null
+            ? null
+            : Regex.Replace(input, pattern, replacement, options);
+    
+    [return:NotNullIfNotNull("value")]
+    public static string? RegexReplaceKnownRuntimeVariableValues(this string? value) 
+        => value?
+        .ReplaceRegex("\"file:///[^\"]+","file:///--filename--")
+        .ReplaceRegex("\"[BCD]:\\[^\"]+","--filename--")
+        .ReplaceRegex("\"Value\":\"\\d+\"","\"Value\":\"REPLACED-DIGITS\"")
+        .ReplaceRegex("\"MetadataToken\":\"\\d+\"","\"MetadataToken\":\"REPLACED-DIGITS\"")
+        .ReplaceRegex("[a-f0-9A-F\\-]{36}","--guid--");
+    
 }

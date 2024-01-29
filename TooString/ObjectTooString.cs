@@ -135,10 +135,9 @@ public static class ObjectTooString
 
     static string ToReflectedString<T>(T? value, OptionsWithState options)
     {
-        if (value is null) return Null;
-        Func<string,string> q = 
+        Func<string?,string> q = 
             options.ReflectionOptions.Style==SerializationStyle.Json 
-                ? s => $"\"{s?.Replace("`","\\u0060")}\"" 
+                ? s => $"\"{s?.Replace("`","\\u0060").Replace("\"","\\\"")}\"" 
                 : s => s;
         
         var indent = 
@@ -148,6 +147,9 @@ public static class ObjectTooString
                 (_,true) => "\n",
                 (_,_)=>"",
             };
+
+        if (value is null) return q(null);
+        if (value is string svalue) return q(svalue);
         
         try
         {
@@ -161,8 +163,8 @@ public static class ObjectTooString
                            .Select(
                                p => options.ReflectionOptions.Style switch
                                {
-                                   SerializationStyle.CSharp => $"{p.Name}:\"{TryGetValue(p)}\"",
-                                   _ => $"{q(p.Name)}:\"{TryGetValue(p).Replace("`","\\u0060")}\"",
+                                   SerializationStyle.CSharp => $"{p.Name}:{TryGetValue(p)}",
+                                   _ => $"{q(p.Name)}:{TryGetValue(p)}",
                                })
                    )
                    + "}";
@@ -177,12 +179,9 @@ public static class ObjectTooString
                     || p.PropertyType == typeof(string)
                     || (options.Depth > options.ReflectionOptions.MaxDepth)
                     || p.PropertyType == typeof(Type))
-                    return PrimitiveToShortReflectedString(p.GetValue(value) ?? "null");
-                if (p.PropertyType.IsPrimitive
-                    || p.PropertyType == typeof(string)
-                    || (options.Depth > options.ReflectionOptions.MaxDepth)
-                    || p.PropertyType == typeof(Type))
-                    return PrimitiveToShortReflectedString(p.GetValue(value) ?? "null");
+                    return PrimitiveToShortReflectedString(
+                        p.GetValue(value) ?? "null",
+                        options);
                 else
                     return ToReflectedString(
                         p.GetValue(value) ?? "null",
@@ -217,19 +216,31 @@ public static class ObjectTooString
                 })
         );
 
-    static string PrimitiveToShortReflectedString(object? value)
+    static string PrimitiveToShortReflectedString(object? value, OptionsWithState options)
     {
-        if(value is null) return Null;
-        if(value is string s) return s;
-        if(value is Type t) return t.FullName??$"{t.Namespace}.{t.Name}";
-        if (value.GetType().IsTypeDefinition) return value.ToString()!;
-        if (value.GetType().IsEnum) return value.ToString()!;
-        if (value.GetType().IsPrimitive) return value.ToString()!;
-        if (value.GetType().IsArray) return "[]";
-        //if (value.GetType().IsAssignableTo(typeof(IEnumerable<>))) return "[]";
-        //if (value.GetType().IsAssignableTo(typeof(IEnumerable))) return "[]";
+        Func<string,string> q = 
+            options.ReflectionOptions.Style==SerializationStyle.Json 
+                ? s => string.Format("\"{0}\"", s?
+                        .Replace("`", "\\u0060")
+                        .Replace("\\", "\\\\")
+                        .Replace("\t", "\\\t")
+                        .Replace("\n", "\\\n")
+                        .Replace("\r", "\\\r")
+                        .Replace("\"", "\\\"")
+                    )
+                : s => s;
         
-        try{ return value.ToString()??Null ;}
-        catch{ return "\"cantretrievevalue\"";}
+        if(value is null) return q(Null);
+        if(value is string s) return q(s);
+        if (value.GetType().IsTypeDefinition) return q( value.ToString()! );
+        if (value.GetType().IsEnum) return q(value.ToString()!);
+        if (value.GetType().IsPrimitive) return q(value.ToString()!);
+        if (value.GetType().IsArray) return "[]";
+        if (value is Type t && t.IsAssignableTo(typeof(IEnumerable))) return "[]";
+        if (value is Type t3 && t3.Namespace.StartsWith("System.Collections")) return "[]";
+        if(value is Type t2) return q( t2.FullName??$"{t2.Namespace}.{t2.Name}" );
+        
+        try{ return q( value.ToString()??Null );}
+        catch{ return q("cantretrievevalue");}
     }
 }
