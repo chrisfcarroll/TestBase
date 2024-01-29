@@ -54,7 +54,7 @@ public record ReflectionSerializerOptions(
 public enum SerializationStyle
 {
     Json = 0,
-    CSharp = 1
+    DotNetDebug = 1
 }
 
 internal record

@@ -62,11 +62,13 @@ public static class Extensions
     public static string? RegexReplaceKnownRuntimeVariableValues(this string? value) 
         => value?
         .ReplaceRegex("\"file:///[^\"]+\"","\"file:///--filename--\"")
+        .ReplaceRegex(" file:///[^\"]+,"," file:///--filename--,")
         .ReplaceRegex("\"[BCD]:\\[^\"]+\"","\"--filename--\"")
         .ReplaceRegex("\"[BCD]:\\\\[^\"]+\"","\"--filename--\"")
         .ReplaceRegex("\"(/[^/\"]+)+\"","\"--filename--\"")
-        .ReplaceRegex("\"Value\":\"\\d+\"","\"Value\":\"REPLACED-DIGITS\"")
-        .ReplaceRegex("\"MetadataToken\":\"\\d+\"","\"MetadataToken\":\"REPLACED-DIGITS\"")
-        .ReplaceRegex("[a-f0-9A-F\\-]{36}","--guid--");
+        .ReplaceRegex(" (/[^/\"]+)+,"," --filename--,")
+        .ReplaceRegex("\"Value\":\\d+","\"Value\":9999999999")
+        .ReplaceRegex("\"MetadataToken\":\\d+","\"MetadataToken\":100000000")
+        .ReplaceRegex("[a-f0-9A-F\\-]{36}",Guid.Empty.TooString());
     
 }

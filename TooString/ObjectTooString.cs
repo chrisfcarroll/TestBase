@@ -52,18 +52,20 @@ public static class ObjectTooString
     public static string TooString<T>(this T value,
                                       TooStringMethod tooStringMethod =
                                           TooStringMethod.BestEffort,
-                                      SerializationStyle serializationStyle =
-                                          SerializationStyle.Json,
+                                      SerializationStyle? serializationStyle = null,
                                       [CallerArgumentExpression("value")]
                                       string? argumentExpression = null)
     {
+        serializationStyle ??= tooStringMethod == TooStringMethod.SystemTextJson
+                                   ? SerializationStyle.Json
+                                   : SerializationStyle.DotNetDebug;
         return TooString(value,
             TooStringOptions.Default with
             {
                 PreferenceOrder = TooStringOptions
                     .Default.PreferenceOrder.Prepend(tooStringMethod),
                 ReflectionOptions = TooStringOptions
-                    .Default.ReflectionOptions with {Style = serializationStyle}
+                    .Default.ReflectionOptions with {Style = serializationStyle.Value}
             },
             argumentExpression);
     }
@@ -143,18 +145,18 @@ public static class ObjectTooString
                 ? s => $"\"{s?.Replace("`","\\u0060").Replace("\"","\\\"")}\"" 
                 : s => s;
         
-        var indent = 
+        var (indent,outdent) = 
             (options.ReflectionOptions.Style, options.JsonOptions.WriteIndented) switch
             {
-                (SerializationStyle.CSharp,_)=>"",
-                (_,true) => "\n",
-                (_,_)=>"",
+                (SerializationStyle.DotNetDebug,_) => (" "," "),
+                (_,true) => ("\n",""),
+                (_,_) => ("","")
             };
         var delimiter = (options.ReflectionOptions.Style, options.JsonOptions.WriteIndented) switch
             {
                 (SerializationStyle.Json,true) => ",\n",
                 (SerializationStyle.Json, _) =>",",
-                (SerializationStyle.CSharp, _) => ", ",
+                (SerializationStyle.DotNetDebug, _) => ",",
             };
         
         if (value is null) return qname(null);
@@ -162,21 +164,30 @@ public static class ObjectTooString
         
         try
         {
-            return "{" 
-                 + indent 
-                 + string.Join(delimiter + indent,
-                               value.GetType()
-                                    .GetTypeInfo()
-                                    .GetProperties(options.ReflectionOptions.WhichProperties)
-                                    .Where(p=>p.CanRead)
-                                    .Select(
-                                        p => options.ReflectionOptions.Style switch
-                                        {
-                                            SerializationStyle.CSharp => $"{p.Name}={TryGetValue(p)}",
-                                            _ => $"{qname(p.Name)}:{TryGetValue(p)}",
-                                        })
-                   )
-                 + "}";
+            if (IsScalarish(value.GetType()) || options.Depth > options.ReflectionOptions.MaxDepth)
+            {
+                return PrimitiveToShortReflectedString(value, options);
+            }
+            else
+            {
+                return "{" +
+                       indent +
+                       string.Join(delimiter + indent,
+                                   value.GetType()
+                                        .GetTypeInfo()
+                                        .GetProperties(options.ReflectionOptions.WhichProperties)
+                                        .Where(p => p.CanRead)
+                                        .Select(
+                                            p => options.ReflectionOptions.Style switch
+                                            {
+                                                SerializationStyle.DotNetDebug =>
+                                                    $"{p.Name} = {TryGetValue(p)}",
+                                                _ => $"{qname(p.Name)}:{TryGetValue(p)}",
+                                            })
+                       ) +
+                       outdent +
+                       "}";
+            }
         }
         catch { return value.ToString()??Null; }
         
@@ -184,10 +195,8 @@ public static class ObjectTooString
         {
             try
             {
-                if (p.PropertyType.IsPrimitive
-                    || p.PropertyType == typeof(string)
-                    || (options.Depth > options.ReflectionOptions.MaxDepth)
-                    || p.PropertyType == typeof(Type))
+                if (IsScalarish(p.PropertyType) 
+                    || options.Depth > options.ReflectionOptions.MaxDepth)
                     return PrimitiveToShortReflectedString(
                         p.GetValue(value) ?? "null",
                         options);
@@ -201,6 +210,12 @@ public static class ObjectTooString
                 return "\"cantretrievevalue\"";
             }
         }
+
+        bool IsScalarish(Type type) => 
+                        type.IsPrimitive
+                     || type.IsEnum
+                     || type == typeof(string)
+                     || type == typeof(Type);
     }
 
     public static string ToReflectedString<T>(this T? value,
@@ -220,7 +235,7 @@ public static class ObjectTooString
                     {
                         Style = quotePropertyNames 
                             ? SerializationStyle.Json 
-                            : SerializationStyle.CSharp
+                            : SerializationStyle.DotNetDebug
                     }
                 })
         );
@@ -237,7 +252,7 @@ public static class ObjectTooString
                                                     .Replace("\r", "\\\r")
                                                     .Replace("\"", "\\\"")
                       )
-                    : s => $"\"{s}\""
+                    : s => s
             ;
         Func<string, string> qEnum =
             options.ReflectionOptions.Style == SerializationStyle.Json
@@ -253,15 +268,22 @@ public static class ObjectTooString
         
         if(value is null) return qstr(Null);
         if(value is string s) return qstr(s);
-        if (value.GetType().IsTypeDefinition) return qstr( value.ToString()! );
         if (value.GetType().IsEnum) return qEnum(value.ToString()!);
+        if (true.Equals(value)) return options.ReflectionOptions.Style==SerializationStyle.DotNetDebug ? "True" :"true";
+        if (false.Equals(value)) return options.ReflectionOptions.Style==SerializationStyle.DotNetDebug ? "False" :"false";
         if (value.GetType().IsPrimitive) return value.ToString()!;
         if (value.GetType().IsArray) return "[]";
         if (value is Type t && t.IsAssignableTo(typeof(IEnumerable))) return "[]";
-        if (value is Type t3 && t3.Namespace.StartsWith("System.Collections")) return "[]";
+        if (value is Type t3 && (t3.Namespace?.StartsWith("System.Collections")??false)) return "[]";
         if(value is Type t2) return qstr( t2.FullName??$"{t2.Namespace}.{t2.Name}" );
-        
-        try{ return qstr( value.ToString()??Null );}
-        catch{ return qstr("cantretrievevalue");}
+
+        try
+        {
+            return qstr(value.ToString() ?? Null);
+        }
+        catch
+        {
+            return qstr("cantretrievevalue");
+        }
     }
 }
