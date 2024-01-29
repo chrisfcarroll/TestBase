@@ -16,7 +16,7 @@ public record TooStringOptions(
     ///    ReferenceHandler = ReferenceHandler.IgnoreCycles
     /// }</c>
     /// </summary>
-    public static readonly JsonSerializerOptions DefaultJsonOptions =
+    internal static readonly JsonSerializerOptions DefaultJsonOptions =
         new(JsonSerializerDefaults.General)
         {
             ReferenceHandler = ReferenceHandler.IgnoreCycles

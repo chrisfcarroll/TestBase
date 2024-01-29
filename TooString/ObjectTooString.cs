@@ -2,7 +2,6 @@ using System.Collections;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
 namespace TooString;
@@ -65,7 +64,7 @@ public static class ObjectTooString
             argumentExpression);
     }
 
-    static string TooString<T>(T value,
+    public static string TooString<T>(this T value,
                                 TooStringOptions tooStringOptions,
                                 [CallerArgumentExpression("value")]
                                 string? argumentExpression = null)
