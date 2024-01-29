@@ -220,8 +220,8 @@ public static class ObjectTooString
         Func<string,string> q = 
             options.ReflectionOptions.Style==SerializationStyle.Json 
                 ? s => string.Format("\"{0}\"", s?
-                        .Replace("`", "\\u0060")
                         .Replace("\\", "\\\\")
+                        .Replace("`", "\\u0060")
                         .Replace("\t", "\\\t")
                         .Replace("\n", "\\\n")
                         .Replace("\r", "\\\r")

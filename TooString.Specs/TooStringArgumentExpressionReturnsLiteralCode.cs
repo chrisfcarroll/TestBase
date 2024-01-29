@@ -3,6 +3,7 @@ using static System.Math;
 
 namespace TooString.Specs;
 
+[TestFixture]
 public class TooStringArgumentExpressionReturnsLiteralCode
 {
     [Test]
