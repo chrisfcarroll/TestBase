@@ -29,7 +29,7 @@ public class TooStringReflectionOptionCSharpReturnsCSharp
             """;
         
         Assert.That(
-            value.TooString(TooStringOptions.Default), 
+            value.TooString(TooStringMethod.Reflection,SerializationStyle.CSharp,""), 
             Is.EqualTo(expected) 
         );
     }

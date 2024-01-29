@@ -34,6 +34,20 @@ public class TooStringBestEffortMakesGoodChoices
     }
     
     [Test]
+    public void GivenACompositeObjectAndDefaultOptions__ReturnsJson()
+    {
+        var value = new CompositeA { A = "boo", B = new Complex(3,4) };
+        var expected = 
+            "{\"A\":\"boo\",\"B\":{\"Real\":3,\"Imaginary\":4,\"Magnitude\":5,\"Phase\":0.9272952180016122}}";
+        
+        Assert.That(
+            value.TooString(TooStringOptions.Default), 
+            Is.EqualTo(expected) 
+        );
+        TestContext.Progress.WriteLine(value.TooString());
+    }
+    
+    [Test]
     public void GivenACompositeObjectWithCircularReferences__ReturnsReflectedJson()
     {
         var value = new Circular{ A = "boo"};

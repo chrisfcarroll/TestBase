@@ -52,6 +52,8 @@ public static class ObjectTooString
     public static string TooString<T>(this T value,
                                       TooStringMethod tooStringMethod =
                                           TooStringMethod.BestEffort,
+                                      SerializationStyle serializationStyle =
+                                          SerializationStyle.Json,
                                       [CallerArgumentExpression("value")]
                                       string? argumentExpression = null)
     {
@@ -59,8 +61,10 @@ public static class ObjectTooString
             TooStringOptions.Default with
             {
                 PreferenceOrder = TooStringOptions
-                    .Default.PreferenceOrder.Prepend(tooStringMethod)
-            }, 
+                    .Default.PreferenceOrder.Prepend(tooStringMethod),
+                ReflectionOptions = TooStringOptions
+                    .Default.ReflectionOptions with {Style = serializationStyle}
+            },
             argumentExpression);
     }
 
@@ -134,7 +138,7 @@ public static class ObjectTooString
 
     static string ToReflectedString<T>(T? value, OptionsWithState options)
     {
-        Func<string?,string> q = 
+        Func<string?,string> qname = 
             options.ReflectionOptions.Style==SerializationStyle.Json 
                 ? s => $"\"{s?.Replace("`","\\u0060").Replace("\"","\\\"")}\"" 
                 : s => s;
@@ -142,31 +146,37 @@ public static class ObjectTooString
         var indent = 
             (options.ReflectionOptions.Style, options.JsonOptions.WriteIndented) switch
             {
-                (SerializationStyle.CSharp,_)=>" ",
+                (SerializationStyle.CSharp,_)=>"",
                 (_,true) => "\n",
                 (_,_)=>"",
             };
-
-        if (value is null) return q(null);
-        if (value is string svalue) return q(svalue);
+        var delimiter = (options.ReflectionOptions.Style, options.JsonOptions.WriteIndented) switch
+            {
+                (SerializationStyle.Json,true) => ",\n",
+                (SerializationStyle.Json, _) =>",",
+                (SerializationStyle.CSharp, _) => ", ",
+            };
+        
+        if (value is null) return qname(null);
+        if (value is string svalue) return qname(svalue);
         
         try
         {
             return "{" 
-                   + indent 
-                   + string.Join("," + indent,
-                       value.GetType()
-                           .GetTypeInfo()
-                           .GetProperties(options.ReflectionOptions.WhichProperties)
-                           .Where(p=>p.CanRead)
-                           .Select(
-                               p => options.ReflectionOptions.Style switch
-                               {
-                                   SerializationStyle.CSharp => $"{p.Name}:{TryGetValue(p)}",
-                                   _ => $"{q(p.Name)}:{TryGetValue(p)}",
-                               })
+                 + indent 
+                 + string.Join(delimiter + indent,
+                               value.GetType()
+                                    .GetTypeInfo()
+                                    .GetProperties(options.ReflectionOptions.WhichProperties)
+                                    .Where(p=>p.CanRead)
+                                    .Select(
+                                        p => options.ReflectionOptions.Style switch
+                                        {
+                                            SerializationStyle.CSharp => $"{p.Name}={TryGetValue(p)}",
+                                            _ => $"{qname(p.Name)}:{TryGetValue(p)}",
+                                        })
                    )
-                   + "}";
+                 + "}";
         }
         catch { return value.ToString()??Null; }
         
@@ -217,29 +227,41 @@ public static class ObjectTooString
 
     static string PrimitiveToShortReflectedString(object? value, OptionsWithState options)
     {
-        Func<string,string> q = 
-            options.ReflectionOptions.Style==SerializationStyle.Json 
+        Func<string, string> qstr =
+                options.ReflectionOptions.Style == SerializationStyle.Json
+                    ? s => string.Format("\"{0}\"", s?
+                                                    .Replace("\\", "\\\\")
+                                                    .Replace("`", "\\u0060")
+                                                    .Replace("\t", "\\\t")
+                                                    .Replace("\n", "\\\n")
+                                                    .Replace("\r", "\\\r")
+                                                    .Replace("\"", "\\\"")
+                      )
+                    : s => $"\"{s}\""
+            ;
+        Func<string, string> qEnum =
+            options.ReflectionOptions.Style == SerializationStyle.Json
                 ? s => string.Format("\"{0}\"", s?
-                        .Replace("\\", "\\\\")
-                        .Replace("`", "\\u0060")
-                        .Replace("\t", "\\\t")
-                        .Replace("\n", "\\\n")
-                        .Replace("\r", "\\\r")
-                        .Replace("\"", "\\\"")
-                    )
+                                                .Replace("\\", "\\\\")
+                                                .Replace("`", "\\u0060")
+                                                .Replace("\t", "\\\t")
+                                                .Replace("\n", "\\\n")
+                                                .Replace("\r", "\\\r")
+                                                .Replace("\"", "\\\"")
+                  )
                 : s => s;
         
-        if(value is null) return q(Null);
-        if(value is string s) return q(s);
-        if (value.GetType().IsTypeDefinition) return q( value.ToString()! );
-        if (value.GetType().IsEnum) return q(value.ToString()!);
-        if (value.GetType().IsPrimitive) return q(value.ToString()!);
+        if(value is null) return qstr(Null);
+        if(value is string s) return qstr(s);
+        if (value.GetType().IsTypeDefinition) return qstr( value.ToString()! );
+        if (value.GetType().IsEnum) return qEnum(value.ToString()!);
+        if (value.GetType().IsPrimitive) return value.ToString()!;
         if (value.GetType().IsArray) return "[]";
         if (value is Type t && t.IsAssignableTo(typeof(IEnumerable))) return "[]";
         if (value is Type t3 && t3.Namespace.StartsWith("System.Collections")) return "[]";
-        if(value is Type t2) return q( t2.FullName??$"{t2.Namespace}.{t2.Name}" );
+        if(value is Type t2) return qstr( t2.FullName??$"{t2.Namespace}.{t2.Name}" );
         
-        try{ return q( value.ToString()??Null );}
-        catch{ return q("cantretrievevalue");}
+        try{ return qstr( value.ToString()??Null );}
+        catch{ return qstr("cantretrievevalue");}
     }
 }

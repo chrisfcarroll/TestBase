@@ -32,9 +32,7 @@ public record TooStringOptions(
     /// </summary>
     public static readonly TooStringOptions Default =
         new(
-            ((List<TooStringMethod>)
-                [TooStringMethod.CallerArgument, TooStringMethod.SystemTextJson]
-            ).AsReadOnly(),
+            new List<TooStringMethod>(){TooStringMethod.BestEffort }.AsReadOnly(),
             DefaultJsonOptions,
             ReflectionSerializerOptions.Default,
             JsonSerializerDefaults.General
