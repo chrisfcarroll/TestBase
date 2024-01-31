@@ -45,7 +45,7 @@ public record TooStringOptions(
 public record ReflectionSerializerOptions(
     BindingFlags WhichProperties = BindingFlags.Instance | BindingFlags.Public,
     SerializationStyle Style = SerializationStyle.Json,
-    int MaxDepth = 1
+    int MaxDepth = 3
 )
 {
     public static readonly ReflectionSerializerOptions Default = new();

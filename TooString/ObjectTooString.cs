@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
@@ -80,7 +81,7 @@ public static class ObjectTooString
                    TooStringMethod.BestEffort => CallerArgumentOrNextPreference(),
                    TooStringMethod.CallerArgument => argumentExpression,
                    TooStringMethod.SystemTextJson => ToJson(value,tooStringOptions),
-                   TooStringMethod.Reflection => ToReflectedString(value,tooStringOptions),
+                   TooStringMethod.Reflection => ToDotNetDebugString(value,tooStringOptions),
                    _ => value?.ToString()
                }
                ??
@@ -98,7 +99,7 @@ public static class ObjectTooString
                     return argumentExpression;
 
                 if (pref == TooStringMethod.Reflection)
-                    return ToReflectedString(value, tooStringOptions);
+                    return ToDotNetDebugString(value, tooStringOptions);
 
                 if (pref == TooStringMethod.SystemTextJson)
                     return ToJson(value, tooStringOptions);
@@ -113,7 +114,7 @@ public static class ObjectTooString
             || 
             typeof(T).FullName?.StartsWith("System.Reflection") is true)
         {
-            return ToReflectedString(value, tooStringOptions);
+            return ToDotNetDebugString(value, tooStringOptions);
         }
 
         try
@@ -122,7 +123,7 @@ public static class ObjectTooString
         }
         catch
         {
-            return ToReflectedString(value,tooStringOptions);
+            return ToDotNetDebugString(value,tooStringOptions);
         }
     }
 
@@ -135,10 +136,10 @@ public static class ObjectTooString
                     => o.WriteIndented = writeIndented)
             });
 
-    static string ToReflectedString<T>(T? value, TooStringOptions options)
-        => ToReflectedString(value, new OptionsWithState(0, options));
+    static string ToDotNetDebugString<T>(T? value, TooStringOptions options)
+        => ToDotNetDebugString(value, new OptionsWithState(0, options));
 
-    static string ToReflectedString<T>(T? value, OptionsWithState options)
+    static string ToDotNetDebugString<T>(T? value, OptionsWithState options)
     {
         Func<string?,string> qname = 
             options.ReflectionOptions.Style==SerializationStyle.Json 
@@ -167,6 +168,10 @@ public static class ObjectTooString
             if (IsScalarish(value.GetType()) || options.Depth > options.ReflectionOptions.MaxDepth)
             {
                 return PrimitiveToShortReflectedString(value, options);
+            }
+            else if (value is ITuple valueTuple)
+            {
+                return DelimitTuple(valueTuple, options);
             }
             else
             {
@@ -201,7 +206,7 @@ public static class ObjectTooString
                         p.GetValue(value) ?? "null",
                         options);
                 else
-                    return ToReflectedString(
+                    return ToDotNetDebugString(
                         p.GetValue(value) ?? "null",
                         options with { Depth = options.Depth + 1 });
             }
@@ -218,13 +223,31 @@ public static class ObjectTooString
                      || type == typeof(Type);
     }
 
-    public static string ToReflectedString<T>(this T? value,
-                                              bool writeIndented = false,
-                                              bool quotePropertyNames = false,
-                                              BindingFlags whichProperties =
-                                                  BindingFlags.Instance |
-                                                  BindingFlags.Public)
-        => ToReflectedString(
+    static string DelimitTuple<T>(T value, OptionsWithState options) where T : ITuple
+    {
+        var b = new StringBuilder("(");
+        for (int i = 1; i < (value as ITuple).Length; i++)
+        {
+            //b.Append("item");
+            //b.Append(i);
+            //b.Append(" = ");
+            b.Append(ToDotNetDebugString(value[ i -1 ],
+                options with { Depth = options.Depth + 1 }));
+            b.Append(", ");
+        }
+        b.Append(ToDotNetDebugString(value[ value.Length ],
+                options with { Depth = options.Depth + 1 }));
+        b.Append(')');
+        return b.ToString();
+    }
+
+    public static string ToDotNetDebugString<T>(this T? value,
+                                                bool writeIndented = false,
+                                                bool quotePropertyNames = false,
+                                                BindingFlags whichProperties =
+                                                    BindingFlags.Instance |
+                                                    BindingFlags.Public)
+        => ToDotNetDebugString(
             value,
             new OptionsWithState(0,
                 TooStringOptions.Default with
