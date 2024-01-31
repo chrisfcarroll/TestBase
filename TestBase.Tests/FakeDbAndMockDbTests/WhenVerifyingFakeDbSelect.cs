@@ -1,17 +1,17 @@
 using NUnit.Framework;
 using TestBase.AdoNet;
 
-namespace TestBase.Tests.FakeDbAndMockDbTests
+namespace TestBase.Tests.FakeDbAndMockDbTests;
+
+[TestFixture]
+public class WhenVerifyingFakeDbSelect
 {
-    [TestFixture]
-    public class WhenVerifyingFakeDbSelect
+    [TestCase("ATableName")]
+    [TestCase("namespaceisignored.ATableName")]
+    [TestCase("namespace.isignored.ATableName")]
+    [TestCase("otherTable o join ATableName a on o.something = a.something")]
+    public void Should_Recognise_Select(string atablename)
     {
-        [TestCase("ATableName")]
-        [TestCase("namespaceisignored.ATableName")]
-        [TestCase("namespace.isignored.ATableName")]
-        [TestCase("otherTable o join ATableName a on o.something = a.something")]
-        public void Should_Recognise_Select(string atablename)
-        {
             using (var conn = new FakeDbConnection().SetUpForQuery(FakeData.GivenFakeDataInFakeDb()))
             {
                 using (var cmd = conn.CreateCommand())
@@ -31,5 +31,4 @@ namespace TestBase.Tests.FakeDbAndMockDbTests
                 Assert.Throws<Assertion>(() => { conn.ShouldHaveInserted("ATableName", ""); });
             }
         }
-    }
 }

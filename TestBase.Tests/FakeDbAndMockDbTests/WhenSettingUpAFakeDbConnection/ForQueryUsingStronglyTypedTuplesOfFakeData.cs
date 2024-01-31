@@ -4,27 +4,27 @@ using Dapper;
 using NUnit.Framework;
 using TestBase.AdoNet;
 
-namespace TestBase.Tests.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection
+namespace TestBase.Tests.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection;
+
+class Source1
 {
-    class Source1
-    {
-        public int    Id   { get; set; }
-        public string Name { get; set; }
-    }
+    public int    Id   { get; set; }
+    public string Name { get; set; }
+}
 
-    class Source2
-    {
-        public int     Id                    { get; set; }
-        public int     Source1Id             { get; set; }
-        public Source1 HydratedSource1Parent { get; set; }
-    }
+class Source2
+{
+    public int     Id                    { get; set; }
+    public int     Source1Id             { get; set; }
+    public Source1 HydratedSource1Parent { get; set; }
+}
 
-    [TestFixture]
-    public class ForQueryUsingStronglyTypedTuplesOfFakeData
+[TestFixture]
+public class ForQueryUsingStronglyTypedTuplesOfFakeData
+{
+    [Test]
+    public void Should_return_the_setup_data__Given_an_array_of_tuples_of_fakedata()
     {
-        [Test]
-        public void Should_return_the_setup_data__Given_an_array_of_tuples_of_fakedata()
-        {
             //A
             var dataToReturn = new[]
                                {
@@ -37,8 +37,7 @@ namespace TestBase.Tests.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection
             //A
             var fakeConnection = new FakeDbConnection().SetUpForQuery(dataToReturn);
 
-            //A 
-            //Dapper -- the easy way to read a DbDataReader.
+            //A      //Dapper -- the easy way to read a DbDataReader.
             fakeConnection.Query<Source1, Source2, Source2>(
                                                             "",
                                                             (s1, s2) =>
@@ -58,5 +57,4 @@ namespace TestBase.Tests.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection
                                                     )
                                              );
         }
-    }
 }

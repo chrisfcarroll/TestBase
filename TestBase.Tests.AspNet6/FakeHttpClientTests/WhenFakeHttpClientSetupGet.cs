@@ -3,7 +3,7 @@ using System.Net.Http;
 using NUnit.Framework;
 using TestBase.HttpClient.Fake;
 
-namespace TestBase.Tests.FakeHttpClientTests
+namespace TestBase.Tests.AspNet6.FakeHttpClientTests
 {
     public class WhenFakeHttpClientSetupGet
     {

@@ -3,26 +3,26 @@ using Dapper;
 using NUnit.Framework;
 using TestBase.AdoNet;
 
-namespace TestBase.Tests.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection
+namespace TestBase.Tests.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection;
+
+public class IdAndName
 {
-    public class IdAndName
-    {
-        public int    Id   { get; set; }
-        public string Name { get; set; }
-    }
+    public int    Id   { get; set; }
+    public string Name { get; set; }
+}
 
-    class WithJoin
-    {
-        public int       Id        { get; set; }
-        public IdAndName IdAndName { get; set; }
-    }
+class WithJoin
+{
+    public int       Id        { get; set; }
+    public IdAndName IdAndName { get; set; }
+}
 
-    [TestFixture]
-    public class ForQueryUsingStronglyTypedFakeData
+[TestFixture]
+public class ForQueryUsingStronglyTypedFakeData
+{
+    [Test]
+    public void Should_return_the_setup_data__Given_an_array_of_fakedata()
     {
-        [Test]
-        public void Should_return_the_setup_data__Given_an_array_of_fakedata()
-        {
             //A
             var dataToReturn = new[]
                                {
@@ -33,14 +33,13 @@ namespace TestBase.Tests.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection
             //A
             var fakeConnection = new FakeDbConnection().SetUpForQuery(dataToReturn, new[] {"Id", "Name"});
 
-            //A 
-            //Dapper -- the easy way to read a DbDataReader.
+            //A      //Dapper -- the easy way to read a DbDataReader.
             fakeConnection.Query<IdAndName>("").ShouldEqualByValue(dataToReturn);
         }
 
-        [Test]
-        public void Should_return_the_setup_data__Given_an_array_of_fakedata_with_joins()
-        {
+    [Test]
+    public void Should_return_the_setup_data__Given_an_array_of_fakedata_with_joins()
+    {
             //A
             var dataToReturn = new[]
                                {
@@ -52,8 +51,7 @@ namespace TestBase.Tests.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection
             var fakeConnection =
             new FakeDbConnection().SetUpForQuery(dataToReturn, new[] {"Id", "IdAndName.Id", "IdAndName.Name"});
 
-            //A 
-            //Dapper -- the easy way to read a DbDataReader.
+            //A      //Dapper -- the easy way to read a DbDataReader.
             fakeConnection.Query<WithJoin, IdAndName, WithJoin>(
                                                                 "",
                                                                 (w, i) =>
@@ -65,9 +63,9 @@ namespace TestBase.Tests.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection
                           .ShouldEqualByValue(dataToReturn);
         }
 
-        [Test]
-        public void Should_return_the_setup_data__Given_some_nulls_but_non_nullable_id_field()
-        {
+    [Test]
+    public void Should_return_the_setup_data__Given_some_nulls_but_non_nullable_id_field()
+    {
             //A
             var dataToReturn = new[]
                                {
@@ -79,8 +77,7 @@ namespace TestBase.Tests.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection
             var fakeConnection = new FakeDbConnection().SetUpForQuery(dataToReturn,
                                                                       new[] {"Id", "IdAndName.Id", "IdAndName.Name"});
 
-            //A 
-            //Dapper -- the easy way to read a DbDataReader.
+            //A      //Dapper -- the easy way to read a DbDataReader.
             var result = fakeConnection.Query<WithJoin, IdAndName, WithJoin>("",
                                                                              (w, i) =>
                                                                              {
@@ -99,5 +96,4 @@ namespace TestBase.Tests.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection
             result[1].IdAndName.Id.ShouldEqual(0);
             result[1].IdAndName.Name.ShouldBeNull();
         }
-    }
 }

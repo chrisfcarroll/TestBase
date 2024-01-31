@@ -3,14 +3,14 @@ using Moq;
 using NUnit.Framework;
 using TestBase.AdoNet;
 
-namespace TestBase.Tests.FakeDbAndMockDbTests
+namespace TestBase.Tests.FakeDbAndMockDbTests;
+
+[TestFixture]
+public class WhenMockingADbCommandExecuteReader
 {
-    [TestFixture]
-    public class WhenMockingADbCommandExecuteReader
+    [Test]
+    public void Should_return_all_valuetype_and_string_properties_of_the_given_fakedata()
     {
-        [Test]
-        public void Should_return_all_valuetype_and_string_properties_of_the_given_fakedata()
-        {
             //A
             var fakeData = new[]
                            {
@@ -32,5 +32,4 @@ namespace TestBase.Tests.FakeDbAndMockDbTests
                 i++;
             }
         }
-    }
 }

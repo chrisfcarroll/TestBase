@@ -3,14 +3,14 @@ using Dapper;
 using NUnit.Framework;
 using TestBase.AdoNet;
 
-namespace TestBase.Tests.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection
+namespace TestBase.Tests.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection;
+
+[TestFixture]
+public class ForQueryUsingObjectArrayFakeData
 {
-    [TestFixture]
-    public class ForQueryUsingObjectArrayFakeData
+    [Test]
+    public void Should_return_the_setup_data__Given_a_join___so_long_as__non_nullable_columns_have_no_nulls()
     {
-        [Test]
-        public void Should_return_the_setup_data__Given_a_join___so_long_as__non_nullable_columns_have_no_nulls()
-        {
             //A
             var dataToReturn = new[]
                                {
@@ -28,16 +28,16 @@ namespace TestBase.Tests.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection
                           new FakeDbResultSet.MetaData("Name", typeof(string))
                           });
 
-            //A 
+            //A
             var result = fakeConnection.Query<WithJoin, IdAndName, WithJoin>(
-                                                                             "",
-                                                                             (w, i) =>
-                                                                             {
-                                                                                 w.IdAndName = i;
-                                                                                 return w;
-                                                                             },
-                                                                             splitOn: "Id"
-                                                                            )
+                                         "",
+                                         (w, i) =>
+                                         {
+                                             w.IdAndName = i;
+                                             return w;
+                                         },
+                                         splitOn: "Id"
+                                        )
                                        .ToArray();
             result[0].Id.ShouldEqual(100);
             result[0].IdAndName.Id.ShouldEqual(11);
@@ -50,9 +50,9 @@ namespace TestBase.Tests.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection
             result[1].IdAndName.Name.ShouldBeNull();
         }
 
-        [Test]
-        public void Should_return_the_setup_data__Given_an_array_of_fakedata()
-        {
+    [Test]
+    public void Should_return_the_setup_data__Given_an_array_of_fakedata()
+    {
             //A
             var dataToReturn = new[]
                                {
@@ -63,8 +63,7 @@ namespace TestBase.Tests.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection
             //A
             var fakeConnection = new FakeDbConnection().SetUpForQuery(dataToReturn, "Id", "Name");
 
-            //A 
-            //Dapper -- the easy way to read a DbDataReader.
+            //A      //Dapper -- the easy way to read a DbDataReader.
             fakeConnection
            .Query<IdAndName>("")
            .ShouldHaveCount(dataToReturn.Length)
@@ -82,5 +81,4 @@ namespace TestBase.Tests.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection
                                }
                               );
         }
-    }
 }

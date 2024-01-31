@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NUnit.Framework;
 
-namespace TestBase.Tests.ShouldsCorrectnessTests
+namespace TestBase.Tests.AspNet6.ShouldsCorrectnessTests
 {
     class AController : Controller
     {

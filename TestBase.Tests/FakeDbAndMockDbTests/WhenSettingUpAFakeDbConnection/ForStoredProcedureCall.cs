@@ -3,14 +3,14 @@ using Dapper;
 using NUnit.Framework;
 using TestBase.AdoNet;
 
-namespace TestBase.Tests.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection
+namespace TestBase.Tests.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection;
+
+[TestFixture]
+public class ForStoredProcedureCall
 {
-    [TestFixture]
-    public class ForStoredProcedureCall
+    [Test]
+    public void ShouldWorkWithDapperDynamicParameters()
     {
-        [Test]
-        public void ShouldWorkWithDapperDynamicParameters()
-        {
             var parms = new
                         {
                         id      = 1,
@@ -37,5 +37,4 @@ namespace TestBase.Tests.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection
             pars["dekimal"].Value.ShouldBe(123m);
             pars["dooble"].Value.ShouldBe(123d);
         }
-    }
 }

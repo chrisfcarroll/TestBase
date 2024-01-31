@@ -3,26 +3,26 @@ using Dapper;
 using NUnit.Framework;
 using TestBase.AdoNet;
 
-namespace TestBase.Tests.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection
+namespace TestBase.Tests.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection;
+
+[TestFixture]
+public class WhenVerifyingInvocations
 {
-    [TestFixture]
-    public class WhenVerifyingInvocations
-    {
-        readonly IdAndName[] fakeData =
+    readonly IdAndName[] fakeData =
         {
         new IdAndName {Id = 11, Name = "cell 1,2"},
         new IdAndName {Id = 21, Name = "cell 2,2"}
         };
 
-        class IdAndName
-        {
-            public int    Id   { get; set; }
-            public string Name { get; set; }
-        }
+    class IdAndName
+    {
+        public int    Id   { get; set; }
+        public string Name { get; set; }
+    }
 
-        [Test]
-        public void Should_pass_custom_error_message_to_asserter()
-        {
+    [Test]
+    public void Should_pass_custom_error_message_to_asserter()
+    {
             //A
             var fakeConnection = new FakeDbConnection().SetUpForQuery(fakeData, new[] {"Id", "Name"});
             fakeConnection.Query<IdAndName>("Query @id, @name", new {id = 1, name = "pname"})
@@ -41,9 +41,9 @@ namespace TestBase.Tests.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection
             assertion.Message.ShouldMatch("SpecificErrorMessage WithParam");
         }
 
-        [Test]
-        public void Should_verify_number_of_invocations_matching_predicate__Given__SetupForExecuteNonQuery()
-        {
+    [Test]
+    public void Should_verify_number_of_invocations_matching_predicate__Given__SetupForExecuteNonQuery()
+    {
             //A
             var fakeConnection = new FakeDbConnection().SetUpForExecuteNonQuery(123, 2);
 
@@ -86,9 +86,9 @@ namespace TestBase.Tests.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection
             assertion.Message.ShouldMatch("called .* times.*");
         }
 
-        [Test]
-        public void Should_verify_number_of_invocations_matching_predicate__Given__SetupForQuery()
-        {
+    [Test]
+    public void Should_verify_number_of_invocations_matching_predicate__Given__SetupForQuery()
+    {
             //A
             var fakeConnection = new FakeDbConnection().SetUpForQuery(fakeData, new[] {"Id", "Name"});
             fakeConnection.Query<IdAndName>("Query @id, @name", new {id = 1, name = "pname"})
@@ -113,5 +113,4 @@ namespace TestBase.Tests.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection
             Console.WriteLine(assertion);
             assertion.Message.ShouldMatch("called .* times.*");
         }
-    }
 }

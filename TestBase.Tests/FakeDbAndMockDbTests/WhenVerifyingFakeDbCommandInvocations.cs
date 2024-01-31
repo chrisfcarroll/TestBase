@@ -1,13 +1,13 @@
 using NUnit.Framework;
 using TestBase.AdoNet;
 
-namespace TestBase.Tests.FakeDbAndMockDbTests
+namespace TestBase.Tests.FakeDbAndMockDbTests;
+
+[TestFixture]
+public class WhenVerifyingFakeDbInvocations
 {
-    [TestFixture]
-    public class WhenVerifyingFakeDbInvocations
+    static void ExecuteReader(FakeDbConnection conn, string commandText)
     {
-        static void ExecuteReader(FakeDbConnection conn, string commandText)
-        {
             using (var cmd = conn.CreateCommand())
             {
                 cmd.CommandText = commandText;
@@ -19,8 +19,8 @@ namespace TestBase.Tests.FakeDbAndMockDbTests
             }
         }
 
-        static void ExecuteNonQuery(FakeDbConnection conn, string commandText)
-        {
+    static void ExecuteNonQuery(FakeDbConnection conn, string commandText)
+    {
             using (var cmd = conn.CreateCommand())
             {
                 cmd.CommandText = commandText;
@@ -32,9 +32,9 @@ namespace TestBase.Tests.FakeDbAndMockDbTests
             }
         }
 
-        [Test]
-        public void Should_CatchSomeTyposInTheCommand()
-        {
+    [Test]
+    public void Should_CatchSomeTyposInTheCommand()
+    {
             using (var conn = new FakeDbConnection()
                              .SetUpForExecuteNonQuery(0)
                              .SetUpForQuery(FakeData.GivenFakeDataInFakeDb())
@@ -50,5 +50,4 @@ namespace TestBase.Tests.FakeDbAndMockDbTests
                 Assert.Throws<Assertion>(() => { conn.ShouldHaveInserted("ATableName", new {Id = 111}); });
             }
         }
-    }
 }

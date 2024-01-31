@@ -1,14 +1,14 @@
 ﻿using System.Text;
 using NUnit.Framework;
 
-namespace TestBase.Tests.Pdfs
+namespace TestBase.Tests.Pdfs;
+
+[TestFixture]
+public class PdfShoulds
 {
-    [TestFixture]
-    public class PdfShoulds
+    [Test]
+    public void PdfBytesShouldBeParseableAsAscii()
     {
-        [Test]
-        public void PdfBytesShouldBeParseableAsAscii()
-        {
             var bytes = Pdf.AsciiBytes("my bite of text");
 
             Encoding.ASCII.GetString(bytes)
@@ -16,12 +16,11 @@ namespace TestBase.Tests.Pdfs
                     .ShouldContain("my bite of text");
         }
 
-        [Test]
-        public void PdfShouldInsertGivenLine()
-        {
+    [Test]
+    public void PdfShouldInsertGivenLine()
+    {
             Pdf.DocumentWithLineOfText("my line of text")
                .ShouldStartWith("%PDF-")
                .ShouldContain("my line of text");
         }
-    }
 }

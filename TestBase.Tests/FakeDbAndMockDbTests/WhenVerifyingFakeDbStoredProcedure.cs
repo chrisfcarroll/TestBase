@@ -2,15 +2,15 @@ using System.Data;
 using NUnit.Framework;
 using TestBase.AdoNet;
 
-namespace TestBase.Tests.FakeDbAndMockDbTests
-{
-    [TestFixture]
-    public class WhenVerifyingFakeDbStoredProcedure
-    {
-        const string NoquerySproc = "NoquerySproc";
+namespace TestBase.Tests.FakeDbAndMockDbTests;
 
-        static void ExecuteReader(FakeDbConnection conn, string procedureName)
-        {
+[TestFixture]
+public class WhenVerifyingFakeDbStoredProcedure
+{
+    const string NoquerySproc = "NoquerySproc";
+
+    static void ExecuteReader(FakeDbConnection conn, string procedureName)
+    {
             using (var cmd = conn.CreateCommand())
             {
                 cmd.CommandText = procedureName;
@@ -23,8 +23,8 @@ namespace TestBase.Tests.FakeDbAndMockDbTests
             }
         }
 
-        static void ExecuteNonQuery(FakeDbConnection conn, string procedureName)
-        {
+    static void ExecuteNonQuery(FakeDbConnection conn, string procedureName)
+    {
             using (var cmd = conn.CreateCommand())
             {
                 cmd.CommandText = procedureName;
@@ -37,9 +37,9 @@ namespace TestBase.Tests.FakeDbAndMockDbTests
             }
         }
 
-        [Test]
-        public void Should_VerifyCalls()
-        {
+    [Test]
+    public void Should_VerifyCalls()
+    {
             using (var conn = new FakeDbConnection())
             {
                 ExecuteNonQuery(conn, NoquerySproc);
@@ -50,9 +50,9 @@ namespace TestBase.Tests.FakeDbAndMockDbTests
             }
         }
 
-        [Test]
-        public void Should_VerifyCallsWithParameter()
-        {
+    [Test]
+    public void Should_VerifyCallsWithParameter()
+    {
             using (var conn = new FakeDbConnection())
             {
                 ExecuteNonQuery(conn, NoquerySproc);
@@ -62,9 +62,9 @@ namespace TestBase.Tests.FakeDbAndMockDbTests
                     p => p.ParameterName == "Id" && 111.Equals(p.Value));
             }
         }
-        [Test]
-        public void Should_VerifyCallsWithParameterPredicateFailue()
-        {
+    [Test]
+    public void Should_VerifyCallsWithParameterPredicateFailue()
+    {
             using (var conn = new FakeDbConnection())
             {
                 ExecuteNonQuery(conn, NoquerySproc);
@@ -78,9 +78,9 @@ namespace TestBase.Tests.FakeDbAndMockDbTests
             }
         }
 
-        [Test]
-        public void Should_VerifyPredicateFailure()
-        {
+    [Test]
+    public void Should_VerifyPredicateFailure()
+    {
             using (var conn = new FakeDbConnection())
             {
                 ExecuteNonQuery(conn, NoquerySproc);
@@ -93,9 +93,9 @@ namespace TestBase.Tests.FakeDbAndMockDbTests
             }
         }
 
-        [Test]
-        public void Should_CatchSomeTyposInTheCommand()
-        {
+    [Test]
+    public void Should_CatchSomeTyposInTheCommand()
+    {
             using (var conn = new FakeDbConnection())
             {
                 ExecuteNonQuery(conn, NoquerySproc);
@@ -111,5 +111,4 @@ namespace TestBase.Tests.FakeDbAndMockDbTests
                 });
             }
         }
-    }
 }

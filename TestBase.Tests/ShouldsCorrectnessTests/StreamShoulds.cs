@@ -4,14 +4,14 @@ using System.Linq;
 using System.Text;
 using NUnit.Framework;
 
-namespace TestBase.Tests.ShouldsCorrectnessTests
+namespace TestBase.Tests.ShouldsCorrectnessTests;
+
+[TestFixture]
+public class StreamShouldsShould
 {
-    [TestFixture]
-    public class StreamShouldsShould
+    [Test]
+    public void ShouldHaveSameStreamContentAs_Should_fail__Given_different_content()
     {
-        [Test]
-        public void ShouldHaveSameStreamContentAs_Should_fail__Given_different_content()
-        {
             using (var left = new MemoryStream(Encoding.UTF8.GetBytes("Hello there")))
             using (var right = new MemoryStream(Encoding.UTF8.GetBytes("Hello and Goodbye")))
             {
@@ -20,9 +20,9 @@ namespace TestBase.Tests.ShouldsCorrectnessTests
             }
         }
 
-        [Test]
-        public void ShouldHaveSameStreamContentAs_Should_fail_WithUseableErrorMessage__Given_different_content()
-        {
+    [Test]
+    public void ShouldHaveSameStreamContentAs_Should_fail_WithUseableErrorMessage__Given_different_content()
+    {
             using (var left = new MemoryStream(Encoding.UTF8.GetBytes("Hello there")))
             using (var right = new MemoryStream(Encoding.UTF8.GetBytes("Hello and Goodbye")))
             {
@@ -42,9 +42,9 @@ namespace TestBase.Tests.ShouldsCorrectnessTests
             }
         }
 
-        [Test]
-        public void ShouldHaveSameStreamContentAs_Should_fail_WithUseableErrorMessage__Given_long_different_content()
-        {
+    [Test]
+    public void ShouldHaveSameStreamContentAs_Should_fail_WithUseableErrorMessage__Given_long_different_content()
+    {
             var rnd = new Random();
             var longtext = Enumerable.Range(0, 2000)
                                      .Aggregate("This is long ", (s, i) => s + (char) (32 + rnd.Next(60)));
@@ -65,9 +65,9 @@ namespace TestBase.Tests.ShouldsCorrectnessTests
             }
         }
 
-        [Test]
-        public void ShouldHaveSameStreamContentAs_Should_Pass__Given_the_same_content()
-        {
+    [Test]
+    public void ShouldHaveSameStreamContentAs_Should_Pass__Given_the_same_content()
+    {
             using (var left = new MemoryStream(Encoding.UTF8.GetBytes("Hello there")))
             using (var right = new MemoryStream(Encoding.UTF8.GetBytes("Hello there")))
             {
@@ -75,5 +75,4 @@ namespace TestBase.Tests.ShouldsCorrectnessTests
                 left.ShouldHaveSameStreamContentAs(right);
             }
         }
-    }
 }

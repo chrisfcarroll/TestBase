@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using NUnit.Framework;
 
-namespace TestBase.Tests.AspNetCoreMVC
+namespace TestBase.Tests.AspNet6.AspNetCoreMVC
 {
     [TestFixture]
     public class FileResultShoulds

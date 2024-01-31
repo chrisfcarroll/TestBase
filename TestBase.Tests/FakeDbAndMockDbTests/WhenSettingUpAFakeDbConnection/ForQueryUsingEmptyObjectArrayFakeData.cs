@@ -5,32 +5,32 @@ using Dapper;
 using NUnit.Framework;
 using TestBase.AdoNet;
 
-namespace TestBase.Tests.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection
+namespace TestBase.Tests.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection;
+
+[TestFixture]
+public class ForQueryUsingEmptyObjectArrayFakeData
 {
-    [TestFixture]
-    public class ForQueryUsingEmptyObjectArrayFakeData
+    [Test]
+    public void Should_return_the_setup_data__Given_empty_array_and_a_column_name()
     {
-        [Test]
-        public void Should_return_the_setup_data__Given_empty_array_and_a_column_name()
-        {
             //A
             var uut = new FakeDbConnection().SetUpForQuery(new object[][] { }, "PdmsId");
             //A
             uut.Query<int>("").ShouldEqualByValue(new int[] { });
         }
 
-        [Test]
-        public async Task Should_return_the_setup_data__Given_empty_array_and_a_column_name__GivenQueryAsync()
-        {
+    [Test]
+    public async Task Should_return_the_setup_data__Given_empty_array_and_a_column_name__GivenQueryAsync()
+    {
             //A
             var uut = new FakeDbConnection().SetUpForQuery(new object[][] { }, "PdmsId");
             //A
             (await uut.QueryAsync<int>("")).ShouldEqualByValue(new int[] { });
         }
 
-        [Test]
-        public void Should_return_the_setup_data__Given_empty_array_and_metadata()
-        {
+    [Test]
+    public void Should_return_the_setup_data__Given_empty_array_and_metadata()
+    {
             //A
             var metaData = new FakeDbResultSet.MetaData[2]
                            {
@@ -42,9 +42,9 @@ namespace TestBase.Tests.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection
             uut.Query<KeyValuePair<int, string>>("").ShouldEqualByValue(new KeyValuePair<int, string>[] { });
         }
 
-        [Test]
-        public async Task Should_return_the_setup_data__Given_empty_array_and_metadata__GivenQueryAsync()
-        {
+    [Test]
+    public async Task Should_return_the_setup_data__Given_empty_array_and_metadata__GivenQueryAsync()
+    {
             //A
             var metaData = new FakeDbResultSet.MetaData[2]
                            {
@@ -58,14 +58,13 @@ namespace TestBase.Tests.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection
            .ShouldEqualByValue(new KeyValuePair<int, string>[] { });
         }
 
-        [Test]
-        public void Should_throw_helpfully__Given__not_enough_metadata()
-        {
+    [Test]
+    public void Should_throw_helpfully__Given__not_enough_metadata()
+    {
             //A
             Assert.Throws<InvalidOperationException>(
                                                      () => new FakeDbConnection().SetUpForQuery(new object[][] { })
                                                     )
                   .Message.ShouldMatch("[Cc]an't .* metadata");
         }
-    }
 }

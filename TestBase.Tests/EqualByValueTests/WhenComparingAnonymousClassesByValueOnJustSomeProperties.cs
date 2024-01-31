@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
 using NUnit.Framework;
 
-namespace TestBase.Tests.EqualByValueTests
+namespace TestBase.Tests.EqualByValueTests;
+
+[TestFixture]
+public class WhenComparingAnonymousClassesByValueOnJustSomeMembers
 {
-    [TestFixture]
-    public class WhenComparingAnonymousClassesByValueOnJustSomeMembers
+    [Test]
+    public void Should_not_be_fooled_by_members_with_overlapping_names()
     {
-        [Test]
-        public void Should_not_be_fooled_by_members_with_overlapping_names()
-        {
             //A
             var objectL        = new {Id = 1, Name = "1", NameOhDear = "Did we compare on field NameOhDear?"};
             var objectR        = new {Id = 1, Name = "1", NameOhDear = "Oh Dear!"};
@@ -19,9 +19,9 @@ namespace TestBase.Tests.EqualByValueTests
             objectL.ShouldEqualByValueOnMembers(objectR, matchedMembers);
         }
 
-        [Test]
-        public void Should_return_false_when_not_the_same()
-        {
+    [Test]
+    public void Should_return_false_when_not_the_same()
+    {
             var objectL           = new {Id = 1, Name = "1", Nested = new {NestedName = "N1", NestedMore = "M1"}};
             var objectR           = new {Id = 1, Name = "1", Nested = new {NestedName = "N2", NestedMore = "M2"}};
             var mismatchedMembers = new List<string> {"Nested", "Nested.NestedName"};
@@ -33,9 +33,9 @@ namespace TestBase.Tests.EqualByValueTests
                                     );
         }
 
-        [Test]
-        public void Should_return_true_when_the_same()
-        {
+    [Test]
+    public void Should_return_true_when_the_same()
+    {
             //A
             var objectL = new
  {
@@ -53,5 +53,4 @@ namespace TestBase.Tests.EqualByValueTests
             objectL.EqualsByValuesJustOnMembersNamed(objectR, matchedMembers).ShouldBeTrue();
             objectL.ShouldEqualByValueOnMembers(objectR, matchedMembers);
         }
-    }
 }

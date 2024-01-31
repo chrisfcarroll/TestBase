@@ -4,7 +4,7 @@
 // ReSharper disable Mvc.ActionNotResolved
 // ReSharper disable Mvc.ControllerNotResolved
 
-namespace TestBase.Tests.AspNetCoreMVC
+namespace TestBase.Tests.AspNet6.AspNetCoreMVC
 {
     [TestFixture]
     public class ViewResultShoulds

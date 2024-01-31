@@ -1,18 +1,18 @@
 ﻿using NUnit.Framework;
 using TestBase.AdoNet;
 
-namespace TestBase.Tests.FakeDbAndMockDbTests
+namespace TestBase.Tests.FakeDbAndMockDbTests;
+
+[TestFixture]
+public class WhenRecordingInvocations
 {
-    [TestFixture]
-    public class WhenRecordingInvocations
+    [SetUp] public void SetUp() { UnitUnderTest = new FakeDbConnection(); }
+
+    FakeDbConnection UnitUnderTest;
+
+    [Test]
+    public void Should_DistinguishMultipleInvocationsOfOneCommand()
     {
-        [SetUp] public void SetUp() { UnitUnderTest = new FakeDbConnection(); }
-
-        FakeDbConnection UnitUnderTest;
-
-        [Test]
-        public void Should_DistinguishMultipleInvocationsOfOneCommand()
-        {
             var text1 = "Command 1";
             var p1    = new FakeDbParameter {ParameterName = "p1", Value = "p1"};
             var p2    = new FakeDbParameter {ParameterName = "p2", Value = "p2"};
@@ -33,9 +33,9 @@ namespace TestBase.Tests.FakeDbAndMockDbTests
             UnitUnderTest.Invocations[1].Parameters[0].ShouldEqualByValue(p2);
         }
 
-        [Test]
-        public void Should_record_DbCommand()
-        {
+    [Test]
+    public void Should_record_DbCommand()
+    {
             var text = "Command 1";
             UnitUnderTest.SetUpForExecuteNonQuery(1);
             //
@@ -46,9 +46,9 @@ namespace TestBase.Tests.FakeDbAndMockDbTests
             UnitUnderTest.Invocations[0].CommandText.ShouldBe(text);
         }
 
-        [Test]
-        public void Should_record_DbParameters_by_copying_not_by_reference()
-        {
+    [Test]
+    public void Should_record_DbParameters_by_copying_not_by_reference()
+    {
             var text = "Command 1";
             UnitUnderTest.SetUpForExecuteNonQuery(1);
             //
@@ -62,5 +62,4 @@ namespace TestBase.Tests.FakeDbAndMockDbTests
             UnitUnderTest.Invocations[0].Parameters[0].ShouldEqualByValue(p);
             UnitUnderTest.Invocations[0].Parameters[0].ShouldNotBe(p);
         }
-    }
 }

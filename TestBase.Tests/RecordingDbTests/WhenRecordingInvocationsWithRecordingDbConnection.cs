@@ -2,24 +2,24 @@
 using TestBase.AdoNet;
 using TestBase.AdoNet.RecordingDb;
 
-namespace TestBase.Tests.RecordingDbTests
+namespace TestBase.Tests.RecordingDbTests;
+
+[TestFixture]
+public class WhenRecordingInvocationsWithRecordingDbConnection
 {
-    [TestFixture]
-    public class WhenRecordingInvocationsWithRecordingDbConnection
+    [SetUp]
+    public void SetUp()
     {
-        [SetUp]
-        public void SetUp()
-        {
             fakeDbConnection = new FakeDbConnection();
             UnitUnderTest    = new RecordingDbConnection(fakeDbConnection);
         }
 
-        RecordingDbConnection UnitUnderTest;
-        FakeDbConnection fakeDbConnection;
+    RecordingDbConnection UnitUnderTest;
+    FakeDbConnection fakeDbConnection;
 
-        [Test]
-        public void Should_DistinguishMultipleInvocationsOfOneCommand()
-        {
+    [Test]
+    public void Should_DistinguishMultipleInvocationsOfOneCommand()
+    {
             var text1 = "Command 1";
             var p1    = new FakeDbParameter {ParameterName = "p1", Value = "p1"};
             var p2    = new FakeDbParameter {ParameterName = "p2", Value = "p2"};
@@ -44,9 +44,9 @@ namespace TestBase.Tests.RecordingDbTests
             UnitUnderTest.Invocations[1].Parameters[0].ShouldEqualByValue(p2);
         }
 
-        [Test]
-        public void Should_record_DbCommand()
-        {
+    [Test]
+    public void Should_record_DbCommand()
+    {
             var text = "Command 1";
             fakeDbConnection.SetUpForExecuteNonQuery(1);
             //
@@ -58,9 +58,9 @@ namespace TestBase.Tests.RecordingDbTests
             UnitUnderTest.Invocations[0].CommandText.ShouldBe(text);
         }
 
-        [Test]
-        public void Should_record_DbParameters()
-        {
+    [Test]
+    public void Should_record_DbParameters()
+    {
             var text = "Command 1";
             fakeDbConnection.SetUpForExecuteNonQuery(1);
             //
@@ -77,5 +77,4 @@ namespace TestBase.Tests.RecordingDbTests
             UnitUnderTest.Invocations[0].Parameters[0].ShouldEqualByValue(p);
             UnitUnderTest.Invocations[0].Parameters[0].ShouldNotBe(p);
         }
-    }
 }

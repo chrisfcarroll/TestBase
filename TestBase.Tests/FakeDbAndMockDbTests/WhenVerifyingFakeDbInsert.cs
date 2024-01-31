@@ -1,18 +1,18 @@
 using NUnit.Framework;
 using TestBase.AdoNet;
 
-namespace TestBase.Tests.FakeDbAndMockDbTests
+namespace TestBase.Tests.FakeDbAndMockDbTests;
+
+[TestFixture]
+public class WhenVerifyingFakeDbInsert
 {
-    [TestFixture]
-    public class WhenVerifyingFakeDbInsert
+    [TestCase("ATableName")]
+    [TestCase("namespaceisignored.ATableName")]
+    [TestCase("namespace.isignored.ATableName")]
+    [TestCase("into ATableName")]
+    [TestCase("into namespace.isignored.ATableName")]
+    public void Should_Recognise_Insert(string atablename)
     {
-        [TestCase("ATableName")]
-        [TestCase("namespaceisignored.ATableName")]
-        [TestCase("namespace.isignored.ATableName")]
-        [TestCase("into ATableName")]
-        [TestCase("into namespace.isignored.ATableName")]
-        public void Should_Recognise_Insert(string atablename)
-        {
             using (var conn = new FakeDbConnection())
             {
                 using (var cmd = conn.CreateCommand())
@@ -51,5 +51,4 @@ namespace TestBase.Tests.FakeDbAndMockDbTests
                 Assert.Throws<Assertion>(() => { conn.ShouldHaveDeleted("ATableName"); });
             }
         }
-    }
 }

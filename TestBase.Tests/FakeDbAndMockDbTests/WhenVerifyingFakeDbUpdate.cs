@@ -1,16 +1,16 @@
 using NUnit.Framework;
 using TestBase.AdoNet;
 
-namespace TestBase.Tests.FakeDbAndMockDbTests
+namespace TestBase.Tests.FakeDbAndMockDbTests;
+
+[TestFixture]
+public class WhenVerifyingFakeDbUpdate
 {
-    [TestFixture]
-    public class WhenVerifyingFakeDbUpdate
+    [TestCase("ATableName")]
+    [TestCase("namespaceisignored.ATableName")]
+    [TestCase("namespace.isignored.ATableName")]
+    public void Should_Recognise_Update(string atablename)
     {
-        [TestCase("ATableName")]
-        [TestCase("namespaceisignored.ATableName")]
-        [TestCase("namespace.isignored.ATableName")]
-        public void Should_Recognise_Update(string atablename)
-        {
             var source = new AClass {Name = "Boo1", Id = 111};
             using (var conn = new FakeDbConnection().SetUpForQuery(FakeData.GivenFakeDataInFakeDb()))
             {
@@ -67,11 +67,11 @@ namespace TestBase.Tests.FakeDbAndMockDbTests
             }
         }
 
-        [TestCase("ATableName",        "A=B and Id=@id")]
-        [TestCase("somens.ATableName", "A=B OR Id=@id")]
-        [TestCase("somens.ATableName", "a.b.c=@x and Id=@id")]
-        public void Should_Recognise_Update_WhereClause(string atablename, string whereClause)
-        {
+    [TestCase("ATableName",        "A=B and Id=@id")]
+    [TestCase("somens.ATableName", "A=B OR Id=@id")]
+    [TestCase("somens.ATableName", "a.b.c=@x and Id=@id")]
+    public void Should_Recognise_Update_WhereClause(string atablename, string whereClause)
+    {
             var source = new AClass {Name = "Boo1", Id = 111};
             using (var conn = new FakeDbConnection().SetUpForQuery(FakeData.GivenFakeDataInFakeDb()))
             {
@@ -127,5 +127,4 @@ namespace TestBase.Tests.FakeDbAndMockDbTests
                 Assert.Throws<Assertion>(() => { conn.ShouldHaveDeleted("ATableName"); });
             }
         }
-    }
 }

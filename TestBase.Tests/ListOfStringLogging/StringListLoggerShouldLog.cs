@@ -5,18 +5,18 @@ using Extensions.Logging.ListOfString;
 using Microsoft.Extensions.Logging;
 using NUnit.Framework;
 
-namespace TestBase.Tests.ListOfStringLogging
-{
-    [TestFixture]
-    public class StringListLoggerShould
-    {
-        class AnotherScope
-        {
-        }
+namespace TestBase.Tests.ListOfStringLogging;
 
-        [Test]
-        public void BeBuildableByLoggerFactory()
-        {
+[TestFixture]
+public class StringListLoggerShould
+{
+    class AnotherScope
+    {
+    }
+
+    [Test]
+    public void BeBuildableByLoggerFactory()
+    {
             var stringListLoggerProvider = new StringListLoggerProvider();
             var factory                  = new LoggerFactory();
             factory.AddProvider(stringListLoggerProvider);
@@ -30,9 +30,9 @@ namespace TestBase.Tests.ListOfStringLogging
             uut.LoggedLines.ShouldBeOfLength(1).ToList()[0].ShouldMatch(@"B\s*=\s*""?Two""?");
         }
 
-        [Test]
-        public void BeBuildableByLoggerFactoryGivenBackingList()
-        {
+    [Test]
+    public void BeBuildableByLoggerFactoryGivenBackingList()
+    {
             var loggedLines = new List<string>();
             var wrapped     = new LoggerFactory().AddStringListLogger(loggedLines).CreateLogger(nameof(Destructure));
 
@@ -44,9 +44,9 @@ namespace TestBase.Tests.ListOfStringLogging
             StringListLogger.Instance.LoggedLines.ShouldBe(loggedLines);
         }
 
-        [Test]
-        public void BeBuildableByLoggerFactoryGivenInstance()
-        {
+    [Test]
+    public void BeBuildableByLoggerFactoryGivenInstance()
+    {
             var uut     = new StringListLogger();
             var wrapped = new LoggerFactory().AddStringListLogger(uut).CreateLogger<StringListLoggerShould>();
 
@@ -57,9 +57,9 @@ namespace TestBase.Tests.ListOfStringLogging
             uut.LoggedLines.ShouldBeOfLength(1).Single().ReplaceWith("", " ", "\"").ShouldMatch(@"\{A=1,B=Two\}");
         }
 
-        [Test]
-        public void Destructure()
-        {
+    [Test]
+    public void Destructure()
+    {
             var uut     = new StringListLogger();
             var wrapped = new LoggerFactory().AddStringListLogger(uut).CreateLogger(nameof(Destructure));
 
@@ -70,9 +70,9 @@ namespace TestBase.Tests.ListOfStringLogging
             uut.LoggedLines.ShouldBeOfLength(1).Single().ReplaceWith("", " ", "\"").ShouldMatch(@"\{A=1,B=Two\}");
         }
 
-        [Test]
-        public void Log()
-        {
+    [Test]
+    public void Log()
+    {
             var uut = new StringListLogger();
             //
             uut.LogInformation("Information!");
@@ -83,9 +83,9 @@ namespace TestBase.Tests.ListOfStringLogging
             uut.LoggedLines[1].ShouldContain("Error!");
         }
 
-        [Test]
-        public void LogWithScopes()
-        {
+    [Test]
+    public void LogWithScopes()
+    {
             var uut = new StringListLogger();
             using (uut.BeginScope(this))
             {
@@ -108,10 +108,10 @@ namespace TestBase.Tests.ListOfStringLogging
                .ShouldBeOfLength(4, "Expected 4 loglines for outer scope");
         }
 
-        [Test]
-        public void MsLoggerShouldNotThrowWhenDestructuringNullParameters()
-        {
-            var logger = new LoggerFactory().AddConsole().CreateLogger("Test");
+    [Test]
+    public void MsLoggerShouldNotThrowWhenDestructuringNullParameters()
+    {
+            var logger = new LoggerFactory().AddStringListLogger().CreateLogger("Test");
 
             logger.LogError("This is formatted for destructuring {@Destructure}", new {A = 1, B = 2});
             Console.WriteLine("Logs with format \"{ A = 1, B = 2 }\"");
@@ -120,9 +120,9 @@ namespace TestBase.Tests.ListOfStringLogging
             logger.LogError("This is formatted for destructuring {@Destructure}", x);
         }
 
-        [Test]
-        public void NotThrowOnDestructuring()
-        {
+    [Test]
+    public void NotThrowOnDestructuring()
+    {
             var uut = new StringListLogger();
 
             object destructured = new {A = 1, B = "Two"};
@@ -132,9 +132,9 @@ namespace TestBase.Tests.ListOfStringLogging
             uut.LoggedLines.ShouldBeOfLength(1).ToList()[0].ShouldMatch(@"B\s*=\s*""?Two""?");
         }
 
-        [Test]
-        public void NotThrowOnNullParameters()
-        {
+    [Test]
+    public void NotThrowOnNullParameters()
+    {
             var loggedLines = new List<string>();
             var wrapped     = new LoggerFactory().AddStringListLogger(loggedLines).CreateLogger("TestBase");
 
@@ -147,9 +147,9 @@ namespace TestBase.Tests.ListOfStringLogging
             loggedLines.ShouldBeOfLength(3).ShouldAll(x => x.Matches("null"));
         }
 
-        [Test]
-        public void ShouldBeRetrievableByName()
-        {
+    [Test]
+    public void ShouldBeRetrievableByName()
+    {
             var factory = new LoggerFactory().AddStringListLogger();
             var logger  = factory.CreateLogger("[Logger1]");
 
@@ -167,5 +167,4 @@ namespace TestBase.Tests.ListOfStringLogging
                             .ShouldBeOfLength(2)
                             .ShouldAll(s => s.Matches("In Logger 2"));
         }
-    }
 }

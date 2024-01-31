@@ -2,14 +2,14 @@
 using NUnit.Framework;
 using Serilog.Sinks.ListOfString;
 
-namespace TestBase.Tests.ListOfStringLogging
+namespace TestBase.Tests.ListOfStringLogging;
+
+[TestFixture]
+public class StringListSeriLoggerShould
 {
-    [TestFixture]
-    public class StringListSeriLoggerShould
+    [Test]
+    public void LogAsSeriLogger()
     {
-        [Test]
-        public void LogAsSeriLogger()
-        {
             var myList = new List<string>();
             var logger = myList.AsSeriLogger();
             //
@@ -20,5 +20,4 @@ namespace TestBase.Tests.ListOfStringLogging
             myList[0].ShouldContain("Information!");
             myList[1].ShouldContain("Error!");
         }
-    }
 }

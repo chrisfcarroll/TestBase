@@ -1,18 +1,18 @@
 using NUnit.Framework;
 using TestBase.AdoNet;
 
-namespace TestBase.Tests.FakeDbAndMockDbTests
+namespace TestBase.Tests.FakeDbAndMockDbTests;
+
+[TestFixture]
+public class WhenVerifyingFakeDbDelete
 {
-    [TestFixture]
-    public class WhenVerifyingFakeDbDelete
+    [TestCase("ATableName")]
+    [TestCase("namespaceisignored.ATableName")]
+    [TestCase("namespace.isignored.ATableName")]
+    [TestCase("from ATableName")]
+    [TestCase("from namespace.isignored.ATableName")]
+    public void Should_Recognise_Delete(string tablename)
     {
-        [TestCase("ATableName")]
-        [TestCase("namespaceisignored.ATableName")]
-        [TestCase("namespace.isignored.ATableName")]
-        [TestCase("from ATableName")]
-        [TestCase("from namespace.isignored.ATableName")]
-        public void Should_Recognise_Delete(string tablename)
-        {
             using (var conn = new FakeDbConnection().SetUpForQuery(FakeData.GivenFakeDataInFakeDb()))
             {
                 using (var cmd = conn.CreateCommand())
@@ -35,12 +35,12 @@ namespace TestBase.Tests.FakeDbAndMockDbTests
             }
         }
 
-        [TestCase("ATableName",                     "Id=@Id")]
-        [TestCase("ATableName",                     "a=b and Id=@Id")]
-        [TestCase("namespace.isignored.ATableName", "a=b and Id=@Id")]
-        [TestCase("namespace.isignored.ATableName", "a=b or Id=@Id")]
-        public void Should_Recognise_Delete_WhereClause(string tablename, string whereClause)
-        {
+    [TestCase("ATableName",                     "Id=@Id")]
+    [TestCase("ATableName",                     "a=b and Id=@Id")]
+    [TestCase("namespace.isignored.ATableName", "a=b and Id=@Id")]
+    [TestCase("namespace.isignored.ATableName", "a=b or Id=@Id")]
+    public void Should_Recognise_Delete_WhereClause(string tablename, string whereClause)
+    {
             using (var conn = new FakeDbConnection().SetUpForQuery(FakeData.GivenFakeDataInFakeDb()))
             {
                 using (var cmd = conn.CreateCommand())
@@ -62,5 +62,4 @@ namespace TestBase.Tests.FakeDbAndMockDbTests
                 Assert.Throws<Assertion>(() => { conn.ShouldHaveSelected("ATableName"); });
             }
         }
-    }
 }

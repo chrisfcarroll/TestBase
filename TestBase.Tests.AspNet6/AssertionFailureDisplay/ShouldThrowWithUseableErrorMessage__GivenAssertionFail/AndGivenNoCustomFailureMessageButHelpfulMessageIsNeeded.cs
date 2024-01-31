@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 
-namespace TestBase.Tests.ShouldsFeedbackWhenAssertingFailure.ShouldThrowWithUseableErrorMessage__GivenAssertionFail
+namespace TestBase.Tests.AspNet6.AssertionFailureDisplay.ShouldThrowWithUseableErrorMessage__GivenAssertionFail
 {
     [TestFixture]
     public partial class GivenAssertionFail

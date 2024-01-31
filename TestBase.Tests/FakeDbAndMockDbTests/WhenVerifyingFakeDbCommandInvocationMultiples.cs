@@ -1,17 +1,17 @@
 using NUnit.Framework;
 using TestBase.AdoNet;
 
-namespace TestBase.Tests.FakeDbAndMockDbTests
+namespace TestBase.Tests.FakeDbAndMockDbTests;
+
+[TestFixture]
+public class WhenVerifyingFakeDbInvocationMultiples
 {
-    [TestFixture]
-    public class WhenVerifyingFakeDbInvocationMultiples
+    [TestCase("Update", "Select", "Insert", "Delete")]
+    [TestCase("Select", "Insert", "Delete", "Update")]
+    [TestCase("Insert", "Delete", "Update", "Select")]
+    [TestCase("Delete", "Update", "Select", "Insert")]
+    public void Should_VerifyInvocationCount(string verb, params string[] verbsNotExecuted)
     {
-        [TestCase("Update", "Select", "Insert", "Delete")]
-        [TestCase("Select", "Insert", "Delete", "Update")]
-        [TestCase("Insert", "Delete", "Update", "Select")]
-        [TestCase("Delete", "Update", "Select", "Insert")]
-        public void Should_VerifyInvocationCount(string verb, params string[] verbsNotExecuted)
-        {
             using (var conn = new FakeDbConnection().SetUpForExecuteNonQuery(0))
             using (var cmd = conn.CreateCommand())
             {
@@ -56,5 +56,4 @@ namespace TestBase.Tests.FakeDbAndMockDbTests
                 }
             }
         }
-    }
 }
