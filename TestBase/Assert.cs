@@ -1,5 +1,10 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using FastExpressionCompiler;
 #if NETSTANDARD || NET5_0_OR_GREATER
 using FastExpressionCompiler;
 #endif
@@ -9,6 +14,27 @@ namespace TestBase
     /// <summary>Static convenience methods for invoking <see cref="Assertion" />s.</summary>
     public static class Assert
     {
+        /// <summary>
+        /// If <paramref name="predicate" />(<paramref name="actual" />) evaluates to true,
+        /// then <paramref name="actual" /> is returned.
+        /// If not, an <see cref="Assertion{T}" /> is thrown, containing details of the assertion failure.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="actual"></param>
+        /// <param name="predicate"></param>
+        /// <param name="comments"></param>
+        /// <param name="argumentExpression">A compiler generated source snippet
+        /// for <paramref name="actual"/>, unless you override it.
+        /// </param>
+        /// <returns><paramref name="actual" />, if the precondition succeeds</returns>
+        /// <exception cref="Assertion{T}">thrown if the precondition fails.</exception>
+        public static T That<T>(T actual, Expression<Func<T, bool>> predicate, IEnumerable<(string, object)> comments, string argumentExpression)
+        {
+            var result = new Assertion<T>(actual, predicate, argumentExpression, comments);
+            return result ? actual : throw result;
+        }
+        
+        
         /// <summary>
         ///     If <paramref name="predicate" />(<paramref name="actual" />) evaluates to true, then <paramref name="actual" /> is
         ///     returned.

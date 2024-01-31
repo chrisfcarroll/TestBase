@@ -42,10 +42,10 @@ public static class ObjectTooString
 {
     public const string Null = "null";
 
-    const string RegexVariableName =
+    public const string RegexCSharpIdentifier =
         @"@?[_\p{L}\p{Nl}][\p{L}\p{Nl}\p{Mn}\p{Mc}\p{Nd}\p{Pc}\p{Cf}\.]*";
     
-    const string RegexTypeOrIdentifierNameCharsOnly =
+    public const string RegexTypeNameOrIdentifierWithCharsOnly =
         @"^[_\p{L}\p{Nl}\p{Mn}\p{Mc}\p{Nd}\p{Pc}\p{Cf}\.\`]+$";
     
     
@@ -95,7 +95,7 @@ public static class ObjectTooString
                 if (pref== TooStringMethod.CallerArgument
                     && argumentExpression is not null
                     && !Regex.IsMatch(argumentExpression,
-                        RegexTypeOrIdentifierNameCharsOnly))
+                        RegexTypeNameOrIdentifierWithCharsOnly))
                     return argumentExpression;
 
                 if (pref == TooStringMethod.Reflection)

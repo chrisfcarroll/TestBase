@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,21 @@ namespace TestBase
 {
     public static class StringExtensions
     {
+   
+        public static string RegexReplaceWhitespaceEtc(this string value) 
+            => value?
+                .ReplaceRegex("\\s+"," ")
+                .ReplaceRegex("^\\s+","")
+                .ReplaceRegex("\\s+$","")
+                .ReplaceRegex("[a-f0-9A-F\\-]{36}",Guid.Empty.ToString());
+
+        public static string ReplaceRegex(this string input,
+                                           string pattern,
+                                           string replacement,
+                                           RegexOptions options = RegexOptions.None)
+            => input is null
+                ? null
+                : Regex.Replace(input, pattern, replacement, options);
         public static string TruncateTo(this string @this, int maxLength = 99)
         {
             return @this?.Length <= maxLength ? @this : @this?.Substring(0, maxLength);

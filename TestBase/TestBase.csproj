@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netstandard1.6;net40;net6.0</TargetFrameworks>
+    <TargetFrameworks>net6.0;net45;netstandard1.6</TargetFrameworks>
     <AssemblyVersion>4.1.4.4</AssemblyVersion>
     <AssemblyFileVersion>4.1.4.4</AssemblyFileVersion>
     <PackageVersion>4.1.4.4</PackageVersion>
@@ -190,21 +190,25 @@ Serilog.Logger slogger= new LoggerConfiguration().WriteTo.StringList(log).Create
   </PropertyGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.6' ">
+    <PackageReference Include="System.ValueTuple" Version="4.5.0"/>
     <PackageReference Include="ExpressionToCodeLib" Version="2.7.0" />
-    <PackageReference Include="FastExpressionCompiler" Version="1.7.1" />
+    <PackageReference Include="FastExpressionCompiler" Version="2.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="4.4.1" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net40' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
+    <PackageReference Include="System.ValueTuple" Version="4.5.0"/>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="FastExpressionCompiler" Version="2.0.0" />
     <PackageReference Include="ExpressionToCodeLib" Version="2.7.0" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
+    <ProjectReference Include="..\TooString\TooString.csproj" />
     <PackageReference Include="ExpressionToCodeLib" Version="2.7.0" />
-    <PackageReference Include="FastExpressionCompiler" Version="1.7.1" />
+    <PackageReference Include="FastExpressionCompiler" Version="2.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
   </ItemGroup>
