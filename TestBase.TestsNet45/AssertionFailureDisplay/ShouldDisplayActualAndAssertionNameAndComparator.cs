@@ -24,9 +24,12 @@ public class ShouldDisplayActualAndAssertionNameAndComparator
                 ----------------------------
                 1
                 ----------------------------
-                Asserted : ShouldBe
-                x => x != null && x.Equals(expected)
+                Asserted : 
+                actual => x.Equals(expected)
                 expected   →   2
+                
+                ----------------------------
+                ShouldBe 2
                 """
                     .RegexReplaceWhitespaceAndBlankOutGuids());
     }
@@ -52,11 +55,13 @@ public class ShouldDisplayActualAndAssertionNameAndComparator
              Actual :
              ----------------------------
              {namedActual}
-             namedActual
              ----------------------------
-             Asserted : ShouldBe
-             x => x != null && x.Equals(expected)
+             Asserted :
+             actual => x.Equals(expected)
              expected   →   {namedExpected}
+             
+             ----------------------------
+             ShouldBe 2
              """
                     .RegexReplaceWhitespaceAndBlankOutGuids());
     }
@@ -74,16 +79,18 @@ public class ShouldDisplayActualAndAssertionNameAndComparator
         actual.RegexReplaceWhitespaceAndBlankOutGuids()
             .ShouldBe(
                 """
-                    Failed :
-                    Actual :
-                    ----------------------------
-                    2
-                    1 + 1
-                    ----------------------------
-                    Asserted : ShouldBe
-                    x => x != null && x.Equals(expected)
-                    expected   →   4
-                    """
+                Failed : 
+                Actual : 
+                ----------------------------
+                2
+                ----------------------------
+                Asserted : 
+                actual => x.Equals(expected)
+                expected   →   4
+                
+                ----------------------------
+                ShouldBe 4
+                """
                     .RegexReplaceWhitespaceAndBlankOutGuids());
     }
     

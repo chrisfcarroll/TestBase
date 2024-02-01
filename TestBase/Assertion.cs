@@ -404,23 +404,23 @@ namespace TestBase
                 actualHeader,
                 divider,
                 Actual);
-            if (!ActualExpression.HasTheSameWordsAs(Actual))
+            if (!string.IsNullOrWhiteSpace(ActualExpression) && !ActualExpression.HasTheSameWordsAs(Actual))
             {
                 output += nl + ActualExpression;
             }
             output += nl + divider;
             output = string.Join(nl, output, assertedHeader + Asserted);
-            if (!AssertedDetail.HasTheSameWordsAs(Asserted))
+            if (!string.IsNullOrWhiteSpace(AssertedDetail) && !AssertedDetail.HasTheSameWordsAs(Asserted))
             {
                 output += nl + AssertedDetail;
             }
             if (!string.IsNullOrEmpty(Comment))
             {
-                output += nl + divider + Comment;
+                output += nl + divider + nl + Comment;
             }
             if (!Result.HasValue)
             {
-                output += nl + divider + ExceptionThrownByEvaluation;
+                output += nl + divider + nl + ExceptionThrownByEvaluation;
             }
             return output;
         }

@@ -1,11 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>net6.0;net45;netstandard1.6</TargetFrameworks>
-    <AssemblyVersion>4.1.4.4</AssemblyVersion>
-    <AssemblyFileVersion>4.1.4.4</AssemblyFileVersion>
-    <PackageVersion>4.1.4.4</PackageVersion>
+    <AssemblyVersion>6.0.0.1</AssemblyVersion>
+    <AssemblyFileVersion>6.0.0.1</AssemblyFileVersion>
+    <PackageVersion>6.0.0.1</PackageVersion>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Title>TestBase – Rich, fluent assertions and tools for testing with heavyweight dependencies: AspNetCore, AdoNet, HttpClient, AspNet.Mvc, Streams, Logging</Title>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageDescription><![CDATA[*TestBase* gives you a flying start with 
 - fluent assertions that are easy to extend
 - sharp error messages
@@ -134,6 +135,7 @@ Serilog.Logger slogger= new LoggerConfiguration().WriteTo.StringList(log).Create
     <PackageReleaseNotes>
       ChangeLog
       ---------
+      6.0.0   Better Assertion output for core asserts includes ActualValue,ActualExpression,Asserted,AssertedDetail 
       4.2.0   TestBase-Mvc works on mono
       4.2.0   TestBase.FakeHttpClient.SetupGet() and SetupPost() overloads
       4.1.4.4 BugFix Comparer.MemberCompare() when left or right is null or FileSystemInfo
@@ -179,6 +181,7 @@ Serilog.Logger slogger= new LoggerConfiguration().WriteTo.StringList(log).Create
     <Compile Remove="TestLogger.cs" />
     <Compile Remove="WindsorExtensions.cs" />
     <Compile Remove="GivenMockEventStore.cs" />
+    <None Include="README.md" Pack="true" PackagePath="\"/>
   </ItemGroup>
 
   <PropertyGroup>
