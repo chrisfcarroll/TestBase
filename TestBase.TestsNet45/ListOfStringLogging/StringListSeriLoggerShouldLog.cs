@@ -2,7 +2,7 @@
 using NUnit.Framework;
 using Serilog.Sinks.ListOfString;
 
-namespace TestBase.Tests.ListOfStringLogging
+namespace TestBase.TestsNet45.ListOfStringLogging
 {
     [TestFixture]
     public class StringListSeriLoggerShould

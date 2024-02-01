@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using NUnit.Framework;
 
-namespace TestBase.Tests.ShouldsCorrectnessTests
+namespace TestBase.TestsNet45.ShouldsCorrectnessTests
 {
     [TestFixture]
     public class IEnumerableShouldBeEmpty_ShouldNotBeEmpty_Tests

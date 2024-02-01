@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using NUnit.Framework;
 
-namespace TestBase.Tests.ShouldsCorrectnessTests
+namespace TestBase.TestsNet45.ShouldsCorrectnessTests
 {
     [TestFixture]
     public class StreamShouldsShould

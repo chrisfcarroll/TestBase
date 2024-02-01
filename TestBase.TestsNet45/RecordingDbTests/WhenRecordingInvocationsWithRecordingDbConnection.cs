@@ -2,7 +2,7 @@
 using TestBase.AdoNet;
 using TestBase.AdoNet.RecordingDb;
 
-namespace TestBase.Tests.RecordingDbTests
+namespace TestBase.TestsNet45.RecordingDbTests
 {
     [TestFixture]
     public class WhenRecordingInvocationsWithRecordingDbConnection

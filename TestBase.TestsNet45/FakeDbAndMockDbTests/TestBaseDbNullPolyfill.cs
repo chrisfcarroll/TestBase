@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 
-namespace TestBase.Tests.FakeDbAndMockDbTests
+namespace TestBase.TestsNet45.FakeDbAndMockDbTests
 {
     [TestFixture]
     public class TestBaseDbNullPolyfill

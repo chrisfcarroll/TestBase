@@ -1,4 +1,4 @@
-﻿namespace TestBase.Tests
+﻿namespace TestBase.TestsNet45
 {
     public class AClass
     {

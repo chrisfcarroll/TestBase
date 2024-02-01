@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 
-namespace TestBase.Tests.ShouldsFeedbackWhenAssertingFailure.ShouldThrowWithUseableErrorMessage__GivenAssertionFail
+namespace TestBase.TestsNet45.ShouldsFeedbackWhenAssertingFailure.ShouldThrowWithUseableErrorMessage__GivenAssertionFail
 {
     [TestFixture]
     public partial class GivenAssertionFail

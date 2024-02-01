@@ -1,7 +1,7 @@
 using System;
 using NUnit.Framework;
 
-namespace TestBase.Tests.ShouldsCorrectnessTests
+namespace TestBase.TestsNet45.ShouldsCorrectnessTests
 {
     [TestFixture]
     public class IEnumerableShouldAllXXX_VerboseMessageOnFailure_Tests

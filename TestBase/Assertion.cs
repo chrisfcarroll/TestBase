@@ -72,7 +72,11 @@ namespace TestBase
                             BestEffortJsonSerializerSettings.Serializer)
                     },
                     { StringifyMethod.InheritedToString, o => o.ToString() },
+#if NET5_0_OR_GREATER                    
+                    { StringifyMethod.TooString, o => o.ToDebugViewString() },
+#else
                     { StringifyMethod.TooString, o => o.TooString() },
+#endif
                 };
 
         /// <summary>

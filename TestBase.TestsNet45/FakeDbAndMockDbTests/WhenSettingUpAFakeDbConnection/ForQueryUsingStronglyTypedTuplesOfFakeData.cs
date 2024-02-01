@@ -4,7 +4,7 @@ using Dapper;
 using NUnit.Framework;
 using TestBase.AdoNet;
 
-namespace TestBase.Tests.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection
+namespace TestBase.TestsNet45.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection
 {
     class Source1
     {

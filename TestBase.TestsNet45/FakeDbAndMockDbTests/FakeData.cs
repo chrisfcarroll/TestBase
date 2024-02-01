@@ -1,4 +1,4 @@
-namespace TestBase.Tests.FakeDbAndMockDbTests
+namespace TestBase.TestsNet45.FakeDbAndMockDbTests
 {
     static class FakeData
     {

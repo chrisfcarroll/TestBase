@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 
-namespace TestBase.Tests.EqualByValueTests
+namespace TestBase.TestsNet45.EqualByValueTests
 {
     [TestFixture]
     public class WhenComparingClassesByValue

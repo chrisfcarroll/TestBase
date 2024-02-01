@@ -1,14 +1,14 @@
 ﻿using System;
 
-namespace TestBase.TestsNet45.ShouldsFeedbackWhenAssertingFailure.ShouldThrowWithUseableErrorMessage__GivenAssertionFail
+namespace TestBase.TestsNet45.AssertionFailureDisplay;
+
+public static class AssertionFailureMessageVerifier
 {
-    public static class AssertionFailureMessageVerifier
+    public static void FailureShouldResultInAssertionWithErrorMessage(
+        this Action assertion,
+        string      name,
+        string      expectedErrorMessage)
     {
-        public static void FailureShouldResultInAssertionWithErrorMessage(
-            this Action assertion,
-            string      name,
-            string      expectedErrorMessage)
-        {
             try { assertion(); } catch (Assertion e)
             {
                 Console.WriteLine(e.Message);
@@ -33,5 +33,4 @@ Warning: wrong error message. Expected failure message containing:
                                               assertion,
                                               expectedErrorMessage));
         }
-    }
 }

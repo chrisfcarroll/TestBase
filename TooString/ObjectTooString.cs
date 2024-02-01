@@ -40,6 +40,7 @@ public enum TooStringMethod
 
 public static class ObjectTooString
 {
+    static int debugdepth;
     public const string Null = "null";
 
     public const string RegexCSharpIdentifier =
@@ -81,7 +82,7 @@ public static class ObjectTooString
                    TooStringMethod.BestEffort => CallerArgumentOrNextPreference(),
                    TooStringMethod.CallerArgument => argumentExpression,
                    TooStringMethod.SystemTextJson => ToJson(value,tooStringOptions),
-                   TooStringMethod.Reflection => ToDotNetDebugString(value,tooStringOptions),
+                   TooStringMethod.Reflection => ToDebugViewString(value,tooStringOptions),
                    _ => value?.ToString()
                }
                ??
@@ -99,7 +100,7 @@ public static class ObjectTooString
                     return argumentExpression;
 
                 if (pref == TooStringMethod.Reflection)
-                    return ToDotNetDebugString(value, tooStringOptions);
+                    return ToDebugViewString(value, tooStringOptions);
 
                 if (pref == TooStringMethod.SystemTextJson)
                     return ToJson(value, tooStringOptions);
@@ -114,7 +115,7 @@ public static class ObjectTooString
             || 
             typeof(T).FullName?.StartsWith("System.Reflection") is true)
         {
-            return ToDotNetDebugString(value, tooStringOptions);
+            return ToDebugViewString(value, tooStringOptions);
         }
 
         try
@@ -123,7 +124,7 @@ public static class ObjectTooString
         }
         catch
         {
-            return ToDotNetDebugString(value,tooStringOptions);
+            return ToDebugViewString(value,tooStringOptions);
         }
     }
 
@@ -136,36 +137,36 @@ public static class ObjectTooString
                     => o.WriteIndented = writeIndented)
             });
 
-    static string ToDotNetDebugString<T>(T? value, TooStringOptions options)
-        => ToDotNetDebugString(value, new OptionsWithState(0, options));
+    public static string ToDebugViewString<T>(this T? value, TooStringOptions options)
+        => ToDebugViewString(value, new OptionsWithState(0, options));
 
-    static string ToDotNetDebugString<T>(T? value, OptionsWithState options)
+    static string ToDebugViewString<T>(T? value, OptionsWithState options)
     {
         Func<string?,string> qname = 
             options.ReflectionOptions.Style==SerializationStyle.Json 
                 ? s => $"\"{s?.Replace("`","\\u0060").Replace("\"","\\\"")}\"" 
                 : s => s;
-        
-        var (indent,outdent) = 
-            (options.ReflectionOptions.Style, options.JsonOptions.WriteIndented) switch
-            {
-                (SerializationStyle.DotNetDebug,_) => (" "," "),
-                (_,true) => ("\n",""),
-                (_,_) => ("","")
-            };
-        var delimiter = (options.ReflectionOptions.Style, options.JsonOptions.WriteIndented) switch
-            {
-                (SerializationStyle.Json,true) => ",\n",
-                (SerializationStyle.Json, _) =>",",
-                (SerializationStyle.DotNetDebug, _) => ",",
-            };
-        
-        if (value is null) return qname(null);
-        if (value is string svalue) return qname(svalue);
-        
         try
         {
-            if (IsScalarish(value.GetType()) || options.Depth > options.ReflectionOptions.MaxDepth)
+            var (indent,outdent) = 
+                (options.ReflectionOptions.Style, options.JsonOptions.WriteIndented) switch
+                {
+                    (SerializationStyle.DotNetDebug,_) => (" "," "),
+                    (_,true) => ("\n",""),
+                    (_,_) => ("","")
+                };
+            var delimiter = (options.ReflectionOptions.Style, options.JsonOptions.WriteIndented) switch
+                {
+                    (SerializationStyle.Json,true) => ",\n",
+                    (SerializationStyle.Json, _) =>",",
+                    (SerializationStyle.DotNetDebug, _) => ",",
+                };
+            
+            if (value is null) return qname(null);
+            if (value is string svalue) return qname(svalue);
+
+            if (IsScalarish(value.GetType()) ||
+                options.Depth > options.ReflectionOptions.MaxDepth)
             {
                 return PrimitiveToShortReflectedString(value, options);
             }
@@ -175,26 +176,32 @@ public static class ObjectTooString
             }
             else
             {
+                var props = value.GetType()
+                    .GetTypeInfo()
+                    .GetProperties(options.ReflectionOptions.WhichProperties)
+                    .Where(p => p.CanRead).ToList();
+                debugdepth = options.Depth;
+                var contents = props
+                    .Select(
+                        p => options.ReflectionOptions.Style switch
+                        {
+                            SerializationStyle.DotNetDebug =>
+                                $"{p.Name} = {TryGetValue(p)}",
+                            _ => 
+                                $"{qname(p.Name)}:{TryGetValue(p)}",
+                        }).ToList();
                 return "{" +
                        indent +
-                       string.Join(delimiter + indent,
-                                   value.GetType()
-                                        .GetTypeInfo()
-                                        .GetProperties(options.ReflectionOptions.WhichProperties)
-                                        .Where(p => p.CanRead)
-                                        .Select(
-                                            p => options.ReflectionOptions.Style switch
-                                            {
-                                                SerializationStyle.DotNetDebug =>
-                                                    $"{p.Name} = {TryGetValue(p)}",
-                                                _ => $"{qname(p.Name)}:{TryGetValue(p)}",
-                                            })
-                       ) +
+                       string.Join(delimiter + indent, contents) 
+                       +
                        outdent +
                        "}";
             }
         }
-        catch { return value.ToString()??Null; }
+        catch
+        {
+            return value.ToString()??Null;
+        }
         
         string TryGetValue(PropertyInfo p)
         {
@@ -203,16 +210,17 @@ public static class ObjectTooString
                 if (IsScalarish(p.PropertyType) 
                     || options.Depth > options.ReflectionOptions.MaxDepth)
                     return PrimitiveToShortReflectedString(
-                        p.GetValue(value) ?? "null",
-                        options);
+                        p.GetValue(value) ?? "null", options);
+                else if(p.GetIndexParameters().Any())
+                    return qname(p.PropertyType.Name);
                 else
-                    return ToDotNetDebugString(
+                    return ToDebugViewString(
                         p.GetValue(value) ?? "null",
                         options with { Depth = options.Depth + 1 });
             }
             catch
             {
-                return "\"cantretrievevalue\"";
+                return qname(p.PropertyType.Name);
             }
         }
 
@@ -231,23 +239,23 @@ public static class ObjectTooString
             //b.Append("item");
             //b.Append(i);
             //b.Append(" = ");
-            b.Append(ToDotNetDebugString(value[ i -1 ],
+            b.Append(ToDebugViewString(value[ i -1 ],
                 options with { Depth = options.Depth + 1 }));
             b.Append(", ");
         }
-        b.Append(ToDotNetDebugString(value[ value.Length ],
+        b.Append(ToDebugViewString(value[ value.Length ],
                 options with { Depth = options.Depth + 1 }));
         b.Append(')');
         return b.ToString();
     }
 
-    public static string ToDotNetDebugString<T>(this T? value,
+    public static string ToDebugViewString<T>(this T? value,
                                                 bool writeIndented = false,
                                                 bool quotePropertyNames = false,
                                                 BindingFlags whichProperties =
                                                     BindingFlags.Instance |
                                                     BindingFlags.Public)
-        => ToDotNetDebugString(
+        => ToDebugViewString(
             value,
             new OptionsWithState(0,
                 TooStringOptions.Default with
@@ -289,24 +297,23 @@ public static class ObjectTooString
                   )
                 : s => s;
         
-        if(value is null) return qstr(Null);
-        if(value is string s) return qstr(s);
-        if (value.GetType().IsEnum) return qEnum(value.ToString()!);
-        if (true.Equals(value)) return options.ReflectionOptions.Style==SerializationStyle.DotNetDebug ? "True" :"true";
-        if (false.Equals(value)) return options.ReflectionOptions.Style==SerializationStyle.DotNetDebug ? "False" :"false";
-        if (value.GetType().IsPrimitive) return value.ToString()!;
-        if (value.GetType().IsArray) return "[]";
-        if (value is Type t && t.IsAssignableTo(typeof(IEnumerable))) return "[]";
-        if (value is Type t3 && (t3.Namespace?.StartsWith("System.Collections")??false)) return "[]";
-        if(value is Type t2) return qstr( t2.FullName??$"{t2.Namespace}.{t2.Name}" );
-
         try
         {
+            if(value is null) return qstr(Null);
+            if(value is string s) return qstr(s);
+            if (value.GetType().IsEnum) return qEnum(value.ToString()!);
+            if (true.Equals(value)) return options.ReflectionOptions.Style==SerializationStyle.DotNetDebug ? "True" :"true";
+            if (false.Equals(value)) return options.ReflectionOptions.Style==SerializationStyle.DotNetDebug ? "False" :"false";
+            if (value.GetType().IsPrimitive) return value.ToString()!;
+            if (value.GetType().IsArray) return "[]";
+            if (value is Type t && t.IsAssignableTo(typeof(IEnumerable))) return "[]";
+            if (value is Type t3 && (t3.Namespace?.StartsWith("System.Collections")??false)) return "[]";
+            if(value is Type t2) return qstr( t2.FullName??$"{t2.Namespace}.{t2.Name}" );
             return qstr(value.ToString() ?? Null);
         }
         catch
         {
-            return qstr("cantretrievevalue");
+            return qstr(value.GetType().Name);
         }
     }
 }

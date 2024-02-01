@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 
-namespace TestBase.Tests.ShouldsCorrectnessTests
+namespace TestBase.TestsNet45.ShouldsCorrectnessTests
 {
     [TestFixture]
     class WhenComparingNumbersWithTolerance

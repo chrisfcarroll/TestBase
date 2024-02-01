@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 using TestBase.HttpClient.Fake;
 
-namespace TestBase.Tests.FakeHttpClientTests
+namespace TestBase.TestsNet45.FakeHttpClientTests
 {
     [TestFixture]
     public class WhenUsingFakeHttpClient
