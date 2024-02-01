@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -9,18 +8,30 @@ namespace TestBase
 {
     public static class StringExtensions
     {
-   
-        public static string RegexReplaceWhitespaceEtc(this string value) 
+        public static bool HasTheSameWordsAs(this string left,
+                                             string right,
+                                             StringComparison stringComparison=StringComparison.CurrentCultureIgnoreCase)
+        {
+            var l = left?.RegexReplaceWhitespace().ReplaceRegex("[\"']","");
+            var r = right?.RegexReplaceWhitespace().ReplaceRegex("[\"']","");
+            if (l == null && r == null) return true;
+            if (l == null & r != null) return false;
+            return l.Equals(r, stringComparison);
+        }
+        public static string RegexReplaceWhitespaceAndBlankOutGuids(this string value) 
+            => RegexReplaceWhitespace(value)
+                ?.ReplaceRegex("[a-f0-9A-F\\-]{36}",Guid.Empty.ToString());
+
+        public static string RegexReplaceWhitespace(this string value)
             => value?
                 .ReplaceRegex("\\s+"," ")
                 .ReplaceRegex("^\\s+","")
-                .ReplaceRegex("\\s+$","")
-                .ReplaceRegex("[a-f0-9A-F\\-]{36}",Guid.Empty.ToString());
+                .ReplaceRegex("\\s+$","");
 
         public static string ReplaceRegex(this string input,
-                                           string pattern,
-                                           string replacement,
-                                           RegexOptions options = RegexOptions.None)
+                                          string pattern,
+                                          string replacement,
+                                          RegexOptions options = RegexOptions.None)
             => input is null
                 ? null
                 : Regex.Replace(input, pattern, replacement, options);

@@ -23,14 +23,19 @@ namespace TestBase
         /// <param name="actual"></param>
         /// <param name="predicate"></param>
         /// <param name="comments"></param>
-        /// <param name="argumentExpression">A compiler generated source snippet
-        /// for <paramref name="actual"/>, unless you override it.
+        /// <param name="actualExpression">A compiler generated source snippet
+        ///     for <paramref name="actual"/>, unless you override it.
         /// </param>
+        /// <param name="assertionExpression"></param>
         /// <returns><paramref name="actual" />, if the precondition succeeds</returns>
         /// <exception cref="Assertion{T}">thrown if the precondition fails.</exception>
-        public static T That<T>(T actual, Expression<Func<T, bool>> predicate, IEnumerable<(string, object)> comments, string argumentExpression)
+        public static T That<T>(T actual,
+                                Expression<Func<T, bool>> predicate,
+                                IEnumerable<(string, object)> comments,
+                                [CallerArgumentExpression("actual")]string actualExpression=null,
+                                [CallerArgumentExpression("predicate")]string assertionExpression=null)
         {
-            var result = new Assertion<T>(actual, predicate, argumentExpression, comments);
+            var result = new Assertion<T>(actual, predicate, actualExpression, assertionExpression, comments);
             return result ? actual : throw result;
         }
         

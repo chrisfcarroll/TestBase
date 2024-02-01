@@ -29,7 +29,8 @@ namespace TestBase
             DeclaredToStringElseThrow = 0,
             ExpressionToCodeStringify = 1,
             NewtonsoftJsonSerialize = 2,
-            InheritedToString = 3
+            InheritedToString = 3,
+            TooString = 4
         }
         #pragma warning restore 1591
         // ReSharper disable once StaticMemberInGenericType
@@ -41,29 +42,39 @@ namespace TestBase
         /// </summary>
         public static StringifyMethod[] PreferredToStringMethod =
         {
+            StringifyMethod.TooString,
             StringifyMethod.DeclaredToStringElseThrow,
             StringifyMethod.ExpressionToCodeStringify,
             StringifyMethod.NewtonsoftJsonSerialize,
             StringifyMethod.InheritedToString
         };
 
-        static readonly Dictionary<StringifyMethod, Func<object, string>> StringifyMethods =
-        new Dictionary<StringifyMethod, Func<object, string>>
-        {
-        {
-        StringifyMethod.DeclaredToStringElseThrow,
-        o => o == null ? "<null>" :
-             o.GetType().GetMethod("ToString", BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Public)
-          != null ? o.ToString() : throw new ArgumentNullException("actual")
-        },
-        {StringifyMethod.ExpressionToCodeStringify, ObjectStringify.Default.PlainObjectToCode},
-        {
-        StringifyMethod.NewtonsoftJsonSerialize,
-        o => JsonConvert.SerializeObject(o, BestEffortJsonSerializerSettings.Serializer)
-        },
-        {StringifyMethod.InheritedToString, o => o.ToString()}
-        };
-        
+        static readonly Dictionary<StringifyMethod, Func<object, string>>
+            StringifyMethods =
+                new Dictionary<StringifyMethod, Func<object, string>>
+                {
+                    {
+                        StringifyMethod.DeclaredToStringElseThrow,
+                        o => o == null ? "<null>" :
+                            o.GetType().GetMethod("ToString",
+                                BindingFlags.Instance | BindingFlags.DeclaredOnly |
+                                BindingFlags.Public)
+                            != null ? o.ToString() :
+                            throw new ArgumentNullException("actual")
+                    },
+                    {
+                        StringifyMethod.ExpressionToCodeStringify,
+                        ObjectStringify.Default.PlainObjectToCode
+                    },
+                    {
+                        StringifyMethod.NewtonsoftJsonSerialize,
+                        o => JsonConvert.SerializeObject(o,
+                            BestEffortJsonSerializerSettings.Serializer)
+                    },
+                    { StringifyMethod.InheritedToString, o => o.ToString() },
+                    { StringifyMethod.TooString, o => o.TooString() },
+                };
+
         /// <summary>
         ///     Evaluates whether <paramref name="predicate" /> is true of <paramref name="actual" />, and stores the result of the
         ///     evaluation or, if
@@ -71,45 +82,68 @@ namespace TestBase
         /// </summary>
         /// <param name="actual">The value under assertion</param>
         /// <param name="predicate">The predicate to apply</param>
-        /// <param name="argumentExpression">
-        /// Compiler-provided code string for <paramref name="actual"/>, unless you
-        /// override it.
+        /// <param name="actualExpression">
+        ///     Compiler-provided code string for <paramref name="actual"/>, unless you
+        ///     override it.
         /// </param>
+        /// <param name="asserted"></param>
         /// <param name="comments">
         ///     Occurrences of "{{actual}}" in any comment strings will be replace with <paramref name="actual" />
         ///     ?.ToString()
         /// </param>
         public Assertion(T actual,
                          Expression<Func<T, bool>> predicate,
-                         [CallerArgumentExpression("actual")] string argumentExpression = null,
+                         string actualExpression,
+                         string asserted, 
                          IEnumerable<(string, object)> comments = default)
         {
             try
             {
                 Actual = ActualToString(actual);
-                comments = comments == default ? new List<(string, object)>() : comments;
-                comments =
-                    (Regex.IsMatch(argumentExpression ?? "a", RegexCSharpIdentifier)
-                        ? new List<(string, object)>()
-                        : new List<(string, object)>
-                            { ("argumentExpression", argumentExpression) }
-                    )
-                    .Union(comments);
-
+                ActualExpression = actualExpression;
                 Comment = string.Join(nl,
-                    comments.Select(c => $"{c.Item1} : {c.Item2.TooString()}"));
-                var result = predicate.CompileFast()(actual);
-                Result = result;
-                Asserted = ExpressionToCodeConfiguration.DefaultAssertionConfiguration
+                    (comments ?? new List<(string, object)>())
+                    .Select(c => $"{c.Item1} : {c.Item2.TooString()}"));
+                Asserted = asserted;
+                AssertedDetail = 
+                    ExpressionToCodeConfiguration.DefaultAssertionConfiguration
                     .WithPrintedListLengthLimit(15)
                     .WithMaximumValueLength(80)
                     .WithOmitImplicitCasts(true)
                     .GetAnnotatedToCode()
-                    .AnnotatedToCode(predicate);            }
+                    .AnnotatedToCode(predicate);
+                var result = predicate.CompileFast()(actual);
+                Result = result;
+            }
             catch (Exception e)
             {
-                Exception = e;
+                ExceptionThrownByEvaluation = e;
             }
+        }
+
+        /// <summary>Fills the Properties with the given values.
+        /// This constructor is only useful if you have already run the
+        /// assertion, and obtained expression values.
+        /// </summary>
+        /// <param name="actual"><see cref="Actual"/></param>
+        /// <param name="actualExpression"><see cref="ActualExpression/></param>
+        /// <param name="asserted"><see cref="Asserted"/></param>
+        /// <param name="assertedDetail"><see cref="AssertedDetail"/></param>
+        /// <param name="comment"><see cref="Comment"/></param>
+        /// <param name="result"><see cref="Result"/></param>
+        public Assertion(string actual,
+                         string actualExpression,
+                         string asserted,
+                         string assertedDetail,
+                         string comment,
+                         bool? result)
+        {
+            Actual = actual;
+            ActualExpression = actualExpression;
+            Asserted = asserted;
+            AssertedDetail = assertedDetail;
+            Comment = comment;
+            Result = result;
         }
 
         /// <summary>
@@ -122,6 +156,8 @@ namespace TestBase
         /// A delegate expected to run one or more assertions. If it doesn't throw,
         /// the assertion passes.
         /// </param>
+        /// <param name="asserted">A description of what <paramref name="assertions"/> asserts.</param>
+        /// <param name="argumentExpression"></param>
         /// <param name="assertionsExpression">
         /// Compiler-provided code string for <paramref name="assertions"/>, unless you
         /// override it.
@@ -132,22 +168,33 @@ namespace TestBase
         /// </param>
         public Assertion(T actual,
                          Action<T> assertions,
+                         string asserted,
+                         [CallerArgumentExpression("actual")] string argumentExpression = null,
                          [CallerArgumentExpression("assertions")] string assertionsExpression = null,
                          IEnumerable<(string, object)> comments = default)
         {
             try
             {
                 Actual = ActualToString(actual);
-                comments = comments == default ? new List<(string, object)>() : comments;
+                ActualExpression = argumentExpression;
+                Asserted = asserted;
+                AssertedDetail = assertionsExpression; 
                 Comment = string.Join(nl,
-                    comments.Select(c => $"{c.Item1} : {c.Item2.TooString()}"));
-                Asserted = assertionsExpression;
+                    (comments ?? new List<(string, object)>())
+                    .Select(c => $"{c.Item1} : {c.Item2.TooString()}"));
                 assertions(actual);
                 Result = true;
             }
             catch (Exception e)
             {
-                Exception = e;
+                if (e is Assertion)
+                {
+                    Result = false;
+                }
+                else
+                {
+                    ExceptionThrownByEvaluation = e;
+                }
             }
         }
 
@@ -182,7 +229,7 @@ namespace TestBase
                 var assertActual = Expression.Lambda(predicate.Body,
                                                      false,
                                                      Expression.Parameter(actual?.GetType() ?? typeof(T), "actual"));
-                Asserted = ExpressionToCodeConfiguration.DefaultAssertionConfiguration
+                AssertedDetail = ExpressionToCodeConfiguration.DefaultAssertionConfiguration
                                                         .WithPrintedListLengthLimit(15)
                                                         .WithMaximumValueLength(80)
                                                         .WithOmitImplicitCasts(true)
@@ -190,7 +237,7 @@ namespace TestBase
                                                         .AnnotatedToCode(assertActual);
                 var result = predicate.CompileFast()(actual, comparedTo);
                 Result = result;
-            } catch (Exception e) { Exception = e; }
+            } catch (Exception e) { ExceptionThrownByEvaluation = e; }
         }
 
         /// <summary>
@@ -214,7 +261,7 @@ namespace TestBase
                 var assertActual = Expression.Lambda(predicate.Body,
                                                      false,
                                                      Expression.Parameter(actual?.GetType() ?? typeof(T), "actual"));
-                Asserted = ExpressionToCodeConfiguration.DefaultAssertionConfiguration
+                AssertedDetail = ExpressionToCodeConfiguration.DefaultAssertionConfiguration
                                                         .WithPrintedListLengthLimit(15)
                                                         .WithMaximumValueLength(80)
                                                         .WithOmitImplicitCasts(true)
@@ -222,7 +269,7 @@ namespace TestBase
                                                         .AnnotatedToCode(assertActual);
                 var result = predicate.CompileFast()(actual);
                 Result = result;
-            } catch (Exception e) { Exception = e; }
+            } catch (Exception e) { ExceptionThrownByEvaluation = e; }
         }
 
         /// <summary>
@@ -249,37 +296,45 @@ namespace TestBase
                 Comment = CommentFormattedV1(Actual, comment, commentArgs);
                 var result = predicate.CompileFast()(actual);
                 Result   = result;
-                Asserted =                 Asserted = ExpressionToCodeConfiguration.DefaultAssertionConfiguration
+                AssertedDetail =                 AssertedDetail = ExpressionToCodeConfiguration.DefaultAssertionConfiguration
                     .WithPrintedListLengthLimit(15)
                     .WithMaximumValueLength(80)
                     .WithOmitImplicitCasts(true)
                     .GetAnnotatedToCode()
                     .AnnotatedToCode(predicate);
-            } catch (Exception e) { Exception = e; }
+            } catch (Exception e) { ExceptionThrownByEvaluation = e; }
         }
 
         /// <summary>The actual value about which something is to be asserted.</summary>
         public string Actual { get; }
 
+        /// <summary>The expression which was evaluated to obtain <see cref="Actual"/>.</summary>
+        public string ActualExpression { get; }
+        
+        /// <summary>
+        ///     A description of what was asserted.
+        /// </summary>
+        public string Asserted { get; }
+        
         /// <summary>
         ///     A C# code description of what was asserted. The value is generated using <see cref="ExpressionToCode" />
         /// </summary>
-        public string Asserted { get; }
+        public string AssertedDetail { get; }
 
         /// <summary>
         ///     <c>True</c> if the predicate asserted of <see cref="Actual" /> was true
         ///     <c>False</c> if the predicate asserted of <see cref="Actual" /> was false
         ///     <c>null</c> if attempting to evaluate the predicate of <see cref="Actual" /> failed. In this case,
-        ///     <see cref="Exception" /> will usually be populated
+        ///     <see cref="ExceptionThrownByEvaluation" /> will usually be populated
         /// </summary>
-        /// <remarks>If an Exception is thrown during evaluation, then <see cref="Exception" /> will contain the Exception thrown.</remarks>
+        /// <remarks>If an Exception is thrown during evaluation, then <see cref="ExceptionThrownByEvaluation" /> will contain the Exception thrown.</remarks>
         public bool? Result { get; }
 
         /// <summary>Synonym for <c>Result.HasValue &amp;&amp; Result.Value</c></summary>
         public bool DidPass => Result.HasValue && Result.Value;
 
         /// <summary>If an Exception is thrown when attempting to evaluate the assertion, it will be recorded and exposed here.</summary>
-        public Exception Exception { get; }
+        public Exception ExceptionThrownByEvaluation { get; }
 
         /// <summary>An explanation of the assertion, if one was provided by the calling code.</summary>
         public string Comment { get; }
@@ -331,7 +386,7 @@ namespace TestBase
         }
 
         /// <returns>A description of the failed assertion.</returns>
-        public override string ToString() { return ToStringEvenIfPassed(); }
+        public override string ToString() => ToStringEvenIfPassed();
 
         /// <returns>A description of the assertion.</returns>
         public string ToStringEvenIfPassed()
@@ -340,24 +395,30 @@ namespace TestBase
             const string actualHeader   = "Actual : ";
             const string assertedHeader = "Asserted : ";
             const string divider        = "----------------------------";
-            return Result.HasValue
-                   ? string.Join(nl,
-                                 resultHeader,
-                                 Comment,
-                                 actualHeader,
-                                 divider,
-                                 Actual,
-                                 divider,
-                                 assertedHeader + Asserted)
-                   : string.Join(nl,
-                                 resultHeader,
-                                 Comment,
-                                 actualHeader,
-                                 divider,
-                                 Actual,
-                                 divider,
-                                 assertedHeader + Asserted,
-                                 Exception.ToString());
+            string output = string.Join(nl,
+                resultHeader,
+                actualHeader,
+                divider,
+                Actual);
+            if (!ActualExpression.HasTheSameWordsAs(Actual))
+            {
+                output += nl + ActualExpression;
+            }
+            output += nl + divider;
+            output = string.Join(nl, output, assertedHeader + Asserted);
+            if (!AssertedDetail.HasTheSameWordsAs(Asserted))
+            {
+                output += nl + AssertedDetail;
+            }
+            if (!string.IsNullOrEmpty(Comment))
+            {
+                output += nl + divider + Comment;
+            }
+            if (!Result.HasValue)
+            {
+                output += nl + divider + ExceptionThrownByEvaluation;
+            }
+            return output;
         }
         
         static readonly string RegexCSharpIdentifier =

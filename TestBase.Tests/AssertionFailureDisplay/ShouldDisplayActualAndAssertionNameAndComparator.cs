@@ -16,19 +16,19 @@ public class ShouldDisplayActualAndAssertionNameAndComparator
 
         var actual = ass.ToString();
 
-        actual.RegexReplaceWhitespaceEtc()
+        actual.RegexReplaceWhitespaceAndBlankOutGuids()
             .ShouldBe(
                 """
-                Failed :
-                ShouldBe 2
-                Actual :
+                Failed : 
+                Actual : 
                 ----------------------------
                 1
                 ----------------------------
-                Asserted : actual => x.Equals(expected)
+                Asserted : ShouldBe
+                x => x != null && x.Equals(expected)
                 expected   →   2
                 """
-                    .RegexReplaceWhitespaceEtc());
+                    .RegexReplaceWhitespaceAndBlankOutGuids());
     }
     
     [Test]
@@ -45,18 +45,46 @@ public class ShouldDisplayActualAndAssertionNameAndComparator
 
         var assActual = ass.ToString();
 
-        assActual.RegexReplaceWhitespaceEtc()
+        assActual.RegexReplaceWhitespaceAndBlankOutGuids()
             .ShouldBe(
                 $"""
+             Failed :
+             Actual :
+             ----------------------------
+             {namedActual}
+             namedActual
+             ----------------------------
+             Asserted : ShouldBe
+             x => x != null && x.Equals(expected)
+             expected   →   {namedExpected}
+             """
+                    .RegexReplaceWhitespaceAndBlankOutGuids());
+    }
+    [Test]
+    public void GivenExpressions()
+    {
+        var ass= Assert.Throws<Assertion>(
+            () => (1 + 1).ShouldBe(2+2)
+        );
+
+        TestContext.WriteLine(ass);
+
+        var actual = ass.ToString();
+
+        actual.RegexReplaceWhitespaceAndBlankOutGuids()
+            .ShouldBe(
+                """
                     Failed :
-                    ShouldBe {namedExpected}
                     Actual :
                     ----------------------------
-                    {namedActual}
+                    2
+                    1 + 1
                     ----------------------------
-                    Asserted : parameter => x.Equals(parameterExpected)
-                    expected   →   {namedExpected}
+                    Asserted : ShouldBe
+                    x => x != null && x.Equals(expected)
+                    expected   →   4
                     """
-                    .RegexReplaceWhitespaceEtc());
-    }    
+                    .RegexReplaceWhitespaceAndBlankOutGuids());
+    }
+    
  }

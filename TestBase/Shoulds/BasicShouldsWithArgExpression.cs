@@ -17,14 +17,14 @@ namespace TestBase
         /// </returns>
         public static T ShouldNotBeNull<T>(this T actual,
                                            [CallerArgumentExpression("actual")]
-                                           string argumentExpression = null,
+                                           string actualExpression = null,
                                            IEnumerable<(string, object)> comments = default) 
-            => (T)Assert.That(actual, Is.NotNull, comments, argumentExpression);
+            => (T)Assert.That(actual, Is.NotNull, comments, actualExpression, nameof(ShouldNotBeNull));
 
 
         /// <summary>Asserts that <code>actual==null</code></summary>
-        public static T ShouldBeNull<T>(this T actual, [CallerArgumentExpression("actual")]string argumentExpression = null, IEnumerable<(string,object)> comments = default) 
-            => (T)Assert.That(actual, Is.Null, comments, argumentExpression);
+        public static T ShouldBeNull<T>(this T actual, [CallerArgumentExpression("actual")]string actualExpression = null, IEnumerable<(string,object)> comments = default) 
+            => (T)Assert.That(actual, Is.Null, comments, actualExpression, nameof(ShouldBeNull));
 
         /// <summary>Asserts that <code>string.IsNullOrEmpty(actual)</code></summary>
         /// <returns>
@@ -33,33 +33,33 @@ namespace TestBase
         public static string ShouldBeNullOrEmpty(
                                  this string actual,
                                  [CallerArgumentExpression("actual")]
-                                 string argumentExpression = null,
+                                 string actualExpression = null,
                                  IEnumerable<(string, object)> comments = default) 
-            => Assert.That(actual, Is.NotNullOrEmpty, comments, argumentExpression);
+            => Assert.That(actual, Is.NotNullOrEmpty, comments, actualExpression, nameof(ShouldBeNullOrEmpty));
 
         /// <summary>Asserts that <code>actual.Length==0</code></summary>
         /// <returns>
         ///     <paramref name="actual" />
         /// </returns>
-        public static void ShouldBeEmpty(this string actual, [CallerArgumentExpression("actual")]string argumentExpression = null, IEnumerable<(string,object)> comments = default)
+        public static void ShouldBeEmpty(this string actual, [CallerArgumentExpression("actual")]string actualExpression = null, IEnumerable<(string,object)> comments = default)
             // ReSharper disable once VariableHidesOuterVariable
-            => Assert.That(actual, actual=>actual.Length == 0, comments, argumentExpression);
+            => Assert.That(actual, actual=>actual.Length == 0, comments, actualExpression, nameof(ShouldBeEmpty));
 
         /// <summary>Asserts that <paramref name="actual" /> has no elements. This will fail if actual is null.</summary>
         /// <returns>
         ///     <paramref name="actual" />
         /// </returns>
-        public static void ShouldBeEmpty(this IEnumerable actual, [CallerArgumentExpression("actual")]string argumentExpression = null, IEnumerable<(string,object)> comments = default)
-            => Assert.That(actual, Is.Empty, comments, argumentExpression);
+        public static void ShouldBeEmpty(this IEnumerable actual, [CallerArgumentExpression("actual")]string actualExpression = null, IEnumerable<(string,object)> comments = default)
+            => Assert.That(actual, Is.Empty, comments, actualExpression, nameof(ShouldBeEmpty));
 
         /// <summary>Asserts that <code>string.IsNullOrWhitespace(actual.ToString())</code></summary>
         /// <returns>
         ///     <paramref name="actual" />
         /// </returns>
-        public static object ShouldBeNullOrEmptyOrWhitespace(this object     actual, [CallerArgumentExpression("actual")]string argumentExpression = null, IEnumerable<(string,object)> comments = default)
+        public static object ShouldBeNullOrEmptyOrWhitespace(this object     actual, [CallerArgumentExpression("actual")]string actualExpression = null, IEnumerable<(string,object)> comments = default)
         {
             
-            return Assert.That(actual, Is.NullOrEmptyOrWhitespace, comments, argumentExpression);
+            return Assert.That(actual, Is.NullOrEmptyOrWhitespace, comments, actualExpression, nameof(ShouldBeNullOrEmptyOrWhitespace));
         }
 
         /// <summary>Asserts that <code>string.IsNullOrWhitespace(actual.ToString())</code> would fail.</summary>
@@ -68,10 +68,10 @@ namespace TestBase
         /// </returns>
         public static string ShouldNotBeNullOrEmptyOrWhitespace(
             this string actual,
-            [CallerArgumentExpression("actual")] string argumentExpression = null,
+            [CallerArgumentExpression("actual")] string actualExpression = null,
             IEnumerable<(string, object)> comments = default)
             // ReSharper disable once VariableHidesOuterVariable
-            => (string)Assert.That(actual, Is.NullOrEmptyOrWhitespace, comments, argumentExpression);
+            => (string)Assert.That(actual, Is.NullOrEmptyOrWhitespace, comments, actualExpression, nameof(ShouldNotBeNullOrEmptyOrWhitespace));
 
         /// <summary>
         ///     Asserts that <paramref name="actual" />.Equals(<paramref name="expected" />) or else that
@@ -80,10 +80,10 @@ namespace TestBase
         /// <returns>
         ///     <paramref name="actual" />
         /// </returns>
-        public static T ShouldBe<T>(this T actual, T expected, [CallerArgumentExpression("actual")]string argumentExpression = null, IEnumerable<(string,object)> comments = default)
+        public static T ShouldBe<T>(this T actual, T expected, [CallerArgumentExpression("actual")]string actualExpression = null, IEnumerable<(string,object)> comments = default)
         {
             if (actual == null && expected == null) { return default(T); }
-            return (T)Assert.That(actual, Is.EqualTo(expected), comments,argumentExpression);
+            return (T)Assert.That(actual, Is.EqualTo(expected), comments,actualExpression, nameof(ShouldBe));
         }
 
         /// <summary>
@@ -93,9 +93,9 @@ namespace TestBase
         /// <returns>
         ///     <paramref name="actual" />
         /// </returns>
-        public static T ShouldNotBe<T>(this T actual, T notExpected, [CallerArgumentExpression("actual")]string argumentExpression = null, IEnumerable<(string,object)> comments = default)
+        public static T ShouldNotBe<T>(this T actual, T notExpected, [CallerArgumentExpression("actual")]string actualExpression = null, IEnumerable<(string,object)> comments = default)
         {
-            Assert.That(actual, Is.NotEqualTo(notExpected), comments, argumentExpression);
+            Assert.That(actual, Is.NotEqualTo(notExpected), comments, actualExpression, nameof(ShouldNotBe));
             return actual;
         }
 
@@ -103,20 +103,20 @@ namespace TestBase
         /// <returns>
         ///     <paramref name="actual" />
         /// </returns>
-        public static T ShouldEqual<T>(this T actual, object expected, [CallerArgumentExpression("actual")]string argumentExpression = null, IEnumerable<(string,object)> comments = default)
+        public static T ShouldEqual<T>(this T actual, object expected, [CallerArgumentExpression("actual")]string actualExpression = null, IEnumerable<(string,object)> comments = default)
         {
-            return Assert.That(actual, a => a.Equals(expected), comments,argumentExpression);
+            return Assert.That(actual, a => a.Equals(expected), comments,actualExpression, nameof(ShouldEqual));
         }
 
         /// <summary>Asserts that <code>!<paramref name="actual" />.Equals(<paramref name="notExpected" />)</code></summary>
         /// <returns>
         ///     <paramref name="actual" />
         /// </returns>
-        public static T ShouldNotEqual<T>(this T actual, T notExpected, [CallerArgumentExpression("actual")]string argumentExpression = null, IEnumerable<(string,object)> comments = default)
+        public static T ShouldNotEqual<T>(this T actual, T notExpected, [CallerArgumentExpression("actual")]string actualExpression = null, IEnumerable<(string,object)> comments = default)
         {
             return Assert.That(actual,
                                a => !a.Equals(notExpected),
-                               comments,argumentExpression);
+                               comments,actualExpression, nameof(ShouldNotEqual));
         }
 
         /// <summary>
@@ -126,10 +126,10 @@ namespace TestBase
         /// <returns>
         ///     <paramref name="actual" />
         /// </returns>
-        public static T ShouldBeBetween<T>(this T actual, T left, T right, [CallerArgumentExpression("actual")]string argumentExpression = null, IEnumerable<(string,object)> comments = default)
+        public static T ShouldBeBetween<T>(this T actual, T left, T right, [CallerArgumentExpression("actual")]string actualExpression = null, IEnumerable<(string,object)> comments = default)
         where T : IComparable<T>
         {
-            Assert.That(actual, Is.InRange(left, right), comments, argumentExpression);
+            Assert.That(actual, Is.InRange(left, right), comments, actualExpression, nameof(ShouldBeBetween));
             return actual;
         }
 
@@ -137,16 +137,16 @@ namespace TestBase
         /// <returns>
         ///     <paramref name="actual" />
         /// </returns>
-        public static T ShouldBeTrue<T>(this T actual, [CallerArgumentExpression("actual")]string argumentExpression = null, IEnumerable<(string,object)> comments = default)
-            => Assert.That(actual, x => x.Equals(true), comments, argumentExpression);
+        public static T ShouldBeTrue<T>(this T actual, [CallerArgumentExpression("actual")]string actualExpression = null, IEnumerable<(string,object)> comments = default)
+            => Assert.That(actual, x => x.Equals(true), comments, actualExpression, nameof(ShouldBeTrue));
 
         /// <summary>Asserts that <code><paramref name="actual" />.Equals(false)</code></summary>
         /// ///
         /// <returns>
         ///     <paramref name="actual" />
         /// </returns>
-        public static T ShouldBeFalse<T>(this T actual, [CallerArgumentExpression("actual")]string argumentExpression = null, IEnumerable<(string,object)> comments = default)
-            => Assert.That(actual, x => x.Equals(false), comments, argumentExpression);
+        public static T ShouldBeFalse<T>(this T actual, [CallerArgumentExpression("actual")]string actualExpression = null, IEnumerable<(string,object)> comments = default)
+            => Assert.That(actual, x => x.Equals(false), comments, actualExpression, nameof(ShouldBeFalse));
 
         /// <summary>
         ///     Asserts that <paramref name="actual" /> is GreaterThan <paramref name="expected" />
@@ -159,9 +159,9 @@ namespace TestBase
         public static T ShouldBeGreaterThan<T>(
             this T          actual,
             object          expected,
-            [CallerArgumentExpression("actual")]string argumentExpression = null, IEnumerable<(string,object)> comments = default)
+            [CallerArgumentExpression("actual")]string actualExpression = null, IEnumerable<(string,object)> comments = default)
         {
-            return (T)Assert.That(actual, Is.GreaterThan(expected), comments, argumentExpression);
+            return (T)Assert.That(actual, Is.GreaterThan(expected), comments, actualExpression, nameof(ShouldBeGreaterThan));
         }
 
         /// <summary>
@@ -175,11 +175,11 @@ namespace TestBase
         public static T ShouldBeGreaterThanOrEqualTo<T>(
             this T          actual,
             object          expected,
-            [CallerArgumentExpression("actual")]string argumentExpression = null, IEnumerable<(string,object)> comments = default)
+            [CallerArgumentExpression("actual")]string actualExpression = null, IEnumerable<(string,object)> comments = default)
         {
             Assert.That(actual,
                         Is.GreaterThanOrEqualTo(expected),
-                        comments,argumentExpression);
+                        comments,actualExpression, nameof(ShouldBeGreaterThanOrEqualTo));
             return actual;
         }
 
@@ -191,9 +191,9 @@ namespace TestBase
         /// <returns>
         ///     <paramref name="actual" />
         /// </returns>
-        public static T ShouldBeLessThan<T>(this T actual, object expected, [CallerArgumentExpression("actual")]string argumentExpression = null, IEnumerable<(string,object)> comments = default)
+        public static T ShouldBeLessThan<T>(this T actual, object expected, [CallerArgumentExpression("actual")]string actualExpression = null, IEnumerable<(string,object)> comments = default)
         {
-            Assert.That(actual, Is.LessThan(expected), comments, argumentExpression);
+            Assert.That(actual, Is.LessThan(expected), comments, actualExpression, nameof(ShouldBeLessThan));
             return actual;
         }
 
@@ -209,16 +209,16 @@ namespace TestBase
             this T          actual,
             object          expected,
             [CallerArgumentExpression("actual")]
-            string argumentExpression = null,
+            string actualExpression = null,
             IEnumerable<(string, object)> comments = default)
-            => (T)Assert.That(actual, Is.LessThanOrEqualTo(expected), comments, argumentExpression);
+            => (T)Assert.That(actual, Is.LessThanOrEqualTo(expected), comments, actualExpression, nameof(ShouldBeLessThanOrEqualTo));
 
         /// <summary>Asserts that <code><paramref name="actual" /> is <typeparamref name="T" /></code></summary>
         /// <returns>
         ///     <code>((<typeparamref name="T" />)<paramref name="actual" />)</code>
         /// </returns>
-        public static T ShouldBeOfType<T>(this object actual, [CallerArgumentExpression("actual")]string argumentExpression = null, IEnumerable<(string,object)> comments = default)
-            => (T)Assert.That(actual, x => x is T, comments,argumentExpression);
+        public static T ShouldBeOfType<T>(this object actual, [CallerArgumentExpression("actual")]string actualExpression = null, IEnumerable<(string,object)> comments = default)
+            => (T)Assert.That(actual, x => x is T, comments,actualExpression, nameof(ShouldBeOfType));
 
         /// <summary>Asserts that <code>typeof(<typeparamref name="T" />) == <paramref name="type" /></code></summary>
         /// <returns>
@@ -227,29 +227,29 @@ namespace TestBase
         public static T ShouldBeOfTypeEvenIfNull<T>(this T actual,
                                                     Type type,
                                                     [CallerArgumentExpression("actual")]
-                                                    string argumentExpression = null,
+                                                    string actualExpression = null,
                                                     IEnumerable<(string, object)>
                                                         comments = default)
             where T : class
-            => Assert.That(actual, a=> typeof(T)==type,comments, argumentExpression);
+            => Assert.That(actual, a=> typeof(T)==type,comments, actualExpression, nameof(ShouldBeOfTypeEvenIfNull));
 
         /// <summary>Asserts that <code><paramref name="actual" /> is <typeparamref name="T" /></code></summary>
         /// <returns>
         ///     <code>((<typeparamref name="T" />)<paramref name="actual" />)</code>
         /// </returns>
-        public static T ShouldBeAssignableTo<T>(this object actual, [CallerArgumentExpression("actual")]string argumentExpression = null, IEnumerable<(string,object)> comments = default)
+        public static T ShouldBeAssignableTo<T>(this object actual, [CallerArgumentExpression("actual")]string actualExpression = null, IEnumerable<(string,object)> comments = default)
         where T : class
-            => (T)Assert.That(actual, x => x is T, comments,argumentExpression);
+            => (T)Assert.That(actual, x => x is T, comments,actualExpression, nameof(ShouldBeAssignableTo));
 
         /// <summary>Asserts that <code>((<typeparamref name="T" />)<paramref name="actual" />)</code> is not null.</summary>
         /// <returns>
         ///     <code>((<typeparamref name="T" />)<paramref name="actual" />)</code>
         /// </returns>
-        public static T ShouldBeCastableTo<T>(this object actual, [CallerArgumentExpression("actual")]string argumentExpression = null, IEnumerable<(string,object)> comments = default)
+        public static T ShouldBeCastableTo<T>(this object actual, [CallerArgumentExpression("actual")]string actualExpression = null, IEnumerable<(string,object)> comments = default)
         {
             Assert.That(actual,
                         x => (T) x != null,
-                        comments,argumentExpression);
+                        comments,actualExpression, nameof(ShouldBeCastableTo));
 
             return (T) actual;
         }
@@ -262,10 +262,10 @@ namespace TestBase
         public static T ShouldBe<T>(
             this T                    actual,
             Expression<Func<T, bool>> predicate,
-            [CallerArgumentExpression("actual")]string argumentExpression = null, 
+            [CallerArgumentExpression("actual")]string actualExpression = null, 
             IEnumerable<(string,object)> comments = default)
         {
-            Assert.That(actual, predicate, comments, argumentExpression);
+            Assert.That(actual, predicate, comments, actualExpression, nameof(ShouldBe));
             return actual;
         }
 
@@ -274,12 +274,12 @@ namespace TestBase
         public static T ShouldNotBe<T>(
             this T                    actual,
             Expression<Func<T, bool>> predicate,
-            [CallerArgumentExpression("actual")]string argumentExpression = null, IEnumerable<(string,object)> comments = default)
+            [CallerArgumentExpression("actual")]string actualExpression = null, IEnumerable<(string,object)> comments = default)
         {
             Expression<Func<bool, bool>> expression   = p => !p;
             var                          notPredicate = predicate.Chain(expression);
 
-            Assert.That(actual, notPredicate, comments, argumentExpression);
+            Assert.That(actual, notPredicate, comments, actualExpression, nameof(ShouldNotBe));
             return actual;
         }
 
@@ -292,9 +292,9 @@ namespace TestBase
             this T                          actual,
             Expression<Func<T, TResult>>    transform,
             Expression<Func<TResult, bool>> predicate,
-            [CallerArgumentExpression("actual")]string argumentExpression = null, IEnumerable<(string,object)> comments = default)
+            [CallerArgumentExpression("actual")]string actualExpression = null, IEnumerable<(string,object)> comments = default)
         {
-            Assert.That(actual, transform.Chain(predicate), comments, argumentExpression);
+            Assert.That(actual, transform.Chain(predicate), comments, actualExpression, nameof(ShouldSatisfy));
             return actual;
         }
 
@@ -306,9 +306,9 @@ namespace TestBase
         public static T ShouldSatisfy<T>(
             this T                    actual,
             Expression<Func<T, bool>> predicate,
-            [CallerArgumentExpression("actual")]string argumentExpression = null, IEnumerable<(string,object)> comments = default)
+            [CallerArgumentExpression("actual")]string actualExpression = null, IEnumerable<(string,object)> comments = default)
         {
-            Assert.That(actual, predicate, comments, argumentExpression);
+            Assert.That(actual, predicate, comments, actualExpression, nameof(ShouldSatisfy));
             return actual;
         }
 
@@ -320,9 +320,10 @@ namespace TestBase
             this T                          actual,
             Expression<Func<T, TResult>>    transform,
             Expression<Func<TResult, bool>> predicate,
-            [CallerArgumentExpression("actual")]string argumentExpression = null, IEnumerable<(string,object)> comments = default)
+            [CallerArgumentExpression("actual")]string actualExpression = null, 
+            IEnumerable<(string,object)> comments = default)
         {
-            Assert.That(actual, transform.Chain(predicate), comments, argumentExpression);
+            Assert.That(actual, transform.Chain(predicate), comments, actualExpression, nameof(Should));
             return actual;
         }
 
@@ -331,9 +332,9 @@ namespace TestBase
         public static T Should<T>(
             this T actual,
             Expression<Func<T, bool>> predicate,
-            [CallerArgumentExpression("actual")]string argumentExpression = null, IEnumerable<(string,object)> comments = default)
+            [CallerArgumentExpression("actual")]string actualExpression = null, IEnumerable<(string,object)> comments = default)
         {
-            Assert.That(actual, predicate, comments, argumentExpression);
+            Assert.That(actual, predicate, comments, actualExpression, nameof(Should));
             return actual;
         }
 
@@ -345,9 +346,9 @@ namespace TestBase
         public static T ShouldHave<T>(
             this T                    actual,
             Expression<Func<T, bool>> predicate,
-            [CallerArgumentExpression("actual")]string argumentExpression = null, IEnumerable<(string,object)> comments = default)
+            [CallerArgumentExpression("actual")]string actualExpression = null, IEnumerable<(string,object)> comments = default)
         {
-            Assert.That(actual, predicate, comments, argumentExpression);
+            Assert.That(actual, predicate, comments, actualExpression, nameof(ShouldHave));
             return actual;
         }
 
@@ -370,12 +371,22 @@ namespace TestBase
         /// </summary>
         /// <param name="actual">the value under test</param>
         /// <param name="assertions">An action. It is assumed to be an assertion</param>
+        /// <param name="assertionDescription">Either describe the assertions made in <paramref name="assertions"/>
+        /// or leave null to let the Compiler fill in the code snippet passed to <paramref name="assertions"/></param>
+        /// <param name="actualExpression">A compiler-generated snippet of the code
+        /// passed to <paramref name="actual"/>, unless you override it.</param>
         /// <returns>
         ///     <paramref name="actual" />
         /// </returns>
-        public static T Should<T>(this T actual, Action<T> assertions,[CallerArgumentExpression("actual")]string argumentExpression = null, IEnumerable<(string,object)> comments = default)
+        public static T Should<T>(this T actual,
+                                  Action<T> assertions,
+                                  [CallerArgumentExpression("assertions")]
+                                  string assertionDescription = null,
+                                  [CallerArgumentExpression("actual")]
+                                  string actualExpression = null,
+                                  IEnumerable<(string, object)> comments = default)
         {
-            var result = new Assertion<T>(actual,assertions,argumentExpression,comments);
+            var result = new Assertion<T>(actual,assertions, nameof(Should), actualExpression,assertionDescription, comments);
             return result.DidPass ? actual : throw result;
         }
     }
