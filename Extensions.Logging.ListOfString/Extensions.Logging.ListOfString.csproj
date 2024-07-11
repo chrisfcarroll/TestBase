@@ -54,6 +54,7 @@ tools for testing with dependencies on AspNetMvc, HttpClient, Ado.Net, Streams a
       2.0.5.0 adds some intellisense and FakeDbConnection.Verify(..., message,args) overload
     </PackageReleaseNotes>
     <Copyright>(c) Chris F. Carroll, 2013-2018</Copyright>
+    <PackageLicenseExpression>LGPL-2.1-or-later</PackageLicenseExpression>
     <Authors>Chris F Carroll</Authors>
     <Owners>Chris F Carroll</Owners>
     <PackageProjectUrl>https://github.com/chrisfcarroll/TestBase</PackageProjectUrl>

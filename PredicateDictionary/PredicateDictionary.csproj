@@ -25,6 +25,7 @@
       0.1.0.0
     </PackageReleaseNotes>
     <Copyright>(c) Chris F. Carroll, 2018</Copyright>
+    <PackageLicenseExpression>LGPL-2.1-or-later</PackageLicenseExpression>
     <Authors>Chris F Carroll</Authors>
     <Owners>Chris F Carroll</Owners>
     <PackageProjectUrl>https://github.com/chrisfcarroll/TestBase</PackageProjectUrl>
