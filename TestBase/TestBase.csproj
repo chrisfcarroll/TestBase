@@ -52,35 +52,6 @@ ILogger mslogger= new LoggerFactory().AddStringListLogger(log).CreateLogger("Tes
 // Serilog.Sinks.ListOfString
 Serilog.Logger slogger= new LoggerConfiguration().WriteTo.StringList(log).CreateLogger();
 ```
-
-TestBase.HttpClient.Fake
-
-```
-new FakeHttpClient()
-      .Setup(x=>x.RequestUri.PathAndQuery.StartsWith("/this"))
-        .Returns(response)
-      .Setup(x=>x.Method==HttpMethod.Put)
-        .Returns(new HttpResponseMessage(HttpStatusCode.Accepted));
-```
-
-TestBase.AdoNet
-------------------
-`FakeDbConnection` 
-
-```
-- db.SetupForQuery(…)
-- db.SetupForExecuteNonQuery(…)
-- db.ShouldHaveUpdated("tableName", …)
-- db.ShouldHaveSelected("tableName", …)
-- db.ShouldHaveDeleted("tableName", …)
-- db.Verify( x=>x.CommandText.Matches("Insert [case] .*") 
-             && x.Parameters["id"].Value==1 )
-- db
-    .ShouldHaveInvoked(cmd => predicate(cmd))
-    .ShouldHaveParameter("name", value)
-```
-
-`RecordingDbConnection` - records everything sent to a Db connection.
 ]]></PackageDescription>
     <PackageReleaseNotes>
       ChangeLog

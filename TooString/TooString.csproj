@@ -13,9 +13,10 @@
         <PackageVersion>0.1.0</PackageVersion>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <Title>TooString — The ToString() method for reflection, debug, Json, and CallerArgumentExpression display</Title>
-        <PackageDescription><![CDATA[The TooString() extension method stringifies objects that other serializers don't.
-TooString() can 
-- make a best effort to stringify unserializable objects. 
+        <PackageDescription><![CDATA[The TooString() extension method stringifies objects in ways that other serializers don't.
+
+TooString() can
+- make a best effort to stringify unserializable objects.
 - Output as Json, or C# Code, or ‘debug’ output
 
 Example:
@@ -30,27 +31,6 @@ new { A = "boo", B = new Complex(3,4) }.TooString(TooStringStyle.Json);
 new { A = "boo", B = new Complex(3,4) }.TooString(TooStringStyle.Reflection);
 // Output is "{ A = boo, B = { Real = 3, Imaginary = 4, Magnitude = 5, Phase = 0.9272952180016122 } }" 
 ```
-
-### Gotchas
-
-- Json serializing value tuples is something of a surprise because unlike anonymous objects or
-  records or structs, they have no public properties and their public fields are not named as 
-  per your code. Takeaway: don't choose value tuples for public apis that must be jsonned.
-```
-(one:1, two:"2").TooString( TooStringStyle.Json )
-System.Text.Json.JsonSerializer.Serialize(  (one:1, two:"2")  )
-// Output is "{}" because there are no public fields
-(one:1, two:"2").TooString( TooStringStyle.Json )
-var options = TooStringOptions.Default with
-{
-    JsonOptions = new JsonSerializerOptions { IncludeFields = true }
-};
-var jsonnedIncludeFields = (one:1, two:"2") .TooString(options);
-// Output is "{Item1:1,Item2:"2"}"
-
-- Infinite loops are avoided with MaxDepth settings.
-
-Use TooString() for your assertion and logging display needs.          
 ]]></PackageDescription>
         <PackageReleaseNotes>
             ChangeLog
@@ -66,10 +46,11 @@ Use TooString() for your assertion and logging display needs.
         <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
         <IncludeSymbols>true</IncludeSymbols>
         <PackageTags>test;unittest;tdd;fluent assertions;stringify;tostring;debug;reflection;CallerArgumentExpression</PackageTags>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
     
     <ItemGroup>
-      <None Include="README.md" Pack="true" PackagePath="." />
+      <None Include="README.md" Pack="true" PackagePath="\" />
     </ItemGroup>
 
 </Project>
