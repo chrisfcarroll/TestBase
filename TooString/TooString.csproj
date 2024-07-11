@@ -13,7 +13,6 @@
         <PackageVersion>0.1.0</PackageVersion>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <Title>TooString — The ToString() method for reflection, debug, Json, and CallerArgumentExpression display</Title>
-        <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageDescription><![CDATA[The TooString() extension method stringifies objects that other serializers don't.
 TooString() can 
 - make a best effort to stringify unserializable objects. 
@@ -68,5 +67,9 @@ Use TooString() for your assertion and logging display needs.
         <IncludeSymbols>true</IncludeSymbols>
         <PackageTags>test;unittest;tdd;fluent assertions;stringify;tostring;debug;reflection;CallerArgumentExpression</PackageTags>
     </PropertyGroup>
+    
+    <ItemGroup>
+      <None Include="README.md" Pack="true" PackagePath="." />
+    </ItemGroup>
 
 </Project>
