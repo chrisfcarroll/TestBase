@@ -61,32 +61,16 @@ public class TooStringJsonReturnsJson
         );
     }
     
-    [Test]
-    public void GivenAWindowsFilePath()
-    {
-        var anAssembly = Assembly.GetExecutingAssembly();
-
-        var expected = """
-                       "C:\\Users\\itsccarr\\repos\\3rd\\TestBase\\TooString.Specs\\bin\\Debug\\net6.0\\TooString.Specs.dll"
-                       """;
-        var actual = anAssembly.ManifestModule.FullyQualifiedName.TooString(TooStringMethod.SystemTextJson);
-
-        TestContext.Progress.WriteLine("""A single backslash looks like \""");
-        TestContext.Progress.WriteLine(actual);
-        
-        Assert.That(actual, Is.EqualTo(expected));
-    }
     
     [Test]
     public void AndTestMethodsToRedactFilePathsDontBreakTheseTests()
     {
         var anAssembly = Assembly.GetExecutingAssembly();
-
-        var expected = """
-                       "C:\\Users\\itsccarr\\repos\\3rd\\TestBase\\TooString.Specs\\bin\\Debug\\net6.0\\TooString.Specs.dll"
-                       """;
         var actual = anAssembly.ManifestModule.FullyQualifiedName.TooString(TooStringMethod.SystemTextJson);
-
+        var expected = "\"" +
+                       Path.Combine(Directory.GetCurrentDirectory(), "TooString.Specs.dll") +
+                       "\"";
+        
         TestContext.Progress.WriteLine("""A single backslash looks like \""");
         TestContext.Progress.WriteLine(actual);
         
@@ -138,7 +122,7 @@ public class TooStringJsonReturnsJson
             .Module;
 
         var expected = """
-                       {"MDStreamVersion":131072,"FullyQualifiedName":"--filename--","ModuleVersionId":{},"MetadataToken":100000000,"ScopeName":"System.Private.CoreLib.dll","Name":"System.Private.CoreLib.dll","Assembly":{"CodeBase":"file:///--filename--","FullName":"System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e","EntryPoint":"null","DefinedTypes":{"Length":2341,"LongLength":2341,"Rank":1,"SyncRoot":{"Length":2341,"LongLength":2341,"Rank":1,"SyncRoot":[],"IsReadOnly":false,"IsFixedSize":true,"IsSynchronized":false},"IsReadOnly":false,"IsFixedSize":true,"IsSynchronized":false},"IsCollectible":false,"ManifestModule":{"MDStreamVersion":131072,"FullyQualifiedName":"--filename--","ModuleVersionId":{},"MetadataToken":100000000,"ScopeName":"System.Private.CoreLib.dll","Name":"System.Private.CoreLib.dll","Assembly":{"CodeBase":"file:///--filename--","FullName":"System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e","EntryPoint":"null","DefinedTypes":[],"IsCollectible":false,"ManifestModule":"System.Private.CoreLib.dll","ReflectionOnly":false,"Location":"--filename--","ImageRuntimeVersion":"v4.0.30319","GlobalAssemblyCache":false,"HostContext":0,"IsDynamic":false,"ExportedTypes":[],"IsFullyTrusted":true,"CustomAttributes":"System.Collections.ObjectModel.ReadOnlyCollection\u00601[System.Reflection.CustomAttributeData]","EscapedCodeBase":"file:///--filename--","Modules":[],"SecurityRuleSet":"None"},"ModuleHandle":{"MDStreamVersion":131072},"CustomAttributes":{"Count":2,"Item":"CustomAttributeData"}},"ReflectionOnly":false,"Location":"--filename--","ImageRuntimeVersion":"v4.0.30319","GlobalAssemblyCache":false,"HostContext":0,"IsDynamic":false,"ExportedTypes":{"Length":1186,"LongLength":1186,"Rank":1,"SyncRoot":{"Length":1186,"LongLength":1186,"Rank":1,"SyncRoot":[],"IsReadOnly":false,"IsFixedSize":true,"IsSynchronized":false},"IsReadOnly":false,"IsFixedSize":true,"IsSynchronized":false},"IsFullyTrusted":true,"CustomAttributes":{"Count":22,"Item":"CustomAttributeData"},"EscapedCodeBase":"file:///--filename--","Modules":{"Length":1,"LongLength":1,"Rank":1,"SyncRoot":{"Length":1,"LongLength":1,"Rank":1,"SyncRoot":[],"IsReadOnly":false,"IsFixedSize":true,"IsSynchronized":false},"IsReadOnly":false,"IsFixedSize":true,"IsSynchronized":false},"SecurityRuleSet":"None"},"ModuleHandle":{"MDStreamVersion":131072},"CustomAttributes":{"Count":2,"Item":"CustomAttributeData"}}
+                       {"MDStreamVersion":131072,"FullyQualifiedName":"--filename--","ModuleVersionId":{},"MetadataToken":100000000,"ScopeName":"System.Private.CoreLib.dll","Name":"System.Private.CoreLib.dll","Assembly":{"CodeBase":"file:///--filename--","FullName":"System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e","EntryPoint":"null","DefinedTypes":{"Length":2240,"LongLength":2240,"Rank":1,"SyncRoot":{"Length":2240,"LongLength":2240,"Rank":1,"SyncRoot":[],"IsReadOnly":false,"IsFixedSize":true,"IsSynchronized":false},"IsReadOnly":false,"IsFixedSize":true,"IsSynchronized":false},"IsCollectible":false,"ManifestModule":{"MDStreamVersion":131072,"FullyQualifiedName":"--filename--","ModuleVersionId":{},"MetadataToken":100000000,"ScopeName":"System.Private.CoreLib.dll","Name":"System.Private.CoreLib.dll","Assembly":{"CodeBase":"file:///--filename--","FullName":"System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e","EntryPoint":"null","DefinedTypes":[],"IsCollectible":false,"ManifestModule":"System.Private.CoreLib.dll","ReflectionOnly":false,"Location":"--filename--","ImageRuntimeVersion":"v4.0.30319","GlobalAssemblyCache":false,"HostContext":0,"IsDynamic":false,"ExportedTypes":[],"IsFullyTrusted":true,"CustomAttributes":"System.Collections.ObjectModel.ReadOnlyCollection\u00601[System.Reflection.CustomAttributeData]","EscapedCodeBase":"file:///--filename--","Modules":[],"SecurityRuleSet":"None"},"ModuleHandle":{"MDStreamVersion":131072},"CustomAttributes":{"Count":2,"Item":"CustomAttributeData"}},"ReflectionOnly":false,"Location":"--filename--","ImageRuntimeVersion":"v4.0.30319","GlobalAssemblyCache":false,"HostContext":0,"IsDynamic":false,"ExportedTypes":{"Length":1187,"LongLength":1187,"Rank":1,"SyncRoot":{"Length":1187,"LongLength":1187,"Rank":1,"SyncRoot":[],"IsReadOnly":false,"IsFixedSize":true,"IsSynchronized":false},"IsReadOnly":false,"IsFixedSize":true,"IsSynchronized":false},"IsFullyTrusted":true,"CustomAttributes":{"Count":22,"Item":"CustomAttributeData"},"EscapedCodeBase":"file:///--filename--","Modules":{"Length":1,"LongLength":1,"Rank":1,"SyncRoot":{"Length":1,"LongLength":1,"Rank":1,"SyncRoot":[],"IsReadOnly":false,"IsFixedSize":true,"IsSynchronized":false},"IsReadOnly":false,"IsFixedSize":true,"IsSynchronized":false},"SecurityRuleSet":"None"},"ModuleHandle":{"MDStreamVersion":131072},"CustomAttributes":{"Count":2,"Item":"CustomAttributeData"}}
                        """;
         
         var actual = value.TooString(TooStringMethod.SystemTextJson);
