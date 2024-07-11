@@ -7,37 +7,6 @@ using System.Text.RegularExpressions;
 
 namespace TooString;
 
-public enum TooStringMethod
-{
-    /// <summary>If <see cref="CallerArgument"/> returns more than just a parameter
-    /// name, then use it.
-    /// Otherwise use <see cref="JsonSerializer"/> 
-    /// </summary>
-    BestEffort = 0,
-
-    /// <summary>Use
-    /// <see cref="CallerArgumentExpressionAttribute"/> available on Net5.0 and above
-    /// </summary>
-    CallerArgument,
-
-    /// <summary>Use
-    /// <see cref="JsonSerializer.Serialize(object?,System.Type,System.Text.Json.JsonSerializerOptions?)"/>
-    /// </summary>
-    SystemTextJson,
-
-    /// <summary>Use
-    /// <c>value.GetType().GetTypeInfo()
-    ///     .GetProperties(whichProperties)
-    ///     .Select(p => $"{p.Name}={p.GetValue(obj)}"))</c>
-    /// </summary>
-    Reflection,
-
-    /// <summary>Use
-    /// <c>value?.ToString()??<see cref="ObjectTooString.Null"/></c>
-    /// </summary>
-    ToString,
-}
-
 public static class ObjectTooString
 {
     static int debugdepth;
@@ -51,27 +20,84 @@ public static class ObjectTooString
     
     
 
+    /// <summary>
+    /// Stringifies a value using one of CallerArgumentExpressionAttribute, Json serialization,
+    /// reflection, or ToString.
+    /// <p>his method turns the parameters into a <see cref="TooStringOptions"/> and then
+    /// calls <see cref="TooString{T}(T,TooStringOptions,string?)"/></p>
+    /// </summary>
+    /// <param name="value">The value to stringify</param>
+    /// <param name="tooStringStyle">The <em>method</em> by which the value is
+    /// stringified. The default <see cref="TooStringStyle.BestEffort"/> will
+    /// use <see cref="TooStringStyle.CallerArgument"/>
+    /// if it holds more than just a parameter name, or <see cref="TooStringStyle.Json"/>
+    /// otherwise.
+    /// </param>
+    /// <param name="reflectionSerializationStyle">
+    /// Only relevant when <paramref name="tooStringStyle"/> is <see cref="TooStringStyle.Reflection"/>.
+    /// Choose between Json <c>{"A":"B"}</c> or Debug style <c>{A = "B"}</c>.
+    /// Defaults to <see cref="SerializationStyle.DebugDisplay"/>
+    /// </param>
+    /// <param name="argumentExpression">
+    /// This parameter should be ignored. It is automatically populated by the Compiler using 
+    /// <see cref="CallerArgumentExpressionAttribute"/>
+    /// </param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns>
+    /// A string representation of <paramref name="value"/> according to the
+    /// <paramref name="tooStringStyle"/> chosen.
+    /// </returns>
     public static string TooString<T>(this T value,
-                                      TooStringMethod tooStringMethod =
-                                          TooStringMethod.BestEffort,
-                                      SerializationStyle? serializationStyle = null,
+                                      TooStringStyle tooStringStyle =
+                                          TooStringStyle.BestEffort,
+                                      SerializationStyle? reflectionSerializationStyle = null,
                                       [CallerArgumentExpression("value")]
                                       string? argumentExpression = null)
     {
-        serializationStyle ??= tooStringMethod == TooStringMethod.SystemTextJson
-                                   ? SerializationStyle.Json
-                                   : SerializationStyle.DotNetDebug;
+        reflectionSerializationStyle ??= tooStringStyle == TooStringStyle.Json
+                                             ? SerializationStyle.Json
+                                             : SerializationStyle.DebugDisplay;
         return TooString(value,
             TooStringOptions.Default with
             {
                 PreferenceOrder = TooStringOptions
-                    .Default.PreferenceOrder.Prepend(tooStringMethod),
+                    .Default.PreferenceOrder.Prepend(tooStringStyle),
                 ReflectionOptions = TooStringOptions
-                    .Default.ReflectionOptions with {Style = serializationStyle.Value}
+                    .Default.ReflectionOptions with {Style = reflectionSerializationStyle.Value}
             },
             argumentExpression);
     }
 
+    /// <summary>
+    /// Stringifies a value using one of CallerArgumentExpressionAttribute, Json serialization,
+    /// reflection, or ToString
+    /// </summary>
+    /// <param name="value">The value to stringify</param>
+    /// <param name="tooStringOptions">Configure the method used, and the options
+    /// relevant to the method used.
+    /// <list type="bullet">
+    /// <item>There are no options for <see cref="TooStringStyle.ToString"/> or
+    /// <see cref="TooStringStyle.CallerArgument"/> or <see cref="TooStringStyle.CSharpCode"/>
+    /// </item>
+    /// <item>Options for Json serialization are those for the
+    /// <see cref="System.Text.Json.JsonSerializer"/> class.</item>
+    /// <item>Options for Reflection serialization are the <see cref="BindingFlags"/> for what
+    /// to serialize and <see cref="ReflectionSerializerOptions.MaxDepth"/> and whether
+    /// to output Json or Debug style.</item>
+    /// </list>
+    /// See <see cref="TooStringOptions"/> for details of what can be configured.
+    /// The easy way to change options may be to use <see cref="TooStringOptions.Default"/>
+    /// with a <c>with</c> expression: <c>TooStringOptions.Default with { ... }</c>
+    /// </param>
+    /// <param name="argumentExpression">
+    /// This parameter should be ignored. It is automatically populated by the Compiler using 
+    /// <see cref="CallerArgumentExpressionAttribute"/>
+    /// </param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns>
+    /// A string representation of <paramref name="value"/> according to the
+    /// <paramref name="tooStringOptions"/> chosen.
+    /// </returns>
     public static string TooString<T>(this T value,
                                 TooStringOptions tooStringOptions,
                                 [CallerArgumentExpression("value")]
@@ -79,10 +105,10 @@ public static class ObjectTooString
     {
         return tooStringOptions.PreferenceOrder.FirstOrDefault() switch
                {
-                   TooStringMethod.BestEffort => CallerArgumentOrNextPreference(),
-                   TooStringMethod.CallerArgument => argumentExpression,
-                   TooStringMethod.SystemTextJson => ToJson(value,tooStringOptions),
-                   TooStringMethod.Reflection => ToDebugViewString(value,tooStringOptions),
+                   TooStringStyle.BestEffort => CallerArgumentOrNextPreference(),
+                   TooStringStyle.CallerArgument => argumentExpression,
+                   TooStringStyle.Json => ToJson(value,tooStringOptions),
+                   TooStringStyle.Reflection => ToDebugViewString(value,tooStringOptions),
                    _ => value?.ToString()
                }
                ??
@@ -93,16 +119,16 @@ public static class ObjectTooString
             foreach (var pref in tooStringOptions.PreferenceOrder.Skip(1))
             {
                 //Only choose CallerArgument if we captured an expression
-                if (pref== TooStringMethod.CallerArgument
+                if (pref== TooStringStyle.CallerArgument
                     && argumentExpression is not null
                     && !Regex.IsMatch(argumentExpression,
                         RegexTypeNameOrIdentifierWithCharsOnly))
                     return argumentExpression;
 
-                if (pref == TooStringMethod.Reflection)
+                if (pref == TooStringStyle.Reflection)
                     return ToDebugViewString(value, tooStringOptions);
 
-                if (pref == TooStringMethod.SystemTextJson)
+                if (pref == TooStringStyle.Json)
                     return ToJson(value, tooStringOptions);
             }
             return ToJson(value, tooStringOptions);
@@ -151,7 +177,7 @@ public static class ObjectTooString
             var (indent,outdent) = 
                 (options.ReflectionOptions.Style, options.JsonOptions.WriteIndented) switch
                 {
-                    (SerializationStyle.DotNetDebug,_) => (" "," "),
+                    (SerializationStyle.DebugDisplay,_) => (" "," "),
                     (_,true) => ("\n",""),
                     (_,_) => ("","")
                 };
@@ -159,7 +185,7 @@ public static class ObjectTooString
                 {
                     (SerializationStyle.Json,true) => ",\n",
                     (SerializationStyle.Json, _) =>",",
-                    (SerializationStyle.DotNetDebug, _) => ",",
+                    (SerializationStyle.DebugDisplay, _) => ",",
                 };
             
             if (value is null) return qname(null);
@@ -185,7 +211,7 @@ public static class ObjectTooString
                     .Select(
                         p => options.ReflectionOptions.Style switch
                         {
-                            SerializationStyle.DotNetDebug =>
+                            SerializationStyle.DebugDisplay =>
                                 $"{p.Name} = {TryGetValue(p)}",
                             _ => 
                                 $"{qname(p.Name)}:{TryGetValue(p)}",
@@ -266,7 +292,7 @@ public static class ObjectTooString
                     {
                         Style = quotePropertyNames 
                             ? SerializationStyle.Json 
-                            : SerializationStyle.DotNetDebug
+                            : SerializationStyle.DebugDisplay
                     }
                 })
         );
@@ -302,8 +328,8 @@ public static class ObjectTooString
             if(value is null) return qstr(Null);
             if(value is string s) return qstr(s);
             if (value.GetType().IsEnum) return qEnum(value.ToString()!);
-            if (true.Equals(value)) return options.ReflectionOptions.Style==SerializationStyle.DotNetDebug ? "True" :"true";
-            if (false.Equals(value)) return options.ReflectionOptions.Style==SerializationStyle.DotNetDebug ? "False" :"false";
+            if (true.Equals(value)) return options.ReflectionOptions.Style==SerializationStyle.DebugDisplay ? "True" :"true";
+            if (false.Equals(value)) return options.ReflectionOptions.Style==SerializationStyle.DebugDisplay ? "False" :"false";
             if (value.GetType().IsPrimitive) return value.ToString()!;
             if (value.GetType().IsArray) return "[]";
             if (value is Type t && t.IsAssignableTo(typeof(IEnumerable))) return "[]";
