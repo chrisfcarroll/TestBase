@@ -1,10 +1,11 @@
 using System.Numerics;
+using NUnit.Framework.Internal;
 using static System.Math;
 
 namespace TooString.Specs;
 
 [TestFixture]
-public class TooStringArgumentExpressionReturnsLiteralCode
+public class TooStringCallerArgumentExpressionReturnsLiteralCode
 {
     [Test]
     public void GivenASimpleExpression()
@@ -16,6 +17,8 @@ public class TooStringArgumentExpressionReturnsLiteralCode
         Assert.That( 
             ( 2 + 2 ).TooString(TooStringMethod.CallerArgument), 
             Is.EqualTo( "2 + 2" ) );
+        
+        TestContext.Progress.WriteLine( ( Sqrt(4 * PI / 3)  ).TooString(TooStringMethod.CallerArgument));
         
         Assert.That( 
             ( Sqrt(4 * PI / 3)  ).TooString(TooStringMethod.CallerArgument), 
@@ -31,22 +34,30 @@ public class TooStringArgumentExpressionReturnsLiteralCode
     {
         var expectedOneOf = new[] { 1, 2, 3 };
         var actual = 4;
-        Assert.That( 
-            ( expectedOneOf.Contains(actual)  ).TooString(TooStringMethod.CallerArgument), 
-            Is.EqualTo( "expectedOneOf.Contains(actual)" ) );
+
+        var expectedContainsActual =
+            (expectedOneOf.Contains(actual)).TooString(TooStringMethod.CallerArgument);
         
+        TestContext.Progress.WriteLine(expectedContainsActual);
         Assert.That( 
-            ( expectedOneOf.Any(e=> e==actual)  ).TooString(TooStringMethod.CallerArgument), 
+            expectedContainsActual, 
+            Is.EqualTo( "expectedOneOf.Contains(actual)" ) );
+
+        var expectedOneOfAny = ( expectedOneOf.Any(e=> e==actual)  ).TooString(TooStringMethod.CallerArgument);
+        TestContext.Progress.WriteLine(expectedOneOfAny);
+        Assert.That( 
+            expectedOneOfAny, 
             Is.EqualTo( "expectedOneOf.Any(e=> e==actual)" ) );
     }
     
     [Test]
     public void GivenAnObjectInitializer()
     {
+        var newCompositeA = ( new CompositeA { A = "boo", B = new Complex(123,45) }  )
+            .TooString(TooStringMethod.CallerArgument);
+        TestContext.Progress.WriteLine(newCompositeA);
         Assert.That( 
-            ( new CompositeA { A = "boo", B = new Complex(123,45) }  )
-                .TooString(TooStringMethod.CallerArgument), 
+            newCompositeA, 
             Is.EqualTo( "new CompositeA { A = \"boo\", B = new Complex(123,45) }" ) );
-        
     }
 }
