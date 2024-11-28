@@ -75,7 +75,7 @@ namespace Extensions.Logging.ListOfString
         ///     Note that if more than one <see cref="ILoggerFactory" /> uses <see cref="StringListLoggerProvider" />,
         ///     this Instance will be overwritten by the last factory to create a logger.
         /// </remarks>
-        public static StringListLogger Instance;
+        public static StringListLogger Instance = new StringListLogger();
 
         static readonly string LoglevelPadding = ": ";
 
