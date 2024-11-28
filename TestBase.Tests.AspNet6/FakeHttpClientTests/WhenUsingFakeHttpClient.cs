@@ -14,21 +14,19 @@ namespace TestBase.Tests.AspNet6.FakeHttpClientTests
     {
         [TestCase("heresapath")]
         [TestCase("heresapath/and/a?query=")]
-        public void Should_MatchAnExpectationAndReturnTheSetupResponse__GivenResponseFunction(string pathandquery)
+        [TestCase("heresapath/and/a?query=#andafragment")]
+        public async Task Should_MatchAnExpectationAndReturnTheSetupResponse__GivenResponseFunction(string pathandquery)
         {
             var uut = new FakeHttpClient();
+            HttpResponseMessage lastResponse = null;
 
             uut
            .Setup(x => x.RequestUri.PathAndQuery.StartsWith("/here"))
-           .Returns(rm => new HttpResponseMessage(HttpStatusCode.OK)
+           .Returns(rm => lastResponse = new HttpResponseMessage(HttpStatusCode.OK)
                           {Content = new StringContent(rm.RequestUri.PathAndQuery)});
 
-            uut.GetAsync("http://localhost/" + pathandquery)
-               .ConfigureAwait(false)
-               .GetAwaiter()
-               .GetResult()
-               .ShouldEqualByValue(new HttpResponseMessage(HttpStatusCode.OK)
-                                   {Content = new StringContent(pathandquery)});
+            (await uut.GetAsync("http://localhost/" + pathandquery)).ShouldBe(lastResponse);
+               
         }
 
         [TestCase("theredifferentpath")]
