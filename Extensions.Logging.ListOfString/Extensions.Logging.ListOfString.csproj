@@ -3,9 +3,9 @@
   <PropertyGroup>
     <TargetFramework>netstandard1.1</TargetFramework>
     <RootNamespace>Extensions.Logging.ListOfString</RootNamespace>
-    <AssemblyVersion>4.1.2.6</AssemblyVersion>
-    <AssemblyFileVersion>4.1.2.6</AssemblyFileVersion>
-    <PackageVersion>4.1.2.6</PackageVersion>
+    <AssemblyVersion>4.1.3.0</AssemblyVersion>
+    <AssemblyFileVersion>4.1.3.0</AssemblyFileVersion>
+    <PackageVersion>4.1.3.0</PackageVersion>
     <Title>Extensions.Logging.ListOfString : Test your logging with new StringListLogger().Log(...)</Title>
     <PackageDescription><![CDATA[Extensions.Logging.ListOfString logs to a list of string so you can test your logging :
 ```
@@ -40,6 +40,7 @@ tools for testing with dependencies on AspNetMvc, HttpClient, Ado.Net, Streams a
     <PackageReleaseNotes>
       ChangeLog
       --------
+      4.1.3.0 fix: StringListLogger.Instance should always be initialized
       4.1.2.5 Make Scopes public so it's assertable
       4.0.9.0 Removed dependency on net4 version of Mono.Linq.Expressions
       4.0.8.0 Separated Serilog.Sinks.ListOfString and Extensions.Logging.StringListLogger
