@@ -1,5 +1,7 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace TestBase.RecordingStopwatch;
 
@@ -29,7 +31,7 @@ public class RecordingStopwatch : Stopwatch
     /// </summary>
     public override string ToString()
     {
-        return string.Join('\n', timings.Select(t => $"{t.Event} : {t.Elapsed}"));
+        return string.Join("\n", timings.Select(t => $"{t.Event} : {t.Elapsed}"));
     }
 
     /// <summary>Return the stopwatch timings as a single string. By default the timings are newline delimited,
@@ -55,15 +57,15 @@ public class RecordingStopwatch : Stopwatch
     {
         return (timeSpanFormat) switch
         {
-            "M" => string.Join('\n',
+            "M" => string.Join("\n",
                 timings.Select(t => $"{t.Event} : {t.Elapsed.TotalMilliseconds.ToString(doubleFormat)}")),
-            "S" => string.Join('\n',
+            "S" => string.Join("\n",
                 timings.Select(t => $"{t.Event} : {t.Elapsed.TotalSeconds.ToString(doubleFormat)}")),
-            "c" => string.Join('\n',
+            "c" => string.Join("\n",
                 timings.Select(t => $"{t.Event} : {t.Elapsed.ToString("c")}")),
-            "G" => string.Join('\n',
+            "G" => string.Join("\n",
                 timings.Select(t => $"{t.Event} : {t.Elapsed.ToString("G")}")),
-            _ => string.Join('\n', 
+            _ => string.Join("\n", 
                 timings.Select(t => $"{t.Event} : {t.Elapsed.ToString("g")}")),
         };
     }

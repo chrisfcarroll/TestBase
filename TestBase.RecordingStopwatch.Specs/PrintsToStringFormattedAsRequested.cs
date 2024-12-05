@@ -1,3 +1,5 @@
+using System.Threading;
+using Xunit;
 using Xunit.Abstractions;
 
 namespace TestBase.RecordingStopwatch.Specs;
@@ -23,7 +25,7 @@ public class PrintsToStringFormattedAsRequested
         //
         actual
             .ShouldEqual(
-                string.Join('\n',
+                string.Join("\n",
                     $"Event1 : {time1}",
                     $"Event2 : {time2}")
             );
@@ -47,7 +49,7 @@ public class PrintsToStringFormattedAsRequested
         //
         actual
             .ShouldEqual(
-                string.Join('\n',
+                string.Join("\n",
                     $"Event1 : {time1.ToString(timespanFormat)}",
                     $"Event2 : {time2.ToString(timespanFormat)}")
             );
@@ -71,7 +73,7 @@ public class PrintsToStringFormattedAsRequested
         //
         actual
             .ShouldEqual(
-                string.Join('\n',
+                string.Join("\n",
                     $"Event1 : {time1.TotalMilliseconds.ToString(doubleFormat)}",
                     $"Event2 : {time2.TotalMilliseconds.ToString(doubleFormat)}")
             );
@@ -96,7 +98,7 @@ public class PrintsToStringFormattedAsRequested
         //
         actual
             .ShouldEqual(
-                string.Join('\n',
+                string.Join("\n",
                     $"Event1 : {time1.TotalSeconds.ToString(doubleFormat)}",
                     $"Event2 : {time2.TotalSeconds.ToString(doubleFormat)}")
             );

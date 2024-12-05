@@ -1,10 +1,19 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
+    <TargetFrameworks>net7.0;net5.0;netstandard1.6;net45</TargetFrameworks>
+    <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+
+  <PropertyGroup Condition=" $([System.Text.RegularExpressions.Regex]::IsMatch( '$(TargetFramework)', '(net5.0|net45|netstandard1.6)' )) ">
+    <LangVersion>12</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup Condition=" $([System.Text.RegularExpressions.Regex]::IsMatch( '$(TargetFramework)', '(net45|netstandard1.6)' )) ">
+    <PackageReference Include="System.ValueTuple" Version="4.5.0"/>
+  </ItemGroup>
+  
   
   <PropertyGroup>
     <AssemblyVersion>4.2.1</AssemblyVersion>
@@ -25,9 +34,10 @@ timer.ClearAndStart();
     <PackageReleaseNotes>
       ChangeLog
       ---------
+      4.2.2   Add platforms net5.0;netstandard1.6;net45
       4.2.1   First release
     </PackageReleaseNotes>
-    <Copyright>(c) Chris F. Carroll, 2023</Copyright>
+    <Copyright>(c) Chris F. Carroll, 2023,2024</Copyright>
     <PackageLicenseExpression>MS-PL</PackageLicenseExpression>
     <Authors>Chris F Carroll</Authors>
     <Owners>Chris F Carroll</Owners>
