@@ -16,9 +16,9 @@
   
   
   <PropertyGroup>
-    <AssemblyVersion>4.2.1</AssemblyVersion>
-    <AssemblyFileVersion>4.2.1</AssemblyFileVersion>
-    <PackageVersion>4.2.1</PackageVersion>
+    <AssemblyVersion>4.2.2</AssemblyVersion>
+    <AssemblyFileVersion>4.2.2</AssemblyFileVersion>
+    <PackageVersion>4.2.2</PackageVersion>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Title>RecordingStopwatch - A Stopwatch which records a List&lt;(Event,Elapsed)&gt; of added events</Title>
     <PackageDescription><![CDATA[
