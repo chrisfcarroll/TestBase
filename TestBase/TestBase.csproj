@@ -56,11 +56,12 @@ Serilog.Logger slogger= new LoggerConfiguration().WriteTo.StringList(log).Create
     <PackageReleaseNotes>
       ChangeLog
       ---------
-      4.3.0   TestBase added Assert.That(actual,predicate,comments, [CallerArgumentExpression]actual, [CallerArgumentExpression]predicate) | Added net5.0 target.
-      4.2._   Bugfix Comparer.MemberCompare() &amp; IEnumerable&lt;&gt;.ShouldEqualByValue() when left &amp; right are both IEnumerable, and right is longer than left  
-      4.2.0   TestBase-Mvc works on mono
-      4.2.0   TestBase.FakeHttpClient.SetupGet() and SetupPost() overloads
-      4.1.4.4 BugFix Comparer.MemberCompare() when left or right is null or FileSystemInfo
+      4.3.0&#x2008;&#x2007; Added Assert.That(actual,predicate,comments, [CallerArgumentExpression]actual, [CallerArgumentExpression]predicate)
+      &#x2007;&#x2008;&#x2007;&#x2008;&#x2007;&#x2008;&#x2007; Added net5.0 target.
+      &#x2007;&#x2008;&#x2007;&#x2008;&#x2007;&#x2008;&#x2007; fix: Comparer.MemberCompare() &amp; IEnumerable&lt;&gt;.ShouldEqualByValue() when left &amp; right are both IEnumerable, and right is longer than left  
+      4.2.0&#x2008;&#x2007; TestBase-Mvc works on mono
+      4.2.0&#x2008;&#x2007; TestBase.FakeHttpClient.SetupGet() and SetupPost() overloads
+      4.1.4.4 fix: Comparer.MemberCompare() when left or right is null or FileSystemInfo
       4.1.4.3 Release for both netstandard and net45
       4.1.4.2 TestBase fix typos. TestBase.AspNetCore.Mvc added Request.SetRequestCookies()
       4.1.4.1 TestBase stepped down to netstandard 1.6
