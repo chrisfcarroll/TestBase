@@ -4,6 +4,10 @@ using System.Linq.Expressions;
 
 namespace TestBase
 {
+    /// <summary>
+    /// Extension methods, typically on <see cref="object"/> and unconstrained type
+    /// parameters, for asserting X.ShouldY() style fluent predicates.
+    /// </summary>
     public static class BasicShoulds
     {
         /// <summary>Asserts that <code>actual!=null</code></summary>

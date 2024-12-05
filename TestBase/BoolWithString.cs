@@ -24,7 +24,7 @@
 namespace TestBase
 {
     /// <summary>
-    ///     A  with an explanation. <see cref="BoolWithString" /> is convertible to and from <see cref="bool" />
+    ///     A <see cref="bool"/> with an explanation. <see cref="BoolWithString" /> is convertible to and from <see cref="bool" />
     /// </summary>
     public struct BoolWithString
     {

@@ -3,6 +3,11 @@ using System.Linq;
 
 namespace TestBase
 {
+    /// <summary>
+    /// Extension methods, typically on <see cref="object"/>, <see cref="IEnumerable{T}"/>, and
+    /// unconstrained type parameters, for asserting X.ShouldEqualByValue(Y) style fluent predicates.
+    /// Typically, the underlying test is that <see cref="Comparer.MemberCompare"/> returns truthy.
+    /// </summary>
     public static class EqualsByValueShoulds
     {
         /// <summary>
@@ -72,9 +77,6 @@ namespace TestBase
         }
 
         /// <summary>
-        ///     Synonym for
-        ///     <see cref="ShouldEqualByValueExceptFor{T}(T,object,System.Collections.Generic.IEnumerable{string},string,object[])" />
-        ///     .
         ///     Assert equality-by-value by recursively iterating over all elements (if the actual &amp; expected are Enumerable)
         ///     and then over all properties specified by <paramref name="propertiesToCompare" />.
         ///     Recursion stops at value types and at types (including string) which override Equals()

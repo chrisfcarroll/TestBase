@@ -1,4 +1,6 @@
+
 #if !NET5_0_OR_GREATER
+
 namespace TestBase
 {
     static class ObjectTooString
@@ -9,4 +11,5 @@ namespace TestBase
         }
     }
 }
+
 #endif
