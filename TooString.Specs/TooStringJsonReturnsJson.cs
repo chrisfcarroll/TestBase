@@ -120,18 +120,19 @@ public class TooStringJsonReturnsJson
         var anAssembly = Assembly.GetExecutingAssembly();
         var actual = anAssembly.ManifestModule.FullyQualifiedName.TooString(TooStringStyle.Json);
         var expected = "\"" +
-                       Path.Combine(Directory.GetCurrentDirectory(), "TooString.Specs.dll") +
+                       /* expect Json to escape backslashes with backslashes */
+                       Path.Combine(Directory.GetCurrentDirectory(), "TooString.Specs.dll").Replace("\\","\\\\") +
                        "\"";
         
         TestContext.Progress.WriteLine("""A single backslash looks like \""");
         TestContext.Progress.WriteLine(actual);
         
-        Assert.That(actual, Is.EqualTo(expected));
-        
         Assert.That(
             actual.RegexReplaceKnownRuntimeVariableValues(),
             Is.EqualTo(expected.RegexReplaceKnownRuntimeVariableValues())
         );
+        
+        Assert.That(actual, Is.EqualTo(expected));
     }
     
     [Test]
