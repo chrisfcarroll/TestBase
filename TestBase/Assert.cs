@@ -19,20 +19,20 @@ namespace TestBase
         /// <typeparam name="T"></typeparam>
         /// <param name="actual"></param>
         /// <param name="predicate"></param>
-        /// <param name="comments"></param>
+        /// <param name="comment"></param>
         /// <param name="actualExpression">A compiler generated source snippet
         ///     for <paramref name="actual"/>, unless you override it.
         /// </param>
-        /// <param name="assertionExpression"></param>
+        /// <param name="predicateExpression"></param>
         /// <returns><paramref name="actual" />, if the precondition succeeds</returns>
         /// <exception cref="Assertion{T}">thrown if the precondition fails.</exception>
         public static T That<T>(T actual,
                                 Expression<Func<T, bool>> predicate,
-                                IEnumerable<(string, object)> comments,
+                                (string, object[]) comment = default,
                                 [CallerArgumentExpression("actual")]string actualExpression=null,
-                                [CallerArgumentExpression("predicate")]string assertionExpression=null)
+                                [CallerArgumentExpression("predicate")]string predicateExpression=null)
         {
-            var result = new Assertion<T>(actual, predicate, actualExpression, assertionExpression, comments);
+            var result = new Assertion<T>(actual, predicate, actualExpression, predicateExpression, comment);
             return result ? actual : throw result;
         }
         

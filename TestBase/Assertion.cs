@@ -90,7 +90,7 @@ namespace TestBase
         ///     override it.
         /// </param>
         /// <param name="asserted"></param>
-        /// <param name="comments">
+        /// <param name="comment">
         ///     Occurrences of "{{actual}}" in any comment strings will be replace with <paramref name="actual" />
         ///     ?.ToString()
         /// </param>
@@ -98,15 +98,13 @@ namespace TestBase
                          Expression<Func<T, bool>> predicate,
                          string actualExpression,
                          string asserted, 
-                         IEnumerable<(string, object)> comments = default)
+                         (string, object[]) comment = default)
         {
             try
             {
                 Actual = ActualToString(actual);
                 ActualExpression = actualExpression;
-                Comment = string.Join(nl,
-                    (comments ?? new List<(string, object)>())
-                    .Select(c => $"{c.Item1} : {c.Item2.TooString()}"));
+                Comment = CommentFormattedV1(Actual,comment.Item1, comment.Item2);
                 Asserted = asserted;
                 AssertedDetail = 
                     ExpressionToCodeConfiguration.DefaultAssertionConfiguration
