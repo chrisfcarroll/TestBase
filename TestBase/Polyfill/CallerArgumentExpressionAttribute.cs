@@ -1,20 +1,21 @@
-using System;
-
-namespace TestBase
-{
-#if !NET5_0_OR_GREATER
+#if !NET6_0_OR_GREATER
     
+// ReSharper disable once CheckNamespace
+namespace System.Runtime.CompilerServices
+{
     /// <summary>Framework out of date: Use Net50 or higher to access a functioning
     /// <see cref="System.Runtime.CompilerServices"/>.CallerArgumentExpressionAttribute
     /// </summary>
-    class CallerArgumentExpressionAttribute : Attribute
+    [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = false)]
+    internal sealed class CallerArgumentExpressionAttribute : Attribute
     {
-        readonly string parameterName;
-        public CallerArgumentExpressionAttribute(string expression) => this.parameterName = expression;
+        public CallerArgumentExpressionAttribute(string parameterName)
+        {
+            ParameterName = parameterName;
+        }
 
-        public override string ToString() => parameterName;
+        public string ParameterName { get; }
     }
-
-#endif    
-   
 }
+
+#endif

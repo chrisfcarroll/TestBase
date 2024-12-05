@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text.RegularExpressions;
+using System.Runtime.CompilerServices;
 using ExpressionToCodeLib;
 using Newtonsoft.Json;
 using FastExpressionCompiler;
-#if NET5_0_OR_GREATER
+#if NET6_0_OR_GREATER
 using TooString;
-using System.Runtime.CompilerServices;
 #endif
 
 namespace TestBase
@@ -72,7 +71,7 @@ namespace TestBase
                             BestEffortJsonSerializerSettings.Serializer)
                     },
                     { StringifyMethod.InheritedToString, o => o.ToString() },
-#if NET5_0_OR_GREATER                    
+#if NET6_0_OR_GREATER                    
                     { StringifyMethod.TooString, o => o.ToDebugViewString() },
 #else
                     { StringifyMethod.TooString, o => o.TooString() },

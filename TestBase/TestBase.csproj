@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net6.0;net45;netstandard1.6</TargetFrameworks>
+    <TargetFrameworks>net6.0;net5.0;net45;netstandard1.6</TargetFrameworks>
     <AssemblyVersion>6.0.0.1</AssemblyVersion>
     <AssemblyFileVersion>6.0.0.1</AssemblyFileVersion>
     <PackageVersion>6.0.0.1-preview-1</PackageVersion>
@@ -113,23 +113,22 @@ Serilog.Logger slogger= new LoggerConfiguration().WriteTo.StringList(log).Create
     <DefineConstants>NETSTANDARD</DefineConstants>
   </PropertyGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.6' ">
+  <ItemGroup Condition=" $([System.Text.RegularExpressions.Regex]::IsMatch( '$(TargetFramework)', '(net45|netstandard1.6)' )) ">
     <PackageReference Include="System.ValueTuple" Version="4.5.0"/>
     <PackageReference Include="ExpressionToCodeLib" Version="2.7.0" />
     <PackageReference Include="FastExpressionCompiler" Version="2.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="4.4.1" />
   </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
-    <PackageReference Include="System.ValueTuple" Version="4.5.0"/>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="FastExpressionCompiler" Version="2.0.0" />
+  
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net5.0' ">
     <PackageReference Include="ExpressionToCodeLib" Version="2.7.0" />
+    <PackageReference Include="FastExpressionCompiler" Version="2.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
+  <ItemGroup Condition=" $([System.Text.RegularExpressions.Regex]::IsMatch( '$(TargetFramework)', 'net[6789].0' )) ">
     <ProjectReference Include="..\TooString\TooString.csproj" />
     <PackageReference Include="ExpressionToCodeLib" Version="2.7.0" />
     <PackageReference Include="FastExpressionCompiler" Version="2.0.0" />
