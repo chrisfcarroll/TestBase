@@ -30,6 +30,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace TestBase
 {
@@ -530,11 +531,11 @@ namespace TestBase
              && !left.GetType().GetTypeInfo().IsGenericType /*ValueType comparison isn't always reliable*/
             ) return left.EqualsOrDiffers(right);
 
-            // check for override, but not the AnonymousType override because it rejects types of the sam structure 
+            // check for override, but not the AnonymousType override because it rejects types of the same structure 
             if (leftType != typeof(object) && !IsAnonymousType(leftType))
             {
                 var mI = leftType.GetMethod("Equals", new[] {leftType});
-                if (leftType == mI.DeclaringType) return left.EqualsOrDiffers(right);
+                if (leftType == mI?.DeclaringType) return left.EqualsOrDiffers(right);
             }
 
             // all Arrays, Lists, IEnumerable<> etc implement IEnumerable 
@@ -583,6 +584,16 @@ namespace TestBase
                     lefti++;
                 }
 
+                if (rightEnumerator.MoveNext())
+                {
+                    var nextR = rightEnumerator.Current ?? "<null>";
+                    return
+                        BoolWithString.False(string.Format(
+                                                 "Left is only {0} items long but but Right has {1} at index {2}",
+                                                 lefti,
+                                                 nextR,
+                                                 lefti + 1));
+                }
                 return true;
             }
 
@@ -723,13 +734,17 @@ namespace TestBase
 
         internal static bool IsAnonymousType(Type type)
         {
-            if (type == null) throw new ArgumentNullException("type");
+            if (type == null) throw new ArgumentNullException(nameof(type));
 
-            return
-            type.GetTypeInfo().IsGenericType
-         && (type.Name.Contains("AnonymousType") || /* for Mono: */ type.Name.Contains("AnonType"))
-         && (type.Name.StartsWith("<>")          || type.Name.StartsWith("VB$"))
-         && (type.GetTypeInfo().Attributes & TypeAttributes.NotPublic) == TypeAttributes.NotPublic;
+            return 
+                   #if NETSTANDARD1_0 || NETSTANDARD1_1 || NETSTANDARD1_2 || NETSTANDARD1_3 || NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6
+                   type.GetTypeInfo().IsGenericType /* best effort. */
+                   #else
+                   Attribute.IsDefined(type, typeof(CompilerGeneratedAttribute), false)
+                   #endif
+                   && (type.Name.Contains("AnonymousType")     || /*for Mono: */ type.Name.Contains("AnonType"))
+                   && (/* for C# */ type.Name.StartsWith("<>") || /*for VB:   */ type.Name.StartsWith("VB$"))
+                   && type.GetTypeInfo().Attributes.HasFlag(TypeAttributes.NotPublic);
         }
 
         internal static bool HasAnyElements(this IEnumerable enumerable)

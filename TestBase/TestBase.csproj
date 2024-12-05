@@ -57,6 +57,7 @@ Serilog.Logger slogger= new LoggerConfiguration().WriteTo.StringList(log).Create
       ChangeLog
       ---------
       4.3.0   TestBase added Assert.That(actual,predicate,comments, [CallerArgumentExpression]actual, [CallerArgumentExpression]predicate) | Added net5.0 target.
+      4.2._   Bugfix Comparer.MemberCompare() &amp; IEnumerable&lt;&gt;.ShouldEqualByValue() when left &amp; right are both IEnumerable, and right is longer than left  
       4.2.0   TestBase-Mvc works on mono
       4.2.0   TestBase.FakeHttpClient.SetupGet() and SetupPost() overloads
       4.1.4.4 BugFix Comparer.MemberCompare() when left or right is null or FileSystemInfo
