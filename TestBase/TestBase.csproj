@@ -3,7 +3,7 @@
     <TargetFrameworks>net6.0;net5.0;net45;netstandard1.6</TargetFrameworks>
     <AssemblyVersion>4.3.0</AssemblyVersion>
     <AssemblyFileVersion>4.3.0</AssemblyFileVersion>
-    <PackageVersion>4.3.0-preview-1</PackageVersion>
+    <PackageVersion>4.3.0</PackageVersion>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Title>TestBase – Rich, fluent assertions and tools for testing with heavyweight dependencies: AspNetCore, AdoNet, HttpClient, AspNet.Mvc, Streams, Logging</Title>
     <PackageReadmeFile>README.md</PackageReadmeFile>
