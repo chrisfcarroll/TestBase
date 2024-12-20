@@ -1,10 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net45;net6.0</TargetFrameworks>
-    <AssemblyVersion>5.0.0</AssemblyVersion>
-    <AssemblyFileVersion>5.0.0</AssemblyFileVersion>
-    <PackageVersion>5.0.0</PackageVersion>
-    <PackageVersion>5.0.0</PackageVersion>
+    <AssemblyVersion>5.1.0</AssemblyVersion>
+    <AssemblyFileVersion>5.1.0</AssemblyFileVersion>
+    <PackageVersion>5.1.0-prerelease1</PackageVersion>
   </PropertyGroup>
   <PropertyGroup>
     <Title>TestBase – Rich, fluent assertions and tools for testing with heavyweight dependencies: AdoNet, HttpClient, AspNetCore, AspNet.Mvc, Streams, Logging</Title>
@@ -43,6 +42,7 @@ See also
     <ReleaseNotes><![CDATA[
 ChangeLog
 ---------
+5.1.0   TestBase.AdoNet.RecordingDb can take an IDbConnection parameter (but it still has to be a DbConnection)
 5.0.0   TestBase.AdoNet namespace correction : TestBase.AdoNet.FakeDb -> TestBase.AdoNet. DbRehydrationExtensions handles constructor settable fields
 4.1.5.0 TestBase.AdoNet.FakeDbConnection.SetupForQuerySingleColumn()
 4.1.4.3 Release for both netstandard and net45
