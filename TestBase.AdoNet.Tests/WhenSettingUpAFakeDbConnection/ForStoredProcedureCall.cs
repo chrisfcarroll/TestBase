@@ -1,9 +1,7 @@
 ﻿using System.Data;
 using Dapper;
-using NUnit.Framework;
-using TestBase.AdoNet;
 
-namespace TestBase.Tests.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection;
+namespace TestBase.AdoNet.Tests.WhenSettingUpAFakeDbConnection;
 
 [TestFixture]
 public class ForStoredProcedureCall

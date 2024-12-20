@@ -1,7 +1,4 @@
-﻿using NUnit.Framework;
-using TestBase.AdoNet;
-
-namespace TestBase.Tests.FakeDbAndMockDbTests;
+﻿namespace TestBase.AdoNet.Tests.FakeDbAndMockDbTests;
 
 [TestFixture]
 public class WhenRecordingInvocations
@@ -61,5 +58,12 @@ public class WhenRecordingInvocations
             UnitUnderTest.Invocations[0].CommandText.ShouldBe(text);
             UnitUnderTest.Invocations[0].Parameters[0].ShouldEqualByValue(p);
             UnitUnderTest.Invocations[0].Parameters[0].ShouldNotBe(p);
-        }
+    }
+
+    [TearDown]
+    public void TearDown()
+    {
+        UnitUnderTest?.Dispose();
+    }
+    
 }

@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net45</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net45;net6.0</TargetFrameworks>
     <AssemblyVersion>5.0.0</AssemblyVersion>
     <AssemblyFileVersion>5.0.0</AssemblyFileVersion>
     <PackageVersion>5.0.0</PackageVersion>

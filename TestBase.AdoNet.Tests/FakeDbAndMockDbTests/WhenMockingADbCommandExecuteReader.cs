@@ -1,9 +1,7 @@
 ﻿using System.Data;
 using Moq;
-using NUnit.Framework;
-using TestBase.AdoNet;
 
-namespace TestBase.Tests.FakeDbAndMockDbTests;
+namespace TestBase.AdoNet.Tests.FakeDbAndMockDbTests;
 
 [TestFixture]
 public class WhenMockingADbCommandExecuteReader

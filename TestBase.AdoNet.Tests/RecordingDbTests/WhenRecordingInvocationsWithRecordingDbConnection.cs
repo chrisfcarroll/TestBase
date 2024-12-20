@@ -1,8 +1,6 @@
-﻿using NUnit.Framework;
-using TestBase.AdoNet;
-using TestBase.AdoNet.RecordingDb;
+﻿using TestBase.AdoNet.RecordingDb;
 
-namespace TestBase.Tests.RecordingDbTests;
+namespace TestBase.AdoNet.Tests.RecordingDbTests;
 
 [TestFixture]
 public class WhenRecordingInvocationsWithRecordingDbConnection
@@ -76,5 +74,12 @@ public class WhenRecordingInvocationsWithRecordingDbConnection
             UnitUnderTest.Invocations[0].CommandText.ShouldBe(text);
             UnitUnderTest.Invocations[0].Parameters[0].ShouldEqualByValue(p);
             UnitUnderTest.Invocations[0].Parameters[0].ShouldNotBe(p);
-        }
+    }
+
+    [TearDown]
+    public void TearDown()
+    {
+        fakeDbConnection?.Dispose();
+        UnitUnderTest?.Dispose();
+    }
 }

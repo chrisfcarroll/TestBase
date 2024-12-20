@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Dapper;
-using NUnit.Framework;
-using TestBase.AdoNet;
+﻿using Dapper;
 
-namespace TestBase.Tests.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection;
+namespace TestBase.AdoNet.Tests.WhenSettingUpAFakeDbConnection;
 
 [TestFixture]
 public class ForQueryUsingEmptyObjectArrayFakeData

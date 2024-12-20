@@ -1,7 +1,4 @@
-using NUnit.Framework;
-using TestBase.AdoNet;
-
-namespace TestBase.Tests.FakeDbAndMockDbTests;
+namespace TestBase.AdoNet.Tests.FakeDbAndMockDbTests;
 
 [TestFixture]
 public class WhenVerifyingFakeDbInsert

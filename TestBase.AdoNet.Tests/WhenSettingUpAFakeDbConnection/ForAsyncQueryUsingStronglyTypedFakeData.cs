@@ -1,27 +1,12 @@
-﻿using System.Linq;
-using Dapper;
-using NUnit.Framework;
-using TestBase.AdoNet;
+﻿using Dapper;
 
-namespace TestBase.Tests.FakeDbAndMockDbTests.WhenSettingUpAFakeDbConnection;
-
-public class IdAndName
-{
-    public int    Id   { get; set; }
-    public string Name { get; set; }
-}
-
-class WithJoin
-{
-    public int       Id        { get; set; }
-    public IdAndName IdAndName { get; set; }
-}
+namespace TestBase.AdoNet.Tests.WhenSettingUpAFakeDbConnection;
 
 [TestFixture]
-public class ForQueryUsingStronglyTypedFakeData
+public class ForQueryAsyncUsingStronglyTypedFakeData
 {
     [Test]
-    public void Should_return_the_setup_data__Given_an_array_of_fakedata()
+    public async Task Should_return_the_setup_data__Given_an_array_of_fakedata()
     {
             //A
             var dataToReturn = new[]
@@ -34,11 +19,11 @@ public class ForQueryUsingStronglyTypedFakeData
             var fakeConnection = new FakeDbConnection().SetUpForQuery(dataToReturn, new[] {"Id", "Name"});
 
             //A      //Dapper -- the easy way to read a DbDataReader.
-            fakeConnection.Query<IdAndName>("").ShouldEqualByValue(dataToReturn);
+            (await fakeConnection.QueryAsync<IdAndName>("")).ShouldEqualByValue(dataToReturn);
         }
 
     [Test]
-    public void Should_return_the_setup_data__Given_an_array_of_fakedata_with_joins()
+    public async Task Should_return_the_setup_data__Given_an_array_of_fakedata_with_joins()
     {
             //A
             var dataToReturn = new[]
@@ -52,19 +37,18 @@ public class ForQueryUsingStronglyTypedFakeData
             new FakeDbConnection().SetUpForQuery(dataToReturn, new[] {"Id", "IdAndName.Id", "IdAndName.Name"});
 
             //A      //Dapper -- the easy way to read a DbDataReader.
-            fakeConnection.Query<WithJoin, IdAndName, WithJoin>(
-                                                                "",
-                                                                (w, i) =>
-                                                                {
-                                                                    w.IdAndName = i;
-                                                                    return w;
-                                                                }
-                                                               )
-                          .ShouldEqualByValue(dataToReturn);
+            (await fakeConnection.QueryAsync<WithJoin, IdAndName, WithJoin>(
+                                                                            "",
+                                                                            (w, i) =>
+                                                                            {
+                                                                                w.IdAndName = i;
+                                                                                return w;
+                                                                            }
+                                                                           )).ShouldEqualByValue(dataToReturn);
         }
 
     [Test]
-    public void Should_return_the_setup_data__Given_some_nulls_but_non_nullable_id_field()
+    public async Task Should_return_the_setup_data__Given_some_nulls_but_non_nullable_id_field()
     {
             //A
             var dataToReturn = new[]
@@ -78,14 +62,13 @@ public class ForQueryUsingStronglyTypedFakeData
                                                                       new[] {"Id", "IdAndName.Id", "IdAndName.Name"});
 
             //A      //Dapper -- the easy way to read a DbDataReader.
-            var result = fakeConnection.Query<WithJoin, IdAndName, WithJoin>("",
-                                                                             (w, i) =>
-                                                                             {
-                                                                                 w.IdAndName = i;
-                                                                                 return w;
-                                                                             }
-                                                                            )
-                                       .ToArray();
+            var result = (await fakeConnection.QueryAsync<WithJoin, IdAndName, WithJoin>("",
+                                                                                         (w, i) =>
+                                                                                         {
+                                                                                             w.IdAndName = i;
+                                                                                             return w;
+                                                                                         }
+                                                                                        )).ToArray();
             result[0].Id.ShouldEqual(100);
             result[0].IdAndName.Id.ShouldEqual(11);
             result[0].IdAndName.Name.ShouldBeNull();

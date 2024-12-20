@@ -1,4 +1,4 @@
-namespace TestBase.Tests.FakeDbAndMockDbTests;
+namespace TestBase.AdoNet.Tests;
 
 static class FakeData
 {
