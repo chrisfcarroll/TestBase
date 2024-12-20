@@ -28,6 +28,7 @@ try
 {
   Get-ChildItem -rec *.nupkg | ForEach-Object{ Remove-Item $_  }
   Get-ChildItem -Directory -Include TestBase,
+                          TestBase.AdoNet,
                           TooString,
                           TestBase.RecordingStopwatch,
                           PredicateDictionary, 
