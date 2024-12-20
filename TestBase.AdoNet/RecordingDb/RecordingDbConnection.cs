@@ -13,6 +13,24 @@ namespace TestBase.AdoNet.RecordingDb
 
         public RecordingDbConnection(DbConnection innerConnection) { this.innerConnection = innerConnection; }
 
+        /// <summary>
+        /// If <paramref name="innerConnection"/> is an <see cref="DbConnection"/>
+        /// then wrap it.
+        /// If not, throw.
+        /// </summary>
+        /// <param name="innerConnection"></param>
+        /// <exception cref="InvalidCastException">
+        /// Thrown if <paramref name="innerConnection"/> is not a <see cref="DbConnection"/>
+        /// </exception>
+        public RecordingDbConnection(IDbConnection innerConnection)
+        {
+            if (innerConnection is DbConnection dbConn)
+            {
+                this.innerConnection = dbConn;
+            }
+            else { throw new InvalidCastException("The connection must be a DbConnection"); }
+        }
+
         public override string ConnectionString
         {
             get { return RecordE(() => innerConnection.ConnectionString); }

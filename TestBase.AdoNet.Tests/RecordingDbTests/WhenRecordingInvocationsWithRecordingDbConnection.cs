@@ -1,4 +1,5 @@
-﻿using TestBase.AdoNet.RecordingDb;
+﻿using System.Data;
+using TestBase.AdoNet.RecordingDb;
 
 namespace TestBase.AdoNet.Tests.RecordingDbTests;
 
@@ -74,6 +75,22 @@ public class WhenRecordingInvocationsWithRecordingDbConnection
             UnitUnderTest.Invocations[0].CommandText.ShouldBe(text);
             UnitUnderTest.Invocations[0].Parameters[0].ShouldEqualByValue(p);
             UnitUnderTest.Invocations[0].Parameters[0].ShouldNotBe(p);
+    }
+
+    [Test]
+    public void Can_record_an_IDbConnection_if_it_is_a_DbConnection()
+    {
+        using var uut = new RecordingDbConnection((IDbConnection)fakeDbConnection);
+        var text = "Command 1";
+        fakeDbConnection.SetUpForExecuteNonQuery(1);
+        //
+        var cmd = uut.CreateCommand();
+        cmd.CommandText = text;
+        cmd.ExecuteNonQuery();
+        //
+        fakeDbConnection.Invocations[0].CommandText.ShouldBe(text);
+        uut.Invocations[0].CommandText.ShouldBe(text);
+        
     }
 
     [TearDown]
