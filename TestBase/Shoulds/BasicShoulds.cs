@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 
 namespace TestBase
@@ -14,6 +15,7 @@ namespace TestBase
         /// <returns>
         ///     <paramref name="actual" />
         /// </returns>
+        [return:NotNull]
         public static T ShouldNotBeNull<T>(this T actual, string message = null, params object[] args)
         {
             Assert.That(actual, Is.NotNull, message ?? nameof(ShouldNotBeNull), args);
@@ -77,6 +79,7 @@ namespace TestBase
         /// <returns>
         ///     <paramref name="actual" />
         /// </returns>
+        [return:NotNull]
         public static object ShouldNotBeNullOrEmptyOrWhitespace(
             this object     actual,
             string          message = null,

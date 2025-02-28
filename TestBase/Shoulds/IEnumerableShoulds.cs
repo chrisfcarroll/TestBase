@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 using ExpressionToCodeLib;
@@ -99,6 +100,7 @@ namespace TestBase
         /// <returns>
         ///     <paramref name="actual" />
         /// </returns>
+        [return:NotNull]
         public static IEnumerable<T> ShouldNotBeNullOrEmpty<T>(
             this IEnumerable<T> actual,
             string              message = null,
