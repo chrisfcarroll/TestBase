@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net6.0;net5.0;net45;netstandard1.6</TargetFrameworks>
+    <TargetFrameworks>net6.0;net5.0;net45;netstandard2.1;netstandard1.6</TargetFrameworks>
     <AssemblyVersion>4.3.0</AssemblyVersion>
     <AssemblyFileVersion>4.3.0</AssemblyFileVersion>
     <PackageVersion>4.3.0</PackageVersion>
@@ -115,7 +115,7 @@ Serilog.Logger slogger= new LoggerConfiguration().WriteTo.StringList(log).Create
     <DefineConstants>NETSTANDARD</DefineConstants>
   </PropertyGroup>
 
-  <ItemGroup Condition=" $([System.Text.RegularExpressions.Regex]::IsMatch( '$(TargetFramework)', '(net45|netstandard1.6)' )) ">
+  <ItemGroup Condition=" $([System.Text.RegularExpressions.Regex]::IsMatch( '$(TargetFramework)', '(net45|netstandard1.6|netstandard2.1)' )) ">
     <PackageReference Include="System.ValueTuple" Version="4.5.0"/>
     <PackageReference Include="ExpressionToCodeLib" Version="2.7.0" />
     <PackageReference Include="FastExpressionCompiler" Version="2.0.0" />
