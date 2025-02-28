@@ -2,9 +2,6 @@ using System;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using FastExpressionCompiler;
-#if NETSTANDARD || NET5_0_OR_GREATER
-using FastExpressionCompiler;
-#endif
 
 namespace TestBase
 {

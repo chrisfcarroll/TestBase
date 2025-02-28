@@ -127,7 +127,7 @@ namespace TestBase
         /// assertion, and obtained expression values.
         /// </summary>
         /// <param name="actual"><see cref="Actual"/></param>
-        /// <param name="actualExpression"><see cref="ActualExpression/></param>
+        /// <param name="actualExpression"><see cref="ActualExpression" /> </param>
         /// <param name="asserted"><see cref="Asserted"/></param>
         /// <param name="assertedDetail"><see cref="AssertedDetail"/></param>
         /// <param name="comment"><see cref="Comment"/></param>

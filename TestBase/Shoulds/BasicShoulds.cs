@@ -65,7 +65,7 @@ namespace TestBase
             if (actual == null) { return null; }
             else
             {
-                var trimmed = actual.ToString().Trim();
+                var trimmed = (actual.ToString()??"").Trim();
                 return Assert.That(actual,
                                    x => trimmed.Length == 0,
                                    message ?? nameof(ShouldBeNullOrEmptyOrWhitespace),
@@ -83,7 +83,7 @@ namespace TestBase
             params object[] args)
         {
             Assert.That(actual, x => x != null, message ?? nameof(ShouldNotBeNullOrEmptyOrWhitespace), args);
-            var trimmed = actual.ToString().Trim();
+            var trimmed = (actual.ToString()??"").Trim();
             return Assert.That(actual,
                                x => trimmed.Length != 0,
                                message ?? nameof(ShouldNotBeNullOrEmptyOrWhitespace),
@@ -99,16 +99,18 @@ namespace TestBase
         /// </returns>
         public static T ShouldBe<T>(this T actual, T expected, string message = null, params object[] args)
         {
-            if (actual == null && expected == null) { return actual; }
+            if (actual == null && expected == null) { return default(T); }
             else if (expected == null)
             {
                 return (T) Assert.That(actual, Is.Null, message ?? $"{nameof(ShouldBe)} null", args);
             }
             else if (actual == null)
             {
-                return Assert.That(actual,
-                                   x => false && x.Equals(expected),
-                                   message ?? $"{nameof(ShouldBe)} {expected}",
+                return Assert.That(default(T),
+                    #pragma warning disable CS0162 // Unreachable code detected 
+                    x => false && x.Equals(expected),
+                    #pragma warning restore CS0162 // Unreachable code detected
+                    message ?? $"{nameof(ShouldBe)} {expected}",
                                    args);
             }
             else
@@ -172,7 +174,7 @@ namespace TestBase
         /// </returns>
         public static T ShouldBeTrue<T>(this T actual, string message = null, params object[] args)
         {
-            if (actual == null) { return Assert.That(actual, x => x != null, message ?? nameof(ShouldBeTrue), args); }
+            if (actual == null) { return Assert.That(default(T), x => x != null, message ?? nameof(ShouldBeTrue), args); }
             else
             {
                 Assert.That(actual, x => x.Equals(true), message ?? nameof(ShouldBeTrue), args);
@@ -187,7 +189,7 @@ namespace TestBase
         /// </returns>
         public static T ShouldBeFalse<T>(this T actual, string message = null, params object[] args)
         {
-            if (actual == null) { return Assert.That(actual, x => x != null, message ?? nameof(ShouldBeFalse), args); }
+            if (actual == null) { return Assert.That(default(T), x => x != null, message ?? nameof(ShouldBeFalse), args); }
             else
             {
                 Assert.That(actual, x => x.Equals(false), message ?? nameof(ShouldBeFalse), args);
@@ -309,7 +311,9 @@ namespace TestBase
             return actual as T;
         }
 
-        /// <summary>Asserts that <code>((<typeparamref name="T" />)<paramref name="actual" />)</code> is not null.</summary>
+        /// <summary>
+        /// Asserts that <code>((<typeparamref name="T" />)<paramref name="actual" />)</code> is not null.
+        /// </summary>
         /// <returns>
         ///     <code>((<typeparamref name="T" />)<paramref name="actual" />)</code>
         /// </returns>
@@ -325,8 +329,8 @@ namespace TestBase
         }
 
         /// <summary>
-        ///     Synonym of <seealso cref="Should{T}" /> Asserts that <paramref name="actual" /> satisfies
-        ///     <paramref name="predicate" />
+        /// Synonym of <see cref="Should{T,TResult}" />
+        /// Asserts that <paramref name="actual" /> satisfies <paramref name="predicate" />
         /// </summary>
         /// <returns>actual</returns>
         public static T ShouldBe<T>(
@@ -400,7 +404,9 @@ namespace TestBase
             return actual;
         }
 
-        /// <summary>Asserts that <paramref name="actual" /> satisfies <paramref name="predicate" /></summary>
+        /// <summary>
+        /// Asserts that <paramref name="actual" /> satisfies <paramref name="predicate" />
+        /// </summary>
         /// <returns>actual</returns>
         public static T Should<T>(
             this T                    actual,
@@ -413,7 +419,7 @@ namespace TestBase
         }
 
         /// <summary>
-        ///     A synonym for <seealso cref="Should{T}" />
+        ///     A synonym for <seealso cref="Should{T,TResult}" />
         ///     Asserts that <paramref name="actual" /> satisfies <paramref name="predicate" />
         /// </summary>
         /// <returns>actual</returns>
