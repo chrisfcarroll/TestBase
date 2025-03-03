@@ -5,6 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 using ExpressionToCodeLib;
+using ContractAnnotation = JetBrains.Annotations.ContractAnnotationAttribute; 
 
 // ReSharper disable InconsistentNaming
 
@@ -101,6 +102,7 @@ namespace TestBase
         ///     <paramref name="actual" />
         /// </returns>
         [return:NotNull]
+        [ContractAnnotation("actual:null => halt")]        
         public static IEnumerable<T> ShouldNotBeNullOrEmpty<T>(
             this IEnumerable<T> actual,
             string              message = null,
@@ -153,7 +155,10 @@ namespace TestBase
         }
 
         /// <summary>Synonym for <see cref="ShouldBeOfLength{T}" /></summary>
+        /// <param name="actual">The object whose property is to be asserted</param>
         /// <param name="expected">expected length</param>
+        /// <param name="comment">[Optional] override the default message if the assertion fails</param>
+        /// <param name="args">[Optional] string.format() arguments for <paramref name="comment"/> in the case that the assertion fails</param>
         /// <returns>
         ///     <paramref name="actual" />
         /// </returns>
@@ -167,7 +172,10 @@ namespace TestBase
         }
 
         /// <summary>Assert that <paramref name="actual" /> has <paramref name="expected" /> elements</summary>
+        /// <param name="actual">The object whose property is to be asserted</param>
         /// <param name="expected">expected length</param>
+        /// <param name="comment">[Optional] override the default message if the assertion fails</param>
+        /// <param name="args">[Optional] string.format() arguments for <paramref name="comment"/> in the case that the assertion fails</param>
         /// <returns>
         ///     <paramref name="actual" />
         /// </returns>
@@ -187,8 +195,10 @@ namespace TestBase
         /// <returns>the single element</returns>
         public static T SingleOrAssertFail<T>(this IEnumerable<T> actual, string message = null, params object[] args)
         {
+            // ReSharper disable once PossibleMultipleEnumeration
             try { return actual.Single(); } catch
             {
+                // ReSharper disable once PossibleMultipleEnumeration
                 throw new Assertion<IEnumerable<T>>(actual,
                                                     s => s.Count() == 1,
                                                     message ?? "SingleOrAssertFail expected exactly 1",
@@ -207,8 +217,10 @@ namespace TestBase
             string              message = null,
             params object[]     args)
         {
+            // ReSharper disable once PossibleMultipleEnumeration
             try { return actual.Single(predicate); } catch
             {
+                // ReSharper disable once PossibleMultipleEnumeration
                 throw new Assertion<IEnumerable<T>>(actual,
                                                     s => s.Count(predicate) == 1,
                                                     message ?? "SingleOrAssertFail expected exactly 1",
@@ -250,6 +262,10 @@ namespace TestBase
         ///     Synonym for <see cref="ShouldContainEachOf{T}" />.
         ///     Assert that <paramref name="actual" /> contains each item of <paramref name="subset" />
         /// </summary>
+        /// <param name="actual">The object whose property is to be asserted</param>
+        /// <param name="subset">the expected subset</param>
+        /// <param name="message">[Optional] override the default message if the assertion fails</param>
+        /// <param name="args">[Optional] string.format() arguments for <paramref name="message"/> in the case that the assertion fails</param>
         /// <returns>
         ///     <paramref name="actual" />
         /// </returns>
@@ -259,6 +275,7 @@ namespace TestBase
             string              message = null,
             params object[]     args)
         {
+            // ReSharper disable once PossibleMultipleEnumeration
             foreach (var item in subset) Assert.That(actual, x => x.Contains(item), message, args);
             return actual;
         }
@@ -311,12 +328,14 @@ namespace TestBase
         /// <summary>
         ///     Assert that <paramref name="itemAssertion" /> is true of each item in <paramref name="actual" />
         /// </summary>
+        /// <param name="actual">The enumerable on whose items <paramref name="itemAssertion"/> is to be asserted</param>
         /// <param name="itemAssertion">The assertion to apply</param>
         /// <returns>
         ///     <paramref name="actual" />
         /// </returns>
         public static IEnumerable<T> ShouldAll<T>(this IEnumerable<T> actual, Action<T> itemAssertion)
         {
+            // ReSharper disable once PossibleMultipleEnumeration
             foreach (var item in actual) itemAssertion(item);
             return actual;
         }

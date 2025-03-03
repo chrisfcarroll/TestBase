@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
+using ContractAnnotation = JetBrains.Annotations.ContractAnnotationAttribute;
 
 namespace TestBase
 {
@@ -16,7 +17,8 @@ namespace TestBase
         ///     <paramref name="actual" />
         /// </returns>
         [return:NotNull]
-        public static T ShouldNotBeNull<T>(this T actual, string message = null, params object[] args)
+        [ContractAnnotation("actual:null => halt")]
+        public static T ShouldNotBeNull<T>([NotNull]this T actual, string message = null, params object[] args)
         {
             Assert.That(actual, Is.NotNull, message ?? nameof(ShouldNotBeNull), args);
             return actual;
@@ -80,8 +82,9 @@ namespace TestBase
         ///     <paramref name="actual" />
         /// </returns>
         [return:NotNull]
+        [ContractAnnotation("actual:null => halt")]
         public static object ShouldNotBeNullOrEmptyOrWhitespace(
-            this object     actual,
+            [NotNull]this object     actual,
             string          message = null,
             params object[] args)
         {
