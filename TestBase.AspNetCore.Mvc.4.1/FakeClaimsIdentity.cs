@@ -4,22 +4,22 @@ using System.Security.Principal;
 
 namespace TestBase
 {
-    public class FakeIdentity : ClaimsIdentity
+    public class FakeClaimsIdentity : ClaimsIdentity
     {
         public readonly List<Claim> ClaimsValue = new List<Claim>();
-        public bool IsAuthenticatedValue;
+        public bool IsAuthenticatedSet;
 
-        public FakeIdentity() : base(new GenericIdentity(typeof(FakeIdentity).Name)) { }
+        public FakeClaimsIdentity() : base(new GenericIdentity(typeof(FakeClaimsIdentity).Name)) { }
 
-        public FakeIdentity(string name) : base(new GenericIdentity(name)) { }
+        public FakeClaimsIdentity(string name) : base(new GenericIdentity(name)) { }
 
-        public FakeIdentity(GenericIdentity identity) : base(identity) { }
+        public FakeClaimsIdentity(GenericIdentity identity) : base(identity) { }
 
-        public override bool IsAuthenticated => IsAuthenticatedValue;
+        public override bool IsAuthenticated => IsAuthenticatedSet;
 
         public override IEnumerable<Claim> Claims => ClaimsValue;
 
-        public FakeIdentity WithClaim(Claim claim)
+        public FakeClaimsIdentity WithClaim(Claim claim)
         {
             AddClaim(claim);
             return this;
