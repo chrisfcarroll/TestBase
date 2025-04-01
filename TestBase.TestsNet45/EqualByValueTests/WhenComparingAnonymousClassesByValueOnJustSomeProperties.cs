@@ -10,9 +10,9 @@ namespace TestBase.TestsNet45.EqualByValueTests
         public void Should_not_be_fooled_by_members_with_overlapping_names()
         {
             //A
-            var objectL        = new {Id = 1, Name = "1", NameOhDear = "Did we compare on field NameOhDear?"};
-            var objectR        = new {Id = 1, Name = "1", NameOhDear = "Oh Dear!"};
-            var matchedMembers = new List<string> {"Name"};
+            var objectL        = new {Id = 1, Name = "1", List=new List<string>(){"A"}, NameOhDear = "Did we compare on field NameOhDear?"};
+            var objectR        = new {Id = 1, Name = "1", List=new List<string>(){"A"}, NameOhDear = "Oh Dear!"};
+            var matchedMembers = new List<string> {"Name", "List"};
 
             //A & A
             objectL.EqualsByValuesJustOnMembersNamed(objectR, matchedMembers).ShouldBeTrue();
