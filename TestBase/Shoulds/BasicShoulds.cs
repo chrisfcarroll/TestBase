@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
-using ContractAnnotation = JetBrains.Annotations.ContractAnnotationAttribute;
 
 namespace TestBase
 {
@@ -16,16 +15,16 @@ namespace TestBase
         /// <returns>
         ///     <paramref name="actual" />
         /// </returns>
-        [return:NotNull]
-        [ContractAnnotation("actual:null => halt")]
-        public static T ShouldNotBeNull<T>([NotNull]this T actual, string message = null, params object[] args)
+        [return:System.Diagnostics.CodeAnalysis.NotNull]
+        //[ContractAnnotation("actual:null => halt")]
+        public static T ShouldNotBeNull<T>([System.Diagnostics.CodeAnalysis.NotNull]this T actual, string message = null, params object[] args)
         {
             Assert.That(actual, Is.NotNull, message ?? nameof(ShouldNotBeNull), args);
             return actual;
         }
 
         /// <summary>Asserts that <code>actual==null</code></summary>
-        public static void ShouldBeNull(this object actual, string message = null, params object[] args)
+        public static void ShouldBeNull([AllowNull] this object actual, string message = null, params object[] args)
         {
             Assert.That(actual, Is.Null, message ?? nameof(ShouldBeNull), args);
         }
@@ -34,7 +33,7 @@ namespace TestBase
         /// <returns>
         ///     <paramref name="actual" />
         /// </returns>
-        public static void ShouldBeNullOrEmpty(this string actual, string message = null, params object[] args)
+        public static void ShouldBeNullOrEmpty([AllowNull]this string actual, string message = null, params object[] args)
         {
             Assert.That(string.IsNullOrEmpty(actual), message ?? nameof(ShouldBeNullOrEmpty), args);
         }
@@ -81,10 +80,10 @@ namespace TestBase
         /// <returns>
         ///     <paramref name="actual" />
         /// </returns>
-        [return:NotNull]
-        [ContractAnnotation("actual:null => halt")]
+        [return:System.Diagnostics.CodeAnalysis.NotNull]
+        //[ContractAnnotation("actual:null => halt")]
         public static object ShouldNotBeNullOrEmptyOrWhitespace(
-            [NotNull]this object     actual,
+            [System.Diagnostics.CodeAnalysis.NotNull]this object     actual,
             string          message = null,
             params object[] args)
         {

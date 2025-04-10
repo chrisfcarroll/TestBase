@@ -148,7 +148,7 @@ namespace TestBase
         }
 
         /// <summary>
-        ///     Evaluates whether <paramref name="predicate" /> is true of <paramref name="actual" />, and stores the result of the
+        ///     Evaluates whether <paramref name="assertions" /> are true of <paramref name="actual" />, and stores the result of the
         ///     evaluation or, if
         ///     an exception is thrown during evaluation, catches and stores the exception instead.
         /// </summary>
@@ -422,8 +422,11 @@ namespace TestBase
             return output;
         }
         
+        #pragma warning disable CS0414 // Field is assigned but its value is never used
+        // ReSharper disable once StaticMemberInGenericType
         static readonly string RegexCSharpIdentifier =
-            @"@?[_\p{L}\p{Nl}][\p{L}\p{Nl}\p{Mn}\p{Mc}\p{Nd}\p{Pc}\p{Cf}\.]*"; 
+            @"@?[_\p{L}\p{Nl}][\p{L}\p{Nl}\p{Mn}\p{Mc}\p{Nd}\p{Pc}\p{Cf}\.]*";
+        #pragma warning restore CS0414 //
     }
     /// <inheritdoc />
     /// <summary>

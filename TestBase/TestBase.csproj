@@ -139,10 +139,6 @@ Serilog.Logger slogger= new LoggerConfiguration().WriteTo.StringList(log).Create
     <Reference Include="System.ComponentModel.DataAnnotations" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="JetBrains.Annotations" Version="2024.3.0" />
-  </ItemGroup>
-
   <PropertyGroup>
     <!-- When compiling .NET SDK 2.0 projects targeting .NET 4.x on Mono using 'dotnet build' you -->
     <!-- have to teach MSBuild where the Mono copy of the reference asssemblies is -->

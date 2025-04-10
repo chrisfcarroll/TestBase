@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using JetBrains.Annotations;
 using NUnit.Framework;
 
 namespace TestBase.Tests.EqualByValueTests;
@@ -90,7 +89,7 @@ public record BRecord
 record ComplexRecord(
     int Id,
     DateOnly DateOfBirth,
-    [CanBeNull] string Title,
+    string Title,
     string FirstName,
     string LastName,
     string DisplayName)

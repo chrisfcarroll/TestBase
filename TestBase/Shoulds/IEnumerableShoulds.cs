@@ -5,7 +5,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 using ExpressionToCodeLib;
-using ContractAnnotation = JetBrains.Annotations.ContractAnnotationAttribute; 
 
 // ReSharper disable InconsistentNaming
 
@@ -102,7 +101,6 @@ namespace TestBase
         ///     <paramref name="actual" />
         /// </returns>
         [return:NotNull]
-        [ContractAnnotation("actual:null => halt")]        
         public static IEnumerable<T> ShouldNotBeNullOrEmpty<T>(
             this IEnumerable<T> actual,
             string              message = null,

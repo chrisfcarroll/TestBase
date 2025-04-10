@@ -46,7 +46,7 @@ namespace TestBase
             return Array.FindAll(items, new Predicate<T>(predicate));
         }
 
-        /// <summary>Return true if <paramref name="@this" /> is null or has no elements</summary>
+        /// <summary>Return true if <paramref name="this" /> is null or has no elements</summary>
         /// <param name="this"></param>
         /// <returns>
         ///     <c>@this == null || !@this.GetEnumerator().MoveNext()</c>

@@ -16,7 +16,7 @@ namespace TestBase
         ///     <see cref="TestBase.Comparer.MemberCompare" />
         /// </summary>
         /// <returns>
-        ///     <param name="@this"></param>
+        ///     <param name="this"></param>
         /// </returns>
         /// <exception cref="Assertion">Returns a message indicating where the comparision failed</exception>
         public static T ShouldEqualByValue<T>(
