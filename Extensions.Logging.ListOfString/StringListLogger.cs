@@ -11,12 +11,11 @@ namespace Extensions.Logging.ListOfString
         ///     Ensures that when a <see cref="ILogger" /> is requested it will write to <see cref="StringListLogger.Instance" />
         /// </summary>
         /// <param name="backingList">
-        ///     If specified, the returned <see cref="ILogger" /> will write to
-        ///     <paramref name="backingList" />
+        /// If specified, the returned <see cref="ILogger" /> will write to <paramref name="backingList" />
         /// </param>
         /// <param name="includeScopes"></param>
         /// <param name="filter"></param>
-        /// <returns></returns>
+        /// <returns>the <paramref name="factory"/></returns>
         public static ILoggerFactory AddStringListLogger(
             this ILoggerFactory          factory,
             List<string>                 backingList,
@@ -30,10 +29,21 @@ namespace Extensions.Logging.ListOfString
             return factory;
         }
 
-        public static ILoggerFactory AddStringListLogger(this ILoggerFactory factory, StringListLogger soleInstance)
+        /// <summary>
+        /// Ensures that when a <see cref="ILogger" /> is requested it will write to <paramref name="providerInstance"/>.
+        /// Use this in preference to <see cref="AddStringListLogger(ILoggerFactory,List{string},bool,Func{string,LogLevel,bool})"/>
+        /// if your test suite uses multiple <see cref="ILoggerFactory"/>s in parallel.
+        /// </summary>
+        /// <param name="providerInstance"></param>
+        /// <remarks>If this method is called multiple times, the global
+        /// <see cref="StringListLogger"/>.<see cref="StringListLogger.Instance"/>
+        /// will be overwritten each time by the last provided <paramref name="providerInstance"/>.
+        /// </remarks>
+        /// <returns>the <paramref name="factory"/></returns>
+        public static ILoggerFactory AddStringListLogger(this ILoggerFactory factory, StringListLogger providerInstance)
         {
             if (factory == null) throw new ArgumentNullException(nameof(factory));
-            factory.AddProvider(new StringListLoggerProvider(soleInstance));
+            factory.AddProvider(new StringListLoggerProvider(providerInstance));
             return factory;
         }
 
@@ -43,20 +53,48 @@ namespace Extensions.Logging.ListOfString
         }
     }
 
+    /// <summary>
+    /// A <see cref="ILoggerProvider"/> which returns <see cref="Instance"/> each time
+    /// <see cref="CreateLogger"/> is called.
+    /// </summary>
     public class StringListLoggerProvider : ILoggerProvider
     {
+        /// <summary>
+        /// A <b>per-provider</b> instance of a <see cref="StringListLogger"/>.
+        /// Use this if your test suite creates multiple <see cref="StringListLoggerProvider"/>s
+        /// in parallel, to examine the log lines from each
+        /// independent <see cref="StringListLoggerProvider"/>.
+        /// </summary>
+        public StringListLogger Instance;
+
         readonly Stack<string> names = new Stack<string>();
 
-        public StringListLoggerProvider(StringListLogger instance) { StringListLogger.Instance = instance; }
+        /// <summary>
+        /// Create a new <see cref="StringListLoggerProvider"/> which has <see cref="Instance"/>
+        /// set to the given <see cref="StringListLogger"/>.
+        ///
+        /// <p><b>Side-Effect</b>This constructor also sets <see cref="StringListLogger"/>.
+        /// <see cref="StringListLogger.Instance"/> to the given <paramref name="instance"/>.</p>
+        /// You can avoid this by using the parameterless <see cref="StringListLoggerProvider()"/>
+        /// constructorinstead, which preserves a single
+        /// <see cref="StringListLogger"/>.<see cref="StringListLogger.Instance"/>.
+        /// </summary>
+        /// <param name="instance"></param>
+        public StringListLoggerProvider(StringListLogger instance) { StringListLogger.Instance = Instance = instance; }
 
-        public StringListLoggerProvider() : this(new StringListLogger()) { }
+        /// <summary>
+        /// Create a new <see cref="StringListLoggerProvider"/> which has <see cref="Instance"/>
+        /// set to the global singleton <see cref="StringListLogger"/>.<see cref="StringListLogger.Instance"/>
+        /// </summary>
+        /// <param name="instance"></param>
+        public StringListLoggerProvider() : this(StringListLogger.Instance) { }
 
-        public void Dispose() { StringListLogger.Instance.Name = names.Pop(); }
+        public void Dispose() { Instance.Name = names.Pop(); }
 
         public ILogger CreateLogger(string categoryName)
         {
-            names.Push(StringListLogger.Instance.Name = categoryName);
-            return StringListLogger.Instance;
+            names.Push(Instance.Name = categoryName);
+            return Instance;
         }
     }
 
@@ -64,16 +102,23 @@ namespace Extensions.Logging.ListOfString
     public class StringListLogger : ILogger
     {
         /// <summary>
-        ///     The single instance of <see cref="StringListLogger" /> which will be returned by
-        ///     <see cref="StringListLoggerProvider" />,
-        ///     and by extension from an <see cref="ILoggerFactory" /> which has called
-        ///     <see
-        ///         cref="StringListLoggerFactoryExtension.AddStringListLogger(ILoggerFactory,List{string},bool,Func{string,LogLevel,bool})" />
-        ///     Use e.g. <code>StringListLogger.Instance.LoggedLines</code> to inspect or assert on logged lines.
+        /// <p>A singleton instance of <see cref="StringListLogger" /> which can be used for
+        /// testing logging in classes dependent on <see cref="ILogger" />.</p>
+        /// <p>Use <c>StringListLogger.Instance.LoggedLines</c> to inspect or
+        /// assert on logged lines.</p>
+        /// <p>This instance will also be returned by a <see cref="StringListLoggerProvider" />
+        /// created with the parameterless constructor, and by extension from any
+        /// <see cref="ILoggerFactory" /> which has called
+        /// <see
+        ///      cref="StringListLoggerFactoryExtension.AddStringListLogger(ILoggerFactory,List{string},bool,Func{string,LogLevel,bool})" />
+        /// </p>
         /// </summary>
         /// <remarks>
-        ///     Note that if more than one <see cref="ILoggerFactory" /> uses <see cref="StringListLoggerProvider" />,
-        ///     this Instance will be overwritten by the last factory to create a logger.
+        /// Do not make use of this instance in parallel-running test suites using multiple
+        /// <see cref="ILoggerFactory" />s creating multiple <see cref="StringListLoggerProvider" />s
+        /// because this Instance will be overwritten by the last <see cref="StringListLoggerProvider"/>
+        /// created. Instead, inspect or assert each <see cref="StringListLoggerProvider"/>'s own
+        /// <see cref="StringListLoggerProvider.Instance"/> instead of this global instance.
         /// </remarks>
         public static StringListLogger Instance = new StringListLogger();
 
