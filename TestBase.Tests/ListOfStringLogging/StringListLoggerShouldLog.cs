@@ -28,34 +28,68 @@ public class StringListLoggerShould
             var uut = StringListLogger.Instance;
             uut.LoggedLines.ForEach(Console.WriteLine);
             uut.LoggedLines.ShouldBeOfLength(1).ToList()[0].ShouldMatch(@"B\s*=\s*""?Two""?");
-        }
+    }
+
+    [Test]
+    public void BeBuildableByLoggerFactoryWithTypeParameter()
+    {
+        var stringListLoggerProvider = new StringListLoggerProvider(new StringListLogger());
+        var factory                  = new LoggerFactory();
+        factory.AddProvider(stringListLoggerProvider);
+        var logger = factory.CreateLogger<StringListLoggerShould>();
+
+        logger.LogInformation("BeBuildableByLoggerFactoryWithTypeParameter");
+
+        var uut = stringListLoggerProvider.Instance;
+        uut.LoggedLines.ForEach(Console.WriteLine);
+        uut.LoggedLines.ShouldContain(s=>s.Contains("BeBuildableByLoggerFactoryWithTypeParameter"));
+    }
 
     [Test]
     public void BeBuildableByLoggerFactoryGivenBackingList()
     {
-            var loggedLines = new List<string>();
-            var wrapped     = new LoggerFactory().AddStringListLogger(loggedLines).CreateLogger(nameof(Destructure));
+        var loggedLines = new List<string>();
+        var wrapped     = new LoggerFactory().AddStringListLogger(loggedLines).CreateLogger(nameof(Destructure));
 
-            wrapped.LogInformation("This has destructured output {@Destructured}", new {A = 1, B = "Two"});
+        wrapped.LogInformation("This has destructured output {@Destructured}", new {A = 1, B = "Two"});
 
-            loggedLines.ForEach(Console.WriteLine);
-            loggedLines.ShouldBeOfLength(1).Single().ReplaceWith("", " ", "\"").ShouldMatch(@"\{A=1,B=Two\}");
+        loggedLines.ForEach(Console.WriteLine);
+        loggedLines.ShouldBeOfLength(1).Single().ReplaceWith("", " ", "\"").ShouldMatch(@"\{A=1,B=Two\}");
 
-            StringListLogger.Instance.LoggedLines.ShouldBe(loggedLines);
-        }
+        StringListLogger.Instance.LoggedLines.ShouldBe(loggedLines);
+    }
 
     [Test]
     public void BeBuildableByLoggerFactoryGivenInstance()
     {
-            var uut     = new StringListLogger();
-            var wrapped = new LoggerFactory().AddStringListLogger(uut).CreateLogger<StringListLoggerShould>();
+        var uut     = new StringListLogger();
+        var wrapped = new LoggerFactory().AddStringListLogger(uut).CreateLogger<StringListLoggerShould>();
 
-            wrapped.LogInformation("This has destructured output {@Destructured}", new {A = 1, B = "Two"});
+        wrapped.LogInformation("This has destructured output {@Destructured}", new {A = 1, B = "Two"});
 
-            uut.LoggedLines.ForEach(Console.WriteLine);
+        uut.LoggedLines.ForEach(Console.WriteLine);
 
-            uut.LoggedLines.ShouldBeOfLength(1).Single().ReplaceWith("", " ", "\"").ShouldMatch(@"\{A=1,B=Two\}");
-        }
+        uut.LoggedLines.ShouldBeOfLength(1).Single().ReplaceWith("", " ", "\"").ShouldMatch(@"\{A=1,B=Two\}");
+    }
+
+
+    [Test]
+    public void BeBuildableByMultipleLoggerFactories()
+    {
+        var logger1     = new StringListLogger();
+        var factoryMade1 = new LoggerFactory().AddStringListLogger(logger1).CreateLogger<StringListLoggerShould>();
+        var logger2     = new StringListLogger();
+        var factoryMade2 = new LoggerFactory().AddStringListLogger(logger2).CreateLogger<StringListLoggerShould>();
+
+        factoryMade1.LogInformation("This is logger 1");
+        factoryMade2.LogInformation("This is logger 2");
+
+        logger1.LoggedLines.ForEach(Console.WriteLine);
+        logger2.LoggedLines.ForEach(Console.WriteLine);
+
+        logger1.LoggedLines.ShouldBeOfLength(1).Single().ShouldContain("This is logger 1");
+        logger2.LoggedLines.ShouldBeOfLength(1).Single().ShouldContain("This is logger 2");
+    }
 
     [Test]
     public void Destructure()

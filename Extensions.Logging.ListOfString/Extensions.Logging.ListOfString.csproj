@@ -3,14 +3,18 @@
   <PropertyGroup>
     <TargetFramework>netstandard1.1</TargetFramework>
     <RootNamespace>Extensions.Logging.ListOfString</RootNamespace>
-    <AssemblyVersion>4.1.3.0</AssemblyVersion>
-    <AssemblyFileVersion>4.1.3.0</AssemblyFileVersion>
-    <PackageVersion>4.1.3.0</PackageVersion>
+    <AssemblyVersion>4.2.0</AssemblyVersion>
+    <AssemblyFileVersion>4.2.0-preview</AssemblyFileVersion>
+    <PackageVersion>4.2.0-preview</PackageVersion>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <Title>Extensions.Logging.ListOfString : Test your logging with new StringListLogger().Log(...)</Title>
-    <PackageDescription><![CDATA[Extensions.Logging.ListOfString logs to a list of string so you can test your logging :
+    <PackageDescription><![CDATA[**Extensions.Logging.ListOfString** logs to a list of string so you can test your logging.
+
+If your components depend on an `ILogger<T>` use `Microsoft.Extensions.Logging.LoggerFactory`
+to make one:
 ```
 ILoggerFactory factory=new LoggerFactory.AddProvider(new StringListLoggerProvider())
-ILogger logger= factory.CreateLogger("Test1");
+var logger= factory.CreateLogger<Test1>();
 
 ...tests... ;
 
@@ -25,21 +29,49 @@ var logger= new LoggerFactory().AddStringListLogger(loggedLines).CreateLogger("T
 
 ...tests... ;
 
-loggedLines   .ShouldContain(x=>x.Matches("kilroy was here too."));
+loggedLines.ShouldContain(x=>x.Matches("kilroy was here too."));
 
 ```
+Or if a component only depends on an `ILogger`, it's much simpler. You don't need the factory or provider:
+
+```
+var uut = new MyComponent( StringListLogger.Instance );
+... tests ...
+StringListLogger.Instance
+   .LoggedLines
+   .ShouldContain(x=>x.Matches("kilroy was here"));
+```
+Or if you are using `Microsoft.Extensions.DependencyInjection` in your test suite then:
+```
+public StringListLogger Log = new();
+...
+ServiceCollection.AddLogging(
+    lb => lb
+             /* .AddConfiguration(Configuration.GetSection("Logging")) */
+             .AddProvider(new StringListLoggerProvider(Log))
+             /* .AddConsole() */
+             );
+
+...tests...
+
+Log.LoggedLines.ShouldContain(x=>x.Matches("kilroy was here"));
+```
+
+For tests running in parallel, each one creating a new LoggerFactory and LoggerProvider, don't
+rely on the shared StringListLogger.Instance. Follow the above example, passing a known
+instance to the LoggerProvider.
 
 This is for Microsoft.Extensions.Logging.Abstractions. For Serilog, see https://www.nuget.org/packages/Serilog.Sinks.ListOfString/
 
-Part of https://www.nuget.org/packages/TestBase 
-
-*TestBase* gives you a flying start to unit testing with fluent assertions that are easy to extend, and 
-tools for testing with dependencies on AspNetMvc, HttpClient, Ado.Net, Streams and Loggers.
-
+Part of https://www.nuget.org/packages/TestBase . *TestBase* gives you a flying start to unit
+testing with fluent assertions that are easy to extend, and tools for testing with dependencies
+on AspNetMvc, HttpClient, Ado.Net, Streams and Loggers.
 ]]></PackageDescription>
     <PackageReleaseNotes>
       ChangeLog
       --------
+      4.2.0   Added StringListLoggerProvider.Instance so that parallel running tests using
+              LoggerFactory and LoggerProviders can each have their own Instance.
       4.1.3.0 fix: StringListLogger.Instance should always be initialized
       4.1.2.5 Make Scopes public so it's assertable
       4.0.9.0 Removed dependency on net4 version of Mono.Linq.Expressions
@@ -49,12 +81,8 @@ tools for testing with dependencies on AspNetMvc, HttpClient, Ado.Net, Streams a
       4.0.5.2 TestBase.Mvc partially ported to netstandard20 / AspNetCore
       4.0.4.1 StreamShoulds
       4.0.3.0 StringListLogger as MS Logger and as Serilogger
-      4.0.1.0 Port to NetCore
-      3.0.3.0 Improves FakeDb setup
-      3.0.x.0 adds and/or corrects missing Shoulds()
-      2.0.5.0 adds some intellisense and FakeDbConnection.Verify(..., message,args) overload
     </PackageReleaseNotes>
-    <Copyright>(c) Chris F. Carroll, 2013-2018</Copyright>
+    <Copyright>(c) Chris F. Carroll, 2013-2025</Copyright>
     <PackageLicenseExpression>LGPL-2.1-or-later</PackageLicenseExpression>
     <Authors>Chris F Carroll</Authors>
     <Owners>Chris F Carroll</Owners>
@@ -66,7 +94,10 @@ tools for testing with dependencies on AspNetMvc, HttpClient, Ado.Net, Streams a
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="1.1.2" />
+    <None Include="README.md" Pack="true" PackagePath="\"/>
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="1.1.2" />
+  </ItemGroup>
 </Project>
