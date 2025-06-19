@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net6.0;net5.0</TargetFrameworks>
+    <TargetFrameworks>net8.0;net5.0</TargetFrameworks>
     <AssemblyVersion>4.3.0</AssemblyVersion>
     <AssemblyFileVersion>4.3.0</AssemblyFileVersion>
     <IsPackable>false</IsPackable>
@@ -10,14 +10,14 @@
     <NoWarn>1701;1702;1705;NU1701</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="AutoFixture" Version="3.50.2" />
+    <PackageReference Include="AutoFixture" Version="4.18.1" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="2.1.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.5.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="1.1.18" />
     <PackageReference Include="MSTest.TestFramework" Version="1.1.18" />
     <PackageReference Include="NUnit" Version="3.9.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.9.0" />
-    <PackageReference Include="Moq" Version="4.8.2" />
+    <PackageReference Include="Moq" Version="4.8.4" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Extensions.Logging.ListOfString\Extensions.Logging.ListOfString.csproj" />
