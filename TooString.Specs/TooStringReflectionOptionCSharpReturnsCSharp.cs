@@ -19,8 +19,33 @@ public class TooStringReflectionOptionCSharpReturnsCSharp
     [TestCase(UriKind.Absolute,"Absolute")]
     public void GivenAScalar(object value, string expected)
     {
-        Assert.That(value.TooString(TooStringStyle.Reflection ), Is.EqualTo(expected));
+        Assert.That(value.TooString(TooStringHow.Reflection ), Is.EqualTo(expected));
     }
+
+    [Test]
+    public void GivenADateTimeOrDateOrTimeOrTimeSpan()
+    {
+        var now = DateTime.Now;
+        var nowActual = now.TooString(TooStringHow.Reflection);
+        Assert.That(nowActual,Is.EqualTo(now.ToString("O")));
+        TestContext.Out.WriteLine("DateTime: " + nowActual);
+
+        var dateOnly = DateOnly.FromDateTime(now);
+        var dateOnlyActual = dateOnly.TooString(TooStringHow.Reflection);
+        Assert.That(dateOnlyActual,Is.EqualTo(dateOnly.ToString("O")));
+        TestContext.Out.WriteLine("DateOnly: " + dateOnlyActual);
+
+        var timeOnly = TimeOnly.FromDateTime(now);
+        var timeOnlyActual = timeOnly.TooString(TooStringHow.Reflection);
+        Assert.That(timeOnlyActual,Is.EqualTo(timeOnly.ToString("HH:mm:ss")));
+        TestContext.Out.WriteLine("TimeOnly: " + timeOnlyActual);
+
+        var timeSpan = timeOnly.ToTimeSpan();
+        var timeSpanActual = timeSpan.TooString(TooStringHow.Reflection);
+        Assert.That(timeSpanActual,Is.EqualTo(timeSpan.ToString("c")));
+        TestContext.Out.WriteLine("TimeSpan: " + timeSpanActual);
+    }
+
     
     [Test]
     public void GivenStruct()
@@ -31,7 +56,7 @@ public class TooStringReflectionOptionCSharpReturnsCSharp
         TestContext.Progress.WriteLine(value.ToDebugViewString());
         
         Assert.That(
-            value.TooString(TooStringStyle.Reflection ), 
+            value.TooString(TooStringHow.Reflection ), 
             Is.EqualTo("{ A = boo, B = { Real = 3, Imaginary = 4, Magnitude = 5, Phase = 0.9272952180016122 } }")
             );
     }
@@ -50,7 +75,7 @@ public class TooStringReflectionOptionCSharpReturnsCSharp
         TestContext.Progress.WriteLine(value.ToDebugViewString());
         
         Assert.That(
-            value.TooString(TooStringStyle.Reflection ), 
+            value.TooString(TooStringHow.Reflection ), 
             Is.EqualTo("{ one = 1, two = boo, three = False, four = Absolute, five = { A = A, B = { Real = 3, Imaginary = 4, Magnitude = 5, Phase = 0.9272952180016122 } } }"));
     }
     
@@ -58,7 +83,7 @@ public class TooStringReflectionOptionCSharpReturnsCSharp
     public void GivenTuple()
     {
         var value = (1,"boo",false,UriKind.Absolute);
-        Assert.That(value.TooString(TooStringStyle.Reflection ), Is.EqualTo(value.ToString()));
+        Assert.That(value.TooString(TooStringHow.Reflection ), Is.EqualTo(value.ToString()));
     }
     
     [Test]
@@ -66,10 +91,10 @@ public class TooStringReflectionOptionCSharpReturnsCSharp
     {
         var value = (one:1, two:"boo", three:false, four:UriKind.Absolute, five: new CompositeA{A = "A", B= new Complex(3,4)});
 
-        TestContext.Progress.WriteLine(value.TooString(TooStringStyle.Reflection));
-        TestContext.Progress.WriteLine(value.TooString(TooStringStyle.Reflection, SerializationStyle.DebugDisplay));
+        TestContext.Progress.WriteLine(value.TooString(TooStringHow.Reflection));
+        TestContext.Progress.WriteLine(value.TooString(TooStringHow.Reflection, ReflectionStyle.DebugView));
         
-        Assert.That(value.TooString(TooStringStyle.Reflection ), Is.EqualTo(value.ToString()));
+        Assert.That(value.TooString(TooStringHow.Reflection ), Is.EqualTo(value.ToString()));
     }
     
     
@@ -80,12 +105,12 @@ public class TooStringReflectionOptionCSharpReturnsCSharp
 
         var defaultJsonned = JsonSerializer.Serialize(value);
         var jsonnedIncludeFields = value.TooString(new TooStringOptions(
-                                         new[] { TooStringStyle.Json },
+                                         new[] { TooStringHow.Json },
                                          new JsonSerializerOptions()
                                          {
                                              IncludeFields = true
                                          },
-                                         new ReflectionSerializerOptions(),
+                                         new ReflectionOptions(),
                                          JsonSerializerDefaults.General));
         
         TestContext.Progress.WriteLine("jsonnedIncludeFields  :" + jsonnedIncludeFields);
@@ -93,7 +118,7 @@ public class TooStringReflectionOptionCSharpReturnsCSharp
         TestContext.Progress.WriteLine("ToString:" + value);
         
         Assert.That(
-            value.TooString(TooStringStyle.Reflection,SerializationStyle.Json ), 
+            value.TooString(TooStringHow.Reflection,ReflectionStyle.Json ), 
             Is.EqualTo(value.ToString()));
     }
     
@@ -107,14 +132,14 @@ public class TooStringReflectionOptionCSharpReturnsCSharp
             """;
         
         Assert.That(
-            value.TooString(TooStringStyle.Reflection,SerializationStyle.DebugDisplay), 
+            value.TooString(TooStringHow.Reflection,ReflectionStyle.DebugView), 
             Is.EqualTo(expected) 
         );
         
         Assert.That(
-            value.TooString(TooStringStyle.Reflection,SerializationStyle.DebugDisplay),
+            value.TooString(TooStringHow.Reflection,ReflectionStyle.DebugView),
             Is.EqualTo(
-                value.TooString(TooStringStyle.Reflection) 
+                value.TooString(TooStringHow.Reflection) 
                 ));
     }
     
@@ -126,7 +151,7 @@ public class TooStringReflectionOptionCSharpReturnsCSharp
         var expected = "{ A = boo, B = { A = boo, B = { A = boo, B = { A = boo, B = TooString.Specs.Circular } } } }";
         
         Assert.That(
-            value.TooString(TooStringStyle.Reflection), 
+            value.TooString(TooStringHow.Reflection), 
             Is.EqualTo(expected) 
         );
     }
@@ -141,7 +166,7 @@ public class TooStringReflectionOptionCSharpReturnsCSharp
             "\"Timeout\":\"00:01:40\",\"MaxResponseContentBufferSize\":2147483647}";
         
         Assert.That(
-            value.TooString(TooStringStyle.Reflection), 
+            value.TooString(TooStringHow.Reflection), 
             Is.EqualTo(expected) 
         );
     }
@@ -154,13 +179,13 @@ public class TooStringReflectionOptionCSharpReturnsCSharp
         var expected = """
                        { CodeBase = file:///--filename--, FullName = TooString.Specs, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null, EntryPoint = { Name = Main, DeclaringType = AutoGeneratedProgram, ReflectedType = AutoGeneratedProgram, MemberType = Method, MetadataToken = 100000000, Module = { MDStreamVersion = 131072, FullyQualifiedName = --filename--, ModuleVersionId = {  }, MetadataToken = 100000000, ScopeName = TooString.Specs.dll, Name = TooString.Specs.dll, Assembly = { CodeBase = file:///--filename--, FullName = TooString.Specs, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null, EntryPoint = Void Main(System.String[]), DefinedTypes = [], IsCollectible = False, ManifestModule = TooString.Specs.dll, ReflectionOnly = False, Location = --filename--, ImageRuntimeVersion = v4.0.30319, GlobalAssemblyCache = False, HostContext = 0, IsDynamic = False, ExportedTypes = [], IsFullyTrusted = True, CustomAttributes = System.Collections.ObjectModel.ReadOnlyCollection`1[System.Reflection.CustomAttributeData], EscapedCodeBase = file:///--filename--, Modules = [], SecurityRuleSet = None }, ModuleHandle = { MDStreamVersion = 131072 }, CustomAttributes = { Count = 1, Item = CustomAttributeData } }, IsSecurityCritical = True, IsSecuritySafeCritical = False, IsSecurityTransparent = False, MethodHandle = { Value = 9999999999 }, Attributes = PrivateScope, Private, Static, HideBySig, CallingConvention = Standard, ReturnType = System.Void, ReturnTypeCustomAttributes = { ParameterType = System.Void, Name = null, HasDefaultValue = True, DefaultValue = null, RawDefaultValue = null, MetadataToken = 100000000, Attributes = None, Member = { Name = Main, DeclaringType = AutoGeneratedProgram, ReflectedType = AutoGeneratedProgram, MemberType = Method, MetadataToken = 100000000, Module = TooString.Specs.dll, IsSecurityCritical = True, IsSecuritySafeCritical = False, IsSecurityTransparent = False, MethodHandle = System.RuntimeMethodHandle, Attributes = PrivateScope, Private, Static, HideBySig, CallingConvention = Standard, ReturnType = System.Void, ReturnTypeCustomAttributes = Void, ReturnParameter = Void, IsCollectible = False, IsGenericMethod = False, IsGenericMethodDefinition = False, ContainsGenericParameters = False, MethodImplementationFlags = Managed, IsAbstract = False, IsConstructor = False, IsFinal = False, IsHideBySig = True, IsSpecialName = False, IsStatic = True, IsVirtual = False, IsAssembly = False, IsFamily = False, IsFamilyAndAssembly = False, IsFamilyOrAssembly = False, IsPrivate = True, IsPublic = False, IsConstructedGenericMethod = False, CustomAttributes = [] }, Position = -1, IsIn = False, IsLcid = False, IsOptional = False, IsOut = False, IsRetval = False, CustomAttributes = { Length = 0, LongLength = 0, Rank = 1, SyncRoot = [], IsReadOnly = False, IsFixedSize = True, IsSynchronized = False } }, ReturnParameter = { ParameterType = System.Void, Name = null, HasDefaultValue = True, DefaultValue = null, RawDefaultValue = null, MetadataToken = 100000000, Attributes = None, Member = { Name = Main, DeclaringType = AutoGeneratedProgram, ReflectedType = AutoGeneratedProgram, MemberType = Method, MetadataToken = 100000000, Module = TooString.Specs.dll, IsSecurityCritical = True, IsSecuritySafeCritical = False, IsSecurityTransparent = False, MethodHandle = System.RuntimeMethodHandle, Attributes = PrivateScope, Private, Static, HideBySig, CallingConvention = Standard, ReturnType = System.Void, ReturnTypeCustomAttributes = Void, ReturnParameter = Void, IsCollectible = False, IsGenericMethod = False, IsGenericMethodDefinition = False, ContainsGenericParameters = False, MethodImplementationFlags = Managed, IsAbstract = False, IsConstructor = False, IsFinal = False, IsHideBySig = True, IsSpecialName = False, IsStatic = True, IsVirtual = False, IsAssembly = False, IsFamily = False, IsFamilyAndAssembly = False, IsFamilyOrAssembly = False, IsPrivate = True, IsPublic = False, IsConstructedGenericMethod = False, CustomAttributes = [] }, Position = -1, IsIn = False, IsLcid = False, IsOptional = False, IsOut = False, IsRetval = False, CustomAttributes = { Length = 0, LongLength = 0, Rank = 1, SyncRoot = [], IsReadOnly = False, IsFixedSize = True, IsSynchronized = False } }, IsCollectible = False, IsGenericMethod = False, IsGenericMethodDefinition = False, ContainsGenericParameters = False, MethodImplementationFlags = Managed, IsAbstract = False, IsConstructor = False, IsFinal = False, IsHideBySig = True, IsSpecialName = False, IsStatic = True, IsVirtual = False, IsAssembly = False, IsFamily = False, IsFamilyAndAssembly = False, IsFamilyOrAssembly = False, IsPrivate = True, IsPublic = False, IsConstructedGenericMethod = False, CustomAttributes = { Length = 0, LongLength = 0, Rank = 1, SyncRoot = { Length = 0, LongLength = 0, Rank = 1, SyncRoot = [], IsReadOnly = False, IsFixedSize = True, IsSynchronized = False }, IsReadOnly = False, IsFixedSize = True, IsSynchronized = False } }, DefinedTypes = { Length = 21, LongLength = 21, Rank = 1, SyncRoot = { Length = 21, LongLength = 21, Rank = 1, SyncRoot = { Length = 21, LongLength = 21, Rank = 1, SyncRoot = [], IsReadOnly = False, IsFixedSize = True, IsSynchronized = False }, IsReadOnly = False, IsFixedSize = True, IsSynchronized = False }, IsReadOnly = False, IsFixedSize = True, IsSynchronized = False }, IsCollectible = False, ManifestModule = { MDStreamVersion = 131072, FullyQualifiedName = --filename--, ModuleVersionId = {  }, MetadataToken = 100000000, ScopeName = TooString.Specs.dll, Name = TooString.Specs.dll, Assembly = { CodeBase = file:///--filename--, FullName = TooString.Specs, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null, EntryPoint = { Name = Main, DeclaringType = AutoGeneratedProgram, ReflectedType = AutoGeneratedProgram, MemberType = Method, MetadataToken = 100000000, Module = TooString.Specs.dll, IsSecurityCritical = True, IsSecuritySafeCritical = False, IsSecurityTransparent = False, MethodHandle = System.RuntimeMethodHandle, Attributes = PrivateScope, Private, Static, HideBySig, CallingConvention = Standard, ReturnType = System.Void, ReturnTypeCustomAttributes = Void, ReturnParameter = Void, IsCollectible = False, IsGenericMethod = False, IsGenericMethodDefinition = False, ContainsGenericParameters = False, MethodImplementationFlags = Managed, IsAbstract = False, IsConstructor = False, IsFinal = False, IsHideBySig = True, IsSpecialName = False, IsStatic = True, IsVirtual = False, IsAssembly = False, IsFamily = False, IsFamilyAndAssembly = False, IsFamilyOrAssembly = False, IsPrivate = True, IsPublic = False, IsConstructedGenericMethod = False, CustomAttributes = [] }, DefinedTypes = { Length = 21, LongLength = 21, Rank = 1, SyncRoot = [], IsReadOnly = False, IsFixedSize = True, IsSynchronized = False }, IsCollectible = False, ManifestModule = { MDStreamVersion = 131072, FullyQualifiedName = --filename--, ModuleVersionId = 00000000-0000-0000-0000-000000000000, MetadataToken = 100000000, ScopeName = TooString.Specs.dll, Name = TooString.Specs.dll, Assembly = TooString.Specs, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null, ModuleHandle = System.ModuleHandle, CustomAttributes = System.Collections.ObjectModel.ReadOnlyCollection`1[System.Reflection.CustomAttributeData] }, ReflectionOnly = False, Location = --filename--, ImageRuntimeVersion = v4.0.30319, GlobalAssemblyCache = False, HostContext = 0, IsDynamic = False, ExportedTypes = { Length = 5, LongLength = 5, Rank = 1, SyncRoot = [], IsReadOnly = False, IsFixedSize = True, IsSynchronized = False }, IsFullyTrusted = True, CustomAttributes = { Count = 10, Item = CustomAttributeData }, EscapedCodeBase = file:///--filename--, Modules = { Length = 1, LongLength = 1, Rank = 1, SyncRoot = [], IsReadOnly = False, IsFixedSize = True, IsSynchronized = False }, SecurityRuleSet = None }, ModuleHandle = { MDStreamVersion = 131072 }, CustomAttributes = { Count = 1, Item = CustomAttributeData } }, ReflectionOnly = False, Location = --filename--, ImageRuntimeVersion = v4.0.30319, GlobalAssemblyCache = False, HostContext = 0, IsDynamic = False, ExportedTypes = { Length = 5, LongLength = 5, Rank = 1, SyncRoot = { Length = 5, LongLength = 5, Rank = 1, SyncRoot = { Length = 5, LongLength = 5, Rank = 1, SyncRoot = [], IsReadOnly = False, IsFixedSize = True, IsSynchronized = False }, IsReadOnly = False, IsFixedSize = True, IsSynchronized = False }, IsReadOnly = False, IsFixedSize = True, IsSynchronized = False }, IsFullyTrusted = True, CustomAttributes = { Count = 10, Item = CustomAttributeData }, EscapedCodeBase = file:///--filename--, Modules = { Length = 1, LongLength = 1, Rank = 1, SyncRoot = { Length = 1, LongLength = 1, Rank = 1, SyncRoot = { Length = 1, LongLength = 1, Rank = 1, SyncRoot = [], IsReadOnly = False, IsFixedSize = True, IsSynchronized = False }, IsReadOnly = False, IsFixedSize = True, IsSynchronized = False }, IsReadOnly = False, IsFixedSize = True, IsSynchronized = False }, SecurityRuleSet = None }
                        """;
-        var actual = value.TooString(TooStringStyle.Reflection);
+        var actual = value.TooString(TooStringHow.Reflection);
 
         TestContext.Progress.WriteLine(actual.RegexReplaceKnownRuntimeVariableValues());
         
         Assert.That(
             value
-                .TooString(TooStringStyle.Reflection)
+                .TooString(TooStringHow.Reflection)
                 .RegexReplaceKnownRuntimeVariableValues(),
             
             Is.EqualTo(expected.RegexReplaceKnownRuntimeVariableValues())
@@ -180,12 +205,12 @@ public class TooStringReflectionOptionCSharpReturnsCSharp
                        { MDStreamVersion = 131072, FullyQualifiedName = --filename--, ModuleVersionId = {  }, MetadataToken = 100000000, ScopeName = System.Private.CoreLib.dll, Name = System.Private.CoreLib.dll, Assembly = { CodeBase = file:///--filename--, FullName = System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e, EntryPoint = null, DefinedTypes = { Length = 2240, LongLength = 2240, Rank = 1, SyncRoot = { Length = 2240, LongLength = 2240, Rank = 1, SyncRoot = [], IsReadOnly = False, IsFixedSize = True, IsSynchronized = False }, IsReadOnly = False, IsFixedSize = True, IsSynchronized = False }, IsCollectible = False, ManifestModule = { MDStreamVersion = 131072, FullyQualifiedName = --filename--, ModuleVersionId = {  }, MetadataToken = 100000000, ScopeName = System.Private.CoreLib.dll, Name = System.Private.CoreLib.dll, Assembly = { CodeBase = file:///--filename--, FullName = System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e, EntryPoint = null, DefinedTypes = [], IsCollectible = False, ManifestModule = System.Private.CoreLib.dll, ReflectionOnly = False, Location = --filename--, ImageRuntimeVersion = v4.0.30319, GlobalAssemblyCache = False, HostContext = 0, IsDynamic = False, ExportedTypes = [], IsFullyTrusted = True, CustomAttributes = System.Collections.ObjectModel.ReadOnlyCollection`1[System.Reflection.CustomAttributeData], EscapedCodeBase = file:///--filename--, Modules = [], SecurityRuleSet = None }, ModuleHandle = { MDStreamVersion = 131072 }, CustomAttributes = { Count = 2, Item = CustomAttributeData } }, ReflectionOnly = False, Location = --filename--, ImageRuntimeVersion = v4.0.30319, GlobalAssemblyCache = False, HostContext = 0, IsDynamic = False, ExportedTypes = { Length = 1187, LongLength = 1187, Rank = 1, SyncRoot = { Length = 1187, LongLength = 1187, Rank = 1, SyncRoot = [], IsReadOnly = False, IsFixedSize = True, IsSynchronized = False }, IsReadOnly = False, IsFixedSize = True, IsSynchronized = False }, IsFullyTrusted = True, CustomAttributes = { Count = 22, Item = CustomAttributeData }, EscapedCodeBase = file:///--filename--, Modules = { Length = 1, LongLength = 1, Rank = 1, SyncRoot = { Length = 1, LongLength = 1, Rank = 1, SyncRoot = [], IsReadOnly = False, IsFixedSize = True, IsSynchronized = False }, IsReadOnly = False, IsFixedSize = True, IsSynchronized = False }, SecurityRuleSet = None }, ModuleHandle = { MDStreamVersion = 131072 }, CustomAttributes = { Count = 2, Item = CustomAttributeData } }
                        """;
         
-        var actual = value.TooString(TooStringStyle.Reflection);
+        var actual = value.TooString(TooStringHow.Reflection);
 
         TestContext.Progress.WriteLine(actual.RegexReplaceKnownRuntimeVariableValues());
 
         Assert.That(
-            value.TooString(TooStringStyle.Reflection)
+            value.TooString(TooStringHow.Reflection)
                 .RegexReplaceKnownRuntimeVariableValues(),
             Is.EqualTo(
                 expected.RegexReplaceKnownRuntimeVariableValues()));

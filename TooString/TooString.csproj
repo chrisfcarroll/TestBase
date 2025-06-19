@@ -1,23 +1,26 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFrameworks>net8.0;net6.0</TargetFrameworks>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <LangVersion>latest</LangVersion>
     </PropertyGroup>
     
     <PropertyGroup>
-        <AssemblyVersion>0.1.0</AssemblyVersion>
-        <AssemblyFileVersion>0.1.0</AssemblyFileVersion>
-        <PackageVersion>0.1.0</PackageVersion>
+        <AssemblyVersion>0.2.0</AssemblyVersion>
+        <AssemblyFileVersion>0.2.0</AssemblyFileVersion>
+        <PackageVersion>0.2.0-preview</PackageVersion>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
-        <Title>TooString — The ToString() method for reflection, debug, Json, and CallerArgumentExpression display</Title>
-        <PackageDescription><![CDATA[The TooString() extension method stringifies objects in ways that other serializers don't.
+        <Title>TooString — The ToString() method for DebugView, Json, and CallerArgumentExpression, going places that serializers don't.</Title>
+        <PackageDescription><![CDATA[The TooString() extension method goes places that serializers don't.
 
 TooString() can
 - make a best effort to stringify unserializable objects.
 - Output as Json, or C# Code, or ‘debug’ output
+
+TooString is not a serializer because it is not fail-fast. Given something it can't serialize, it will
+return a best-effort string, rather than throw an exception.
 
 Example:
 ```
@@ -28,14 +31,16 @@ new { A = "boo", B = new Complex(3,4) }.TooString(TooStringStyle.Json);
 // Output is the System.Text.Json output:
 // {"A":"boo","B":{"Real":3,"Imaginary":4,"Magnitude":5,"Phase":0.9272952180016122}}
 
-new { A = "boo", B = new Complex(3,4) }.TooString(TooStringStyle.Reflection);
+new { A = "boo", B = new Complex(3,4) }.TooString(TooStringStyle.DebugView);
 // Output is "{ A = boo, B = { Real = 3, Imaginary = 4, Magnitude = 5, Phase = 0.9272952180016122 } }" 
 ```
 ]]></PackageDescription>
         <PackageReleaseNotes>
             ChangeLog
             ---------
-            0.1.0.0  Can use Reflection, Json, ToString() or [CallerArgumentExpression] and can output Json or Debug strings.
+            0.2.0  Rename TooStringStyle to TooStringHow.
+                   Fix SerializationStyle.Reflection output of DateTime, DateOnly, TimeOnly.
+            0.1.0  Can use DebugView, Json, ToString() or [CallerArgumentExpression] and can output Json or Debug strings.
         </PackageReleaseNotes>
         <Copyright>(c) Chris F. Carroll, 2024</Copyright>
         <PackageLicenseExpression>LGPL-2.1-or-later</PackageLicenseExpression>

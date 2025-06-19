@@ -14,7 +14,7 @@ new { A = "boo", B = new Complex(3,4) }.TooString(TooStringStyle.Json);
 // Output is the System.Text.Json output:
 // {"A":"boo","B":{"Real":3,"Imaginary":4,"Magnitude":5,"Phase":0.9272952180016122}}
 
-new { A = "boo", B = new Complex(3,4) }.TooString(TooStringStyle.Reflection);
+new { A = "boo", B = new Complex(3,4) }.TooString(TooStringStyle.DebugView);
 // Output is "{ A = boo, B = { Real = 3, Imaginary = 4, Magnitude = 5, Phase = 0.9272952180016122 } }" 
 ```
 
@@ -46,4 +46,4 @@ var jsonnedIncludeFields = (one:1, two:"2") .TooString(options);
 
 ### ChangeLog
 
-0.1.0.0  Can use Reflection, Json, ToString() or [CallerArgumentExpression] and can output Json or Debug strings.
+0.1.0.0  Can use DebugView, Json, ToString() or [CallerArgumentExpression] and can output Json or Debug strings.

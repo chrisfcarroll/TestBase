@@ -4,10 +4,10 @@ using System.Text.Json;
 namespace TooString;
 
 /// <summary>
-/// The method by which <see cref="ObjectTooString.TooString{T}(T,TooString.TooStringStyle,System.Nullable{TooString.SerializationStyle},string?)"/>
+/// The method by which <see cref="ObjectTooString.TooString{T}(T,TooStringHow,System.Nullable{ReflectionStyle},string?)"/>
 /// will stringify a value. One of CallerArgument,Json,Reflection,ToString or BestEffort
 /// </summary>
-public enum TooStringStyle
+public enum TooStringHow
 {
     /// <summary>If <see cref="CallerArgument"/> returns more than just a parameter
     /// name, then use it.
