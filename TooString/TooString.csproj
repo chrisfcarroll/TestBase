@@ -13,32 +13,33 @@
         <PackageVersion>0.2.0-preview</PackageVersion>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <Title>TooString — The ToString() method for DebugView, Json, and CallerArgumentExpression, going places that serializers don't.</Title>
-        <PackageDescription><![CDATA[The TooString() extension method goes places that serializers don't.
-
-TooString() can
+        <PackageDescription><![CDATA[TooString() can
 - make a best effort to stringify unserializable objects.
 - Output as Json, or C# Code, or ‘debug’ output
 
-TooString is not a serializer because it is not fail-fast. Given something it can't serialize, it will
-return a best-effort string, rather than throw an exception.
+TooString is not a serializer because it is not fail-fast. Instead, given something it can't
+serialize, it will return a best-effort string, rather than throw an exception.
+
+It is intended for test, diagnostic and monitoring output.
 
 Example:
 ```
-( Math.Sqrt(4 * Math.PI / 3)  ).TooString( TooStringStyle.CallerArgument ) 
+( Math.Sqrt(4 * Math.PI / 3)  ).TooString( TooStringHow.CallerArgument )
 // Output is the literal code: "Math.Sqrt(4 * Math.PI / 3)"
 
-new { A = "boo", B = new Complex(3,4) }.TooString(TooStringStyle.Json);
+new { A = "boo", B = new Complex(3,4) }.TooString(TooStringHow.Json);
 // Output is the System.Text.Json output:
 // {"A":"boo","B":{"Real":3,"Imaginary":4,"Magnitude":5,"Phase":0.9272952180016122}}
 
-new { A = "boo", B = new Complex(3,4) }.TooString(TooStringStyle.DebugView);
-// Output is "{ A = boo, B = { Real = 3, Imaginary = 4, Magnitude = 5, Phase = 0.9272952180016122 } }" 
+new { A = "boo", B = new Complex(3,4) }.TooString(TooStringHow.Reflection);
+// Output is "{ A = boo, B = (3, 4) }" on Net6, or "{ A = boo, B = <3; 4> }" on Net8+
 ```
 ]]></PackageDescription>
         <PackageReleaseNotes>
             ChangeLog
             ---------
-            0.2.0  Rename TooStringStyle to TooStringHow.
+            0.2.0  Added Net8. NB Net8 Json and Numerics output is different from Net6
+                   Rename TooStringStyle to TooStringHow.
                    Fix SerializationStyle.Reflection output of DateTime, DateOnly, TimeOnly.
             0.1.0  Can use DebugView, Json, ToString() or [CallerArgumentExpression] and can output Json or Debug strings.
         </PackageReleaseNotes>

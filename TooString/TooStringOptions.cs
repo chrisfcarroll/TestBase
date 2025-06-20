@@ -6,38 +6,59 @@ using System.Text.Json.Serialization;
 namespace TooString;
 
 /// <summary>
-/// The complete set of serialization options. When calling
-/// <see cref="ObjectTooString.TooString{T}(T,TooStringHow,System.Nullable{ReflectionStyle},string?)"/>
-/// the given parameters are turned into a <see cref="TooStringOptions"/> class to pass
-/// to <see cref="ObjectTooString.TooString{T}(T,TooStringOptions,string?)"/>
+/// The complete set of stringification options.
 /// </summary>
-/// <param name="PreferenceOrder">
-/// The <see cref="Default"/> value is a single entry of <see cref="TooStringHow.BestEffort"/>
-/// </param>
-/// <param name="JsonOptions">
-/// The <see cref="Default"/> value is <see cref="DefaultJsonOptions"/>, which has
-/// <see cref="JsonSerializerOptions.ReferenceHandler"/>=<see cref="ReferenceHandler.IgnoreCycles"/>
-/// </param>
-/// <param name="ReflectionOptions">
-/// The <see cref="Default"/> value is <see cref="ReflectionOptions.Default"/>
-/// which specifies public instance properties and fields to a recursion depth of 3 and
-/// option as Json. 
-/// </param>
-/// <param name="JsonDefaults">
-/// The <see cref="Default"/> value is <see cref="JsonSerializerDefaults.General"/>
-/// </param>
-public record TooStringOptions(IEnumerable<TooStringHow> PreferenceOrder,
-                               JsonSerializerOptions JsonOptions,
-                               ReflectionOptions ReflectionOptions,
-                               JsonSerializerDefaults JsonDefaults = JsonSerializerDefaults.General)
+public record TooStringOptions
 {
+    /// <summary>
+    /// The complete set of stringification options. There are no options for
+    /// <see cref="TooStringHow.CallerArgument"/>.
+    /// </summary>
+    /// <param name="ReflectionOptions">
+    /// The options for <see cref="TooStringHow.Reflection"/>.
+    /// The <see cref="Default"/> value is <see cref="ReflectionOptions.Default"/>
+    /// which is
+    /// <code>
+    /// new ReflectionOptions(
+    ///     BindingFlags WhichProperties = BindingFlags.Instance | BindingFlags.Public,
+    ///     ReflectionStyle Style = ReflectionStyle.Json,
+    ///     int MaxDepth = 3,
+    ///     string DateTimeFormat = "O",
+    ///     string DateOnlyFormat = "O",
+    ///     string TimeOnlyFormat = "HH:mm:ss",
+    ///     string TimeSpanFormat = "c")
+    /// </code>
+    /// </param>
+    /// <param name="JsonOptions">
+    /// The <see cref="Default"/> value is <see cref="DefaultJsonOptions"/>, which has
+    /// <code>
+    /// DefaultJsonOptions = new(JsonSerializerDefaults.General)
+    ///     {
+    ///         ReferenceHandler = ReferenceHandler.IgnoreCycles
+    ///     };
+    /// </code>
+    /// </param>
+    /// <param name="Fallbacks">
+    /// What methods — <see cref="TooStringHow"/> — to try to stringify, and in what order.
+    /// The <see cref="Default"/> value is a single entry of <see cref="TooStringHow.BestEffort"/>
+    /// </param>
+    public TooStringOptions(ReflectionOptions ReflectionOptions,
+                            JsonSerializerOptions JsonOptions,
+                            params IEnumerable<TooStringHow> Fallbacks)
+    {
+        this.ReflectionOptions = ReflectionOptions;
+        this.JsonOptions = JsonOptions;
+        this.Fallbacks = Fallbacks;
+    }
+
+
     /// <summary><c>
-    /// new(JsonSerializerDefaults.Web)
+    /// new(JsonSerializerDefaults.General)
     /// {
     ///    ReferenceHandler = ReferenceHandler.IgnoreCycles
     /// }</c>
     /// </summary>
-    internal static readonly JsonSerializerOptions DefaultJsonOptions =
+    public static readonly JsonSerializerOptions DefaultJsonOptions =
         new(JsonSerializerDefaults.General)
         {
             ReferenceHandler = ReferenceHandler.IgnoreCycles
@@ -52,12 +73,9 @@ public record TooStringOptions(IEnumerable<TooStringHow> PreferenceOrder,
     /// </c>
     /// </summary>
     public static readonly TooStringOptions Default =
-        new(
-            new List<TooStringHow>(){TooStringHow.BestEffort }.AsReadOnly(),
+        new(ReflectionOptions.Default,
             DefaultJsonOptions,
-            ReflectionOptions.Default,
-            JsonSerializerDefaults.General
-        );
+            new List<TooStringHow>(){TooStringHow.BestEffort }.AsReadOnly());
 
     /// <summary>
     /// Extract the <see cref="JsonOptions"/> out of <paramref name="o"/>
@@ -67,28 +85,59 @@ public record TooStringOptions(IEnumerable<TooStringHow> PreferenceOrder,
     public static implicit operator JsonSerializerOptions(TooStringOptions o)
         => o.JsonOptions;
 
-#if NET8_0_OR_GREATER
-    static TooStringOptions()
-    {
-        DefaultJsonOptions.MakeReadOnly();
-    }
-#endif
+    /// <summary>
+    /// The options for <see cref="TooStringHow.Reflection"/>.
+    /// The <see cref="Default"/> value is <see cref="ReflectionOptions.Default"/>
+    /// which is
+    /// <code>
+    /// new ReflectionOptions(
+    ///     BindingFlags WhichProperties = BindingFlags.Instance | BindingFlags.Public,
+    ///     ReflectionStyle Style = ReflectionStyle.Json,
+    ///     int MaxDepth = 3,
+    ///     string DateTimeFormat = "O",
+    ///     string DateOnlyFormat = "O",
+    ///     string TimeOnlyFormat = "HH:mm:ss",
+    ///     string TimeSpanFormat = "c")
+    /// </code>
+    /// </summary>
+    public ReflectionOptions ReflectionOptions { get; init; }
 
+    /// <summary>
+    /// The <see cref="Default"/> value is <see cref="DefaultJsonOptions"/>, which has
+    /// <code>
+    /// DefaultJsonOptions = new(JsonSerializerDefaults.General)
+    ///     {
+    ///         ReferenceHandler = ReferenceHandler.IgnoreCycles
+    ///     };
+    /// </code>
+    /// </summary>
+    public JsonSerializerOptions JsonOptions { get; init; }
+
+    /// <summary>
+    /// What methods — <see cref="TooStringHow"/> — to try to stringify, and in what order.
+    /// The <see cref="Default"/> value is a single entry of <see cref="TooStringHow.BestEffort"/>
+    /// </summary>
+    public IEnumerable<TooStringHow> Fallbacks { get; init; }
+
+    /// <param name="reflectionOptions"></param>
+    /// <param name="jsonOptions"></param>
+    /// <param name="fallbacks"></param>
+    public void Deconstruct(out ReflectionOptions reflectionOptions,
+                            out JsonSerializerOptions jsonOptions,
+                            out IEnumerable<TooStringHow> fallbacks)
+    {
+        reflectionOptions = ReflectionOptions;
+        jsonOptions = JsonOptions;
+        fallbacks = Fallbacks;
+    }
 }
 
-internal record
-    OptionsWithState(
-        int Depth,
-        IEnumerable<TooStringHow> PreferenceOrder,
-        JsonSerializerOptions JsonOptions,
-        ReflectionOptions ReflectionOptions,
-        JsonSerializerDefaults JsonDefaults = JsonSerializerDefaults.General
-    )
-    : TooStringOptions(PreferenceOrder, JsonOptions, ReflectionOptions, JsonDefaults)
+internal record OptionsWithState(int Depth,
+                                 IEnumerable<TooStringHow> Fallbacks,
+                                 JsonSerializerOptions JsonOptions,
+                                 ReflectionOptions ReflectionOptions)
+                : TooStringOptions(ReflectionOptions, JsonOptions,Fallbacks)
 {
-    public OptionsWithState(int depth, TooStringOptions @from) : this(depth,
-        @from.PreferenceOrder, @from.JsonOptions, @from.ReflectionOptions,
-        @from.JsonDefaults)
-    {
-    }
+    public OptionsWithState(int depth, TooStringOptions @from)
+           : this(depth,@from.Fallbacks, @from.JsonOptions, @from.ReflectionOptions) { }
 }

@@ -59,9 +59,6 @@ public static class WithExtension
             #endif
         };
         copy.Converters.AddAll(@this.Converters);
-        #if NET8_0_OR_GREATER
-        copy.TypeInfoResolverChain.AddAll(@this.TypeInfoResolverChain);
-        #endif
         with(copy);
         return copy;
     }
