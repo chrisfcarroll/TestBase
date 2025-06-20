@@ -40,6 +40,7 @@ static class RegexReplace
             .ReplaceRegex(" Length = \\d+"," Length = 9999999999")
             .ReplaceRegex(" LongLength = \\d+"," LongLength = 9999999999")
             .ReplaceRegex(" MetadataToken = \\d+"," MetadataToken = 100000000")
-        
+            .ReplaceRegex(@"Version=\d{1,8}\.\d{1,8}\.\d{1,8}\.\d{1,8}", "Version=X.X.X.X")
+
             .ReplaceRegex("[a-f0-9A-F\\-]{36}",System.Guid.Empty.ToString());
 }

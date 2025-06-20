@@ -130,6 +130,35 @@ public record TooStringOptions
         jsonOptions = JsonOptions;
         fallbacks = Fallbacks;
     }
+
+    /// <param name="nonDefaults"></param>
+    /// <returns>
+    /// Default options for <see cref="TooStringHow.Json"/> with {JsonOptions modified by nonDefaults}
+    /// </returns>
+    public static TooStringOptions ForJson(Action<JsonSerializerOptions>? nonDefaults = null)
+    {
+        var js= new JsonSerializerOptions();
+        nonDefaults?.Invoke(js);
+        return Default with
+        {
+            JsonOptions = js,
+            Fallbacks = Default.Fallbacks.Prepend(TooStringHow.Json),
+            ReflectionOptions = ReflectionOptions.Default with {Style = ReflectionStyle.Json}
+        };
+    }
+    /// <param name="nonDefaults"></param>
+    /// <returns>
+    /// Default options for <see cref="TooStringHow.Reflection"/>
+    /// with { ReflectionOptions = nonDefaults}
+    /// </returns>
+    public static TooStringOptions ForReflection(ReflectionOptions nonDefaults)
+    {
+        return Default with
+        {
+            ReflectionOptions = nonDefaults,
+            Fallbacks = Default.Fallbacks.Prepend(TooStringHow.Reflection)
+        };
+    }
 }
 
 internal record OptionsWithState(int Depth,

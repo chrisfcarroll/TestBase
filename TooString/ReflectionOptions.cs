@@ -14,7 +14,7 @@ namespace TooString;
 /// <param name="TimeSpanFormat">Defaults to "". The preferred <see cref="TimeSpan.ToString()"/> option</param>
 public record ReflectionOptions(
     BindingFlags WhichProperties = BindingFlags.Instance | BindingFlags.Public,
-    ReflectionStyle Style = ReflectionStyle.Json,
+    ReflectionStyle Style = ReflectionStyle.DebugView,
     int MaxDepth = 3,
     string DateTimeFormat = "O",
     string DateOnlyFormat = "O",
