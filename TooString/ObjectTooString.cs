@@ -414,6 +414,10 @@ public static class ObjectTooString
             //then better to halt at this level, where we can show more metadata i.e. Length
             return ScalarishToShortReflectedString(value,options);
         }
+        var maxLength = options.ReflectionOptions.MaxLength;
+        if (maxLength < 0) maxLength = - maxLength - options.Depth;
+
+        if(maxLength == 0) return ScalarishToShortReflectedString(value,options);
 
         int i = 0;
         var (start, delimiter,end) = options.ReflectionOptions.Style == ReflectionStyle.Json
@@ -425,9 +429,12 @@ public static class ObjectTooString
             if(i > 0){ b.Append(delimiter); }
             b.Append(BuildReflectedString(item, options with { Depth = options.Depth + 1 }));
 
-            if (++i >= options.ReflectionOptions.MaxLength) break;
+            if (++i >= maxLength) break;
         }
         b.Append(end);
+
+        if(i == 0) return ScalarishToShortReflectedString(value,options);
+
         return b.ToString();
     }
 
