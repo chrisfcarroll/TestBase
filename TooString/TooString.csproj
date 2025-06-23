@@ -8,14 +8,21 @@
     </PropertyGroup>
     
     <PropertyGroup>
-        <AssemblyVersion>0.2.0</AssemblyVersion>
-        <AssemblyFileVersion>0.2.0</AssemblyFileVersion>
-        <PackageVersion>0.2.0-preview</PackageVersion>
+        <AssemblyVersion>0.3</AssemblyVersion>
+        <AssemblyFileVersion>0.3</AssemblyFileVersion>
+        <PackageVersion>0.2-preview</PackageVersion>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <Title>TooString — The ToString() method for DebugView, Json, and CallerArgumentExpression, going places that serializers don't.</Title>
         <PackageDescription><![CDATA[TooString() can
 - make a best effort to stringify unserializable objects.
 - Output as Json, or C# Code, or ‘debug’ output
+
+TooString offers 3 extension method groups on Object:
+```csharp
+value.TooString();
+value.ToJson();
+value.ToDebugViewString();
+```
 
 TooString is not a serializer because it is not fail-fast. Instead, given something it can't
 serialize, it will return a best-effort string, rather than throw an exception.
@@ -27,9 +34,15 @@ Example:
 ( Math.Sqrt(4 * Math.PI / 3)  ).TooString( TooStringHow.CallerArgument )
 // Output is the literal code: "Math.Sqrt(4 * Math.PI / 3)"
 
-new { A = "boo", B = new Complex(3,4) }.TooString(TooStringHow.Json);
+new { A = "boo", B = new Complex(3,4) }.ToJson();
 // Output is the System.Text.Json output:
 // {"A":"boo","B":{"Real":3,"Imaginary":4,"Magnitude":5,"Phase":0.9272952180016122}}
+
+var tuple = (one: 1, two: "2", three: new Complex(3,4));
+tuple.ToJson()
+// Output is not the System.Text.Json output, which would be empty "{}"
+// Output is [1,"2",[3,4]]
+
 
 new { A = "boo", B = new Complex(3,4) }.TooString(TooStringHow.Reflection);
 // Output is "{ A = boo, B = (3, 4) }" on Net6, or "{ A = boo, B = <3; 4> }" on Net8+

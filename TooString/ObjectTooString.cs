@@ -182,9 +182,11 @@ public static class ObjectTooString
     {
         if (typeof(T).FullName == "System.Type"
             ||
-            typeof(T).FullName?.StartsWith("System.Reflection") is true)
+            typeof(T).FullName?.StartsWith("System.Reflection") is true
+            ||
+            (value is ITuple && !tooStringOptions.JsonOptions.IncludeFields))
         {
-            return ToDebugViewString(value, tooStringOptions);
+            return ToDebugViewString(value, tooStringOptions with {ReflectionOptions = tooStringOptions.ReflectionOptions with {Style = ReflectionStyle.Json}});
         }
 
         try

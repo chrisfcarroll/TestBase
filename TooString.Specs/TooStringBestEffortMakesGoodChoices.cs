@@ -61,8 +61,21 @@ public class TooStringBestEffortMakesGoodChoices
         );
         TestContext.Progress.WriteLine(value.TooString());
     }
-    
-    [Test,Ignore("Don't create HttpClient on each run")]
+
+    [Test]
+    public void GivenAValueTuple__ReturnsReflectedJson()
+    {
+        var value = (1,"boo",new Complex(3,4));
+        var expected = """[1,"boo",[3,4]]""";
+
+        Assert.That(
+            value.TooString(),
+            Is.EqualTo(expected)
+            );
+        TestContext.Progress.WriteLine(value.TooString());
+    }
+
+    [Test/*,Ignore("Don't create HttpClient on each run")*/]
     public void GivenDifficultObject__ReturnsReflectedJson()
     {
         var value = TooStringJsonReturnsJson.httpClient;

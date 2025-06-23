@@ -121,7 +121,7 @@ public class TooStringJsonReturnsJson
 #if NET6_0 // Expected values are hard-coded to a platform
 
     [Test]
-    public void GivenNamedTupleReturnsEmptyObjectUnlessIncludeFieldsIsSpecified()
+    public void GivenNamedTupleReturnsJson()
     {
         var value = (one:1, two:"boo", three:false, four:UriKind.Absolute, five: new CompositeA{A = "A", B= new Complex(3,4)});
 
@@ -140,7 +140,7 @@ public class TooStringJsonReturnsJson
 
         Assert.That(
             value.TooString(TooStringHow.Json),
-            Is.EqualTo("{}"));
+            Is.EqualTo("""[1,"boo",false,"Absolute",{"A":"A","B":[3,4]}]"""));
 
         var valueAsAnonymousObject = new
         {

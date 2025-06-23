@@ -6,8 +6,15 @@ TooString() can
   you with, such as ValueTuples.
 - Output as Json, or ‘debug view’ style, or as [CallerArgumentExpression] 
 
-TooString is not a serializer, it is intended for test and diagnostic display. A reliable Serializer must be fail-fast — it should throw if it cannot deterministically serialize
-the input — but TooString is best effort; it will attempt to return a partial
+TooString offers 3 extension method groups on Object:
+```csharp
+value.TooString();
+value.ToJson();
+value.ToDebugViewString();
+```
+TooString is not a serializer, it is intended for test and diagnostic display. A 
+reliable Serializer must be fail-fast — it should throw if it cannot deterministically
+serialize the input — but TooString is best effort; it will attempt to return a partial
 representation of the input even when input cannot reliably be serialized.
 
 Example:
@@ -15,12 +22,32 @@ Example:
 ( Math.Sqrt(4 * Math.PI / 3)  ).TooString( TooStringHow.CallerArgument ) 
 // Output is the literal code: "Math.Sqrt(4 * Math.PI / 3)"
 
-new { A = "boo", B = new Complex(3,4) }.TooString(TooStringHow.Json);
+var anonObject = new { A = "boo", B = new Complex(3,4) };
+anonObject.ToJson();
+anonObject.TooString(TooStringHow.Json);
 // Output is the System.Text.Json output:
 // {"A":"boo","B":{"Real":3,"Imaginary":4,"Magnitude":5,"Phase":0.9272952180016122}}
 
-new { A = "boo", B = new Complex(3,4) }.TooString(TooStringHow.Reflection);
+anonObject.TooString(TooStringHow.Reflection);
+anonObject.ToDebugViewString();
 // Output is "{ A = boo, B = (3, 4) }" 
+
+
+var tuple = (one: 1, two: "2", three: new Complex(3,4));
+System.Text.Json.JsonSerializer.Serialize(tuple)
+// Output is "{}"
+
+tuple.ToJson()
+tuple.TooString()
+tuple.TooString(TooStringHow.Json)
+// Output is created by reflection and presents the tuple and the Complex number as arrays
+// [1,"2",[3,4]] 
+
+tuple.ToDebugViewString()
+tuple.TooString(TooStringHow.Reflection)
+// Output is created by reflection and mimics typical debugger display
+// on Net6.0: {item1 = 1, item2 = "2", item3 = (3,4)  
+// on Net8.0: {item1 = 1, item2 = "2", item3 = <3;4>
 ```
 
 ### Gotchas
