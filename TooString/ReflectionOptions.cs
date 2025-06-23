@@ -7,7 +7,15 @@ namespace TooString;
 /// /// </summary>
 /// <param name="WhichProperties"><see cref="BindingFlags"/> to pick out the properties and fields to stringify</param>
 /// <param name="Style">Defaults to <see cref="ReflectionStyle.Json"/></param>
-/// <param name="MaxDepth">Defaults to 3, which is low for serialization.</param>
+/// <param name="MaxDepth">
+/// How deep into nested structures should we print before stopping the recursion?
+/// Defaults to 3, which may be plenty for logging and monitoring.</param>
+/// <param name="MaxLength">
+/// How many elements of an Array or other IEnumerable should we print before stopping the loop?
+/// Defaults to 3.
+/// <p><b>NB MaxLength = 0 does not mean carry on for ever</b>. Use MaxLength = int.MaxValue for that.
+/// MaxLength = 0 means, don't print any elements of an enumerable.</p>
+/// </param>
 /// <param name="DateTimeFormat">Defaults to O. The preferred <see cref="DateTime.ToString()"/> option</param>
 /// <param name="DateOnlyFormat">Defaults to O. The preferred <see cref="DateOnly.ToString()"/> option</param>
 /// <param name="TimeOnlyFormat">Defaults to O. The preferred <see cref="TimeOnly.ToString()"/> option</param>
@@ -16,6 +24,7 @@ public record ReflectionOptions(
     BindingFlags WhichProperties = BindingFlags.Instance | BindingFlags.Public,
     ReflectionStyle Style = ReflectionStyle.DebugView,
     int MaxDepth = 3,
+    int MaxLength = 3,
     string DateTimeFormat = "O",
     string DateOnlyFormat = "O",
     string TimeOnlyFormat = "HH:mm:ss",

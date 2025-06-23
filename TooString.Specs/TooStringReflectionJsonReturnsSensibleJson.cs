@@ -165,7 +165,7 @@ public class TooStringReflectionJsonReturnsSensibleJson
     {
         var value = new Circular{ A = "boo"};
         value.B = value;
-        var expected = "{ A = boo, B = { A = boo, B = { A = boo, B = { A = boo, B = TooString.Specs.Circular } } } }";
+        var expected = "{ A = boo, B = { A = boo, B = { A = boo, B = TooString.Specs.Circular } } }";
         
         Assert.That(
             value.TooString(TooStringHow.Reflection), 

@@ -101,6 +101,49 @@ public static class ObjectTooString
 
     /// <summary>
     /// Stringifies a value using one of CallerArgumentExpressionAttribute, Json serialization,
+    /// reflection, or ToString.
+    /// </summary>
+    /// <param name="value">The value to stringify</param>
+    /// <param name="maxDepth">
+    /// How deep in nested object structures to descend before stopping further serialization.
+    /// Properties at this level will be typically be stringified with their <see cref="object.ToString"/>
+    /// method.
+    /// </param>
+    /// <param name="maxLength">
+    /// How many items of an <see cref="IEnumerable{T}"/> property to stringify.
+    /// Further items will simply be omitted.
+    /// </param>
+    /// <param name="style">
+    /// Choose between <see cref="ReflectionStyle.Json"/> and
+    /// <see cref="ReflectionStyle.DebugView"/>
+    /// </param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns>
+    /// A string representation of <paramref name="value"/> according to the
+    /// <paramref name="style"/> chosen.
+    /// </returns>
+    public static string TooString<T>(this T value,
+                                      int maxDepth,
+                                      int maxLength = 3,
+                                      ReflectionStyle style = ReflectionStyle.Json)
+    {
+        var options = TooStringOptions.Default with
+        {
+            Fallbacks = TooStringOptions.Default.Fallbacks.Prepend(TooStringHow.Reflection),
+            ReflectionOptions = TooStringOptions.Default.ReflectionOptions
+                with
+                {
+                    Style = style,
+                    MaxDepth = maxDepth,
+                    MaxLength = maxLength
+                }
+        };
+        return TooString(value,options);
+    }
+
+
+    /// <summary>
+    /// Stringifies a value using one of CallerArgumentExpressionAttribute, Json serialization,
     /// reflection, or ToString
     /// </summary>
     /// <param name="value">The value to stringify</param>
@@ -227,10 +270,15 @@ public static class ObjectTooString
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
     public static string ToDebugViewString<T>(this T? value, TooStringOptions options)
-        => BuildDebugView(value, new OptionsWithState(0, options));
+        => BuildReflectedString(value, new OptionsWithState(0, options));
 
-    static string BuildDebugView<T>(T? value, OptionsWithState options)
+    static string BuildReflectedString<T>(T? value, OptionsWithState options)
     {
+        if (options.Depth >= options.ReflectionOptions.MaxDepth)
+        {
+            return ScalarishToShortReflectedString(value,options);
+        }
+
         Func<string,string> qname =
             options.ReflectionOptions.Style==ReflectionStyle.Json
                 ? s => $"\"{s?.Replace("`","\\u0060").Replace("\"","\\\"")}\""
@@ -254,8 +302,7 @@ public static class ObjectTooString
 
             if (value is null) return Null;
 
-            if (IsScalarish(value.GetType()) ||
-                options.Depth > options.ReflectionOptions.MaxDepth)
+            if (IsScalarish(value.GetType()))
             {
                 return ScalarishToShortReflectedString(value, options);
             }
@@ -307,7 +354,7 @@ public static class ObjectTooString
                 else if(p.GetIndexParameters().Any())
                     return qname(p.PropertyType.Name);
                 else
-                    return BuildDebugView(
+                    return BuildReflectedString(
                         p.GetValue(value) ?? "null",
                         options with { Depth = options.Depth + 1 });
             }
@@ -342,17 +389,32 @@ public static class ObjectTooString
         var b = new StringBuilder(start);
         for (int i = 1; i < value.Length; i++)
         {
-            b.Append(BuildDebugView(value[ i -1 ],
+            b.Append(BuildReflectedString(value[ i -1 ],
                                     options with { Depth = options.Depth + 1 }));
             b.Append(delimiter);
         }
-        b.Append(BuildDebugView(value[ value.Length - 1 ],
+        b.Append(BuildReflectedString(value[ value.Length - 1 ],
                                 options with { Depth = options.Depth + 1 }));
         b.Append(end);
         return b.ToString();
     }
     static string DelimitEnumerable<T>(T value, OptionsWithState options) where T : IEnumerable
     {
+        if (options.Depth >= options.ReflectionOptions.MaxDepth)
+        {
+            return ScalarishToShortReflectedString(value,options);
+        }
+        if (options.Depth + 1 == options.ReflectionOptions.MaxDepth
+            &&
+            options.ReflectionOptions.Style == ReflectionStyle.DebugView
+            &&
+            typeof(T).GetMethod("ToString",BindingFlags.DeclaredOnly|BindingFlags.Instance|BindingFlags.Public) is null)
+        {
+            //If the next level of reflection is only going to return object.ToString()
+            //then better to halt at this level, where we can show more metadata i.e. Length
+            return ScalarishToShortReflectedString(value,options);
+        }
+
         int i = 0;
         var (start, delimiter,end) = options.ReflectionOptions.Style == ReflectionStyle.Json
             ? ("[",  "," ,  "]")
@@ -361,9 +423,9 @@ public static class ObjectTooString
         foreach(var item in value)
         {
             if(i > 0){ b.Append(delimiter); }
-            b.Append(BuildDebugView(item, options with { Depth = options.Depth + 1 }));
+            b.Append(BuildReflectedString(item, options with { Depth = options.Depth + 1 }));
 
-            if (++i >= options.ReflectionOptions.MaxDepth) break;
+            if (++i >= options.ReflectionOptions.MaxLength) break;
         }
         b.Append(end);
         return b.ToString();
@@ -386,7 +448,7 @@ public static class ObjectTooString
                                               BindingFlags whichProperties =
                                                   BindingFlags.Instance | BindingFlags.Public,
                                               bool indentedJson = false)
-        => BuildDebugView(
+        => BuildReflectedString(
             value,
             new OptionsWithState(0,
                 TooStringOptions.Default with
@@ -415,13 +477,16 @@ public static class ObjectTooString
 
     static string ScalarishToShortReflectedString(object? value, OptionsWithState options)
     {
+        var style = options.ReflectionOptions.Style;
+        var isJson = style == ReflectionStyle.Json;
+
         Func<string, string> qstr =
-                options.ReflectionOptions.Style == ReflectionStyle.Json
+                isJson
                     ? s => string.Format("\"{0}\"", ToJsonEscapedString(s))
                     : s => s
             ;
         Func<string, string> qEnum =
-            options.ReflectionOptions.Style == ReflectionStyle.Json
+            isJson
                 ? s => string.Format("\"{0}\"", ToJsonEscapedString(s))
                 : s => s;
 
@@ -429,7 +494,7 @@ public static class ObjectTooString
         {
             if(s is null) return Null;
             return
-                options.ReflectionOptions.Style == ReflectionStyle.Json
+                isJson
                     ? $"[{
                         s.ToString()!
                          .TrimStart('(','<')
@@ -445,17 +510,11 @@ public static class ObjectTooString
             if(value is null) return Null;
             if(value is string s) return qstr(s);
             if (value.GetType().IsEnum) return qEnum(value.ToString()!);
-            if (true.Equals(value))
-                return options.ReflectionOptions.Style==ReflectionStyle.DebugView ? "True" :"true";
-            if (false.Equals(value))
-                return options.ReflectionOptions.Style==ReflectionStyle.DebugView ? "False" :"false";
+            if (true.Equals(value)) return isJson ? "true" :"True";
+            if (false.Equals(value)) return isJson ? "false" :"False";
             if (value.GetType().IsPrimitive) return value.ToString()!;
             if (value is ValueType val && value.GetType().Namespace == "System.Numerics")
                 return numericToArrayIfJson(val);
-            if (value.GetType().IsArray) return "[]";
-            if (value.GetType().IsAssignableTo(typeof(IEnumerable))) return "[]";
-            if (value.GetType().Namespace?.StartsWith("System.Collections") is true) return "[]";
-            if(value is Type type) return qstr( type.FullName??$"{type.Namespace}.{type.Name}" );
             if (value is DateTime dateTime)
                 return qstr(dateTime.ToString(options.ReflectionOptions.DateTimeFormat));
             if (value is DateOnly date)
@@ -464,6 +523,23 @@ public static class ObjectTooString
                 return qstr(time.ToString(options.ReflectionOptions.TimeOnlyFormat));
             if (value is TimeSpan span)
                 return qstr(span.ToString(options.ReflectionOptions.TimeSpanFormat));
+            if(value is Type type) return qstr( type.FullName??$"{type.Namespace}.{type.Name}" );
+
+            if (value.GetType().IsAssignableTo(typeof(IEnumerable)))
+            {
+                if (isJson ) return "[]";
+                if (value is Array arr) return $"{arr.GetType().GetElementType()}[{arr.Length}]";
+                if (value is IList list && list.GetType().GetGenericArguments().Any())
+                {
+                    var collectionType = list.GetType().GetTypeInfo().Name;
+                    var backtick=collectionType.IndexOf('`');
+                    if(backtick>0)collectionType=collectionType.Substring(0,backtick);
+                    var itemTypes = string.Join(",", list.GetType().GetGenericArguments().Select(a=>a.Name));
+                    return $"{{ Type = {collectionType}<{itemTypes}>, Count = {list.Count} }}";
+                }
+                //return qstr(value.ToString() ?? Null);
+            }
+
             return qstr(value.ToString() ?? Null);
         }
         catch
