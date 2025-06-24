@@ -18,6 +18,18 @@ public class TooStringReadMeExamplesOfOptions
     }
 
     [Test]
+    public void ValueTupleToJsonExample()
+    {
+        var toJson = (one:1, two:"2").TooString( TooStringHow.Json );
+        var stj = System.Text.Json.JsonSerializer.Serialize((one: 1,two: "2"));
+        var reflected = (one:1, two:"2").TooString( ReflectionOptions.ForJson);
+
+        Assert.That(toJson, Is.EqualTo("""[1,"2"]"""));
+        Assert.That(stj, Is.EqualTo("{}"));
+        Assert.That(reflected, Is.EqualTo( """[1,"2"]""" ));
+    }
+
+    [Test]
     public void ToDebugViewStringExamples()
     {
         var value = circular;

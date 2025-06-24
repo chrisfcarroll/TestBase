@@ -92,25 +92,23 @@ per your code. Takeaway: don't choose value tuples for public apis that must be 
 Use modifications of `TooStringOptions.Default` to customise the results.
 
 ```
-(one:1, two:"2").TooString( TooStringHow.Json )
 System.Text.Json.JsonSerializer.Serialize(  (one:1, two:"2")  )
 // Output is "{}" because there are no public fields
 
-// do this instead:
-
-var options = TooStringOptions.Default with
-{
-    JsonOptions = new JsonSerializerOptions { IncludeFields = true }
-};
-var jsonnedIncludeFields = (one:1, two:"2") .TooString(options);
-// Output is "{"Item1":1,"Item2":"2"}"
-
-- Infinite loops are avoided with MaxDepth settings.
+(one:1, two:"2").TooString( TooStringHow.Json )
+// Output is [1,"2"]. 
+// The value tuple is detected as an ITuple, and we use reflection instead
 ```
 
 ### ChangeLog
 <pre>
-0.2.0  Added Net8. NB Net8 Json and Numerics output is different from Net6
+ChangeLog
+---------
+0.4.0  ReflectionOptions.MaxLength default = 9 
+       ReflectionOptions.ForJson and ReflectionOptions.ForDebugView instead of Default. 
+       More overloads.
+0.3.0  ReflectionOptions.MaxLength limits display of enumerable elements
+0.2.0  Added Net8 (NB Net8 Json and Numerics output is different from Net6)
        Rename TooStringStyle to TooStringHow.
        Fix SerializationStyle.Reflection output of DateTime, DateOnly, TimeOnly.
 0.1.0  Can use DebugView, Json, ToString() or [CallerArgumentExpression] and can output Json or Debug strings.
