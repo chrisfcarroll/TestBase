@@ -94,7 +94,7 @@ Serilog.Logger slogger= new LoggerConfiguration().WriteTo.StringList(log).Create
       3.0.x.0  adds and/or corrects missing Shoulds()
       2.0.5.0  adds some intellisense and FakeDbConnection.Verify(..., message,args) overload
     </PackageReleaseNotes>
-    <Copyright>(c) Chris F. Carroll, 2013-2024</Copyright>
+    <Copyright>(c) Chris F. Carroll, 2013-2025</Copyright>
     <PackageLicenseExpression>LGPL-2.1-or-later</PackageLicenseExpression>
     <Authors>Chris F Carroll</Authors>
     <Owners>Chris F Carroll</Owners>

@@ -57,7 +57,7 @@ new { A = "boo", B = new Complex(3,4) }.ToDebugViewString();
                    Fix SerializationStyle.Reflection output of DateTime, DateOnly, TimeOnly.
             0.1.0  Can use DebugView, Json, ToString() or [CallerArgumentExpression] and can output Json or Debug strings.
         </PackageReleaseNotes>
-        <Copyright>(c) Chris F. Carroll, 2024</Copyright>
+        <Copyright>(c) Chris F. Carroll, 2024-2025</Copyright>
         <PackageLicenseExpression>LGPL-2.1-or-later</PackageLicenseExpression>
         <Authors>Chris F Carroll</Authors>
         <Owners>Chris F Carroll</Owners>
