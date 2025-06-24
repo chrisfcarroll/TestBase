@@ -124,7 +124,7 @@ public static class ObjectTooString
     /// </returns>
     public static string TooString<T>(this T value,
                                       int maxDepth,
-                                      int maxLength = 3,
+                                      int maxLength = 9,
                                       ReflectionStyle style = ReflectionStyle.Json)
     {
         var options = TooStringOptions.Default with
@@ -141,6 +141,49 @@ public static class ObjectTooString
         return TooString(value,options);
     }
 
+    /// <summary>
+    /// Stringifies a value using reflection, with the options specified.
+    /// </summary>
+    /// <param name="value">The value to stringify</param>
+    /// <param name="reflectionOptions"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns>
+    /// A string representation of <paramref name="value"/> built by recursively
+    /// reflecting the properties of <paramref name="value"/> using the
+    /// <paramref name="reflectionOptions"/> chosen.
+    /// </returns>
+    public static string TooString<T>(this T value, ReflectionOptions reflectionOptions)
+    {
+        var options = TooStringOptions.Default with
+        {
+            Fallbacks = TooStringOptions.Default.Fallbacks.Prepend(TooStringHow.Reflection),
+            ReflectionOptions = reflectionOptions
+        };
+        return TooString(value,options);
+    }
+
+    /// <summary>
+    /// Stringifies a value by first trying System.Text.Json.JsonSerializer (unless
+    /// value is an <see cref="ITuple"/>) or if that fails, by reflection,
+    /// with the options specified.
+    /// </summary>
+    /// <param name="value">The value to stringify</param>
+    /// <param name="jsonOptions"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns>
+    /// Either a Json serialization of <paramref name="value"/>, or if that fails
+    /// a string representation of <paramref name="value"/> built by recursively
+    /// reflecting the properties of <paramref name="value"/> using the
+    /// <paramref name="jsonOptions"/> chosen.
+    /// </returns>
+    public static string TooString<T>(this T value, JsonSerializerOptions jsonOptions)
+    {
+        var options = TooStringOptions.ForJson() with
+        {
+            JsonOptions = jsonOptions,
+        };
+        return TooString(value,options);
+    }
 
     /// <summary>
     /// Stringifies a value using one of CallerArgumentExpressionAttribute, Json serialization,

@@ -26,7 +26,7 @@ public record ReflectionOptions(
     BindingFlags WhichProperties = BindingFlags.Instance | BindingFlags.Public,
     ReflectionStyle Style = ReflectionStyle.DebugView,
     int MaxDepth = 3,
-    int MaxLength = 3,
+    int MaxLength = 9,
     string DateTimeFormat = "O",
     string DateOnlyFormat = "O",
     string TimeOnlyFormat = "HH:mm:ss",

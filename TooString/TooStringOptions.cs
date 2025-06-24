@@ -23,6 +23,7 @@ public record TooStringOptions
     ///     BindingFlags WhichProperties = BindingFlags.Instance | BindingFlags.Public,
     ///     ReflectionStyle Style = ReflectionStyle.Json,
     ///     int MaxDepth = 3,
+    ///     int MaxLength = 9,
     ///     string DateTimeFormat = "O",
     ///     string DateOnlyFormat = "O",
     ///     string TimeOnlyFormat = "HH:mm:ss",
@@ -51,7 +52,6 @@ public record TooStringOptions
         this.Fallbacks = Fallbacks;
     }
 
-
     /// <summary><c>
     /// new(JsonSerializerDefaults.General)
     /// {
@@ -78,14 +78,6 @@ public record TooStringOptions
             new List<TooStringHow>(){TooStringHow.BestEffort }.AsReadOnly());
 
     /// <summary>
-    /// Extract the <see cref="JsonOptions"/> out of <paramref name="o"/>
-    /// </summary>
-    /// <param name="o"></param>
-    /// <returns><c>o.JsonOptions</c></returns>
-    public static implicit operator JsonSerializerOptions(TooStringOptions o)
-        => o.JsonOptions;
-
-    /// <summary>
     /// The options for <see cref="TooStringHow.Reflection"/>.
     /// The <see cref="Default"/> value is <see cref="ReflectionOptions.Default"/>
     /// which is
@@ -94,6 +86,7 @@ public record TooStringOptions
     ///     BindingFlags WhichProperties = BindingFlags.Instance | BindingFlags.Public,
     ///     ReflectionStyle Style = ReflectionStyle.Json,
     ///     int MaxDepth = 3,
+    ///     int MaxLength = 9,
     ///     string DateTimeFormat = "O",
     ///     string DateOnlyFormat = "O",
     ///     string TimeOnlyFormat = "HH:mm:ss",
@@ -132,12 +125,16 @@ public record TooStringOptions
     }
 
     /// <param name="nonDefaults"></param>
+    /// <param name="jsDefaults"><see cref="JsonSerializerDefaults"/></param>
     /// <returns>
     /// Default options for <see cref="TooStringHow.Json"/> with {JsonOptions modified by nonDefaults}
     /// </returns>
-    public static TooStringOptions ForJson(Action<JsonSerializerOptions>? nonDefaults = null)
+    public static TooStringOptions ForJson(Action<JsonSerializerOptions>? nonDefaults = null, JsonSerializerDefaults jsDefaults = JsonSerializerDefaults.General)
     {
-        var js= new JsonSerializerOptions();
+        var js= new JsonSerializerOptions(jsDefaults)
+        {
+            ReferenceHandler = ReferenceHandler.IgnoreCycles,
+        };
         nonDefaults?.Invoke(js);
         return Default with
         {
@@ -151,14 +148,45 @@ public record TooStringOptions
     /// Default options for <see cref="TooStringHow.Reflection"/>
     /// with { ReflectionOptions = nonDefaults}
     /// </returns>
-    public static TooStringOptions ForReflection(ReflectionOptions nonDefaults)
+    public static TooStringOptions ForReflection(ReflectionOptions? nonDefaults = null)
     {
-        return Default with
-        {
-            ReflectionOptions = nonDefaults,
-            Fallbacks = Default.Fallbacks.Prepend(TooStringHow.Reflection)
-        };
+        return nonDefaults is null
+            ? Default
+            : Default with
+                {
+                    ReflectionOptions = nonDefaults,
+                    Fallbacks = Default.Fallbacks.Prepend(TooStringHow.Reflection)
+                };
     }
+
+    /// <summary>
+    /// Extract the <see cref="JsonOptions"/> out of <paramref name="o"/>
+    /// </summary>
+    /// <param name="o"></param>
+    /// <returns><c>o.JsonOptions</c></returns>
+    public static implicit operator JsonSerializerOptions(TooStringOptions o)
+        => o.JsonOptions;
+
+    /// <summary>
+    /// Create <see cref="TooStringOptions"/> from <paramref name="jsonSerializerOptions"/>
+    /// </summary>
+    /// <param name="jsonSerializerOptions"></param>
+    /// <returns></returns>
+    public static implicit operator TooStringOptions(JsonSerializerOptions jsonSerializerOptions)
+        => new(ReflectionOptions.Default,
+               jsonSerializerOptions,
+               new List<TooStringHow>(){TooStringHow.Json });
+
+    /// <summary>
+    /// Create <see cref="TooStringOptions"/> from <paramref name="reflectionOptions"/>
+    /// </summary>
+    /// <param name="reflectionOptions"></param>
+    /// <returns></returns>
+    public static implicit operator TooStringOptions(ReflectionOptions reflectionOptions)
+        => new(reflectionOptions,
+               DefaultJsonOptions,
+               new List<TooStringHow>(){TooStringHow.Reflection });
+
 }
 
 internal record OptionsWithState(int Depth,
