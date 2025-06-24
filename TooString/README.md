@@ -78,7 +78,7 @@ value.TooString( ReflectionOptions.ForDebugView with
 // For Either
 value.TooString( TooStringOptions.Default with { ... } )
 
-//CallerArgumentExpression will autmatically be chosen if the expression is not just a name:
+//CallerArgumentExpression will automatically be chosen if the expression is not just a name:
 (1 + value).TooString()
 ```
 
