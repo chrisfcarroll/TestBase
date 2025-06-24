@@ -28,10 +28,9 @@ anonObject.TooString(TooStringHow.Json);
 // Output is the System.Text.Json output:
 // {"A":"boo","B":{"Real":3,"Imaginary":4,"Magnitude":5,"Phase":0.9272952180016122}}
 
-anonObject.TooString(TooStringHow.Reflection);
 anonObject.ToDebugViewString();
+anonObject.TooString(TooStringHow.Reflection);
 // Output is "{ A = boo, B = (3, 4) }" 
-
 
 var tuple = (one: 1, two: "2", three: new Complex(3,4));
 System.Text.Json.JsonSerializer.Serialize(tuple)
@@ -46,8 +45,8 @@ tuple.TooString(TooStringHow.Json)
 tuple.ToDebugViewString()
 tuple.TooString(TooStringHow.Reflection)
 // Output is created by reflection and mimics typical debugger display
-// on Net6.0: {item1 = 1, item2 = "2", item3 = (3,4)  
-// on Net8.0: {item1 = 1, item2 = "2", item3 = <3;4>
+// on Net6.0: {item1 = 1, item2 = "2", item3 = (3,4)}  
+// on Net8.0: {item1 = 1, item2 = "2", item3 = <3;4>}
 ```
 
 ### Gotchas

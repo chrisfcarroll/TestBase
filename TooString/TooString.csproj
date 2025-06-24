@@ -43,9 +43,9 @@ tuple.ToJson()
 // Output is not the System.Text.Json output, which would be empty "{}"
 // Output is [1,"2",[3,4]]
 
-
-new { A = "boo", B = new Complex(3,4) }.TooString(TooStringHow.Reflection);
-// Output is "{ A = boo, B = (3, 4) }" on Net6, or "{ A = boo, B = <3; 4> }" on Net8+
+new { A = "boo", B = new Complex(3,4) }.ToDebugViewString();
+// Output is "{ A = boo, B = (3, 4) }" on Net6
+// Output is "{ A = boo, B = <3; 4> }" on Net8+
 ```
 ]]></PackageDescription>
         <PackageReleaseNotes>
