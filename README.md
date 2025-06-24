@@ -1,4 +1,4 @@
-*TestBase* work on .Net, Mono, and .NetCore and gives you a flying start with 
+*TestBase* work on .Net, Mono, .Net Framework, .NetCore and gives you a flying start with 
 - fluent assertions that are easy to extend
 - sharp error messages
 - tools to help you test with "heavyweight" dependencies on 
