@@ -8,9 +8,9 @@
     </PropertyGroup>
     
     <PropertyGroup>
-        <AssemblyVersion>0.3</AssemblyVersion>
-        <AssemblyFileVersion>0.3</AssemblyFileVersion>
-        <PackageVersion>0.3-preview</PackageVersion>
+        <AssemblyVersion>0.4</AssemblyVersion>
+        <AssemblyFileVersion>0.4</AssemblyFileVersion>
+        <PackageVersion>0.4-preview</PackageVersion>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <Title>TooString — The ToString() method for DebugView, Json, and CallerArgumentExpression, going places that serializers don't.</Title>
         <PackageDescription><![CDATA[TooString() can
@@ -51,7 +51,8 @@ new { A = "boo", B = new Complex(3,4) }.ToDebugViewString();
         <PackageReleaseNotes>
             ChangeLog
             ---------
-            0.3.0  ReflectionOptiojns.MaxLength limits display of enumerable elements
+            0.4.0  ReflectionOptions.MaxLength default = 9 | ReflectionOptions.For___ instead of Default. More overloads.
+            0.3.0  ReflectionOptions.MaxLength limits display of enumerable elements
             0.2.0  Added Net8 (NB Net8 Json and Numerics output is different from Net6)
                    Rename TooStringStyle to TooStringHow.
                    Fix SerializationStyle.Reflection output of DateTime, DateOnly, TimeOnly.

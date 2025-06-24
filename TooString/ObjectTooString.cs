@@ -505,7 +505,7 @@ public static class ObjectTooString
                 {
                     JsonOptions = TooStringOptions.DefaultJsonOptions
                         .With(o=> o.WriteIndented=indentedJson),
-                    ReflectionOptions = ReflectionOptions.Default with
+                    ReflectionOptions = ReflectionOptions.ForDebugView with
                     {
                         Style = style,
                         WhichProperties = whichProperties,

@@ -49,6 +49,40 @@ tuple.TooString(TooStringHow.Reflection)
 // on Net8.0: {item1 = 1, item2 = "2", item3 = <3;4>}
 ```
 
+### Options
+
+Options are finicky because we can do either Json serialization, or Reflection-based stringification
+with Json output or with Debugview output, or CallerArgumentExpression.
+For Json serialization, the options are System.Text.Json.JsonSerializationOptions. 
+For Reflection-based output, there are options for MaxDepth, but also MaxLength (of 
+enumerable display), and for DateTime, DateOnly, TimeOnly, and TimeSpan formatting.
+
+Try one of these approaches:
+
+```csharp
+// For Json
+value.ToJson()
+value.TooString( new JsonSerializerOptions(JsonSerializerDefault.Web){WriteIndented = true})
+value.TooString( ReflectionOptions.ForJson )
+
+// For DebugView
+value.ToDebugViewString()
+value.TooString( ReflectionOptions.ForDebugView ) // Same output as value.ToDebugViewString()
+value.TooString( maxDepth:4, maxLength:9, style:ReflectionStyle.DebugView )
+value.TooString( ReflectionOptions.ForDebugView with 
+{
+    DateTimeFormat = "yyyyMMdd HH:mm:ss",
+    TimeSpanFormat = @"d\.hh\:mm\:ss"
+})
+
+// For Either
+value.TooString( TooStringOptions.Default with { ... } )
+
+//CallerArgumentExpression will autmatically be chosen if the expression is not just a name:
+(1 + value).TooString()
+```
+
+
 ### Gotchas
 
 Example: Json-serializing value tuples is something of a surprise because (unlike anonymous objects or 

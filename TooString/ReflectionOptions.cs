@@ -36,11 +36,34 @@ public record ReflectionOptions(
     /// Default instance is
     /// <code>
     /// public record ReflectionOptions(
-    /// BindingFlags WhichProperties = BindingFlags.Instance | BindingFlags.Public,
-    ///     ReflectionStyle Style = ReflectionStyle.Json,
+    ///     BindingFlags WhichProperties = BindingFlags.Instance | BindingFlags.Public,
+    ///     ReflectionStyle Style = ReflectionStyle.DebugView,
     ///     int MaxDepth = 3,
-    ///     string DateTimeFormat="O")
+    ///     int MaxLength = 9,
+    ///     string DateTimeFormat = "O",
+    ///     string DateOnlyFormat = "O",
+    ///     string TimeOnlyFormat = "HH:mm:ss",
+    ///     string TimeSpanFormat = "c")
     /// </code>
     /// </summary>
-    public static readonly ReflectionOptions Default = new();
+    public static readonly ReflectionOptions ForDebugView = new();
+
+    /// <summary>
+    /// <code>
+    /// public record ReflectionOptions(
+    ///     BindingFlags WhichProperties = BindingFlags.Instance | BindingFlags.Public,
+    ///     ReflectionStyle Style = ReflectionStyle.Json,
+    ///     int MaxDepth = 3,
+    ///     int MaxLength = 9,
+    ///     string DateTimeFormat = "O",
+    ///     string DateOnlyFormat = "O",
+    ///     string TimeOnlyFormat = "HH:mm:ss",
+    ///     string TimeSpanFormat = "c")
+    /// </code>
+    /// </summary>
+    public static readonly ReflectionOptions ForJson = ForDebugView with
+    {
+        Style = ReflectionStyle.Json
+    };
+
 }
