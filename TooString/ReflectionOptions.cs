@@ -15,6 +15,8 @@ namespace TooString;
 /// Defaults to 3.
 /// <p><b>NB MaxLength = 0 does not mean carry on for ever</b>. Use MaxLength = int.MaxValue for that.
 /// MaxLength = 0 means, don't print any elements of an enumerable.</p>
+/// <p><b>Negative MaxLength</b> will start at the positive length given, then count down as depth is descended.
+/// for instance, MaxLength=-2 will use a MaxLength of 2 at depth 1, but of zero at depth 3.</p>
 /// </param>
 /// <param name="DateTimeFormat">Defaults to O. The preferred <see cref="DateTime.ToString()"/> option</param>
 /// <param name="DateOnlyFormat">Defaults to O. The preferred <see cref="DateOnly.ToString()"/> option</param>
