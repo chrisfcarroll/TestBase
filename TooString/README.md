@@ -12,34 +12,37 @@ value.TooString();
 value.ToJson();
 value.ToDebugViewString();
 ```
-TooString is not a serializer, it is intended for test and diagnostic display. A 
-reliable Serializer must be fail-fast — it should throw if it cannot deterministically
-serialize the input — but TooString is best effort; it will attempt to return a partial
-representation of the input even when input cannot reliably be serialized.
+TooString is not a serializer. A serializer should be fail-fast, but TooString is best-effort.
+A Serializer should throw if it cannot deterministically serialize the input, but TooString 
+will attempt to return a partial or alternative representation of the input even when input 
+cannot reliably be serialized.
+
+#### Default behaviour
+
+- ToJson() defaults to using System.Text.Json, falling back to reflection for un-serializable types.
+whereas
+- TooString(ReflectionStyle.Json) 
+- TooString(ReflectionStyle.DebugView)
+- ToDebugView()
+all defaults to MaxDepth = 4, MaxEnumerationLength = 9.
 
 Example:
 ```
+var value = new { A = "boo", B = new Complex(3,4) };
+
+value.ToJson();           // Output Is System.Text.Json {"A":"boo","B":{"Real":3,"Imaginary":...}}
+value.ToDebugViewString(),//Output is { A = boo, B = <3; 4> } depending on .Net version.
+
 ( Math.Sqrt(4 * Math.PI / 3)  ).TooString( TooStringHow.CallerArgument ) 
 // Output is the literal code: "Math.Sqrt(4 * Math.PI / 3)"
 
-var anonObject = new { A = "boo", B = new Complex(3,4) };
-anonObject.ToJson();
-anonObject.TooString(TooStringHow.Json);
-// Output is the System.Text.Json output:
-// {"A":"boo","B":{"Real":3,"Imaginary":4,"Magnitude":5,"Phase":0.9272952180016122}}
-
-anonObject.ToDebugViewString();
-anonObject.TooString(TooStringHow.Reflection);
-// Output is "{ A = boo, B = (3, 4) }" 
-
 var tuple = (one: 1, two: "2", three: new Complex(3,4));
-System.Text.Json.JsonSerializer.Serialize(tuple)
-// Output is "{}"
 
-tuple.ToJson()
-tuple.TooString()
-tuple.TooString(TooStringHow.Json)
-// Output is created by reflection and presents the tuple and the Complex number as arrays
+System.Text.Json.JsonSerializer.Serialize(tuple) // Output is "{}" because there  
+                                                 // are no public properties on a tuple
+
+tuple.TooString(ReflectionStyle.Json)
+// Output is created by reflection and stringifies the tuple and the Complex number as arrays
 // [1,"2",[3,4]] 
 
 tuple.ToDebugViewString()
@@ -47,6 +50,11 @@ tuple.TooString(TooStringHow.Reflection)
 // Output is created by reflection and mimics typical debugger display
 // on Net6.0: {item1 = 1, item2 = "2", item3 = (3,4)}  
 // on Net8.0: {item1 = 1, item2 = "2", item3 = <3;4>}
+
+var type = value.GetType();
+System.Text.Json.JsonSerializer.Serialize(type) // Throws NotSupportedException
+
+type.ToJson() // Outputs truncated Json with default MaxDepth = 4, MaxEnumerationLength = 9
 ```
 
 ### Options
@@ -60,14 +68,18 @@ enumerable display), and for DateTime, DateOnly, TimeOnly, and TimeSpan formatti
 Try one of these approaches:
 
 ```csharp
-// For Json
+// For Json using STJ
 value.ToJson()
-value.TooString( new JsonSerializerOptions(JsonSerializerDefault.Web){WriteIndented = true})
-value.TooString( ReflectionOptions.ForJson )
+value.TooString( new JsonSerializerOptions(JsonSerializerDefaults.Web){WriteIndented = true})
+// For Json using Reflection
+value.TooString( ReflectionStyle.Json )
+value.TooString( ReflectionOptions.ForJson with {} )
+
 
 // For DebugView
 value.ToDebugViewString()
-value.TooString( ReflectionOptions.ForDebugView ) // Same output as value.ToDebugViewString()
+value.TooString( ReflectionStyle.DebugView )
+value.TooString( ReflectionOptions.ForDebugView.With(...) ) // Same output as value.ToDebugViewString()
 value.TooString( maxDepth:4, maxLength:9, style:ReflectionStyle.DebugView )
 value.TooString( ReflectionOptions.ForDebugView with 
 {
@@ -104,6 +116,7 @@ System.Text.Json.JsonSerializer.Serialize(  (one:1, two:"2")  )
 <pre>
 ChangeLog
 ---------
+0.5.0  ReflectionOptions.With(...), TooStringOptions.With(...). Fixes. 
 0.4.0  ReflectionOptions.MaxLength default = 9 
        ReflectionOptions.ForJson and ReflectionOptions.ForDebugView instead of Default. 
        More overloads.

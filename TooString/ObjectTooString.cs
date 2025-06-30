@@ -136,7 +136,7 @@ public static class ObjectTooString
                 {
                     Style = style,
                     MaxDepth = maxDepth,
-                    MaxLength = maxLength
+                    MaxEnumerationLength = maxLength
                 }
         };
         return TooString(value,options);
@@ -236,18 +236,19 @@ public static class ObjectTooString
         {
             foreach (var pref in tooStringOptions.Fallbacks.Skip(1))
             {
-                //Only choose CallerArgument if we captured an expression
-                if (pref== TooStringHow.CallerArgument
-                    && argumentExpression is not null
-                    && !Regex.IsMatch(argumentExpression,
-                        RegexTypeNameOrIdentifierWithCharsOnly))
-                    return argumentExpression;
-
-                if (pref == TooStringHow.Reflection)
-                    return ToDebugViewString(value, tooStringOptions);
-
-                if (pref == TooStringHow.Json)
-                    return ToJson(value, tooStringOptions);
+                switch (pref)
+                {
+                    //Only choose CallerArgument if we captured an expression
+                    case TooStringHow.CallerArgument
+                    when argumentExpression is not null
+                         && !Regex.IsMatch(argumentExpression,
+                                           RegexTypeNameOrIdentifierWithCharsOnly):
+                        return argumentExpression;
+                    case TooStringHow.Reflection:
+                        return ToDebugViewString(value,tooStringOptions);
+                    case TooStringHow.Json:
+                        return ToJson(value,tooStringOptions);
+                }
             }
             return ToJson(value, tooStringOptions);
         }
@@ -483,7 +484,7 @@ public static class ObjectTooString
             //then better to halt at this level, where we can show more metadata i.e. Length
             return ScalarishToShortReflectedString(value,options);
         }
-        var maxLength = options.ReflectionOptions.MaxLength;
+        var maxLength = options.ReflectionOptions.MaxEnumerationLength;
         if (maxLength < 0) maxLength = - maxLength - options.Depth;
 
         if(maxLength == 0) return ScalarishToShortReflectedString(value,options);

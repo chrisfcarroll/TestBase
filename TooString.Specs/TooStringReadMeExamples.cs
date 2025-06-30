@@ -40,7 +40,7 @@ public class TooStringReadMeExamples
         var anonObject = new { A = "boo", B = new Complex(3,4) };
         // anonObject.TooString(TooStringHow.Reflection);
         // anonObject.ToDebugViewString();
-        // Output is "{ A = boo, B = (3, 4) }"
+        // Output is "{ A = boo, B = [3,4] }" or "{ A = boo, B = <3;4> }"
         var actual = anonObject.TooString(TooStringHow.Reflection);
         var actual2 = anonObject.ToDebugViewString();
         var expected = $"{{ A = boo, B = {new Complex(3,4)} }}";
