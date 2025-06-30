@@ -110,8 +110,8 @@ public class TooStringJsonReturnsJson
         TestContext.Progress.WriteLine(actual);
         
         Assert.That(
-            actual.RegexReplaceKnownRuntimeVariableValues(),
-            Is.EqualTo(expected.RegexReplaceKnownRuntimeVariableValues())
+            actual.RegexReplaceCompilationDependentValuesWithPseudoValues(),
+            Is.EqualTo(expected.RegexReplaceCompilationDependentValuesWithPseudoValues())
         );
         
         Assert.That(actual, Is.EqualTo(expected));
@@ -166,14 +166,14 @@ public class TooStringJsonReturnsJson
         var actual = value.TooString(TooStringHow.Json, optionsD3L3);
 
         //A
-        var comparableValue = actual.RegexReplaceKnownRuntimeVariableValues();
+        var comparableValue = actual.RegexReplaceCompilationDependentValuesWithPseudoValues();
         var expandoString = JsonSerializer.Deserialize<ExpandoObject>(actual).TooString(TooStringHow.Json, optionsD3L3);
-        var comparableExpandoString = expandoString.RegexReplaceKnownRuntimeVariableValues();
+        var comparableExpandoString = expandoString.RegexReplaceCompilationDependentValuesWithPseudoValues();
         TestContext.Progress.WriteLine(comparableExpandoString);
 
         Assert.That(comparableValue,Is.EqualTo(comparableExpandoString));
 
-        Assert.That(comparableValue,Is.EqualTo(expected.RegexReplaceKnownRuntimeVariableValues()));
+        Assert.That(comparableValue,Is.EqualTo(expected.RegexReplaceCompilationDependentValuesWithPseudoValues()));
     }
 
 
@@ -194,14 +194,14 @@ public class TooStringJsonReturnsJson
         var actual = value.TooString(TooStringHow.Json, optionsD3L3);
 
         //A
-        var comparableValue = actual.RegexReplaceKnownRuntimeVariableValues();
+        var comparableValue = actual.RegexReplaceCompilationDependentValuesWithPseudoValues();
         var expandoString = JsonSerializer.Deserialize<ExpandoObject>(actual).TooString(TooStringHow.Json, optionsD3L3);
-        var comparableExpandoString = expandoString.RegexReplaceKnownRuntimeVariableValues();
+        var comparableExpandoString = expandoString.RegexReplaceCompilationDependentValuesWithPseudoValues();
         TestContext.Progress.WriteLine(comparableExpandoString);
 
         Assert.That(comparableValue,Is.EqualTo(comparableExpandoString));
 
-        Assert.That(comparableValue,Is.EqualTo(expected.RegexReplaceKnownRuntimeVariableValues()));
+        Assert.That(comparableValue,Is.EqualTo(expected.RegexReplaceCompilationDependentValuesWithPseudoValues()));
     }
 #endif
 

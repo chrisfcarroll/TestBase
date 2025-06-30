@@ -218,15 +218,15 @@ public class TooStringReflectionDebugViewReturnsDebugView
                        """;
         var actual = value.TooString(TooStringHow.Reflection,TooStringOptions.ForReflection(new(MaxDepth: 2)));
 
-        TestContext.Progress.WriteLine(actual.RegexReplaceKnownRuntimeVariableValues());
+        TestContext.Progress.WriteLine(actual.RegexReplaceCompilationDependentValuesWithPseudoValues());
 
-        var comparableValue = actual.RegexReplaceKnownRuntimeVariableValues();
+        var comparableValue = actual.RegexReplaceCompilationDependentValuesWithPseudoValues();
         #if NET6_0
-        Assert.That(comparableValue,Is.EqualTo(expected.RegexReplaceKnownRuntimeVariableValues()));
+        Assert.That(comparableValue,Is.EqualTo(expected.RegexReplaceCompilationDependentValuesWithPseudoValues()));
         #else
         Assert.That(comparableValue.Substring(0,300),
                     Is.EqualTo(expected.Substring(0,300)
-                                                 .RegexReplaceKnownRuntimeVariableValues()));
+                                                 .RegexReplaceCompilationDependentValuesWithPseudoValues()));
         Assert.That(actual.Length >= expected.Length);
         #endif
     }
@@ -246,16 +246,16 @@ public class TooStringReflectionDebugViewReturnsDebugView
         
         var actual = value.TooString(TooStringHow.Reflection, TooStringOptions.ForReflection(new(MaxDepth: 2)));
 
-        TestContext.Progress.WriteLine(actual.RegexReplaceKnownRuntimeVariableValues());
+        TestContext.Progress.WriteLine(actual.RegexReplaceCompilationDependentValuesWithPseudoValues());
 
-        var comparableValue = actual.RegexReplaceKnownRuntimeVariableValues();
+        var comparableValue = actual.RegexReplaceCompilationDependentValuesWithPseudoValues();
         #if NET6_0
-        Assert.That(comparableValue,Is.EqualTo(expected.RegexReplaceKnownRuntimeVariableValues())
+        Assert.That(comparableValue,Is.EqualTo(expected.RegexReplaceCompilationDependentValuesWithPseudoValues())
         );
         #else
         Assert.That(comparableValue.Substring(0,300),
                     Is.EqualTo(expected.Substring(0,300)
-                                                 .RegexReplaceKnownRuntimeVariableValues()));
+                                                 .RegexReplaceCompilationDependentValuesWithPseudoValues()));
         Assert.That(actual.Length >= expected.Length);
         #endif
     }

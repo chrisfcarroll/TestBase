@@ -104,23 +104,23 @@ public class TooStringBestEffortMakesGoodChoices
 
         var actual = value.TooString(TooStringHow.Json);
 
-        TestContext.Progress.WriteLine(actual.RegexReplaceKnownRuntimeVariableValues());
+        TestContext.Progress.WriteLine(actual.RegexReplaceCompilationDependentValuesWithPseudoValues());
 
-        var comparableValue = actual.RegexReplaceKnownRuntimeVariableValues();
+        var comparableValue = actual.RegexReplaceCompilationDependentValuesWithPseudoValues();
 
         #if NET6_0 // expected values are hard coded to a platform
         Assert.That(comparableValue,
-                    Is.EqualTo(expected.RegexReplaceKnownRuntimeVariableValues()));
+                    Is.EqualTo(expected.RegexReplaceCompilationDependentValuesWithPseudoValues()));
 
         var expandoObject = System.Text.Json.JsonSerializer.Deserialize<ExpandoObject>(actual);
         var expandoTooStringRx = expandoObject.TooString(TooStringHow.Json)
-                                              .RegexReplaceKnownRuntimeVariableValues();
+                                              .RegexReplaceCompilationDependentValuesWithPseudoValues();
         Assert.That(comparableValue,Is.EqualTo(expandoTooStringRx));
 
         #else
 
         Assert.That(comparableValue.Substring(0,300),
-                    Is.EqualTo(expected.Substring(0,300).RegexReplaceKnownRuntimeVariableValues()));
+                    Is.EqualTo(expected.Substring(0,300).RegexReplaceCompilationDependentValuesWithPseudoValues()));
         Assert.That(actual.Length >= expected.Length);
         #endif
     }
