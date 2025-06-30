@@ -87,15 +87,16 @@ public static class ObjectTooString
                                       [CallerArgumentExpression("value")]
                                       string? argumentExpression = null)
     {
-        var reflectionSerializationStyle = tooStringHow == TooStringHow.Json
-                                             ? ReflectionStyle.Json
-                                             : ReflectionStyle.DebugView;
-        options ??= TooStringOptions.Default with
-        {
-            Fallbacks = TooStringOptions.Default.Fallbacks.Prepend(tooStringHow),
-            ReflectionOptions = TooStringOptions.Default.ReflectionOptions
-                                    with { Style = reflectionSerializationStyle }
-        };
+        options ??= (tooStringHow) switch
+                    {
+                        TooStringHow.Reflection => TooStringOptions.ForReflection(),
+                        TooStringHow.Json => TooStringOptions.ForJson(),
+                        _ => TooStringOptions.Default
+                    };
+        options = options with
+                    {
+                        Fallbacks = TooStringOptions.Default.Fallbacks.Prepend(tooStringHow),
+                    };
         return TooString(value,options,argumentExpression);
     }
 
@@ -225,7 +226,7 @@ public static class ObjectTooString
                    TooStringHow.BestEffort => CallerArgumentOrNextPreference(),
                    TooStringHow.CallerArgument => argumentExpression,
                    TooStringHow.Json => ToJson(value,tooStringOptions),
-                   TooStringHow.Reflection => ToDebugViewString(value,tooStringOptions),
+                   TooStringHow.Reflection => BuildReflectedString(value, new OptionsWithState(0, tooStringOptions)),
                    _ => value?.ToString()
                }
                ??
@@ -328,20 +329,36 @@ public static class ObjectTooString
                 : s => s;
         try
         {
-            var (indent,outdent) =
+            var indent=
                 (options.ReflectionOptions.Style, options.JsonOptions.WriteIndented) switch
                 {
-                    (ReflectionStyle.DebugView,_) => (" "," "),
-                    (_,true) => ("\n",""),
-                    (_,_) => ("","")
+                    (_,true) => CrLfSpaces400.AsSpan().Slice(0, 4 + options.Depth * 2),
+                    (ReflectionStyle.Json,false) => "".AsSpan(),
+                    (ReflectionStyle.DebugView,false) => " ".AsSpan(),
+                    (_,_) => " ".AsSpan()
+                };
+            var outdent =
+                (options.ReflectionOptions.Style, options.JsonOptions.WriteIndented) switch
+                {
+                    (_,true) => CrLfSpaces400.AsSpan().Slice(0, 2 + options.Depth * 2),
+                    (ReflectionStyle.Json,false) => "".AsSpan(),
+                    (ReflectionStyle.DebugView,false) => " ".AsSpan(),
+                    (_,_) => "".AsSpan()
                 };
             var delimiter = (options.ReflectionOptions.Style, options.JsonOptions.WriteIndented) switch
                 {
-                    (ReflectionStyle.Json,true) => ",\n",
-                    (ReflectionStyle.Json, _) =>",",
-                    (ReflectionStyle.DebugView, _) => ",",
-                    (_,_) => ","
+                    (_,true) => CommaCrLfSpaces400.AsSpan().Slice(0,5 + options.Depth*2),
+                    (ReflectionStyle.Json, false) =>",",
+                    (ReflectionStyle.DebugView, false) => ", ",
+                    (_,_) => ", "
                 };
+            var separator = (options.ReflectionOptions.Style, options.JsonOptions.WriteIndented) switch
+            {
+                (ReflectionStyle.Json,true) => ": ",
+                (ReflectionStyle.Json, false) =>":",
+                (ReflectionStyle.DebugView, _) => " = ",
+                (_,_) => " = "
+            };
 
             if (value is null) return Null;
 
@@ -366,19 +383,29 @@ public static class ObjectTooString
                 debugdepth = options.Depth;
                 var contents = props
                     .Select(
-                        p => options.ReflectionOptions.Style switch
-                        {
-                            ReflectionStyle.DebugView =>
-                                $"{p.Name} = {TryGetValue(p)}",
-                            _ =>
-                                $"{qname(p.Name)}:{TryGetValue(p)}",
-                        }).ToList();
-                return "{" +
-                       indent +
-                       string.Join(delimiter + indent, contents)
-                       +
-                       outdent +
-                       "}";
+                        p => $"{qname(p.Name)}{separator}{TryGetValue(p)}"
+                        ).ToList();
+
+                var gotLock = sbLock.Wait(0);
+                var sb_ = gotLock ? sb.Clear() : new StringBuilder();
+                try
+                {
+                    sb.Append('{').Append(indent);
+                    bool atleastone = false;
+                    foreach (var line in contents)
+                    {
+                        sb.Append(line).Append(delimiter);
+                        atleastone = true;
+                    }
+                    if(atleastone) sb.Length -= delimiter.Length;
+                    sb.Append(outdent).Append('}');
+
+                    return sb.ToString();
+                }
+                finally
+                {
+                    if (gotLock) sbLock.Release();
+                }
             }
         }
         catch
@@ -392,13 +419,12 @@ public static class ObjectTooString
             {
                 if (IsScalarish(p.PropertyType)
                     || options.Depth > options.ReflectionOptions.MaxDepth)
-                    return ScalarishToShortReflectedString(
-                        p.GetValue(value) ?? "null", options);
+                    return ScalarishToShortReflectedString(p.GetValue(value), options);
                 else if(p.GetIndexParameters().Any())
                     return qname(p.PropertyType.Name);
                 else
                     return BuildReflectedString(
-                        p.GetValue(value) ?? "null",
+                        p.GetValue(value),
                         options with { Depth = options.Depth + 1 });
             }
             catch
@@ -516,7 +542,7 @@ public static class ObjectTooString
     static string ToJsonEscapedString(string s)
         => s.Replace("\\","\\\\")
             .Replace("\"","\\u0022")
-            .Replace("+","\\u002B")
+            //.Replace("+","\\u002B") no need to escape + ?
             .Replace("`","\\u0060")
             .Replace("\t","\\\t")
             .Replace("\n","\\\n")
@@ -563,7 +589,11 @@ public static class ObjectTooString
             if (true.Equals(value)) return isJson ? "true" :"True";
             if (false.Equals(value)) return isJson ? "false" :"False";
             if (value.GetType().IsPrimitive) return value.ToString()!;
-            if (value is ValueType val && value.GetType().Namespace == "System.Numerics")
+            if (value is System.Numerics.BigInteger b) return b.ToString();
+            if (value is System.Numerics.Quaternion q) return isJson
+                    ? q.ToString().Replace(' ',',')
+                    : q.ToString();
+            if (value is ValueType val && IsMultiDimensionalNumeric(val.GetType()))
                 return numericToArrayIfJson(val);
             if (value is DateTime dateTime)
                 return qstr(dateTime.ToString(options.ReflectionOptions.DateTimeFormat));
@@ -598,4 +628,13 @@ public static class ObjectTooString
             return qstr(value.GetType().Name);
         }
     }
+
+   static readonly string CrLfSpaces400 = "\r\n" + new string(' ',400);
+   static readonly string CommaCrLfSpaces400 = "," + CrLfSpaces400;
+   static readonly StringBuilder sb = new StringBuilder();
+   static readonly SemaphoreSlim sbLock = new(1);
+   static bool IsMultiDimensionalNumeric(Type type)=>
+       type.Namespace == "System.Numerics"
+        &&
+        new[]{"Complex","Vector","Vector2","Vector3","Vector4","Matrix3x2","Matrix4x4","Plane"}.Contains(type.Name);
 }

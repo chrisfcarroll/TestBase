@@ -21,15 +21,17 @@ public static class WithExtension
     }
 
     /// <summary>
-    /// Return a copy of <paramref name="this"/> with the changes
-    /// specified in <paramref name="with"/>
+    /// Re-configured the current options by applying
+    /// configuration action <paramref name="reconfigure"/>,
+    /// and return the re-configured options.
     /// </summary>
-    /// <param name="this"></param>
-    /// <param name="with"></param>
-    /// <returns>a new <see cref="JsonSerializerOptions"/></returns>
-    public static JsonSerializerOptions With(
-        this JsonSerializerOptions @this,
-        Action<JsonSerializerOptions> with)
+    /// <param name="this">the current options</param>
+    /// <param name="reconfigure"></param>
+    /// <returns>
+    /// a copy of the current options reconfigured with <paramref name="reconfigure"/>
+    /// </returns>
+    public static JsonSerializerOptions With(this JsonSerializerOptions @this,
+                                             Action<JsonSerializerOptions> reconfigure)
     {
         var copy = new JsonSerializerOptions
         {
@@ -59,7 +61,7 @@ public static class WithExtension
             #endif
         };
         copy.Converters.AddAll(@this.Converters);
-        with(copy);
+        reconfigure(copy);
         return copy;
     }
 

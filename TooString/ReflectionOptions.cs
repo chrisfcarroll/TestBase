@@ -66,4 +66,20 @@ public record ReflectionOptions(
         Style = ReflectionStyle.Json
     };
 
+    /// <summary>
+    /// Re-configured the current options by applying
+    /// configuration action <paramref name="reconfigure"/>,
+    /// and return the re-configured options.
+    /// </summary>
+    /// <param name="reconfigure"></param>
+    /// <returns>
+    /// a copy of the current options reconfigured with <paramref name="reconfigure"/>
+    /// </returns>
+    public ReflectionOptions With(Action<ReflectionOptions> reconfigure)
+    {
+        var mutated = this with { };
+        reconfigure(mutated);
+        return mutated;
+    }
+
 }

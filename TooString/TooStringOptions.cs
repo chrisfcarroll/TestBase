@@ -123,19 +123,30 @@ public record TooStringOptions
         fallbacks = Fallbacks;
     }
 
-    /// <param name="nonDefaults"></param>
-    /// <param name="jsDefaults"><see cref="JsonSerializerDefaults"/></param>
+    ///<summary>
+    /// Returns a <see cref="TooStringOptions"/> instance which will try json serialization
+    /// as its first choice, using either <see cref="DefaultJsonOptions"/>, or
+    /// <see cref="JsonOptions"/> as configured by <paramref name="jsDefaults"/> and
+    /// <paramref name="reconfigure"/>.
+    /// </summary>
+    /// <param name="reconfigure">
+    /// If not null, then return options with <see cref="JsonOptions"/> reconfigured
+    /// from the default by applying <paramref name="reconfigure"/>.
+    /// </param>
+    /// <param name="jsDefaults">
+    /// <see cref="JsonSerializerDefaults"/>
+    /// </param>
     /// <returns>
     /// Default options for <see cref="TooStringHow.Json"/> with {JsonOptions modified by nonDefaults}
     /// </returns>
-    public static TooStringOptions ForJson(Action<JsonSerializerOptions>? nonDefaults = null,
+    public static TooStringOptions ForJson(Action<JsonSerializerOptions>? reconfigure = null,
                                            JsonSerializerDefaults jsDefaults = JsonSerializerDefaults.General)
     {
         var js= new JsonSerializerOptions(jsDefaults)
         {
             ReferenceHandler = ReferenceHandler.IgnoreCycles,
         };
-        nonDefaults?.Invoke(js);
+        reconfigure?.Invoke(js);
         return Default with
         {
             JsonOptions = js,
@@ -143,20 +154,46 @@ public record TooStringOptions
             ReflectionOptions = ReflectionOptions.ForJson
         };
     }
-    /// <param name="nonDefaults"></param>
+    ///<summary>
+    /// Returns a <see cref="TooStringOptions"/> instance which will try reflection serialization
+    ///  as its first choice, using either <see cref="Default"/> options, or else the
+    /// supplied
+    /// </summary>
+    /// <param name="reflectionOptions">
+    /// If not null, then return options with <see cref="JsonOptions"/> reconfigured
+    /// from the default by applying <paramref name="reflectionOptions"/>.
+    /// </param>
     /// <returns>
-    /// Default options for <see cref="TooStringHow.Reflection"/>
-    /// with { ReflectionOptions = nonDefaults}
+    /// Default options as modified by <paramref name="reflectionOptions"/>
     /// </returns>
-    public static TooStringOptions ForReflection(ReflectionOptions? nonDefaults = null)
+    public static TooStringOptions ForReflection(ReflectionOptions? reflectionOptions = null)
     {
-        return nonDefaults is null
-            ? Default
+        return reflectionOptions is null
+            ? Default with
+                      {
+                          Fallbacks = Default.Fallbacks.Prepend(TooStringHow.Reflection)
+                      }
             : Default with
-                {
-                    ReflectionOptions = nonDefaults,
-                    Fallbacks = Default.Fallbacks.Prepend(TooStringHow.Reflection)
-                };
+                      {
+                          ReflectionOptions = reflectionOptions,
+                          Fallbacks = Default.Fallbacks.Prepend(TooStringHow.Reflection)
+                      };
+    }
+
+    /// <summary>
+    /// Re-configured the current options by applying
+    /// configuration action <paramref name="reconfigure"/>,
+    /// and return the re-configured options.
+    /// </summary>
+    /// <param name="reconfigure"></param>
+    /// <returns>
+    /// a copy of the current options reconfigured with <paramref name="reconfigure"/>
+    /// </returns>
+    public TooStringOptions With(Action<TooStringOptions> reconfigure)
+    {
+        var mutated = this with { };
+        reconfigure(mutated);
+        return mutated;
     }
 
     /// <summary>
