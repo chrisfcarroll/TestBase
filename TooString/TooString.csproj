@@ -8,9 +8,9 @@
     </PropertyGroup>
     
     <PropertyGroup>
-        <AssemblyVersion>0.4</AssemblyVersion>
-        <AssemblyFileVersion>0.4</AssemblyFileVersion>
-        <PackageVersion>0.4-preview</PackageVersion>
+        <AssemblyVersion>0.5</AssemblyVersion>
+        <AssemblyFileVersion>0.5</AssemblyFileVersion>
+        <PackageVersion>0.5-preview</PackageVersion>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <Title>TooString — The ToString() method for DebugView, Json, and CallerArgumentExpression, going places that serializers don't.</Title>
         <PackageDescription><![CDATA[TooString() can
@@ -24,8 +24,8 @@ value.ToJson();
 value.ToDebugViewString();
 ```
 
-TooString is not a serializer because it is not fail-fast. Instead, given something it can't
-serialize, it will return a best-effort string, rather than throw an exception.
+TooString is not a serializer because it is not fail-fast. Instead, given something that is not
+serializable, it will return a best-effort string, rather than throw an exception.
 
 It is intended for test, diagnostic and monitoring output.
 
@@ -51,6 +51,7 @@ new { A = "boo", B = new Complex(3,4) }.ToDebugViewString();
         <PackageReleaseNotes>
             ChangeLog
             ---------
+            0.5.0  ReflectionOptions.MaxEnumerationLength renamed from MaxLength | Options.With(...) methods for easy configuration
             0.4.0  ReflectionOptions.MaxLength default = 9 | ReflectionOptions.ForJson and ReflectionOptions.ForDebugView instead of Default | More overloads.
             0.3.0  ReflectionOptions.MaxLength limits display of enumerable elements
             0.2.0  Added Net8 (NB Net8 Json and Numerics output is different from Net6)
