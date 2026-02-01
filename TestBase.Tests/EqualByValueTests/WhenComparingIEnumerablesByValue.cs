@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 
@@ -33,12 +34,12 @@ public class WhenComparingIEnumerablesByValue
     public void Should_return_false_when_not_the_same(params int[] values)
     {
         var left = values;
-        var right = values.Reverse().ToArray();
+        var right = (values as IEnumerable<int>).Reverse().ToArray();
         
         left.EqualsByValue(right).ShouldBeFalse();
         
         var leftStr = values.Select(x => x.ToString()).ToArray();
-        var rightStr = values.Reverse().Select(x => x.ToString()).ToArray();
+        var rightStr = (values as IEnumerable<int>).Reverse().Select(x => x.ToString()).ToArray();
         
         leftStr.EqualsByValue(rightStr).ShouldBeFalse();
     }
@@ -75,7 +76,7 @@ public class WhenComparingIEnumerablesByValue
         left.EqualsByValue(right).ShouldBeFalse();
         
         var leftStr = values.Select(x => x.ToString()).ToArray();
-        var rightStr = values.Reverse().Select(x => x.ToString()).ToArray();
+        var rightStr = (values as IEnumerable<int>).Reverse().Select(x => x.ToString()).ToArray();
         
         leftStr.EqualsByValue(rightStr).ShouldBeFalse();
     }
