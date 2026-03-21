@@ -1,14 +1,30 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 
 namespace TestBase
 {
     public static class StringShoulds
     {
+        static void ThrowStringAssertion(string actual, string assertionName, string assertedDetail, string message, object[] args,
+            [CallerArgumentExpression("actual")] string actualExpression = null)
+        {
+            var comment = message != null && args?.Length > 0 ? string.Format(message, args) : message;
+            throw new Assertion<string>(
+                actual ?? "null",
+                actualExpression,
+                assertionName,
+                assertedDetail,
+                comment,
+                false);
+        }
+
         public static string ShouldNotBeNullOrEmpty(this string @this, string message = null, params object[] args)
         {
-            @this.ShouldNotBeNull(message, args);
-            @this.ShouldNotBe(string.Empty, message ?? nameof(ShouldNotBeNullOrEmpty), args);
+            if (@this == null)
+                ThrowStringAssertion(@this, nameof(ShouldNotBeNullOrEmpty), "Expected: not null or empty, Actual: null", message, args);
+            if (@this.Length == 0)
+                ThrowStringAssertion(@this, nameof(ShouldNotBeNullOrEmpty), "Expected: not null or empty, Actual: \"\"", message, args);
             return @this;
         }
 
@@ -17,8 +33,10 @@ namespace TestBase
             string          message = null,
             params object[] args)
         {
-            @this.ShouldNotBeNull(message, args);
-            @this.Trim().ShouldNotBeNullOrEmpty(message ?? nameof(ShouldNotBeNullOrEmptyOrWhiteSpace), args);
+            if (@this == null)
+                ThrowStringAssertion(@this, nameof(ShouldNotBeNullOrEmptyOrWhiteSpace), "Expected: not null/empty/whitespace, Actual: null", message, args);
+            if (string.IsNullOrWhiteSpace(@this))
+                ThrowStringAssertion(@this, nameof(ShouldNotBeNullOrEmptyOrWhiteSpace), $"Expected: not null/empty/whitespace, Actual: \"{@this}\"", message, args);
             return @this;
         }
 
@@ -30,10 +48,9 @@ namespace TestBase
             string          message = null,
             params object[] args)
         {
-            Assert.That(@this.ToLower(),
-                        Is.EqualTo(expected.ToLower()),
-                        message ?? $"{nameof(ShouldEqualIgnoringCase)} {expected}",
-                        args);
+            if (!@this.ToLower().Equals(expected.ToLower()))
+                ThrowStringAssertion(@this, nameof(ShouldEqualIgnoringCase),
+                    $"Expected: \"{expected}\" (ignoring case), Actual: \"{@this}\"", message, args);
             return @this;
         }
 
@@ -45,15 +62,14 @@ namespace TestBase
             string          message = null,
             params object[] args)
         {
-            Assert.That(@this, x => x.Contains(expected), message ?? $"{nameof(ShouldContain)} {expected}", args);
+            if (!@this.Contains(expected))
+                ThrowStringAssertion(@this, nameof(ShouldContain),
+                    $"Expected: String containing \"{expected}\", Actual: \"{@this}\"", message, args);
             return @this;
         }
 
         /// <summary>Asserts that <paramref name="@this" /> .Contains(<paramref name="substrings" />)</summary>
         /// <returns>@this</returns>
-        /// <remarks>
-        ///     <seealso cref="ShouldContainEachOf(string,string[])" />
-        /// </remarks>
         public static string ShouldContainEachOf(
             this string         @this,
             IEnumerable<string> substrings,
@@ -61,18 +77,14 @@ namespace TestBase
             params object[]     args)
         {
             foreach (var substring in substrings)
-                Assert.That(@this,
-                            x => x.Contains(substring),
-                            message ?? $"{nameof(ShouldContainEachOf)} {substrings}",
-                            args);
+                if (!@this.Contains(substring))
+                    ThrowStringAssertion(@this, nameof(ShouldContainEachOf),
+                        $"Expected: String containing \"{substring}\", Actual: \"{@this}\"", message, args);
             return @this;
         }
 
         /// <summary>Asserts that <paramref name="@this" /> .Contains(<paramref name="substrings" />)</summary>
         /// <returns>@this</returns>
-        /// <remarks>
-        ///     <seealso cref="ShouldContainEachOf(string,System.Collections.Generic.IEnumerable{string},string,object[])" />
-        /// </remarks>
         public static string ShouldContainEachOf(this string @this, params string[] substrings)
         {
             return ShouldContainEachOf(@this, (IEnumerable<string>) substrings);
@@ -86,7 +98,9 @@ namespace TestBase
             string          message = null,
             params object[] args)
         {
-            Assert.That(@this, x => expected.Contains(x), message ?? $"{nameof(ShouldBeContainedIn)} {expected}", args);
+            if (!expected.Contains(@this))
+                ThrowStringAssertion(@this, nameof(ShouldBeContainedIn),
+                    $"Expected: \"{@this}\" contained in \"{expected}\", but was not", message, args);
             return @this;
         }
 
@@ -101,10 +115,9 @@ namespace TestBase
             string          message = null,
             params object[] args)
         {
-            Assert.That(@this,
-                        x => x.Matches(expectedRegexPattern, RegexOptions.None),
-                        message ?? $"{nameof(ShouldMatch)} /{expectedRegexPattern}/",
-                        args);
+            if (!@this.Matches(expectedRegexPattern, RegexOptions.None))
+                ThrowStringAssertion(@this, nameof(ShouldMatch),
+                    $"Expected: match /{expectedRegexPattern}/, Actual: \"{@this}\"", message, args);
             return @this;
         }
 
@@ -120,10 +133,9 @@ namespace TestBase
             string          message = null,
             params object[] args)
         {
-            Assert.That(@this,
-                        x => Regex.IsMatch(@this, expectedRegexPattern, regexOptions),
-                        message ?? $"{nameof(ShouldMatch)} /{expectedRegexPattern}/{regexOptions}",
-                        args);
+            if (!Regex.IsMatch(@this, expectedRegexPattern, regexOptions))
+                ThrowStringAssertion(@this, nameof(ShouldMatch),
+                    $"Expected: match /{expectedRegexPattern}/{regexOptions}, Actual: \"{@this}\"", message, args);
             return @this;
         }
 
@@ -138,10 +150,9 @@ namespace TestBase
             string          message = null,
             params object[] args)
         {
-            Assert.That(@this,
-                        x => x.Matches(expectedRegexPattern, RegexOptions.IgnoreCase),
-                        message ?? $"{nameof(ShouldMatchIgnoringCase)} /{expectedRegexPattern}/",
-                        args);
+            if (!@this.Matches(expectedRegexPattern, RegexOptions.IgnoreCase))
+                ThrowStringAssertion(@this, nameof(ShouldMatchIgnoringCase),
+                    $"Expected: match /{expectedRegexPattern}/ (ignoring case), Actual: \"{@this}\"", message, args);
             return @this;
         }
 
@@ -156,10 +167,9 @@ namespace TestBase
             string          message = null,
             params object[] args)
         {
-            Assert.That(@this,
-                        x => !x.Matches(unexpectedRegexPattern, RegexOptions.None),
-                        message ?? $"{nameof(ShouldNotMatch)} /{unexpectedRegexPattern}/",
-                        args);
+            if (@this.Matches(unexpectedRegexPattern, RegexOptions.None))
+                ThrowStringAssertion(@this, nameof(ShouldNotMatch),
+                    $"Expected: not match /{unexpectedRegexPattern}/, Actual: \"{@this}\"", message, args);
             return @this;
         }
 
@@ -175,10 +185,9 @@ namespace TestBase
             string          message = null,
             params object[] args)
         {
-            Assert.That(@this,
-                        x => !Regex.IsMatch(@this, unexpectedRegexPattern, regexOptions),
-                        message ?? $"{nameof(ShouldNotMatch)} /{unexpectedRegexPattern}/{regexOptions}",
-                        args);
+            if (Regex.IsMatch(@this, unexpectedRegexPattern, regexOptions))
+                ThrowStringAssertion(@this, nameof(ShouldNotMatch),
+                    $"Expected: not match /{unexpectedRegexPattern}/{regexOptions}, Actual: \"{@this}\"", message, args);
             return @this;
         }
 
@@ -193,14 +202,13 @@ namespace TestBase
             string          message = null,
             params object[] args)
         {
-            Assert.That(@this,
-                        x => !x.Matches(unexpectedRegexPattern, RegexOptions.IgnoreCase),
-                        message ?? $"{nameof(ShouldNotMatchIgnoringCase)} /{unexpectedRegexPattern}/",
-                        args);
+            if (@this.Matches(unexpectedRegexPattern, RegexOptions.IgnoreCase))
+                ThrowStringAssertion(@this, nameof(ShouldNotMatchIgnoringCase),
+                    $"Expected: not match /{unexpectedRegexPattern}/ (ignoring case), Actual: \"{@this}\"", message, args);
             return @this;
         }
 
-        /// <summary>Asserts that <paramref name="@this" /> .Contains(<paramref name="expected" />) is false.</summary>
+        /// <summary>Asserts that <paramref name="@this" /> .Contains(<paramref name="notExpected" />) is false.</summary>
         /// <returns>@this</returns>
         public static string ShouldNotContain(
             this string     @this,
@@ -208,10 +216,9 @@ namespace TestBase
             string          message = null,
             params object[] args)
         {
-            Assert.That(@this,
-                        x => !x.Contains(notExpected),
-                        message ?? $"{nameof(ShouldNotContain)} {notExpected}",
-                        args);
+            if (@this.Contains(notExpected))
+                ThrowStringAssertion(@this, nameof(ShouldNotContain),
+                    $"Expected: not containing \"{notExpected}\", Actual: \"{@this}\"", message, args);
             return @this;
         }
 
@@ -223,7 +230,9 @@ namespace TestBase
             string          message = null,
             params object[] args)
         {
-            Assert.That(@this, x => x.StartsWith(expected), message ?? $"{nameof(ShouldStartWith)} {expected}", args);
+            if (!@this.StartsWith(expected))
+                ThrowStringAssertion(@this, nameof(ShouldStartWith),
+                    $"Expected: starts with \"{expected}\", Actual: \"{@this}\"", message, args);
             return @this;
         }
 
@@ -235,7 +244,9 @@ namespace TestBase
             string          message = null,
             params object[] args)
         {
-            Assert.That(@this, x => x.EndsWith(expected), message, args);
+            if (!@this.EndsWith(expected))
+                ThrowStringAssertion(@this, nameof(ShouldEndWith),
+                    $"Expected: ends with \"{expected}\", Actual: \"{@this}\"", message, args);
             return @this;
         }
     }

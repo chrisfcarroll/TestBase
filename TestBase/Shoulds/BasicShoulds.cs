@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
+using System.Runtime.CompilerServices;
 
 namespace TestBase
 {
@@ -11,49 +12,57 @@ namespace TestBase
     /// </summary>
     public static class BasicShoulds
     {
+        static void ThrowAssertion<T>(T actual, string assertionName, string assertedDetail, string message, object[] args,
+            [CallerArgumentExpression("actual")] string actualExpression = null)
+        {
+            var comment = message != null && args?.Length > 0 ? string.Format(message, args) : message;
+            throw new Assertion<T>(
+                actual?.ToString() ?? "null",
+                actualExpression,
+                assertionName,
+                assertedDetail,
+                comment,
+                false);
+        }
+
         /// <summary>Asserts that <code>actual!=null</code></summary>
         /// <returns>
         ///     <paramref name="actual" />
         /// </returns>
         [return:System.Diagnostics.CodeAnalysis.NotNull]
-        //[ContractAnnotation("actual:null => halt")]
         public static T ShouldNotBeNull<T>([System.Diagnostics.CodeAnalysis.NotNull]this T actual, string message = null, params object[] args)
         {
-            Assert.That(actual, Is.NotNull, message ?? nameof(ShouldNotBeNull), args);
+            if (actual == null)
+                ThrowAssertion(actual, nameof(ShouldNotBeNull), "Expected: not null, Actual: null", message, args);
             return actual;
         }
 
         /// <summary>Asserts that <code>actual==null</code></summary>
         public static void ShouldBeNull([AllowNull] this object actual, string message = null, params object[] args)
         {
-            Assert.That(actual, Is.Null, message ?? nameof(ShouldBeNull), args);
+            if (actual != null)
+                ThrowAssertion(actual, nameof(ShouldBeNull), $"Expected: null, Actual: {actual}", message, args);
         }
 
         /// <summary>Asserts that <code>string.IsNullOrEmpty(actual)</code></summary>
-        /// <returns>
-        ///     <paramref name="actual" />
-        /// </returns>
         public static void ShouldBeNullOrEmpty([AllowNull]this string actual, string message = null, params object[] args)
         {
-            Assert.That(string.IsNullOrEmpty(actual), message ?? nameof(ShouldBeNullOrEmpty), args);
+            if (!string.IsNullOrEmpty(actual))
+                ThrowAssertion(actual, nameof(ShouldBeNullOrEmpty), $"Expected: null or empty, Actual: \"{actual}\"", message, args);
         }
 
         /// <summary>Asserts that <code>actual.Length==0</code></summary>
-        /// <returns>
-        ///     <paramref name="actual" />
-        /// </returns>
         public static void ShouldBeEmpty(this string actual, string message = null, params object[] args)
         {
-            Assert.That(actual.Length == 0, message ?? nameof(ShouldBeEmpty), args);
+            if (actual.Length != 0)
+                ThrowAssertion(actual, nameof(ShouldBeEmpty), $"Expected: empty string, Actual: \"{actual}\" (length {actual.Length})", message, args);
         }
 
         /// <summary>Asserts that <paramref name="actual" /> has no elements. This will fail if actual is null.</summary>
-        /// <returns>
-        ///     <paramref name="actual" />
-        /// </returns>
         public static void ShouldBeEmpty(this IEnumerable actual, string message = null, params object[] args)
         {
-            Assert.That(actual, Is.Empty, message ?? nameof(ShouldBeEmpty), args);
+            if (actual.HasAnyElements())
+                ThrowAssertion(actual, nameof(ShouldBeEmpty), "Expected: empty collection, Actual: collection has elements", message, args);
         }
 
         /// <summary>Asserts that <code>string.IsNullOrWhitespace(actual.ToString())</code></summary>
@@ -66,14 +75,11 @@ namespace TestBase
             params object[] args)
         {
             if (actual == null) { return null; }
-            else
-            {
-                var trimmed = (actual.ToString()??"").Trim();
-                return Assert.That(actual,
-                                   x => trimmed.Length == 0,
-                                   message ?? nameof(ShouldBeNullOrEmptyOrWhitespace),
-                                   args);
-            }
+            var trimmed = (actual.ToString() ?? "").Trim();
+            if (trimmed.Length != 0)
+                ThrowAssertion(actual, nameof(ShouldBeNullOrEmptyOrWhitespace),
+                    $"Expected: null, empty, or whitespace, Actual: \"{actual}\"", message, args);
+            return actual;
         }
 
         /// <summary>Asserts that <code>string.IsNullOrWhitespace(actual.ToString())</code> would fail.</summary>
@@ -81,18 +87,19 @@ namespace TestBase
         ///     <paramref name="actual" />
         /// </returns>
         [return:System.Diagnostics.CodeAnalysis.NotNull]
-        //[ContractAnnotation("actual:null => halt")]
         public static object ShouldNotBeNullOrEmptyOrWhitespace(
             [System.Diagnostics.CodeAnalysis.NotNull]this object     actual,
             string          message = null,
             params object[] args)
         {
-            Assert.That(actual, x => x != null, message ?? nameof(ShouldNotBeNullOrEmptyOrWhitespace), args);
-            var trimmed = (actual.ToString()??"").Trim();
-            return Assert.That(actual,
-                               x => trimmed.Length != 0,
-                               message ?? nameof(ShouldNotBeNullOrEmptyOrWhitespace),
-                               args);
+            if (actual == null)
+                ThrowAssertion(actual, nameof(ShouldNotBeNullOrEmptyOrWhitespace),
+                    "Expected: not null/empty/whitespace, Actual: null", message, args);
+            var trimmed = (actual.ToString() ?? "").Trim();
+            if (trimmed.Length == 0)
+                ThrowAssertion(actual, nameof(ShouldNotBeNullOrEmptyOrWhitespace),
+                    $"Expected: not null/empty/whitespace, Actual: \"{actual}\"", message, args);
+            return actual;
         }
 
         /// <summary>
@@ -105,24 +112,10 @@ namespace TestBase
         public static T ShouldBe<T>(this T actual, T expected, string message = null, params object[] args)
         {
             if (actual == null && expected == null) { return default(T); }
-            else if (expected == null)
-            {
-                return (T) Assert.That(actual, Is.Null, message ?? $"{nameof(ShouldBe)} null", args);
-            }
-            else if (actual == null)
-            {
-                return Assert.That(default(T),
-                    #pragma warning disable CS0162 // Unreachable code detected 
-                    x => false && x.Equals(expected),
-                    #pragma warning restore CS0162 // Unreachable code detected
-                    message ?? $"{nameof(ShouldBe)} {expected}",
-                                   args);
-            }
-            else
-            {
-                Assert.That(actual, x => x.Equals(expected), message ?? $"{nameof(ShouldBe)} {expected}", args);
-                return actual;
-            }
+            if (actual == null || !actual.Equals(expected))
+                ThrowAssertion(actual, $"{nameof(ShouldBe)} {expected}",
+                    $"Expected: {expected ?? (object)"null"}, Actual: {actual ?? (object)"null"}", message, args);
+            return actual;
         }
 
         /// <summary>
@@ -134,7 +127,11 @@ namespace TestBase
         /// </returns>
         public static T ShouldNotBe<T>(this T actual, T notExpected, string message = null, params object[] args)
         {
-            Assert.That(actual, Is.NotEqualTo(notExpected), message ?? $"{nameof(ShouldNotBe)} {notExpected}", args);
+            bool areEqual = (actual == null && notExpected == null)
+                || (actual != null && actual.Equals(notExpected));
+            if (areEqual)
+                ThrowAssertion(actual, $"{nameof(ShouldNotBe)} {notExpected}",
+                    $"Expected: not {notExpected ?? (object)"null"}, Actual: {actual ?? (object)"null"}", message, args);
             return actual;
         }
 
@@ -144,7 +141,12 @@ namespace TestBase
         /// </returns>
         public static T ShouldEqual<T>(this T actual, object expected, string comment = null, params object[] args)
         {
-            return Assert.That(actual, a => a.Equals(expected), comment ?? $"{nameof(ShouldEqual)} {expected}", args);
+            bool areEqual = (actual == null && expected == null)
+                || (actual != null && actual.Equals(expected));
+            if (!areEqual)
+                ThrowAssertion(actual, $"{nameof(ShouldEqual)} {expected}",
+                    $"Expected: {expected ?? (object)"null"}, Actual: {actual ?? (object)"null"}", comment, args);
+            return actual;
         }
 
         /// <summary>Asserts that <code>!<paramref name="actual" />.Equals(<paramref name="notExpected" />)</code></summary>
@@ -153,10 +155,12 @@ namespace TestBase
         /// </returns>
         public static T ShouldNotEqual<T>(this T actual, T notExpected, string comment = null, params object[] args)
         {
-            return Assert.That(actual,
-                               a => !a.Equals(notExpected),
-                               comment ?? $"{nameof(ShouldNotEqual)} {notExpected}",
-                               args);
+            bool areEqual = (actual == null && notExpected == null)
+                || (actual != null && actual.Equals(notExpected));
+            if (areEqual)
+                ThrowAssertion(actual, $"{nameof(ShouldNotEqual)} {notExpected}",
+                    $"Expected: not {notExpected ?? (object)"null"}, Actual: {actual ?? (object)"null"}", comment, args);
+            return actual;
         }
 
         /// <summary>
@@ -169,7 +173,9 @@ namespace TestBase
         public static T ShouldBeBetween<T>(this T actual, T left, T right, string message = null, params object[] args)
         where T : IComparable<T>
         {
-            Assert.That(actual, Is.InRange(left, right), message ?? nameof(ShouldBeBetween), args);
+            if (actual.CompareTo(left) < 0 || actual.CompareTo(right) > 0)
+                ThrowAssertion(actual, nameof(ShouldBeBetween),
+                    $"Expected: between {left} and {right}, Actual: {actual}", message, args);
             return actual;
         }
 
@@ -179,33 +185,27 @@ namespace TestBase
         /// </returns>
         public static T ShouldBeTrue<T>(this T actual, string message = null, params object[] args)
         {
-            if (actual == null) { return Assert.That(default(T), x => x != null, message ?? nameof(ShouldBeTrue), args); }
-            else
-            {
-                Assert.That(actual, x => x.Equals(true), message ?? nameof(ShouldBeTrue), args);
-                return actual;
-            }
+            if (actual == null || !actual.Equals(true))
+                ThrowAssertion(actual, nameof(ShouldBeTrue),
+                    $"Expected: true, Actual: {actual ?? (object)"null"}", message, args);
+            return actual;
         }
 
         /// <summary>Asserts that <code><paramref name="actual" />.Equals(false)</code></summary>
-        /// ///
         /// <returns>
         ///     <paramref name="actual" />
         /// </returns>
         public static T ShouldBeFalse<T>(this T actual, string message = null, params object[] args)
         {
-            if (actual == null) { return Assert.That(default(T), x => x != null, message ?? nameof(ShouldBeFalse), args); }
-            else
-            {
-                Assert.That(actual, x => x.Equals(false), message ?? nameof(ShouldBeFalse), args);
-                return actual;
-            }
+            if (actual == null || !actual.Equals(false))
+                ThrowAssertion(actual, nameof(ShouldBeFalse),
+                    $"Expected: false, Actual: {actual ?? (object)"null"}", message, args);
+            return actual;
         }
 
         /// <summary>
         ///     Asserts that <paramref name="actual" /> is GreaterThan <paramref name="expected" />
         ///     The comparer used is the NUnitComparer
-        ///     https://github.com/nunit/nunit/blob/master/src/NUnitFramework/framework/Constraints/NUnitComparer.cs
         /// </summary>
         /// <returns>
         ///     <paramref name="actual" />
@@ -216,14 +216,15 @@ namespace TestBase
             string          message = null,
             params object[] args)
         {
-            Assert.That(actual, Is.GreaterThan(expected), message ?? nameof(ShouldBeGreaterThan), args);
+            if (new NUnitComparer().Compare(actual, expected) <= 0)
+                ThrowAssertion(actual, nameof(ShouldBeGreaterThan),
+                    $"Expected: > {expected}, Actual: {actual}", message, args);
             return actual;
         }
 
         /// <summary>
         ///     Asserts that <paramref name="actual" /> is GreaterThanOrEqualTo <paramref name="expected" />
         ///     The comparer used is the NUnitComparer
-        ///     https://github.com/nunit/nunit/blob/master/src/NUnitFramework/framework/Constraints/NUnitComparer.cs
         /// </summary>
         /// <returns>
         ///     <paramref name="actual" />
@@ -234,31 +235,30 @@ namespace TestBase
             string          message = null,
             params object[] args)
         {
-            Assert.That(actual,
-                        Is.GreaterThanOrEqualTo(expected),
-                        message ?? nameof(ShouldBeGreaterThanOrEqualTo),
-                        args);
+            if (new NUnitComparer().Compare(actual, expected) < 0)
+                ThrowAssertion(actual, nameof(ShouldBeGreaterThanOrEqualTo),
+                    $"Expected: >= {expected}, Actual: {actual}", message, args);
             return actual;
         }
 
         /// <summary>
         ///     Asserts that <paramref name="actual" /> is LessThan <paramref name="expected" />
         ///     The comparer used is the NUnitComparer
-        ///     https://github.com/nunit/nunit/blob/master/src/NUnitFramework/framework/Constraints/NUnitComparer.cs
         /// </summary>
         /// <returns>
         ///     <paramref name="actual" />
         /// </returns>
         public static T ShouldBeLessThan<T>(this T actual, object expected, string message = null, params object[] args)
         {
-            Assert.That(actual, Is.LessThan(expected), message ?? nameof(ShouldBeLessThan), args);
+            if (new NUnitComparer().Compare(actual, expected) >= 0)
+                ThrowAssertion(actual, nameof(ShouldBeLessThan),
+                    $"Expected: < {expected}, Actual: {actual}", message, args);
             return actual;
         }
 
         /// <summary>
         ///     Asserts that <paramref name="actual" /> is LessThanOrEqualTo <paramref name="expected" />
         ///     The comparer used is the NUnitComparer
-        ///     https://github.com/nunit/nunit/blob/master/src/NUnitFramework/framework/Constraints/NUnitComparer.cs
         /// </summary>
         /// <returns>
         ///     <paramref name="actual" />
@@ -269,7 +269,9 @@ namespace TestBase
             string          message = null,
             params object[] args)
         {
-            Assert.That(actual, Is.LessThanOrEqualTo(expected), message ?? nameof(ShouldBeLessThanOrEqualTo), args);
+            if (new NUnitComparer().Compare(actual, expected) > 0)
+                ThrowAssertion(actual, nameof(ShouldBeLessThanOrEqualTo),
+                    $"Expected: <= {expected}, Actual: {actual}", message, args);
             return actual;
         }
 
@@ -279,11 +281,9 @@ namespace TestBase
         /// </returns>
         public static T ShouldBeOfType<T>(this object actual, string message = null, params object[] args)
         {
-            Assert.That(actual,
-                        x => x is T,
-                        message
-                     ?? $"actual of type {actual?.GetType()} {nameof(ShouldBeOfType)} {typeof(T)} but isn't.",
-                        args);
+            if (actual is not T)
+                ThrowAssertion(actual, nameof(ShouldBeOfType),
+                    $"Expected: type {typeof(T)}, Actual: {(actual == null ? "null" : $"type {actual.GetType()}")}", message, args);
             return (T) actual;
         }
 
@@ -297,7 +297,9 @@ namespace TestBase
             string          message = null,
             params object[] args) where T : class
         {
-            typeof(T).ShouldEqual(type, message ?? $"{nameof(ShouldBeOfTypeEvenIfNull)} {typeof(T)}", args);
+            if (typeof(T) != type)
+                ThrowAssertion(actual, nameof(ShouldBeOfTypeEvenIfNull),
+                    $"Expected: type {type}, Actual: type {typeof(T)}", message, args);
             return actual;
         }
 
@@ -308,11 +310,9 @@ namespace TestBase
         public static T ShouldBeAssignableTo<T>(this object actual, string message = null, params object[] args)
         where T : class
         {
-            Assert.That(actual,
-                        x => x is T,
-                        message ?? $"{actual?.GetType()} {nameof(ShouldBeAssignableTo)} {typeof(T)} but isn't.",
-                        args);
-
+            if (actual is not T)
+                ThrowAssertion(actual, nameof(ShouldBeAssignableTo),
+                    $"Expected: assignable to {typeof(T)}, Actual: {(actual == null ? "null" : $"type {actual.GetType()}")}", message, args);
             return actual as T;
         }
 
@@ -324,13 +324,20 @@ namespace TestBase
         /// </returns>
         public static T ShouldBeCastableTo<T>(this object actual, string message = null, params object[] args)
         {
-            Assert.That(actual,
-                        x => (T) x != null,
-                        message
-                     ?? $"actual of type {actual?.GetType()} {nameof(ShouldBeCastableTo)} {typeof(T)} but isn't.",
-                        args);
-
-            return (T) actual;
+            try
+            {
+                var cast = (T) actual;
+                if (cast == null)
+                    ThrowAssertion(actual, nameof(ShouldBeCastableTo),
+                        $"Expected: castable to {typeof(T)}, Actual: cast result is null", message, args);
+                return cast;
+            }
+            catch (InvalidCastException)
+            {
+                ThrowAssertion(actual, nameof(ShouldBeCastableTo),
+                    $"Expected: castable to {typeof(T)}, Actual: {(actual == null ? "null" : $"type {actual.GetType()}")}", message, args);
+                return default;
+            }
         }
 
         /// <summary>
@@ -449,7 +456,7 @@ namespace TestBase
         ///    .Should(a=> someOtherPredicate )
         ///  </code>
         ///     over
-        ///     <code>  
+        ///     <code>
         ///    actual.SomeProperty.ShouldBeGreaterThan(1)
         ///    actual.SomeOtherProperty.ShouldBeGreaterThan(2);
         ///    actual.SomeOtherPredicate()
