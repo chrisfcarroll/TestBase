@@ -131,4 +131,8 @@ Serilog.Logger slogger= new LoggerConfiguration().WriteTo.StringList(log).Create
 
 ### Release Notes
 
+7.0.0   ShouldEqualByValue* methods now use TestBase.Differ for clean, readable diff output
+        showing exactly which properties, elements, or string positions differ.
+        All Should methods now create direct Assertions with clear AssertedDetail messages
+        instead of delegating through expression-tree lambdas.
 6.0.0   Better Assertion output for core asserts includes ActualValue,ActualExpression,Asserted,AssertedDetail

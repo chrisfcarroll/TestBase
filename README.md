@@ -1,6 +1,6 @@
 *TestBase* work on .Net, Mono, .Net Framework, .NetCore and gives you a flying start with 
 - fluent assertions that are easy to extend
-- sharp error messages
+- sharp error messages with clean diff output powered by TestBase.Differ
 - tools to help you test with "heavyweight" dependencies on 
 	- AspNet.Mvc or AspNetCore.Mvc Contexts
  	- HttpClient
