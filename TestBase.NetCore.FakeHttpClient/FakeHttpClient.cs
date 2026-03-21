@@ -56,7 +56,7 @@ public class FakeHttpClient : HttpClient
     /// <summary>Match PATCH requests whose URI matches the regex pattern.</summary>
     public RequestSetup SetupPatch(string urlPattern)
         => Setup(
-            r => r.Method == HttpMethod.Patch && Regex.IsMatch(r.RequestUri!.ToString(), urlPattern),
+            r => r.Method.Method == "PATCH" && Regex.IsMatch(r.RequestUri!.ToString(), urlPattern),
             $"PATCH {urlPattern}");
 
     /// <summary>Match any request whose URI matches the regex pattern, regardless of method.</summary>
