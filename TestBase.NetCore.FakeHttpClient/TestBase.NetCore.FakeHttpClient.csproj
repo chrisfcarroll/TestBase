@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net6.0;net8.0</TargetFrameworks>
+    <LangVersion>10</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyVersion>1.0.0</AssemblyVersion>
+    <AssemblyFileVersion>1.0.0</AssemblyFileVersion>
+    <PackageVersion>1.0.0-preview</PackageVersion>
+    <Title>TestBase.NetCore.FakeHttpClient : Fluent fake HttpClient for testing</Title>
+    <PackageDescription>A fluent, zero-dependency fake HttpClient for .NET 6+. Easy setup, easy assertions.</PackageDescription>
+    <Copyright>(c) Chris F. Carroll, 2013-2026</Copyright>
+    <PackageLicenseExpression>LGPL-2.1-or-later</PackageLicenseExpression>
+    <Authors>Chris F Carroll</Authors>
+    <Owners>Chris F Carroll</Owners>
+    <PackageProjectUrl>https://github.com/chrisfcarroll/TestBase</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/chrisfcarroll/TestBase</RepositoryUrl>
+    <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
+    <IncludeSymbols>true</IncludeSymbols>
+    <PackageTags>test;unittest;tdd;mock;httpclient;fake;http</PackageTags>
+    <NoWarn>1591</NoWarn>
+  </PropertyGroup>
+</Project>
