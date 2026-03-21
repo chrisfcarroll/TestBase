@@ -1,5 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
+#if NET6_0_OR_GREATER
+using TooString;
+#endif
 
 namespace TestBase
 {
@@ -10,6 +13,25 @@ namespace TestBase
     /// </summary>
     public static class EqualsByValueShoulds
     {
+#if NET6_0_OR_GREATER
+        static void AssertEqualByDiff(object actual, object expected, string assertionName, string actualExpression, DiffOptions options = null, string message = null, object[] args = null)
+        {
+            var diff = Differ.Diff(expected, actual, options ?? DiffOptions.Default.WithLabels("Expected", "Actual"));
+            if (diff.AreEqual) return;
+            var comment = message != null && args?.Length > 0 ? string.Format(message, args) : message;
+            string actualStr;
+            try { actualStr = actual?.TooString() ?? "null"; }
+            catch { actualStr = actual?.ToString() ?? "null"; }
+            throw new Assertion<object>(
+                actualStr,
+                actualExpression,
+                assertionName,
+                diff.ToString(),
+                comment,
+                false);
+        }
+#endif
+
         /// <summary>
         ///     Assert equality-by-value by recursively iterating over all elements (if the actual &amp; expected are Enumerable)
         ///     and all properties. Recursion stops at value types and at types (including string) which override Equals()
@@ -25,7 +47,11 @@ namespace TestBase
             string          message = null,
             params object[] args)
         {
+#if NET6_0_OR_GREATER
+            AssertEqualByDiff(@this, expectedValue, "ShouldEqualByValue", null, message: message, args: args);
+#else
             Assert.That(@this, x => x.EqualsByValue(expectedValue), message, args);
+#endif
             return @this;
         }
 
@@ -44,7 +70,11 @@ namespace TestBase
             string          message = null,
             params object[] args)
         {
+#if NET6_0_OR_GREATER
+            AssertEqualByDiff(actual, expectedValue, "ShouldEqualByValue", null, message: message, args: args);
+#else
             Assert.That(actual, x => x.EqualsByValue(expectedValue), message, args);
+#endif
             return actual;
         }
 
@@ -69,10 +99,17 @@ namespace TestBase
             string              message = null,
             params object[]     args)
         {
+#if NET6_0_OR_GREATER
+            var options = DiffOptions.Default
+                .WithLabels("Expected", "Actual")
+                .WithIncludeOnly(propertiesToCompare.ToArray());
+            AssertEqualByDiff(actual, expectedValue, "ShouldEqualByValueOnMembers", null, options, message, args);
+#else
             Assert.That(actual,
                         x => x.EqualsByValuesJustOnMembersNamed(expectedValue, propertiesToCompare),
                         message,
                         args);
+#endif
             return actual;
         }
 
@@ -94,7 +131,14 @@ namespace TestBase
             object          expectedValue,
             params string[] propertiesToCompare)
         {
+#if NET6_0_OR_GREATER
+            var options = DiffOptions.Default
+                .WithLabels("Expected", "Actual")
+                .WithIncludeOnly(propertiesToCompare);
+            AssertEqualByDiff(actual, expectedValue, "ShouldEqualByValueOnProperties", null, options);
+#else
             Assert.That(actual, x => x.EqualsByValuesJustOnMembersNamed(expectedValue, propertiesToCompare));
+#endif
             return actual;
         }
 
@@ -122,7 +166,14 @@ namespace TestBase
             string              message = null,
             params object[]     args)
         {
+#if NET6_0_OR_GREATER
+            var options = DiffOptions.Default
+                .WithLabels("Expected", "Actual")
+                .WithExclusions(exclusions.ToArray());
+            AssertEqualByDiff(actual, expectedValue, "ShouldEqualByValueExceptFor", null, options, message, args);
+#else
             Assert.That(actual, x => x.EqualsByValueExceptFor(expectedValue, exclusions), message, args);
+#endif
             return actual;
         }
 
@@ -147,7 +198,14 @@ namespace TestBase
         /// <exception cref="Assertion">Returns a message indicating where the comparision failed</exception>
         public static T ShouldEqualByValueExceptFor<T>(this T actual, object expectedValue, params string[] exclusions)
         {
+#if NET6_0_OR_GREATER
+            var options = DiffOptions.Default
+                .WithLabels("Expected", "Actual")
+                .WithExclusions(exclusions);
+            AssertEqualByDiff(actual, expectedValue, "ShouldEqualByValueExceptFor", null, options);
+#else
             Assert.That(actual, x => x.EqualsByValueExceptFor(expectedValue, exclusions));
+#endif
             return actual;
         }
 
