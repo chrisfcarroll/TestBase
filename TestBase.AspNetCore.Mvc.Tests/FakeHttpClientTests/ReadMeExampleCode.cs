@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 using TestBase.HttpClient.Fake;
 
-namespace TestBase.Tests.AspNet6.FakeHttpClientTests
+namespace TestBase.AspNetCore.Mvc.Tests.FakeHttpClientTests
 {
     [TestFixture]
     public class ReadMeExampleCode

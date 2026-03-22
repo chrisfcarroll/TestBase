@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 using NUnit.Framework;
 using Ploeh.AutoFixture;
 
-namespace TestBase.Tests.AspNet6.AspNetCoreMVC
+namespace TestBase.AspNetCore.Mvc.Tests.AspNetCoreMVC
 {
     class Startup
     {

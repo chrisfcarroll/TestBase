@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TestBase.Tests.AspNet6.AssertionFailureDisplay;
+namespace TestBase.AspNetCore.Mvc.Tests.AssertionFailureDisplay;
 
 public static class AssertionFailureMessageVerifier
 {

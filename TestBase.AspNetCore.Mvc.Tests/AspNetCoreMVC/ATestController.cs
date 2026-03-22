@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace TestBase.Tests.AspNet6.AspNetCoreMVC
+namespace TestBase.AspNetCore.Mvc.Tests.AspNetCoreMVC
 {
     public class ATestController : Controller
     {
