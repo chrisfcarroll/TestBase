@@ -1,4 +1,4 @@
-﻿namespace TestBase.Tests.AspNet6
+﻿namespace TestBase.AspNetCore.Mvc.Tests
 {
     public class AClass
     {

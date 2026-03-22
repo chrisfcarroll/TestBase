@@ -111,9 +111,9 @@ public class WhenTestingControllersUsingAspNetCoreTestTestServer : HostedMvcTest
 
 See also
  - TestBase
- - TestBase.Mvc for Mvc4 and Mvc 5
  - TestBase.HttpClient.Fake
  - TestBase.AdoNet
+ - TestBase.Mvc for NetFramework AspNet Mvc 4 and 5
  - Serilog.Sinks.ListOfString 
  - Extensions.Logging.ListOfString]]></PackageDescription>
     <PackageReleaseNotes>

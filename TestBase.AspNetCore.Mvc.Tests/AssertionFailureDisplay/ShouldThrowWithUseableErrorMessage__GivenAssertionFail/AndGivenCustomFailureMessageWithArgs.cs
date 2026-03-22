@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using NUnit.Framework;
 
-namespace TestBase.Tests.AspNet6.AssertionFailureDisplay.ShouldThrowWithUseableErrorMessage__GivenAssertionFail
+namespace TestBase.AspNetCore.Mvc.Tests.AssertionFailureDisplay.ShouldThrowWithUseableErrorMessage__GivenAssertionFail
 {
     public partial class GivenAssertionFail
     {

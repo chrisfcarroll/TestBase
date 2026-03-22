@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using NUnit.Framework;
 
-namespace TestBase.Tests.AspNet6.AspNetCoreMVC
+namespace TestBase.AspNetCore.Mvc.Tests.AspNetCoreMVC
 {
     public class StubController : Controller
     {
