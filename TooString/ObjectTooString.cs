@@ -333,7 +333,7 @@ public static class ObjectTooString
             var indent=
                 (options.ReflectionOptions.Style, options.JsonOptions.WriteIndented) switch
                 {
-                    (_,true) => CrLfSpaces400.AsSpan().Slice(0, 4 + options.Depth * 2),
+                    (_,true) => NewLineSpaces400.AsSpan().Slice(0, 3 + options.Depth * 2),
                     (ReflectionStyle.Json,false) => "".AsSpan(),
                     (ReflectionStyle.DebugView,false) => " ".AsSpan(),
                     (_,_) => " ".AsSpan()
@@ -341,7 +341,7 @@ public static class ObjectTooString
             var outdent =
                 (options.ReflectionOptions.Style, options.JsonOptions.WriteIndented) switch
                 {
-                    (_,true) => CrLfSpaces400.AsSpan().Slice(0, 2 + options.Depth * 2),
+                    (_,true) => NewLineSpaces400.AsSpan().Slice(0, options.Depth * 2),
                     (ReflectionStyle.Json,false) => "".AsSpan(),
                     (ReflectionStyle.DebugView,false) => " ".AsSpan(),
                     (_,_) => "".AsSpan()
@@ -630,8 +630,8 @@ public static class ObjectTooString
         }
     }
 
-   static readonly string CrLfSpaces400 = "\r\n" + new string(' ',400);
-   static readonly string CommaCrLfSpaces400 = "," + CrLfSpaces400;
+   static readonly string NewLineSpaces400 = Environment.NewLine + new string(' ',400);
+   static readonly string CommaCrLfSpaces400 = "," + NewLineSpaces400;
    static readonly StringBuilder sb = new StringBuilder();
    static readonly SemaphoreSlim sbLock = new(1);
    static bool IsMultiDimensionalNumeric(Type type)=>
