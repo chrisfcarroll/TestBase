@@ -1,18 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>net6.0;net8.0;net10.0</TargetFrameworks>
+        <TargetFrameworks>net10.0;net8.0;net6.0</TargetFrameworks>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <LangVersion>latest</LangVersion>
     </PropertyGroup>
     
     <PropertyGroup>
-        <AssemblyVersion>0.5</AssemblyVersion>
-        <AssemblyFileVersion>0.5</AssemblyFileVersion>
-        <PackageVersion>0.5-preview</PackageVersion>
+        <AssemblyVersion>0.5.1</AssemblyVersion>
+        <AssemblyFileVersion>0.5.1</AssemblyFileVersion>
+        <PackageVersion>0.5.1-preview</PackageVersion>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
-        <Title>TooString — The ToString() method for DebugView, Json, and CallerArgumentExpression, going places that serializers don't.</Title>
+        <Title>obj.TooString() — The stringifier for DebugView, Json, and CallerArgumentExpression, going places that serializers don't.</Title>
         <PackageDescription><![CDATA[TooString() can
 - make a best effort to stringify unserializable objects.
 - Output as Json, or C# Code, or ‘debug’ output
@@ -51,6 +51,7 @@ new { A = "boo", B = new Complex(3,4) }.ToDebugViewString();
         <PackageReleaseNotes>
             ChangeLog
             ---------
+            0.5.1  ReflectionOptions.Json and JsonOptions.WriteIndented output matchs STJ indentation. | Added net10.0
             0.5.0  ReflectionOptions.MaxEnumerationLength renamed from MaxLength | Options.With(...) methods for easy configuration
             0.4.0  ReflectionOptions.MaxLength default = 9 | ReflectionOptions.ForJson and ReflectionOptions.ForDebugView instead of Default | More overloads.
             0.3.0  ReflectionOptions.MaxLength limits display of enumerable elements
