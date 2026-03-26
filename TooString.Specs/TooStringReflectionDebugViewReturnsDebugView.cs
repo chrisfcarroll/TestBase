@@ -239,11 +239,15 @@ public class TooStringReflectionDebugViewReturnsDebugView
             .GetMethods(BindingFlags.Instance|BindingFlags.Public)
             .First(m=>m.Name=="GetMethods")
             .Module;
-
+#if NET10_0_OR_GREATER
+        var expected = """
+                       { MDStreamVersion = 131072, FullyQualifiedName = --filename--, ModuleVersionId = { Variant = 11, Version = 4 }, MetadataToken = 100000000, ScopeName = System.Private.CoreLib.dll, Name = System.Private.CoreLib.dll, Assembly = { CodeBase = file:///--filename--, FullName = System.Private.CoreLib, Version=X.X.X.X, Culture=neutral, PublicKeyToken=7cec85d7bea7798e, EntryPoint = null, DefinedTypes = System.RuntimeType[2341], IsCollectible = False, ManifestModule = System.Private.CoreLib.dll, ReflectionOnly = False, Location = --filename--, ImageRuntimeVersion = v4.0.30319, GlobalAssemblyCache = False, HostContext = 0, IsDynamic = False, ExportedTypes = System.Type[1186], IsFullyTrusted = True, CustomAttributes = { Type = ReadOnlyCollection<CustomAttributeData>, Count = 22 }, EscapedCodeBase = file:///--filename--, Modules = System.Reflection.RuntimeModule[1], SecurityRuleSet = None }, ModuleHandle = { MDStreamVersion = 131072 }, CustomAttributes = { Type = ReadOnlyCollection<CustomAttributeData>, Count = 2 } }
+                       """;
+#else
         var expected = """
                        { MDStreamVersion = 131072, FullyQualifiedName = --filename--, ModuleVersionId = {  }, MetadataToken = 100000000, ScopeName = System.Private.CoreLib.dll, Name = System.Private.CoreLib.dll, Assembly = { CodeBase = file:///--filename--, FullName = System.Private.CoreLib, Version=X.X.X.X, Culture=neutral, PublicKeyToken=7cec85d7bea7798e, EntryPoint = null, DefinedTypes = System.RuntimeType[2341], IsCollectible = False, ManifestModule = System.Private.CoreLib.dll, ReflectionOnly = False, Location = --filename--, ImageRuntimeVersion = v4.0.30319, GlobalAssemblyCache = False, HostContext = 0, IsDynamic = False, ExportedTypes = System.Type[1186], IsFullyTrusted = True, CustomAttributes = { Type = ReadOnlyCollection<CustomAttributeData>, Count = 22 }, EscapedCodeBase = file:///--filename--, Modules = System.Reflection.RuntimeModule[1], SecurityRuleSet = None }, ModuleHandle = { MDStreamVersion = 131072 }, CustomAttributes = { Type = ReadOnlyCollection<CustomAttributeData>, Count = 2 } }
                        """;
-        
+#endif
         var actual = value.TooString(TooStringHow.Reflection, TooStringOptions.ForReflection(new(MaxDepth: 2)));
 
         TestContext.Progress.WriteLine(actual.RegexReplaceCompilationDependentValuesWithPseudoValues());
