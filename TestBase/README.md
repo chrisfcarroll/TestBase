@@ -10,7 +10,7 @@
 - Mix & match with your favourite test runners & assertions.
 
 ```
-UnitUnderTest.Action()
+UnitUnderTest.Method()
   .ShouldNotBeNull()
   .ShouldEqualByValueExceptFor(new {Id=1, Descr=expected}, ignoreList )
   .Payload
@@ -23,21 +23,43 @@ UnitUnderTest.Action()
     .Where(predicate)
     .SingleOrAssertFail()
 
-# works with all kinds of object and collections, and report what differed.
-objectOrCollection
- .ShouldEqualByValue().ShouldEqualByValueExceptFor(...).ShouldEqualByValueOnMembers() 
+item
+.ShouldEqualByValue()
+.ShouldEqualByValueExceptFor(...)
+.ShouldEqualByValueOnMembers()
+
 string
- .ShouldMatch(pattern).ShouldNotMatch().ShouldBeEmpty().ShouldNotBeEmpty()
- .ShouldNotBeNullOrEmptyOrWhiteSpace().ShouldEqualIgnoringCase()
- .ShouldContain().ShouldStartWith().ShouldEndWith().ShouldBeContainedIn(), ...
+.ShouldMatch(pattern)
+.ShouldNotMatch()
+.ShouldBeEmpty()
+.ShouldNotBeEmpty()
+.ShouldNotBeNullOrEmptyOrWhiteSpace()
+.ShouldEqualIgnoringCase()
+.ShouldContain()
+.ShouldBeContainedIn()
+.ShouldStartWith()
+.ShouldEndWith() ...
+
 numeric
- .ShouldBeBetween().ShouldEqualWithTolerance()....GreaterThan....LessThan...GreaterOrEqualTo ...
+.ShouldBeBetween()
+.ShouldEqualWithTolerance()....GreaterThan....LessThan...GreaterOrEqualTo ...
+
 ienumerable
- .ShouldAll().ShouldContain().ShouldNotContain().ShouldBeEmpty().ShouldNotBeEmpty() ...
+.ShouldAll()
+.ShouldContain()
+.ShouldNotContain()
+.ShouldBeEmpty()
+.ShouldNotBeEmpty() ...
+
 stream
- .ShouldHaveSameStreamContentAs().ShouldContain()
+.ShouldHaveSameStreamContentAs()
+.ShouldContain()
+
 value
- .ShouldBe().ShouldNotBe().ShouldBeOfType().ShouldBeAssignableTo()...
+.ShouldBe()
+.ShouldNotBe()
+.ShouldBeOfType()
+.ShouldBeAssignableTo() ...
 ```
 
 TestBase.HttpClient.Fake
@@ -128,11 +150,3 @@ ILogger mslogger= new LoggerFactory().AddStringListLogger(log).CreateLogger("Tes
 
 // Serilog.Sinks.ListOfString
 Serilog.Logger slogger= new LoggerConfiguration().WriteTo.StringList(log).CreateLogger();
-
-### Release Notes
-
-7.0.0   ShouldEqualByValue* methods now use TestBase.Differ for clean, readable diff output
-        showing exactly which properties, elements, or string positions differ.
-        All Should methods now create direct Assertions with clear AssertedDetail messages
-        instead of delegating through expression-tree lambdas.
-6.0.0   Better Assertion output for core asserts includes ActualValue,ActualExpression,Asserted,AssertedDetail
