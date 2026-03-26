@@ -333,7 +333,7 @@ public static class ObjectTooString
             var indent=
                 (options.ReflectionOptions.Style, options.JsonOptions.WriteIndented) switch
                 {
-                    (_,true) => NewLineSpaces400.AsSpan().Slice(0, 3 + options.Depth * 2),
+                    (_,true) => NewLineSpaces400.AsSpan().Slice(0, 1 + (options.Depth + 1) * 2),
                     (ReflectionStyle.Json,false) => "".AsSpan(),
                     (ReflectionStyle.DebugView,false) => " ".AsSpan(),
                     (_,_) => " ".AsSpan()
@@ -341,14 +341,16 @@ public static class ObjectTooString
             var outdent =
                 (options.ReflectionOptions.Style, options.JsonOptions.WriteIndented) switch
                 {
-                    (_,true) => NewLineSpaces400.AsSpan().Slice(0, options.Depth * 2),
+                    (ReflectionStyle.DebugView,true) => NewLineSpaces400.AsSpan().Slice(0, options.Depth * 2),
+                    (ReflectionStyle.Json,true) => NewLineSpaces400.AsSpan().Slice(0, 1 + (options.Depth) * 2),
                     (ReflectionStyle.Json,false) => "".AsSpan(),
                     (ReflectionStyle.DebugView,false) => " ".AsSpan(),
                     (_,_) => "".AsSpan()
                 };
             var delimiter = (options.ReflectionOptions.Style, options.JsonOptions.WriteIndented) switch
                 {
-                    (_,true) => CommaCrLfSpaces400.AsSpan().Slice(0,5 + options.Depth*2),
+                    (ReflectionStyle.DebugView,true) => CommaCrLfSpaces400.AsSpan().Slice(0,5 + options.Depth*2),
+                    (ReflectionStyle.Json,true) => CommaCrLfSpaces400.AsSpan().Slice(0,2 + (options.Depth + 1) *2),
                     (ReflectionStyle.Json, false) =>",",
                     (ReflectionStyle.DebugView, false) => ", ",
                     (_,_) => ", "
