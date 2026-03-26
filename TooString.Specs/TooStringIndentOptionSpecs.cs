@@ -24,9 +24,11 @@ public class TooStringIndentOptionSpecs
                 B = new()
                 {
                     A = "3",
-                }
+                    C = "3"
+                },
+                C = "2"
             },
-            C = "C"
+            C = "1"
         };
     }
 
