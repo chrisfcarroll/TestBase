@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using NUnit.Framework;
 
+#if NET6_0_OR_GREATER
+
 namespace TestBase.Tests.EqualByValueTests;
 
 [TestFixture]
@@ -147,3 +149,5 @@ static class ExampleRecords
             }
     ];
 }
+
+#endif

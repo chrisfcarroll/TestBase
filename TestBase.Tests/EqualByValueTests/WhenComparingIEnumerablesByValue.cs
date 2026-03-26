@@ -61,7 +61,7 @@ public class WhenComparingIEnumerablesByValue
     
     public void Should_return_false_when_left_is_shorter()
     {
-        var left = Array.Empty<int>();
+        var left = new int[0];  // Array.Empty<int>();
         var right = new[] { 1 };
         
         left.EqualsByValue(right).ShouldBeFalse();
@@ -71,7 +71,7 @@ public class WhenComparingIEnumerablesByValue
     public void Should_return_false_when_left_is_shorter(params int[] values)
     {
         var left = values;
-        var right = values.Append(1 ).ToArray();
+        var right = values.Union( [-1] );  //values.Append( 1 ).ToArray();
         
         left.EqualsByValue(right).ShouldBeFalse();
         

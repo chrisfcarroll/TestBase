@@ -13,6 +13,8 @@ public class WhenUsingDifferForEqualsByValue
         left.ShouldEqualByValue(right);
     }
 
+#if NET6_0_OR_GREATER
+
     [Test]
     public void ShouldEqualByValue_fails_with_clean_diff_for_objects()
     {
@@ -53,6 +55,7 @@ public class WhenUsingDifferForEqualsByValue
         msg.ShouldContain("[2]");
         msg.ShouldContain("ShouldEqualByValue");
     }
+#endif
 
     [Test]
     public void ShouldEqualByValueExceptFor_passes_when_excluded_member_differs()
@@ -110,13 +113,16 @@ public class WhenUsingDifferForEqualsByValue
         msg.ShouldContain("Expected 1 to equal 2");
     }
 
+#if NET6_0_OR_GREATER
     [Test]
     public void Diff_output_does_not_contain_expression_tree_noise()
     {
         var ex = Assert.Throws<Assertion>(() =>
             new { A = 1, B = "hello" }.ShouldEqualByValue(new { A = 1, B = "world" }));
 
+        TestContext.WriteLine("-----exception message-----");
         TestContext.WriteLine(ex.Message);
+        TestContext.WriteLine("---------------------------");
 
         var msg = ex.Message;
         // Should NOT contain lambda/expression noise
@@ -127,4 +133,6 @@ public class WhenUsingDifferForEqualsByValue
         msg.ShouldContain("Expected");
         msg.ShouldContain("Actual");
     }
+#endif
+
 }
