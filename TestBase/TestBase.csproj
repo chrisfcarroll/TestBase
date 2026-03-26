@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net8.0;net6.0;net5.0;net45;netstandard2.1;netstandard2.0;netstandard1.6</TargetFrameworks>
+    <TargetFrameworks>net10.0;net8.0;net6.0;net5.0;net45;netstandard2.1;netstandard2.0;netstandard1.6</TargetFrameworks>
     <AssemblyVersion>4.4.4</AssemblyVersion>
     <AssemblyFileVersion>4.4.4</AssemblyFileVersion>
     <PackageVersion>4.4.4</PackageVersion>
@@ -133,7 +133,7 @@ Serilog.Logger slogger= new LoggerConfiguration().WriteTo.StringList(log).Create
     <Reference Include="System.ComponentModel.DataAnnotations" />
   </ItemGroup>
 
-  <ItemGroup Condition=" $([System.Text.RegularExpressions.Regex]::IsMatch( '$(TargetFramework)', 'net[6789].0' )) ">
+  <ItemGroup Condition=" $([System.Text.RegularExpressions.Regex]::IsMatch( '$(TargetFramework)', 'net[67891].+' )) ">
     <ProjectReference Include="..\TooString\TooString.csproj" />
     <ProjectReference Include="..\TestBase.Differ\TestBase.Differ.csproj" />
     <PackageReference Include="ExpressionToCodeLib" Version="2.7.0" />
