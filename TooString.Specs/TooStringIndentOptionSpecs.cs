@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using NUnit.Framework.Interfaces;
 
 namespace TooString.Specs;
 
@@ -25,6 +26,7 @@ public class TooStringIndentOptionSpecs
                     A = "3",
                 }
             },
+            C = "C"
         };
     }
 
@@ -61,6 +63,11 @@ public class TooStringIndentOptionSpecs
                 o.MaxDepth = 99;
             }));
 
+        //D
+        TestContext.Out.WriteLine(expected1);
+        TestContext.Out.WriteLine(actual);
+
+        //A
         Assert.That(actual, Is.EqualTo(expected1));
 
         // var actual2 = circular.TooString(new ReflectionOptions()

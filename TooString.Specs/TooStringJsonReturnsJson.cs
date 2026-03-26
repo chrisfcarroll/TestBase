@@ -87,7 +87,7 @@ public class TooStringJsonReturnsJson
         var value = new Circular{ A = "boo"};
         value.B = value;
         var expected = 
-            "{\"A\":\"boo\",\"B\":null}";
+            "{\"A\":\"boo\",\"B\":null,\"C\":null}";
         
         Assert.That(
             value.TooString(TooStringHow.Json), 
@@ -229,4 +229,4 @@ class CompositeA
     public override string ToString() => new { A, B }.ToString()!;
 }
 
-class Circular { public string? A { get; set; } public Circular? B { get; set; } }
+class Circular { public string? A { get; set; } public Circular? B { get; set; } public string? C { get; set; }}

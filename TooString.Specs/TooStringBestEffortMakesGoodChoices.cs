@@ -53,7 +53,7 @@ public class TooStringBestEffortMakesGoodChoices
         var value = new Circular{ A = "boo"};
         value.B = value;
         var expected = 
-            "{\"A\":\"boo\",\"B\":null}";
+            "{\"A\":\"boo\",\"B\":null,\"C\":null}";
         
         Assert.That(
             value.TooString(), 
