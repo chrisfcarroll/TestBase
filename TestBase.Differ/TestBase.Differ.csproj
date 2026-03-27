@@ -8,7 +8,40 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>1591</NoWarn>
   </PropertyGroup>
+
+  <PropertyGroup>
+    <AssemblyVersion>0.1</AssemblyVersion>
+    <AssemblyFileVersion>0.1</AssemblyFileVersion>
+    <PackageVersion>0.1-preview</PackageVersion>
+    <Title>TestBase.Differ — Object Differ using TooString</Title>
+    <PackageDescription><![CDATA[TestBase.Differ provides deep comparison of objects, collections and strings,
+    with human readable output options.
+```csharp
+var result = Differ.Diff(expected, actual, options);
+if (!result) // Implicit bool conversion
+{
+    Console.WriteLine(result.ToString());
+}
+```
+]]></PackageDescription>
+    <PackageReleaseNotes>
+      ChangeLog
+      ---------
+      0.1.0 : Initial pre-release
+    </PackageReleaseNotes>
+    <Copyright>(c) Chris F. Carroll, 2024-2026</Copyright>
+    <PackageLicenseExpression>LGPL-2.1-or-later</PackageLicenseExpression>
+    <Authors>Chris F Carroll</Authors>
+    <Owners>Chris F Carroll</Owners>
+    <PackageProjectUrl>https://github.com/chrisfcarroll/TestBase</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/chrisfcarroll/TestBase</RepositoryUrl>
+    <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
+    <IncludeSymbols>true</IncludeSymbols>
+    <PackageTags>test;unittest;tdd;fluent assertions;differ;diff;reflection;TooString</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
   <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
     <ProjectReference Include="..\TooString\TooString.csproj" />
   </ItemGroup>
 </Project>
