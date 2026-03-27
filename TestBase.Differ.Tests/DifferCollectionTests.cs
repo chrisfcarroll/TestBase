@@ -262,4 +262,71 @@ public class DifferCollectionTests
         //A
         Assert.That(result.AreEqual, Is.False);
     }
+
+    [Test]
+    public void IgnoreOrder_same_elements_different_order_are_equal()
+    {
+        var left = new[] { 1, 2, 3 };
+        var right = new[] { 3, 1, 2 };
+        var result = Differ.Diff(left, right, new DiffOptions { IgnoreOrder = true });
+        Assert.That(result.AreEqual, Is.True);
+    }
+
+    [Test]
+    public void IgnoreOrder_missing_element()
+    {
+        var left = new[] { 1, 2, 3 };
+        var right = new[] { 1, 2 };
+        var result = Differ.Diff(left, right, new DiffOptions { IgnoreOrder = true });
+        //D
+        TestContext.Progress.WriteLine(result.ToString());
+        //A
+        Assert.That(result.AreEqual, Is.False);
+        Assert.That(result.ToString(), Does.Contain("3") & Does.Contain("no match"));
+    }
+
+    [Test]
+    public void IgnoreOrder_extra_element()
+    {
+        var left = new[] { 1, 2 };
+        var right = new[] { 1, 2, 3 };
+        var result = Differ.Diff(left, right, new DiffOptions { IgnoreOrder = true });
+        //D
+        TestContext.Progress.WriteLine(result.ToString());
+        //A
+        Assert.That(result.AreEqual, Is.False);
+        Assert.That(result.ToString(), Does.Contain("3") & Does.Contain("no match"));
+    }
+
+    [Test]
+    public void IgnoreOrder_objects_same_different_order()
+    {
+        var left = new[] { new { Id = 1 }, new { Id = 2 } };
+        var right = new[] { new { Id = 2 }, new { Id = 1 } };
+        var result = Differ.Diff(left, right, new DiffOptions { IgnoreOrder = true });
+        Assert.That(result.AreEqual, Is.True);
+    }
+
+    [Test]
+    public void MaxCollectionLength_truncates_comparison()
+    {
+        var left = new[] { 1, 2, 3, 4, 5 };
+        var right = new[] { 1, 2, 9, 9, 9 };
+        var result = Differ.Diff(left, right, new DiffOptions { MaxCollectionLength = 2 });
+        // Only first 2 elements compared, which are equal
+        Assert.That(result.AreEqual, Is.True);
+    }
+
+    [Test]
+    public void MaxCollectionLength_still_finds_diffs_within_limit()
+    {
+        var left = new[] { 1, 2, 3, 4, 5 };
+        var right = new[] { 1, 9, 3, 4, 5 };
+        var result = Differ.Diff(left, right, new DiffOptions { MaxCollectionLength = 3, MaxDifferences = 10 });
+        //D
+        TestContext.Progress.WriteLine(result.ToString());
+        //A
+        Assert.That(result.AreEqual, Is.False);
+        Assert.That(result.ToString(), Does.Contain("[1]"));
+    }
 }

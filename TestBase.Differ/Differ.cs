@@ -153,7 +153,29 @@ public static class Differ
     {
         var leftList = left.Cast<object?>().ToList();
         var rightList = right.Cast<object?>().ToList();
+
+        // Apply MaxCollectionLength limit
+        var maxLen = opts.MaxCollectionLength > 0 ? opts.MaxCollectionLength : int.MaxValue;
+        var leftTruncated = leftList.Count > maxLen;
+        var rightTruncated = rightList.Count > maxLen;
+        if (leftTruncated) leftList = leftList.Take(maxLen).ToList();
+        if (rightTruncated) rightList = rightList.Take(maxLen).ToList();
+
         var diffs = new List<DiffResult>();
+
+        if (opts.IgnoreOrder)
+            DiffCollectionsUnordered(leftList, rightList, path, opts, visited, depth, diffs);
+        else
+            DiffCollectionsOrdered(leftList, rightList, path, opts, visited, depth, diffs);
+
+        if (diffs.Count == 0) return DiffResult.Equal;
+        return DiffResult.WithChildren(path, diffs);
+    }
+
+    static void DiffCollectionsOrdered(
+        List<object?> leftList, List<object?> rightList, string path,
+        DiffOptions opts, HashSet<object> visited, int depth, List<DiffResult> diffs)
+    {
         int maxItems = Math.Max(leftList.Count, rightList.Count);
         int diffsFound = 0;
 
@@ -179,11 +201,50 @@ public static class Differ
                 }
             }
         }
+    }
 
-        // Skip redundant length message - the "missing" entries already show length difference
+    static void DiffCollectionsUnordered(
+        List<object?> leftList, List<object?> rightList, string path,
+        DiffOptions opts, HashSet<object> visited, int depth, List<DiffResult> diffs)
+    {
+        var matchedRight = new bool[rightList.Count];
+        int diffsFound = 0;
 
-        if (diffs.Count == 0) return DiffResult.Equal;
-        return DiffResult.WithChildren(path, diffs);
+        // For each item in left, find a matching item in right
+        for (int li = 0; li < leftList.Count && diffsFound < opts.MaxDifferences; li++)
+        {
+            var leftItem = leftList[li];
+            bool found = false;
+
+            for (int ri = 0; ri < rightList.Count; ri++)
+            {
+                if (matchedRight[ri]) continue;
+
+                var itemDiff = DiffCore(leftItem, rightList[ri], "", opts, visited, depth + 1);
+                if (itemDiff.AreEqual)
+                {
+                    matchedRight[ri] = true;
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found)
+            {
+                diffs.Add(DiffResult.Different($"{path}[{li}]", Stringify(leftItem), "no match"));
+                diffsFound++;
+            }
+        }
+
+        // Report unmatched items from right
+        for (int ri = 0; ri < rightList.Count && diffsFound < opts.MaxDifferences; ri++)
+        {
+            if (!matchedRight[ri])
+            {
+                diffs.Add(DiffResult.Different($"{path}[+{ri}]", "no match", Stringify(rightList[ri])));
+                diffsFound++;
+            }
+        }
     }
 
     static DiffResult DiffDictionaries(

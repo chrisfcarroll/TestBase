@@ -45,6 +45,12 @@ public record DiffOptions
     /// <summary>Whether null is seen as equal to an empty collection. Default false.</summary>
     public bool NullEqualsEmptyCollection { get; init; }
 
+    /// <summary>Whether to ignore collection order when comparing. Default false.</summary>
+    public bool IgnoreOrder { get; init; }
+
+    /// <summary>Maximum number of collection elements to compare (0 = unlimited).</summary>
+    public int MaxCollectionLength { get; init; }
+
     public DiffOptions WithExclusions(params string[] members)
         => this with { ExcludeMembers = members };
 
