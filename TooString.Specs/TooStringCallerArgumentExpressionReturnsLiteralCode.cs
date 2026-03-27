@@ -65,7 +65,7 @@ public class TooStringCallerArgumentExpressionReturnsLiteralCode
     public void GivenAnAnonymousObjectInitializer()
     {
         var newCompositeA = 
-            new { A = "boo", B = new Complex(123,45) }.TooString(TooStringHow.CSharpCode);
+            new { A = "boo", B = new Complex(123,45) }.TooString(TooStringHow.CallerArgument);
         
         TestContext.Progress.WriteLine(newCompositeA);
         Assert.That( 

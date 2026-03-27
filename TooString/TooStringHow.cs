@@ -21,20 +21,16 @@ public enum TooStringHow
     CallerArgument,
     
     /// <summary>Use
-    /// <see cref="CallerArgumentExpressionAttribute"/> available on Net5.0 and above
     /// </summary>
-    CSharpCode=CallerArgument,
+    CSharpCode,
 
     /// <summary>Use
     /// <see cref="JsonSerializer.Serialize(object?,System.Type,System.Text.Json.JsonSerializerOptions?)"/>
     /// </summary>
     Json,
 
-    /// <summary>Use
-    /// <c>value.GetType().GetTypeInfo()
-    ///     .GetProperties(whichProperties)
-    ///     .Select(p => $"{p.Name}={p.GetValue(obj)}"))</c>
-    /// similar to typical debugger watch expression display.
+    /// <summary>
+    /// Use Reflection to stringify in a choice of styles: See <see cref="ReflectionStyle"/>
     /// </summary>
     Reflection,
 
