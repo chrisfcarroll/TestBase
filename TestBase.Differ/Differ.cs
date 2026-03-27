@@ -157,16 +157,12 @@ public static class Differ
         {
             if (i >= leftList.Count)
             {
-                diffs.Add(DiffResult.Different(
-                    $"{path}[{i}]", "missing", Stringify(rightList[i]),
-                    $"right has extra element at index {i}"));
+                diffs.Add(DiffResult.Different($"{path}[{i}]", "missing", Stringify(rightList[i])));
                 diffsFound++;
             }
             else if (i >= rightList.Count)
             {
-                diffs.Add(DiffResult.Different(
-                    $"{path}[{i}]", Stringify(leftList[i]), "missing",
-                    $"left has extra element at index {i}"));
+                diffs.Add(DiffResult.Different($"{path}[{i}]", Stringify(leftList[i]), "missing"));
                 diffsFound++;
             }
             else
@@ -180,24 +176,10 @@ public static class Differ
             }
         }
 
-        if (leftList.Count != rightList.Count && diffsFound < opts.MaxDifferences)
-        {
-            // Only add length mismatch if not already covered by element diffs
-            var alreadyCoveredByElements = diffs.Any(d =>
-                d.Message?.Contains("extra element") == true || d.Message?.Contains("missing") == true);
-            if (!alreadyCoveredByElements)
-            {
-                diffs.Insert(0, DiffResult.Different(path, leftList.Count.ToString(), rightList.Count.ToString(),
-                    "collection lengths differ"));
-            }
-        }
+        // Skip redundant length message - the "missing" entries already show length difference
 
         if (diffs.Count == 0) return DiffResult.Equal;
-
-        var lengthNote = leftList.Count != rightList.Count
-            ? $"collections differ (lengths {leftList.Count} vs {rightList.Count})"
-            : "collections differ";
-        return DiffResult.WithChildren(path, diffs, lengthNote);
+        return DiffResult.WithChildren(path, diffs);
     }
 
     static DiffResult DiffMembers(

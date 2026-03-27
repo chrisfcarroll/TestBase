@@ -83,6 +83,16 @@ public class DiffResult
 
         if (Children.Count > 0)
         {
+            // Skip intermediate "collections differ" containers - flatten to leaf diffs
+            if (CanFlattenChildren())
+            {
+                foreach (var child in Children)
+                {
+                    child.AppendTo(sb, indent);
+                }
+                return;
+            }
+
             if (!string.IsNullOrEmpty(Path) || !string.IsNullOrEmpty(Message))
             {
                 sb.Append(prefix);
@@ -95,6 +105,19 @@ public class DiffResult
                 child.AppendTo(sb, indent + (string.IsNullOrEmpty(Path) ? 0 : 1));
             }
         }
+    }
+
+    /// <summary>
+    /// Returns true if this container's children already have the path info
+    /// and we can skip printing this container level.
+    /// </summary>
+    bool CanFlattenChildren()
+    {
+        // If this is a root level (empty path) or all children have full paths, we can flatten
+        if (string.IsNullOrEmpty(Path)) return true;
+
+        // If all children are leaf diffs with values (not nested containers), flatten
+        return Children.All(c => c.LeftValue is not null || c.RightValue is not null || c.CanFlattenChildren());
     }
 
     public static implicit operator bool(DiffResult result) => result.AreEqual;

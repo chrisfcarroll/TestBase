@@ -33,7 +33,7 @@ public class DifferCollectionTests
         //A
         Assert.That(result.AreEqual, Is.False);
         var text = result.ToString();
-        Assert.That(text, Does.Contain("lengths"));
+        Assert.That(text, Does.Contain("[2]") & Does.Contain("missing"));
     }
 
     [Test]
@@ -45,7 +45,7 @@ public class DifferCollectionTests
         //A
         Assert.That(result.AreEqual, Is.False);
         var text = result.ToString();
-        Assert.That(text, Does.Contain("lengths") | Does.Contain("extra"));
+        Assert.That(text, Does.Contain("[2]") & Does.Contain("missing"));
     }
 
     [Test]
