@@ -5,7 +5,9 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
+#if !NET6_0_OR_GREATER
 using ExpressionToCodeLib;
+#endif
 
 // ReSharper disable InconsistentNaming
 
@@ -52,9 +54,14 @@ namespace TestBase
             string                    comment = null,
             params object[]           args)
         {
+#if NET6_0_OR_GREATER
+            var predicateText = predicate.ToString();
+#else
+            var predicateText = ExpressionToCode.ToCode((Expression) predicate);
+#endif
             return Assert.That(actual,
                                a => a.Any(predicate.Compile()),
-                               comment ?? $"Should contain {ExpressionToCode.ToCode((Expression) predicate)}",
+                               comment ?? $"Should contain {predicateText}",
                                args);
         }
 
@@ -70,9 +77,14 @@ namespace TestBase
             string                    comment = null,
             params object[]           args)
         {
+#if NET6_0_OR_GREATER
+            var predicateText = predicate.ToString();
+#else
+            var predicateText = ExpressionToCode.ToCode((Expression) predicate);
+#endif
             return Assert.That(actual,
                                a => !a.Any(predicate.Compile()),
-                               comment ?? $"Should not contain {ExpressionToCode.ToCode((Expression) predicate)}",
+                               comment ?? $"Should not contain {predicateText}",
                                args);
         }
 
