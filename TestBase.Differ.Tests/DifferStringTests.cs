@@ -23,6 +23,9 @@ public class DifferStringTests
     public void Different_strings_show_index_and_snippet()
     {
         var result = Differ.Diff("hello world", "hello World");
+        //D
+        TestContext.Progress.WriteLine(result.ToString());
+        //A
         Assert.That(result.AreEqual, Is.False);
         var text = result.ToString();
         Assert.That(text, Does.Contain("index 6"));
@@ -33,6 +36,9 @@ public class DifferStringTests
     public void Different_length_strings_show_lengths()
     {
         var result = Differ.Diff("short", "short and long");
+        //D
+        TestContext.Progress.WriteLine(result.ToString());
+        //A
         Assert.That(result.AreEqual, Is.False);
         var text = result.ToString();
         Assert.That(text, Does.Contain("5"));
@@ -45,6 +51,9 @@ public class DifferStringTests
         var left = new string('a', 100) + "X" + new string('b', 100);
         var right = new string('a', 100) + "Y" + new string('b', 100);
         var result = Differ.Diff(left, right);
+        //D
+        TestContext.Progress.WriteLine(result.ToString());
+        //A
         Assert.That(result.AreEqual, Is.False);
         var text = result.ToString();
         Assert.That(text, Does.Contain("index 100"));
@@ -55,6 +64,9 @@ public class DifferStringTests
     public void Null_vs_string_shows_null()
     {
         var result = Differ.Diff(null, "hello");
+        //D
+        TestContext.Progress.WriteLine(result.ToString());
+        //A
         Assert.That(result.AreEqual, Is.False);
         var text = result.ToString();
         Assert.That(text, Does.Contain("null"));
@@ -64,6 +76,9 @@ public class DifferStringTests
     public void String_vs_null_shows_null()
     {
         var result = Differ.Diff("hello", null);
+        //D
+        TestContext.Progress.WriteLine(result.ToString());
+        //A
         Assert.That(result.AreEqual, Is.False);
         var text = result.ToString();
         Assert.That(text, Does.Contain("null"));
@@ -80,6 +95,9 @@ public class DifferStringTests
     public void Empty_vs_null_are_not_equal()
     {
         var result = Differ.Diff("", null);
+        //D
+        TestContext.Progress.WriteLine(result.ToString());
+        //A
         Assert.That(result.AreEqual, Is.False);
     }
 }

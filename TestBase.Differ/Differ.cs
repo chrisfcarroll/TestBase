@@ -34,8 +34,11 @@ public static class Differ
     {
         // Both null
         if (left is null && right is null) return DiffResult.Equal;
-        if (left is DBNull && right is null) return DiffResult.Equal;
-        if (left is null && right is DBNull) return DiffResult.Equal;
+        if (opts.NullEqualsDbNull)
+        {
+            if (left is DBNull && right is null) return DiffResult.Equal;
+            if (left is null && right is DBNull) return DiffResult.Equal;
+        }
 
         // Reference equality
         if (ReferenceEquals(left, right)) return DiffResult.Equal;
@@ -43,13 +46,13 @@ public static class Differ
         // One is null
         if (left is null)
         {
-            if (right is IEnumerable e && right is not string && !HasElements(e))
+            if (opts.NullEqualsEmptyCollection && right is IEnumerable e && right is not string && !HasElements(e))
                 return DiffResult.Equal;
             return DiffResult.Different(path, "null", Stringify(right), "one side is null");
         }
         if (right is null)
         {
-            if (left is IEnumerable e && left is not string && !HasElements(e))
+            if (opts.NullEqualsEmptyCollection && left is IEnumerable e && left is not string && !HasElements(e))
                 return DiffResult.Equal;
             return DiffResult.Different(path, Stringify(left), "null", "one side is null");
         }

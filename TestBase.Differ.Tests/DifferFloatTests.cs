@@ -16,6 +16,9 @@ public class DifferFloatTests
     public void Different_doubles_outside_default_tolerance()
     {
         var result = Differ.Diff(1.0, 1.1);
+        //D
+        TestContext.Progress.WriteLine(result.ToString());
+        //A
         Assert.That(result.AreEqual, Is.False);
     }
 
@@ -30,6 +33,9 @@ public class DifferFloatTests
     public void Custom_tolerance_rejects_too_large_difference()
     {
         var result = Differ.Diff(1.0, 1.2, new DiffOptions { FloatTolerance = 0.1 });
+        //D
+        TestContext.Progress.WriteLine(result.ToString());
+        //A
         Assert.That(result.AreEqual, Is.False);
         Assert.That(result.ToString(), Does.Contain("tolerance"));
     }
@@ -45,6 +51,9 @@ public class DifferFloatTests
     public void Different_floats()
     {
         var result = Differ.Diff(1.0f, 2.0f);
+        //D
+        TestContext.Progress.WriteLine(result.ToString());
+        //A
         Assert.That(result.AreEqual, Is.False);
     }
 
@@ -59,6 +68,29 @@ public class DifferFloatTests
     public void Different_decimals()
     {
         var result = Differ.Diff(1.0m, 2.0m);
+        //D
+        TestContext.Progress.WriteLine(result.ToString());
+        //A
+        Assert.That(result.AreEqual, Is.False);
+    }
+
+    [Test]
+    public void Nested_double_within_tolerance_is_equal()
+    {
+        var left = new { field = new { Id = 1d, Name = "1" } };
+        var right = new { field = new { Id = 1d + 5e-15d, Name = "1" } };
+        Assert.That(Differ.Diff(left, right).AreEqual, Is.True);
+    }
+
+    [Test]
+    public void Nested_double_outside_tolerance_is_different()
+    {
+        var left = new { field = new { Id = 1d, Name = "1" } };
+        var right = new { field = new { Id = 1d + 1.5e-14d, Name = "1" } };
+        var result = Differ.Diff(left, right);
+        //D
+        TestContext.Progress.WriteLine(result.ToString());
+        //A
         Assert.That(result.AreEqual, Is.False);
     }
 }
