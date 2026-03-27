@@ -309,6 +309,9 @@ public static class Differ
         {
             if (diffsFound >= opts.MaxDifferences) break;
 
+            // Skip compiler-generated properties (e.g., EqualityContract on records)
+            if (IsUnwantedCompilerGenerated(prop)) continue;
+
             var memberPath = string.IsNullOrEmpty(path) ? prop.Name : $"{path}.{prop.Name}";
 
             if (IsExcluded(memberPath, opts)) continue;
@@ -390,6 +393,10 @@ public static class Differ
         foreach (var prop in rightType.GetProperties(bindingFlags | BindingFlags.GetProperty))
         {
             if (diffsFound >= opts.MaxDifferences) break;
+
+            // Skip compiler-generated properties (e.g., EqualityContract on records)
+            if (IsUnwantedCompilerGenerated(prop)) continue;
+
             var memberPath = string.IsNullOrEmpty(path) ? prop.Name : $"{path}.{prop.Name}";
             if (IsExcluded(memberPath, opts)) continue;
             if (!IsIncluded(memberPath, opts)) continue;
@@ -486,6 +493,28 @@ public static class Differ
     static bool IsRecord(Type type)
     {
         return type.GetMethod("<Clone>$", BindingFlags.Public | BindingFlags.Instance) is not null;
+    }
+
+    /// <summary>
+    /// Compiler-generated member names that should be skipped during comparison.
+    /// These are internal implementation details, not meaningful data properties.
+    /// </summary>
+    static readonly HashSet<string> UnwantedCompilerGeneratedMembers = new()
+    {
+        "EqualityContract"  // Record's Type property used for equality comparison
+    };
+
+    static bool IsUnwantedCompilerGenerated(PropertyInfo prop)
+    {
+        // Check if it's a known unwanted compiler-generated member
+        if (UnwantedCompilerGeneratedMembers.Contains(prop.Name))
+            return true;
+
+        // Check if the property itself has CompilerGeneratedAttribute
+        if (Attribute.IsDefined(prop, typeof(CompilerGeneratedAttribute)))
+            return true;
+
+        return false;
     }
 
     static string Stringify(object? value)
