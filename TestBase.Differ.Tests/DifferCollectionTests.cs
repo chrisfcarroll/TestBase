@@ -121,4 +121,45 @@ public class DifferCollectionTests
         var result = Differ.Diff(left, right);
         Assert.That(result.AreEqual, Is.False);
     }
+
+    [Test]
+    public void Reversed_int_array_is_different()
+    {
+        var left = new[] { 1, 2, 3 };
+        var right = new[] { 3, 2, 1 };
+        Assert.That(Differ.Diff(left, right).AreEqual, Is.False);
+    }
+
+    [Test]
+    public void Reversed_string_array_is_different()
+    {
+        var left = new[] { "1", "2", "3" };
+        var right = new[] { "3", "2", "1" };
+        Assert.That(Differ.Diff(left, right).AreEqual, Is.False);
+    }
+
+    [Test]
+    public void Array_vs_list_with_same_anonymous_objects()
+    {
+        var item = new { Id = 1, Name = "1" };
+        var left = new[] { item };
+        var right = new List<object> { new { Id = 1, Name = "1" } };
+        Assert.That(Differ.Diff(left, right).AreEqual, Is.True);
+    }
+
+    [Test]
+    public void Array_vs_list_with_different_anonymous_objects()
+    {
+        var left = new[] { new { Id = 1, Name = "1" } };
+        var right = new[] { new { Id = 1, Name = "2" } };
+        Assert.That(Differ.Diff(left, right).AreEqual, Is.False);
+    }
+
+    [Test]
+    public void Left_shorter_than_right()
+    {
+        var left = Array.Empty<int>();
+        var right = new[] { 1 };
+        Assert.That(Differ.Diff(left, right).AreEqual, Is.False);
+    }
 }

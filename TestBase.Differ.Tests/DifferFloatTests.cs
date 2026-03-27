@@ -61,4 +61,20 @@ public class DifferFloatTests
         var result = Differ.Diff(1.0m, 2.0m);
         Assert.That(result.AreEqual, Is.False);
     }
+
+    [Test]
+    public void Nested_double_within_tolerance_is_equal()
+    {
+        var left = new { field = new { Id = 1d, Name = "1" } };
+        var right = new { field = new { Id = 1d + 5e-15d, Name = "1" } };
+        Assert.That(Differ.Diff(left, right).AreEqual, Is.True);
+    }
+
+    [Test]
+    public void Nested_double_outside_tolerance_is_different()
+    {
+        var left = new { field = new { Id = 1d, Name = "1" } };
+        var right = new { field = new { Id = 1d + 1.5e-14d, Name = "1" } };
+        Assert.That(Differ.Diff(left, right).AreEqual, Is.False);
+    }
 }
