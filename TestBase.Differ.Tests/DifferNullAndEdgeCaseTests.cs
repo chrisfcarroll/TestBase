@@ -88,6 +88,59 @@ public class DifferNullAndEdgeCaseTests
         Assert.That(notEqualTyped.AreEqual, Is.False);
     }
 
+    [Test]
+    public void NullEqualsMissingProperty_default_is_true()
+    {
+        var left = new { A = 1, B = (string?)null };
+        var right = new { A = 1 };
+        var result = Differ.Diff(left, right);
+        Assert.That(result.AreEqual, Is.True);
+    }
+
+    [Test]
+    public void NullEqualsMissingProperty_set_to_false()
+    {
+        var left = new { A = 1, B = (string?)null };
+        var right = new { A = 1 };
+        var opts = new DiffOptions { NullEqualsMissingProperty = false };
+        var result = Differ.Diff(left, right, opts);
+        Assert.That(result.AreEqual, Is.False);
+        Assert.That(result.ToString(), Does.Contain("property missing on right"));
+    }
+
+    [Test]
+    public void NullEqualsMissingProperty_missing_on_left()
+    {
+        var left = new { A = 1 };
+        var right = new { A = 1, B = (string?)null };
+        var result = Differ.Diff(left, right);
+        Assert.That(result.AreEqual, Is.True);
+
+        var opts = new DiffOptions { NullEqualsMissingProperty = false };
+        var result2 = Differ.Diff(left, right, opts);
+        Assert.That(result2.AreEqual, Is.False);
+        Assert.That(result2.ToString(), Does.Contain("property missing on left"));
+    }
+
+    [Test]
+    public void NullEqualsMissingProperty_applies_to_fields()
+    {
+        var left = new TypeWithField { X = null };
+        var right = new TypeWithoutField { };
+        
+        // Default (true)
+        Assert.That(Differ.Diff(left, right).AreEqual, Is.True);
+        Assert.That(Differ.Diff(right, left).AreEqual, Is.True);
+
+        // False
+        var opts = new DiffOptions { NullEqualsMissingProperty = false };
+        Assert.That(Differ.Diff(left, right, opts).AreEqual, Is.False);
+        Assert.That(Differ.Diff(right, left, opts).AreEqual, Is.False);
+    }
+
+    class TypeWithField { public string? X; }
+    class TypeWithoutField { }
+
     class CyclicNode
     {
         public int Value { get; set; }

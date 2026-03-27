@@ -322,6 +322,12 @@ public static class Differ
                 var rightProp = rightType.GetProperty(prop.Name, bindingFlags | BindingFlags.GetProperty);
                 if (rightProp is null)
                 {
+                    if (opts.NullEqualsMissingProperty)
+                    {
+                        var leftValP = prop.GetValue(left);
+                        if (leftValP is null) continue;
+                    }
+
                     diffs.Add(DiffResult.Different(memberPath, "exists", "missing", "property missing on right"));
                     diffsFound++;
                     continue;
@@ -356,6 +362,12 @@ public static class Differ
                     var rightField = rightType.GetField(field.Name, BindingFlags.Public | BindingFlags.Instance);
                     if (rightField is null)
                     {
+                        if (opts.NullEqualsMissingProperty)
+                        {
+                            var leftVal2 = field.GetValue(left);
+                            if (leftVal2 is null) continue;
+                        }
+
                         diffs.Add(DiffResult.Different(memberPath, "exists", "missing", "field missing on right"));
                         diffsFound++;
                         continue;
@@ -386,8 +398,48 @@ public static class Differ
             var leftProp = leftType.GetProperty(prop.Name, bindingFlags | BindingFlags.GetProperty);
             if (leftProp is null)
             {
+                if (opts.NullEqualsMissingProperty)
+                {
+                    try
+                    {
+                        if (prop.GetGetMethod(true)?.GetParameters().Length != 0) continue;
+                        var rightVal = prop.GetValue(right);
+                        if (rightVal is null) continue;
+                    }
+                    catch { }
+                }
+
                 diffs.Add(DiffResult.Different(memberPath, "missing", "exists", "property missing on left"));
                 diffsFound++;
+            }
+        }
+
+        // Check for fields on right that left doesn't have
+        if (!opts.PublicPropertiesOnly && !opts.WritablePropertiesOnly)
+        {
+            foreach (var field in rightType.GetFields(BindingFlags.Public | BindingFlags.Instance))
+            {
+                if (diffsFound >= opts.MaxDifferences) break;
+                var memberPath = string.IsNullOrEmpty(path) ? field.Name : $"{path}.{field.Name}";
+                if (IsExcluded(memberPath, opts)) continue;
+                if (!IsIncluded(memberPath, opts)) continue;
+
+                var leftField = leftType.GetField(field.Name, BindingFlags.Public | BindingFlags.Instance);
+                if (leftField is null)
+                {
+                    if (opts.NullEqualsMissingProperty)
+                    {
+                        try
+                        {
+                            var rightVal = field.GetValue(right);
+                            if (rightVal is null) continue;
+                        }
+                        catch { }
+                    }
+
+                    diffs.Add(DiffResult.Different(memberPath, "missing", "exists", "field missing on left"));
+                    diffsFound++;
+                }
             }
         }
 

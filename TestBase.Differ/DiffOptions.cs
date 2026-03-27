@@ -45,6 +45,9 @@ public record DiffOptions
     /// <summary>Whether null is seen as equal to an empty collection. Default false.</summary>
     public bool NullEqualsEmptyCollection { get; init; }
 
+    /// <summary>Whether a null property value is seen as equal to a missing property on the other side. Default true.</summary>
+    public bool NullEqualsMissingProperty { get; init; } = true;
+
     /// <summary>Whether to ignore collection order when comparing. Default false.</summary>
     public bool IgnoreOrder { get; init; }
 

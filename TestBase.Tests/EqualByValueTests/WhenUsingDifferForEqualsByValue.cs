@@ -13,6 +13,41 @@ public class WhenUsingDifferForEqualsByValue
         left.ShouldEqualByValue(right);
     }
 
+    [Test]
+    public void ShouldEqualByValue_passes_when_different_types_structurally_equal_treating_null_equals_missing_property()
+    {
+        var left = new AClass() { Id = 1, Name = "Alice" };
+        var right = new { Id = 1, Name = "Alice" };
+
+        //D
+        TestContext.WriteLine(left.ToJSon());
+        TestContext.WriteLine(right.ToJSon());
+        //A
+#if NET6_0_OR_GREATER
+        left.ShouldEqualByValue(right);
+#else
+        right.ShouldEqualByValue(left);
+#endif
+    }
+
+    [Test]
+    public void ShouldEqualByValue_passes_when_different_types_structurally()
+    {
+        var left = new AClass() { Id = 1, Name = "Alice" };
+        var right = new { Id = 1, Name = "Alice", More =null as object };
+
+        left.ShouldEqualByValue(right);
+    }
+
+    [Test]
+    public void ShouldEqualByValue_FAILS_when_different_types_not_structurally_equal()
+    {
+        var left = new AClass() { Id = 1, Name = "Alice" };
+        var right = new { Id = 1, Name = "Alice", SomethingElse = "unexpected" };
+
+        Assert.Throws<Assertion>(() => left.ShouldEqualByValue(right));
+    }
+
 #if NET6_0_OR_GREATER
 
     [Test]
@@ -22,8 +57,10 @@ public class WhenUsingDifferForEqualsByValue
         var right = new { Id = 1, Name = "Bob" };
         var ex = Assert.Throws<Assertion>(() => left.ShouldEqualByValue(right));
 
+        // D
         TestContext.WriteLine(ex.Message);
 
+        // A
         var msg = ex.Message;
         msg.ShouldContain("Name");
         msg.ShouldContain("Alice");
@@ -112,6 +149,49 @@ public class WhenUsingDifferForEqualsByValue
         var msg = ex.Message;
         msg.ShouldContain("Expected 1 to equal 2");
     }
+
+#if NET6_0_OR_GREATER
+    [Test]
+    public void ShouldEqualByValue_with_DiffOptions_can_be_used()
+    {
+        var left = new { Id = 1, Name = "Alice", Secret = "xyz" };
+        var right = new { Id = 1, Name = "Bob", Secret = "abc" };
+
+        var options = DiffOptions.Default
+            .WithExclusions("Name", "Secret");
+
+        // Should pass because we're excluding the differing properties
+        left.ShouldEqualByValue(right, options);
+    }
+
+    [Test]
+    public void ShouldEqualByValue_with_DiffOptions_fails_when_not_excluded()
+    {
+        var left = new { Id = 1, Name = "Alice" };
+        var right = new { Id = 1, Name = "Bob" };
+
+        var options = DiffOptions.Default;
+
+        var ex = Assert.Throws<Assertion>(() => left.ShouldEqualByValue(right, options));
+
+        TestContext.WriteLine(ex.Message);
+        ex.Message.ShouldContain("Name");
+    }
+
+    [Test]
+    public void ShouldEqualByValue_with_DiffOptions_and_custom_message()
+    {
+        var left = new { Id = 1 };
+        var right = new { Id = 2 };
+        var options = DiffOptions.Default;
+
+        var ex = Assert.Throws<Assertion>(() =>
+            left.ShouldEqualByValue(right, options, "Custom message {0}", "here"));
+
+        TestContext.WriteLine(ex.Message);
+        ex.Message.ShouldContain("Custom message here");
+    }
+#endif
 
 #if NET6_0_OR_GREATER
     [Test]

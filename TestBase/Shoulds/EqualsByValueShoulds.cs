@@ -30,6 +30,26 @@ namespace TestBase
                 comment,
                 false);
         }
+
+        /// <summary>
+        ///     Assert equality-by-value using custom <see cref="DiffOptions"/>.
+        /// </summary>
+        /// <param name="actual"></param>
+        /// <param name="expectedValue"></param>
+        /// <param name="options"></param>
+        /// <param name="message"></param>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        public static T ShouldEqualByValue<T>(
+            this T          actual,
+            object          expectedValue,
+            DiffOptions     options,
+            string          message = null,
+            params object[] args)
+        {
+            AssertEqualByDiff(actual, expectedValue, "ShouldEqualByValue", null, options, message: message, args: args);
+            return actual;
+        }
 #endif
 
         /// <summary>
@@ -195,7 +215,7 @@ namespace TestBase
         /// <returns>
         ///     <param name="actual"></param>
         /// </returns>
-        /// <exception cref="Assertion">Returns a message indicating where the comparision failed</exception>
+        /// <exception cref="Assertion">Returns a message indicating where the comparison failed</exception>
         public static T ShouldEqualByValueExceptFor<T>(this T actual, object expectedValue, params string[] exclusions)
         {
 #if NET6_0_OR_GREATER
