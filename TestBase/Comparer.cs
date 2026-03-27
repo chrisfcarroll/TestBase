@@ -635,6 +635,9 @@ namespace TestBase
                     finally { breadcrumb.RemoveAt(breadcrumb.Count - 1); }
                 } catch (Exception)
                 {
+                    try
+                    { if (leftInfo.GetValue(left,null) == null) continue; }
+                    catch { }
                     return BoolWithString.False(string.Format("Left has property {0} but Right doesn't.",
                                                               leftInfo.Name));
                 }
@@ -706,8 +709,11 @@ namespace TestBase
             }
 
             //Then check that there are no public fields on RHS that LHS didn't have
-            foreach (var rightInfo in rightType.GetFields(
-                                                          BindingFlags.Public | BindingFlags.Instance))
+            var rightInfos =
+                IsAnonymousType(rightType)
+                    ? rightType.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+                    : rightType.GetFields(BindingFlags.Public | BindingFlags.Instance);
+            foreach (var rightInfo in rightInfos)
             {
                 var breadCrumbAsDottedMember = string.Join(".", breadcrumb.Union(new[] {rightInfo.Name}));
                 if (exclusionList.Contains(breadCrumbAsDottedMember)) continue;
@@ -715,18 +721,23 @@ namespace TestBase
                 if (!mustInclude) continue;
                 try
                 {
-                    leftType.GetField(rightInfo.Name,
+                    var leftInfo=leftType.GetField(rightInfo.Name,
                                       BindingFlags.Public
                                     | BindingFlags.NonPublic
                                     | BindingFlags.Instance
                                     | BindingFlags.GetProperty);
-                } catch (Exception)
+                    if (leftInfo == null)
+                    {
+                        return BoolWithString.False(string.Format("Right has property {0} but Left doesn't.",
+                                                                  rightInfo.Name));
+                    }
+                }
+                catch (Exception)
                 {
                     return BoolWithString.False(string.Format("Right has property {0} but Left doesn't.",
                                                               rightInfo.Name));
                 }
             }
-
             if (IsAnonymousType(leftType) && IsAnonymousType(rightType)) return true;
             if (leftType == rightType || !typesMustAlsoBeSame) return true;
             return BoolWithString.False(string.Format("Left is a {0}, Right is a {1}", leftType, rightType));
