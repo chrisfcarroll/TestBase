@@ -196,7 +196,7 @@ public static class ObjectTooString
     /// relevant to the method used.
     /// <list type="bullet">
     /// <item>There are no options for <see cref="TooStringHow.ToString"/> or
-    /// <see cref="TooStringHow.CallerArgument"/> or <see cref="TooStringHow.CSharpCode"/>
+    /// <see cref="TooStringHow.CallerArgument"/>
     /// </item>
     /// <item>Options for Json serialization are those for the
     /// <see cref="System.Text.Json.JsonSerializer"/> class.</item>

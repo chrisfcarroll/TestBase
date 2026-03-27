@@ -6,10 +6,14 @@ namespace TooString;
 /// </summary>
 public enum ReflectionStyle
 {
-    /// <summary>{"A":"B"} style</summary>
+    /// <summary>{"A":"B"} JSON style</summary>
     Json = 0,
     /// <summary>{ A = "B" } style</summary>
     DebugView = 1,
-    /// <summary>/*Type*/ new { A = "B" } style - produces valid C# syntax with type names in comments</summary>
+
+    /// <summary>
+    /// /*Type*/ new { A = "B" } style - copy/pastable C#  anonymous objects
+    /// with type names in comments
+    /// </summary>
     CSharp = 2
 }
