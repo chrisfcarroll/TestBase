@@ -497,25 +497,19 @@ public static class Differ
 
     /// <summary>
     /// Compiler-generated member names that should be skipped during comparison.
-    /// These are internal implementation details, not meaningful data properties.
     /// </summary>
     static readonly HashSet<string> UnwantedCompilerGeneratedMembers = new()
     {
         "EqualityContract"  // Record's Type property used for equality comparison
     };
 
-    static bool IsUnwantedCompilerGenerated(PropertyInfo prop)
-    {
-        // Check if it's a known unwanted compiler-generated member
-        if (UnwantedCompilerGeneratedMembers.Contains(prop.Name))
-            return true;
-
-        // Check if the property itself has CompilerGeneratedAttribute
-        if (Attribute.IsDefined(prop, typeof(CompilerGeneratedAttribute)))
-            return true;
-
-        return false;
-    }
+    /// <returns>true if <paramref name="prop"/> is a Compiler-Generated property
+    /// listed in <see cref="UnwantedCompilerGeneratedMembers"/>
+    /// </returns>
+    static bool IsUnwantedCompilerGenerated(PropertyInfo prop) =>
+        UnwantedCompilerGeneratedMembers.Contains(prop.Name)
+        &&
+        Attribute.IsDefined(prop,typeof(CompilerGeneratedAttribute));
 
     static string Stringify(object? value)
     {
