@@ -54,6 +54,9 @@ public class DifferClassTests
     public void Different_classes_nested_EvenMore()
     {
         var result = Differ.Diff(object1, object2);
+        //D
+        TestContext.Progress.WriteLine(result.ToString());
+        //A
         Assert.That(result.AreEqual, Is.False);
         var text = result.ToString();
         Assert.That(text, Does.Contain("EvenMore"));
@@ -63,6 +66,9 @@ public class DifferClassTests
     public void Different_classes_nested_More_int()
     {
         var result = Differ.Diff(object1, object3);
+        //D
+        TestContext.Progress.WriteLine(result.ToString());
+        //A
         Assert.That(result.AreEqual, Is.False);
         var text = result.ToString();
         Assert.That(text, Does.Contain("More"));
@@ -72,6 +78,9 @@ public class DifferClassTests
     public void Left_null_right_not_null()
     {
         var result = Differ.Diff(null, object1);
+        //D
+        TestContext.Progress.WriteLine(result.ToString());
+        //A
         Assert.That(result.AreEqual, Is.False);
     }
 
@@ -79,6 +88,9 @@ public class DifferClassTests
     public void Left_not_null_right_null()
     {
         var result = Differ.Diff(object1, null);
+        //D
+        TestContext.Progress.WriteLine(result.ToString());
+        //A
         Assert.That(result.AreEqual, Is.False);
     }
 
@@ -88,6 +100,9 @@ public class DifferClassTests
         var left = new AClass { Id = 1, Name = "1", More = null };
         var right = new AClass { Id = 1, Name = "1", More = new BClass { More = 1 } };
         var result = Differ.Diff(left, right);
+        //D
+        TestContext.Progress.WriteLine(result.ToString());
+        //A
         Assert.That(result.AreEqual, Is.False);
     }
 

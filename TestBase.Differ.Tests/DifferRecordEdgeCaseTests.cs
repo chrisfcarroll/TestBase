@@ -58,6 +58,9 @@ public class DifferRecordEdgeCaseTests
     public void Different_records_nested()
     {
         var result = Differ.Diff(object1, object2);
+        //D
+        TestContext.Progress.WriteLine(result.ToString());
+        //A
         Assert.That(result.AreEqual, Is.False);
     }
 
@@ -74,6 +77,9 @@ public class DifferRecordEdgeCaseTests
     public void Left_null_right_record()
     {
         var result = Differ.Diff(null, object1);
+        //D
+        TestContext.Progress.WriteLine(result.ToString());
+        //A
         Assert.That(result.AreEqual, Is.False);
     }
 
@@ -81,6 +87,9 @@ public class DifferRecordEdgeCaseTests
     public void Record_right_null()
     {
         var result = Differ.Diff(object1, (ARecord)null);
+        //D
+        TestContext.Progress.WriteLine(result.ToString());
+        //A
         Assert.That(result.AreEqual, Is.False);
     }
 
@@ -121,6 +130,10 @@ public class DifferRecordEdgeCaseTests
             EmailAddresses = [new FlaggedDescription("C", "d@test.test", false)],
             Records = new()
         };
-        Assert.That(Differ.Diff(left, right).AreEqual, Is.False);
+        var result = Differ.Diff(left, right);
+        //D
+        TestContext.Progress.WriteLine(result.ToString());
+        //A
+        Assert.That(result.AreEqual, Is.False);
     }
 }

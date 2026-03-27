@@ -6,8 +6,24 @@ namespace TestBase.DifferTests;
 public class DifferNullAndEdgeCaseTests
 {
     [Test] public void Both_null() => Assert.That(Differ.Diff(null, null).AreEqual, Is.True);
-    [Test] public void Left_null_right_value() => Assert.That(Differ.Diff(null, 42).AreEqual, Is.False);
-    [Test] public void Left_value_right_null() => Assert.That(Differ.Diff(42, null).AreEqual, Is.False);
+    [Test]
+    public void Left_null_right_value()
+    {
+        var result = Differ.Diff(null, 42);
+        //D
+        TestContext.Progress.WriteLine(result.ToString());
+        //A
+        Assert.That(result.AreEqual, Is.False);
+    }
+    [Test]
+    public void Left_value_right_null()
+    {
+        var result = Differ.Diff(42, null);
+        //D
+        TestContext.Progress.WriteLine(result.ToString());
+        //A
+        Assert.That(result.AreEqual, Is.False);
+    }
     [Test] public void DBNull_and_null() => Assert.That(Differ.Diff(DBNull.Value, null).AreEqual, Is.True);
     [Test] public void Null_and_DBNull() => Assert.That(Differ.Diff(null, DBNull.Value).AreEqual, Is.True);
 
@@ -43,6 +59,9 @@ public class DifferNullAndEdgeCaseTests
         DiffResult equal = Differ.Diff(1, 1);
         DiffResult notEqual = Differ.Diff(1, 2);
         Assert.That((bool)equal, Is.True);
+        //D
+        TestContext.Progress.WriteLine(notEqual.ToString());
+        //A
         Assert.That((bool)notEqual, Is.False);
     }
 
@@ -55,6 +74,9 @@ public class DifferNullAndEdgeCaseTests
         Assert.That(equalStructural.AreEqual, Is.True);
 
         var notEqualTyped = Differ.Diff(left, right, new DiffOptions { RequireSameType = true });
+        //D
+        TestContext.Progress.WriteLine(notEqualTyped.ToString());
+        //A
         Assert.That(notEqualTyped.AreEqual, Is.False);
     }
 

@@ -22,7 +22,11 @@ public class DifferFileSystemInfoTests
         var list2 = new DirectoryInfo("..").GetFiles("*");
         Assume.That(list1.Length, Is.GreaterThan(0));
         Assume.That(list2.Length, Is.GreaterThan(0));
-        Assert.That(Differ.Diff(list1, list2).AreEqual, Is.False);
+        var result = Differ.Diff(list1, list2);
+        //D
+        TestContext.Progress.WriteLine(result.ToString());
+        //A
+        Assert.That(result.AreEqual, Is.False);
     }
 
     [Test]

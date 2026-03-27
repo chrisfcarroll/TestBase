@@ -54,6 +54,9 @@ public class DifferStructTests
     public void Different_structs_nested_EvenMore()
     {
         var result = Differ.Diff(object1, object2);
+        //D
+        TestContext.Progress.WriteLine(result.ToString());
+        //A
         Assert.That(result.AreEqual, Is.False);
     }
 
@@ -61,6 +64,9 @@ public class DifferStructTests
     public void Different_structs_nested_More()
     {
         var result = Differ.Diff(object1, object3);
+        //D
+        TestContext.Progress.WriteLine(result.ToString());
+        //A
         Assert.That(result.AreEqual, Is.False);
     }
 }

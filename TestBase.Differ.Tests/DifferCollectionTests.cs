@@ -16,6 +16,9 @@ public class DifferCollectionTests
     public void Different_element_shows_index()
     {
         var result = Differ.Diff(new[] { 1, 2, 3 }, new[] { 1, 9, 3 });
+        //D
+        TestContext.Progress.WriteLine(result.ToString());
+        //A
         Assert.That(result.AreEqual, Is.False);
         var text = result.ToString();
         Assert.That(text, Does.Contain("[1]"));
@@ -25,6 +28,9 @@ public class DifferCollectionTests
     public void Left_longer_shows_extra_elements()
     {
         var result = Differ.Diff(new[] { 1, 2, 3 }, new[] { 1, 2 });
+        //D
+        TestContext.Progress.WriteLine(result.ToString());
+        //A
         Assert.That(result.AreEqual, Is.False);
         var text = result.ToString();
         Assert.That(text, Does.Contain("lengths"));
@@ -34,6 +40,9 @@ public class DifferCollectionTests
     public void Right_longer_shows_extra_elements()
     {
         var result = Differ.Diff(new[] { 1, 2 }, new[] { 1, 2, 3 });
+        //D
+        TestContext.Progress.WriteLine(result.ToString());
+        //A
         Assert.That(result.AreEqual, Is.False);
         var text = result.ToString();
         Assert.That(text, Does.Contain("lengths") | Does.Contain("extra"));
@@ -64,6 +73,9 @@ public class DifferCollectionTests
     public void Null_vs_non_empty_collection()
     {
         var result = Differ.Diff(null, new[] { 1 });
+        //D
+        TestContext.Progress.WriteLine(result.ToString());
+        //A
         Assert.That(result.AreEqual, Is.False);
     }
 
@@ -73,6 +85,9 @@ public class DifferCollectionTests
         var left = new[] { new { Id = 1, Name = "A" }, new { Id = 2, Name = "B" } };
         var right = new[] { new { Id = 1, Name = "A" }, new { Id = 2, Name = "X" } };
         var result = Differ.Diff(left, right);
+        //D
+        TestContext.Progress.WriteLine(result.ToString());
+        //A
         Assert.That(result.AreEqual, Is.False);
         var text = result.ToString();
         Assert.That(text, Does.Contain("[1]"));
@@ -92,6 +107,9 @@ public class DifferCollectionTests
         var left = new[] { new[] { 1, 2 }, new[] { 3, 4 } };
         var right = new[] { new[] { 1, 2 }, new[] { 3, 5 } };
         var result = Differ.Diff(left, right);
+        //D
+        TestContext.Progress.WriteLine(result.ToString());
+        //A
         Assert.That(result.AreEqual, Is.False);
     }
 
@@ -101,6 +119,10 @@ public class DifferCollectionTests
         var left = new[] { 1, 2, 3, 4, 5 };
         var right = new[] { 10, 20, 30, 40, 50 };
         var result = Differ.Diff(left, right, new DiffOptions { MaxDifferences = 2 });
+        //D
+        TestContext.Progress.WriteLine(result.ToString());
+        //A
+        Assert.That(result.AreEqual, Is.False);
         Assert.That(result.Children.Count, Is.EqualTo(2));
     }
 
@@ -119,6 +141,9 @@ public class DifferCollectionTests
         var left = new Dictionary<string, int> { ["a"] = 1, ["b"] = 2 };
         var right = new Dictionary<string, int> { ["a"] = 1, ["b"] = 9 };
         var result = Differ.Diff(left, right);
+        //D
+        TestContext.Progress.WriteLine(result.ToString());
+        //A
         Assert.That(result.AreEqual, Is.False);
     }
 
@@ -127,7 +152,11 @@ public class DifferCollectionTests
     {
         var left = new[] { 1, 2, 3 };
         var right = new[] { 3, 2, 1 };
-        Assert.That(Differ.Diff(left, right).AreEqual, Is.False);
+        var result = Differ.Diff(left, right);
+        //D
+        TestContext.Progress.WriteLine(result.ToString());
+        //A
+        Assert.That(result.AreEqual, Is.False);
     }
 
     [Test]
@@ -135,7 +164,11 @@ public class DifferCollectionTests
     {
         var left = new[] { "1", "2", "3" };
         var right = new[] { "3", "2", "1" };
-        Assert.That(Differ.Diff(left, right).AreEqual, Is.False);
+        var result = Differ.Diff(left, right);
+        //D
+        TestContext.Progress.WriteLine(result.ToString());
+        //A
+        Assert.That(result.AreEqual, Is.False);
     }
 
     [Test]
@@ -152,7 +185,11 @@ public class DifferCollectionTests
     {
         var left = new[] { new { Id = 1, Name = "1" } };
         var right = new[] { new { Id = 1, Name = "2" } };
-        Assert.That(Differ.Diff(left, right).AreEqual, Is.False);
+        var result = Differ.Diff(left, right);
+        //D
+        TestContext.Progress.WriteLine(result.ToString());
+        //A
+        Assert.That(result.AreEqual, Is.False);
     }
 
     [Test]
@@ -160,6 +197,10 @@ public class DifferCollectionTests
     {
         var left = Array.Empty<int>();
         var right = new[] { 1 };
-        Assert.That(Differ.Diff(left, right).AreEqual, Is.False);
+        var result = Differ.Diff(left, right);
+        //D
+        TestContext.Progress.WriteLine(result.ToString());
+        //A
+        Assert.That(result.AreEqual, Is.False);
     }
 }

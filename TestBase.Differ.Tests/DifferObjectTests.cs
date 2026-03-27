@@ -29,6 +29,9 @@ public class DifferObjectTests
         var left = new { Id = 1, Name = "Alice" };
         var right = new { Id = 1, Name = "Bob" };
         var result = Differ.Diff(left, right);
+        //D
+        TestContext.Progress.WriteLine(result.ToString());
+        //A
         Assert.That(result.AreEqual, Is.False);
         var text = result.ToString();
         Assert.That(text, Does.Contain("Name"));
@@ -46,6 +49,9 @@ public class DifferObjectTests
     public void Different_records()
     {
         var result = Differ.Diff(new Person("Alice", 30), new Person("Alice", 31));
+        //D
+        TestContext.Progress.WriteLine(result.ToString());
+        //A
         Assert.That(result.AreEqual, Is.False);
         Assert.That(result.ToString(), Does.Contain("Age"));
     }
@@ -56,6 +62,9 @@ public class DifferObjectTests
         var left = new PersonWithAddress("Alice", 30, new Address("Main St", "NYC", "10001"));
         var right = new PersonWithAddress("Alice", 30, new Address("Main St", "LA", "90001"));
         var result = Differ.Diff(left, right);
+        //D
+        TestContext.Progress.WriteLine(result.ToString());
+        //A
         Assert.That(result.AreEqual, Is.False);
         var text = result.ToString();
         Assert.That(text, Does.Contain("Address.City") | Does.Contain("City"));
@@ -94,6 +103,9 @@ public class DifferObjectTests
         var left = new ClassWithField { Name = "A", Value = 1 };
         var right = new ClassWithField { Name = "A", Value = 2 };
         var result = Differ.Diff(left, right);
+        //D
+        TestContext.Progress.WriteLine(result.ToString());
+        //A
         Assert.That(result.AreEqual, Is.False);
         Assert.That(result.ToString(), Does.Contain("Value"));
     }
@@ -102,6 +114,9 @@ public class DifferObjectTests
     public void Null_vs_object()
     {
         var result = Differ.Diff(null, new { Id = 1 });
+        //D
+        TestContext.Progress.WriteLine(result.ToString());
+        //A
         Assert.That(result.AreEqual, Is.False);
         Assert.That(result.ToString(), Does.Contain("null"));
     }
@@ -110,6 +125,9 @@ public class DifferObjectTests
     public void Object_vs_null()
     {
         var result = Differ.Diff(new { Id = 1 }, null);
+        //D
+        TestContext.Progress.WriteLine(result.ToString());
+        //A
         Assert.That(result.AreEqual, Is.False);
     }
 

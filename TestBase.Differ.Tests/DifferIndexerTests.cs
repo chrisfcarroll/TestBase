@@ -25,6 +25,10 @@ public class DifferIndexerTests
     {
         var left = new ClassWithIndexer { Id = 1, Name = "1" };
         var right = new ClassWithIndexer { Id = 1, Name = "2" };
-        Assert.That(Differ.Diff(left, right).AreEqual, Is.False);
+        var result = Differ.Diff(left, right);
+        //D
+        TestContext.Progress.WriteLine(result.ToString());
+        //A
+        Assert.That(result.AreEqual, Is.False);
     }
 }
