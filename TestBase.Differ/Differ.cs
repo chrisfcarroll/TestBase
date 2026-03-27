@@ -34,8 +34,11 @@ public static class Differ
     {
         // Both null
         if (left is null && right is null) return DiffResult.Equal;
-        if (left is DBNull && right is null) return DiffResult.Equal;
-        if (left is null && right is DBNull) return DiffResult.Equal;
+        if (opts.NullEqualsDbNull)
+        {
+            if (left is DBNull && right is null) return DiffResult.Equal;
+            if (left is null && right is DBNull) return DiffResult.Equal;
+        }
 
         // Reference equality
         if (ReferenceEquals(left, right)) return DiffResult.Equal;

@@ -28,6 +28,14 @@ public class DifferNullAndEdgeCaseTests
     [Test] public void Null_and_DBNull() => Assert.That(Differ.Diff(null, DBNull.Value).AreEqual, Is.True);
 
     [Test]
+    public void DBNull_and_null_when_NullEqualsDbNull_is_false()
+    {
+        var opts = new DiffOptions { NullEqualsDbNull = false };
+        Assert.That(Differ.Diff(DBNull.Value, null, opts).AreEqual, Is.False);
+        Assert.That(Differ.Diff(null, DBNull.Value, opts).AreEqual, Is.False);
+    }
+
+    [Test]
     public void Same_reference_is_equal()
     {
         var obj = new { Id = 1 };

@@ -39,6 +39,9 @@ public record DiffOptions
     /// <summary>Whether to compare only writable properties.</summary>
     public bool WritablePropertiesOnly { get; init; }
 
+    /// <summary>Whether null is seen as equal to DBNull. Default true.</summary>
+    public bool NullEqualsDbNull { get; init; } = true;
+
     public DiffOptions WithExclusions(params string[] members)
         => this with { ExcludeMembers = members };
 
