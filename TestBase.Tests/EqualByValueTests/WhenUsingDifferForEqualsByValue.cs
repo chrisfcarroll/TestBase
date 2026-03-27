@@ -13,6 +13,41 @@ public class WhenUsingDifferForEqualsByValue
         left.ShouldEqualByValue(right);
     }
 
+    [Test]
+    public void ShouldEqualByValue_passes_when_different_types_structurally_equal_treating_null_equals_missing_property()
+    {
+        var left = new AClass() { Id = 1, Name = "Alice" };
+        var right = new { Id = 1, Name = "Alice" };
+
+        //D
+        TestContext.WriteLine(left.ToJSon());
+        TestContext.WriteLine(right.ToJSon());
+        //A
+#if NET6_0_OR_GREATER
+        left.ShouldEqualByValue(right);
+#else
+        right.ShouldEqualByValue(left);
+#endif
+    }
+
+    [Test]
+    public void ShouldEqualByValue_passes_when_different_types_structurally()
+    {
+        var left = new AClass() { Id = 1, Name = "Alice" };
+        var right = new { Id = 1, Name = "Alice", More =null as object };
+
+        left.ShouldEqualByValue(right);
+    }
+
+    [Test]
+    public void ShouldEqualByValue_FAILS_when_different_types_not_structurally_equal()
+    {
+        var left = new AClass() { Id = 1, Name = "Alice" };
+        var right = new { Id = 1, Name = "Alice", SomethingElse = "unexpected" };
+
+        Assert.Throws<Assertion>(() => left.ShouldEqualByValue(right));
+    }
+
 #if NET6_0_OR_GREATER
 
     [Test]
@@ -22,8 +57,10 @@ public class WhenUsingDifferForEqualsByValue
         var right = new { Id = 1, Name = "Bob" };
         var ex = Assert.Throws<Assertion>(() => left.ShouldEqualByValue(right));
 
+        // D
         TestContext.WriteLine(ex.Message);
 
+        // A
         var msg = ex.Message;
         msg.ShouldContain("Name");
         msg.ShouldContain("Alice");

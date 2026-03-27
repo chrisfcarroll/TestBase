@@ -195,7 +195,7 @@ namespace TestBase
         /// <returns>
         ///     <param name="actual"></param>
         /// </returns>
-        /// <exception cref="Assertion">Returns a message indicating where the comparision failed</exception>
+        /// <exception cref="Assertion">Returns a message indicating where the comparison failed</exception>
         public static T ShouldEqualByValueExceptFor<T>(this T actual, object expectedValue, params string[] exclusions)
         {
 #if NET6_0_OR_GREATER
