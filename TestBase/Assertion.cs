@@ -392,24 +392,24 @@ namespace TestBase
         /// <returns>A description of the assertion.</returns>
         public string ToStringEvenIfPassed()
         {
-            var          resultHeader   = DidPass ? "Passed : " : "Failed : ";
+            var          resultHeader   = DidPass ? "Passed." : "Failed.";
             const string actualHeader   = "Actual : ";
             const string assertedHeader = "Asserted : ";
             const string divider        = "----------------------------";
+            var assertedRow =
+                (string.IsNullOrWhiteSpace(AssertedDetail) || AssertedDetail.HasTheSameWordsAs(Asserted))
+                    ? assertedHeader + Asserted
+                    : assertedHeader + Asserted + nl + AssertedDetail;
             string output = string.Join(nl,
-                resultHeader,
-                actualHeader,
-                divider,
-                Actual);
+                                        resultHeader,
+                                        assertedRow,
+                                        divider,
+                                        actualHeader,
+                                        divider,
+                                        Actual);
             if (!string.IsNullOrWhiteSpace(ActualExpression) && !ActualExpression.HasTheSameWordsAs(Actual))
             {
                 output += nl + ActualExpression;
-            }
-            output += nl + divider;
-            output = string.Join(nl, output, assertedHeader + Asserted);
-            if (!string.IsNullOrWhiteSpace(AssertedDetail) && !AssertedDetail.HasTheSameWordsAs(Asserted))
-            {
-                output += nl + AssertedDetail;
             }
             if (!string.IsNullOrEmpty(Comment))
             {
