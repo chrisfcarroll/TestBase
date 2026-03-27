@@ -42,6 +42,9 @@ public record DiffOptions
     /// <summary>Whether null is seen as equal to DBNull. Default true.</summary>
     public bool NullEqualsDbNull { get; init; } = true;
 
+    /// <summary>Whether null is seen as equal to an empty collection. Default false.</summary>
+    public bool NullEqualsEmptyCollection { get; init; }
+
     public DiffOptions WithExclusions(params string[] members)
         => this with { ExcludeMembers = members };
 

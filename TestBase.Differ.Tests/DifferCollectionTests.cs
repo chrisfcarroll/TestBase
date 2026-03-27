@@ -56,16 +56,30 @@ public class DifferCollectionTests
     }
 
     [Test]
-    public void Null_vs_empty_collection_are_equal()
+    public void Null_vs_empty_collection_are_not_equal_by_default()
     {
         var result = Differ.Diff(null, Array.Empty<int>());
+        Assert.That(result.AreEqual, Is.False);
+    }
+
+    [Test]
+    public void Null_vs_empty_collection_are_equal_when_option_set()
+    {
+        var result = Differ.Diff(null, Array.Empty<int>(), new DiffOptions { NullEqualsEmptyCollection = true });
         Assert.That(result.AreEqual, Is.True);
     }
 
     [Test]
-    public void Empty_collection_vs_null_are_equal()
+    public void Empty_collection_vs_null_are_not_equal_by_default()
     {
         var result = Differ.Diff(Array.Empty<string>(), null);
+        Assert.That(result.AreEqual, Is.False);
+    }
+
+    [Test]
+    public void Empty_collection_vs_null_are_equal_when_option_set()
+    {
+        var result = Differ.Diff(Array.Empty<string>(), null, new DiffOptions { NullEqualsEmptyCollection = true });
         Assert.That(result.AreEqual, Is.True);
     }
 

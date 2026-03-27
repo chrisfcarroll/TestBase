@@ -46,13 +46,13 @@ public static class Differ
         // One is null
         if (left is null)
         {
-            if (right is IEnumerable e && right is not string && !HasElements(e))
+            if (opts.NullEqualsEmptyCollection && right is IEnumerable e && right is not string && !HasElements(e))
                 return DiffResult.Equal;
             return DiffResult.Different(path, "null", Stringify(right), "one side is null");
         }
         if (right is null)
         {
-            if (left is IEnumerable e && left is not string && !HasElements(e))
+            if (opts.NullEqualsEmptyCollection && left is IEnumerable e && left is not string && !HasElements(e))
                 return DiffResult.Equal;
             return DiffResult.Different(path, Stringify(left), "null", "one side is null");
         }
