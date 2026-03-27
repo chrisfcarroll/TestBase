@@ -1,10 +1,7 @@
-using NUnit.Framework;
-using TooString;
-
-namespace TestBase.DifferTests;
+namespace TooString.Specs;
 
 [TestFixture]
-public class TooStringCSharpStyleTests
+public class TooStringReflectionCSharpReturnsCSharp
 {
     record Person(int Id, string Name, bool Active);
     record Address(string Street, string City);
