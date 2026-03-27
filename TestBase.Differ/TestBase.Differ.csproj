@@ -10,9 +10,9 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <AssemblyVersion>0.2</AssemblyVersion>
-    <AssemblyFileVersion>0.2</AssemblyFileVersion>
-    <PackageVersion>0.2-preview</PackageVersion>
+    <AssemblyVersion>0.3</AssemblyVersion>
+    <AssemblyFileVersion>0.3</AssemblyFileVersion>
+    <PackageVersion>0.3-preview</PackageVersion>
     <Title>TestBase.Differ — Object Differ using TooString</Title>
     <PackageDescription><![CDATA[TestBase.Differ provides deep comparison of objects, collections and strings,
     with human readable output options.
@@ -27,7 +27,7 @@ if (!result) // Implicit bool conversion
     <PackageReleaseNotes>
       ChangeLog
       ---------
-      0.2.0 : Compacter Diff output
+      0.3.0 : Compacter Diff output
       0.1.0 : Initial pre-release
     </PackageReleaseNotes>
     <Copyright>(c) Chris F. Carroll, 2024-2026</Copyright>
