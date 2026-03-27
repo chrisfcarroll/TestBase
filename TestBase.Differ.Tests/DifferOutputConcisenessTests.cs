@@ -128,9 +128,10 @@ public class DifferOutputConcisenessTests
         TestContext.Out.WriteLine(output);
         TestContext.Out.WriteLine();
 
-        // Should be concise - ideally just show b:2 vs b:9
+        // Should show key-based diff: ["b"]: Expected = 2, Actual = 9
         var lines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
-        Assert.That(lines.Length, Is.LessThanOrEqualTo(2), $"Too many lines:\n{output}");
+        Assert.That(lines.Length, Is.EqualTo(1), $"Expected 1 line:\n{output}");
+        Assert.That(output, Does.Contain("[\"b\"]"));
     }
 
     [Test]

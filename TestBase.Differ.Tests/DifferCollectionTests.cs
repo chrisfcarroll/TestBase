@@ -159,6 +159,51 @@ public class DifferCollectionTests
         TestContext.Progress.WriteLine(result.ToString());
         //A
         Assert.That(result.AreEqual, Is.False);
+        var text = result.ToString();
+        Assert.That(text, Does.Contain("[\"b\"]"));
+        Assert.That(text, Does.Contain("2") & Does.Contain("9"));
+    }
+
+    [Test]
+    public void Dictionary_with_missing_key_in_right()
+    {
+        var left = new Dictionary<string, int> { ["a"] = 1, ["b"] = 2 };
+        var right = new Dictionary<string, int> { ["a"] = 1 };
+        var result = Differ.Diff(left, right);
+        //D
+        TestContext.Progress.WriteLine(result.ToString());
+        //A
+        Assert.That(result.AreEqual, Is.False);
+        var text = result.ToString();
+        Assert.That(text, Does.Contain("[\"b\"]") & Does.Contain("missing"));
+    }
+
+    [Test]
+    public void Dictionary_with_extra_key_in_right()
+    {
+        var left = new Dictionary<string, int> { ["a"] = 1 };
+        var right = new Dictionary<string, int> { ["a"] = 1, ["b"] = 2 };
+        var result = Differ.Diff(left, right);
+        //D
+        TestContext.Progress.WriteLine(result.ToString());
+        //A
+        Assert.That(result.AreEqual, Is.False);
+        var text = result.ToString();
+        Assert.That(text, Does.Contain("[\"b\"]") & Does.Contain("missing"));
+    }
+
+    [Test]
+    public void Dictionary_with_nested_object_values()
+    {
+        var left = new Dictionary<string, object> { ["item"] = new { Id = 1, Name = "A" } };
+        var right = new Dictionary<string, object> { ["item"] = new { Id = 1, Name = "B" } };
+        var result = Differ.Diff(left, right);
+        //D
+        TestContext.Progress.WriteLine(result.ToString());
+        //A
+        Assert.That(result.AreEqual, Is.False);
+        var text = result.ToString();
+        Assert.That(text, Does.Contain("[\"item\"]") & Does.Contain("Name"));
     }
 
     [Test]

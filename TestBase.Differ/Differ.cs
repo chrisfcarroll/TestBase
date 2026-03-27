@@ -96,6 +96,10 @@ public static class Differ
                 : DiffResult.Different(path, Stringify(left), Stringify(right));
         }
 
+        // Dictionaries - show key-level diffs rather than treating as KeyValuePair collection
+        if (left is IDictionary leftDict && right is IDictionary rightDict)
+            return DiffDictionaries(leftDict, rightDict, path, opts, visited, depth);
+
         // Collections
         if (left is IEnumerable leftEnum && right is IEnumerable rightEnum)
             return DiffCollections(leftEnum, rightEnum, path, opts, visited, depth);
@@ -177,6 +181,50 @@ public static class Differ
         }
 
         // Skip redundant length message - the "missing" entries already show length difference
+
+        if (diffs.Count == 0) return DiffResult.Equal;
+        return DiffResult.WithChildren(path, diffs);
+    }
+
+    static DiffResult DiffDictionaries(
+        IDictionary left, IDictionary right, string path,
+        DiffOptions opts, HashSet<object> visited, int depth)
+    {
+        var diffs = new List<DiffResult>();
+        int diffsFound = 0;
+        var leftKeys = new HashSet<object>(left.Keys.Cast<object>());
+        var rightKeys = new HashSet<object>(right.Keys.Cast<object>());
+
+        // Keys in left but not right
+        foreach (var key in leftKeys.Except(rightKeys))
+        {
+            if (diffsFound >= opts.MaxDifferences) break;
+            var keyPath = $"{path}[{Stringify(key)}]";
+            diffs.Add(DiffResult.Different(keyPath, Stringify(left[key]), "missing"));
+            diffsFound++;
+        }
+
+        // Keys in right but not left
+        foreach (var key in rightKeys.Except(leftKeys))
+        {
+            if (diffsFound >= opts.MaxDifferences) break;
+            var keyPath = $"{path}[{Stringify(key)}]";
+            diffs.Add(DiffResult.Different(keyPath, "missing", Stringify(right[key])));
+            diffsFound++;
+        }
+
+        // Compare values for common keys
+        foreach (var key in leftKeys.Intersect(rightKeys))
+        {
+            if (diffsFound >= opts.MaxDifferences) break;
+            var keyPath = $"{path}[{Stringify(key)}]";
+            var valueDiff = DiffCore(left[key], right[key], keyPath, opts, visited, depth + 1);
+            if (!valueDiff.AreEqual)
+            {
+                diffs.Add(valueDiff);
+                diffsFound++;
+            }
+        }
 
         if (diffs.Count == 0) return DiffResult.Equal;
         return DiffResult.WithChildren(path, diffs);
