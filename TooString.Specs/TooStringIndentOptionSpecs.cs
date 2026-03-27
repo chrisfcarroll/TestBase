@@ -58,7 +58,7 @@ public class TooStringIndentOptionSpecs
         var expected1 = System.Text.Json.JsonSerializer.Serialize(depth4,stjOptionsForIndentedNoCycles);
 
         var actual = depth4.TooString(
-            TooStringHow.Reflection,
+            TooStringStyle.ReflectionJson,
             TooStringOptions.ForJson(o=>
             {
                 o.WriteIndented = true;

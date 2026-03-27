@@ -12,7 +12,7 @@ namespace TooString;
 /// It differs from a serializer primarily in <b>not</b> being fail-fast.
 /// If it can't stringify an object correctly, it will return a best-effort
 /// rather than fail.
-/// For the stringify methods offered, <see cref="TooStringHow"/>
+/// For the stringify styles offered, <see cref="TooStringStyle"/>
 /// </summary>
 public static class ObjectTooString
 {
@@ -32,44 +32,14 @@ public static class ObjectTooString
         @"^[_\p{L}\p{Nl}\p{Mn}\p{Mc}\p{Nd}\p{Pc}\p{Cf}\.\`]+$";
 
     /// <summary>
-    /// Stringifies a value use <see cref="TooStringHow.Reflection"/>, with
-    /// style chosen by <paramref name="reflectionStyle"/>
+    /// Stringifies a value using the specified style.
     /// </summary>
     /// <param name="value">The value to stringify</param>
-    /// <param name="reflectionStyle"></param>
-    /// <param name="argumentExpression">
-    /// This parameter should be ignored. It is automatically populated by the Compiler using
-    /// <see cref="CallerArgumentExpressionAttribute"/>
-    /// </param>
-    /// <typeparam name="T"></typeparam>
-    /// <returns>
-    /// A string representation of <paramref name="value"/> according to the
-    /// <paramref name="tooStringHow"/> chosen.
-    /// </returns>
-    public static string TooString<T>(this T value,
-                                      ReflectionStyle reflectionStyle,
-                                      [CallerArgumentExpression("value")]
-                                      string? argumentExpression = null)
-    {
-        var options = TooStringOptions.Default with
-        {
-            Fallbacks = [TooStringHow.Reflection],
-            ReflectionOptions = TooStringOptions.Default.ReflectionOptions
-                                    with { Style = reflectionStyle }
-        };
-        return TooString(value,options,argumentExpression);
-    }
-
-    /// <summary>
-    /// Stringifies a value using one of CallerArgumentExpressionAttribute, Json serialization,
-    /// reflection, or ToString.
-    /// </summary>
-    /// <param name="value">The value to stringify</param>
-    /// <param name="tooStringHow">The <em>method</em> by which the value is
-    /// stringified. The default <see cref="TooStringHow.BestEffort"/> will
-    /// use <see cref="TooStringHow.CallerArgument"/>
+    /// <param name="style">The <em>style</em> by which the value is
+    /// stringified. The default <see cref="TooStringStyle.BestEffort"/> will
+    /// use <see cref="TooStringStyle.CallerArgument"/>
     /// if <paramref name="argumentExpression"/> holds more than just a parameter name,
-    /// or <see cref="TooStringHow.Json"/> otherwise.
+    /// or <see cref="TooStringStyle.Json"/> otherwise.
     /// </param>
     /// <param name="options"></param>
     /// <param name="argumentExpression">
@@ -79,24 +49,35 @@ public static class ObjectTooString
     /// <typeparam name="T"></typeparam>
     /// <returns>
     /// A string representation of <paramref name="value"/> according to the
-    /// <paramref name="tooStringHow"/> chosen.
+    /// <paramref name="style"/> chosen.
     /// </returns>
     public static string TooString<T>(this T value,
-                                      TooStringHow tooStringHow = TooStringHow.BestEffort,
+                                      TooStringStyle style = TooStringStyle.BestEffort,
                                       TooStringOptions? options = null,
                                       [CallerArgumentExpression("value")]
                                       string? argumentExpression = null)
     {
-        options ??= (tooStringHow) switch
+        options ??= style switch
                     {
-                        TooStringHow.Reflection => TooStringOptions.ForReflection(),
-                        TooStringHow.Json => TooStringOptions.ForJson(),
+                        _ when style.IsReflection() => TooStringOptions.ForReflection(),
+                        TooStringStyle.Json => TooStringOptions.ForJson(),
                         _ => TooStringOptions.Default
                     };
-        options = options with
-                    {
-                        Fallbacks = TooStringOptions.Default.Fallbacks.Prepend(tooStringHow),
-                    };
+        if (style.IsReflection())
+        {
+            options = options with
+            {
+                Fallbacks = TooStringOptions.Default.Fallbacks.Prepend(style),
+                ReflectionOptions = options.ReflectionOptions with { Style = style.ToReflectionStyle() }
+            };
+        }
+        else
+        {
+            options = options with
+            {
+                Fallbacks = TooStringOptions.Default.Fallbacks.Prepend(style),
+            };
+        }
         return TooString(value,options,argumentExpression);
     }
 
@@ -115,9 +96,9 @@ public static class ObjectTooString
     /// Further items will simply be omitted.
     /// </param>
     /// <param name="style">
-    /// Choose between <see cref="ReflectionStyle.Json"/>,
-    /// <see cref="ReflectionStyle.DebugView"/>, or
-    /// <see cref="ReflectionStyle.CSharp"/> (valid C# syntax with type names in comments)
+    /// Choose between <see cref="TooStringStyle.ReflectionJson"/>,
+    /// <see cref="TooStringStyle.DebugView"/>, or
+    /// <see cref="TooStringStyle.CSharp"/> (valid C# syntax with type names in comments)
     /// </param>
     /// <typeparam name="T"></typeparam>
     /// <returns>
@@ -127,15 +108,15 @@ public static class ObjectTooString
     public static string TooString<T>(this T value,
                                       int maxDepth,
                                       int maxLength = 9,
-                                      ReflectionStyle style = ReflectionStyle.Json)
+                                      TooStringStyle style = TooStringStyle.ReflectionJson)
     {
         var options = TooStringOptions.Default with
         {
-            Fallbacks = TooStringOptions.Default.Fallbacks.Prepend(TooStringHow.Reflection),
+            Fallbacks = TooStringOptions.Default.Fallbacks.Prepend(style),
             ReflectionOptions = TooStringOptions.Default.ReflectionOptions
                 with
                 {
-                    Style = style,
+                    Style = style.ToReflectionStyle(),
                     MaxDepth = maxDepth,
                     MaxEnumerationLength = maxLength
                 }
@@ -156,9 +137,15 @@ public static class ObjectTooString
     /// </returns>
     public static string TooString<T>(this T value, ReflectionOptions reflectionOptions)
     {
+        var style = reflectionOptions.Style switch
+        {
+            ReflectionStyle.Json => TooStringStyle.ReflectionJson,
+            ReflectionStyle.CSharp => TooStringStyle.CSharp,
+            _ => TooStringStyle.DebugView
+        };
         var options = TooStringOptions.Default with
         {
-            Fallbacks = TooStringOptions.Default.Fallbacks.Prepend(TooStringHow.Reflection),
+            Fallbacks = TooStringOptions.Default.Fallbacks.Prepend(style),
             ReflectionOptions = reflectionOptions
         };
         return TooString(value,options);
@@ -188,22 +175,11 @@ public static class ObjectTooString
     }
 
     /// <summary>
-    /// Stringifies a value using one of CallerArgumentExpressionAttribute, Json serialization,
-    /// reflection, or ToString
+    /// Stringifies a value using the configured options.
     /// </summary>
     /// <param name="value">The value to stringify</param>
-    /// <param name="tooStringOptions">Configure the method used, and the options
-    /// relevant to the method used.
-    /// <list type="bullet">
-    /// <item>There are no options for <see cref="TooStringHow.ToString"/> or
-    /// <see cref="TooStringHow.CallerArgument"/>
-    /// </item>
-    /// <item>Options for Json serialization are those for the
-    /// <see cref="System.Text.Json.JsonSerializer"/> class.</item>
-    /// <item>Options for Reflection serialization are the <see cref="BindingFlags"/> for what
-    /// to stringify and <see cref="ReflectionOptions.MaxDepth"/> and whether
-    /// to output Json or Debug style.</item>
-    /// </list>
+    /// <param name="tooStringOptions">Configure the style used, and the options
+    /// relevant to the style used.
     /// See <see cref="TooStringOptions"/> for details of what can be configured.
     /// The easy way to change options may be to use <see cref="TooStringOptions.Default"/>
     /// with a <c>with</c> expression: <c>TooStringOptions.Default with { ... }</c>
@@ -224,10 +200,11 @@ public static class ObjectTooString
     {
         return tooStringOptions.Fallbacks.FirstOrDefault() switch
                {
-                   TooStringHow.BestEffort => CallerArgumentOrNextPreference(),
-                   TooStringHow.CallerArgument => argumentExpression,
-                   TooStringHow.Json => ToJson(value,tooStringOptions),
-                   TooStringHow.Reflection => BuildReflectedString(value, new OptionsWithState(0, tooStringOptions)),
+                   TooStringStyle.BestEffort => CallerArgumentOrNextPreference(),
+                   TooStringStyle.CallerArgument => argumentExpression,
+                   TooStringStyle.Json => ToJson(value,tooStringOptions),
+                   TooStringStyle.ReflectionJson or TooStringStyle.DebugView or TooStringStyle.CSharp
+                       => BuildReflectedString(value, new OptionsWithState(0, tooStringOptions)),
                    _ => value?.ToString()
                }
                ??
@@ -240,14 +217,14 @@ public static class ObjectTooString
                 switch (pref)
                 {
                     //Only choose CallerArgument if we captured an expression
-                    case TooStringHow.CallerArgument
+                    case TooStringStyle.CallerArgument
                     when argumentExpression is not null
                          && !Regex.IsMatch(argumentExpression,
                                            RegexTypeNameOrIdentifierWithCharsOnly):
                         return argumentExpression;
-                    case TooStringHow.Reflection:
+                    case TooStringStyle.ReflectionJson or TooStringStyle.DebugView or TooStringStyle.CSharp:
                         return ToDebugViewString(value,tooStringOptions);
-                    case TooStringHow.Json:
+                    case TooStringStyle.Json:
                         return ToJson(value,tooStringOptions);
                 }
             }
@@ -258,7 +235,7 @@ public static class ObjectTooString
     /// <summary>
     /// Try to use <see cref="JsonSerializer"/> to serialize <paramref name="value"/>.
     /// If that fails — for instance for types in System.Reflection, and for System.Type itself,
-    /// returns <see cref="ToDebugViewString{T}(T?,TooString.TooStringOptions?)"/>
+    /// returns <see cref="ToDebugViewString{T}(T?,TooString.TooStringOptions)"/>
     /// </summary>
     /// <param name="value"></param>
     /// <param name="tooStringOptions"></param>
@@ -533,7 +510,7 @@ public static class ObjectTooString
     }
 
     /// <summary>
-    /// Stringify <paramref name="value"/> using <see cref="TooStringHow.Reflection"/>.
+    /// Stringify <paramref name="value"/> using reflection.
     /// <list type="bullet">
     /// <item><see cref="ReflectionStyle.DebugView"/>: <c>TypeName { A = 1 }</c></item>
     /// <item><see cref="ReflectionStyle.Json"/>: <c>{"A":1}</c></item>

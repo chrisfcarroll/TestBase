@@ -10,7 +10,7 @@ public class TooStringReadMeExamples
     public void ExampleIsCorrectGivenCallerArgument()
     {
 
-        var actual = (Math.Sqrt(4 * Math.PI / 3)).TooString(TooStringHow.CallerArgument);
+        var actual = (Math.Sqrt(4 * Math.PI / 3)).TooString(TooStringStyle.CallerArgument);
         // Output is the literal code: "Math.Sqrt(4 * Math.PI / 3)"
 
         Assert.That(actual, Is.EqualTo("Math.Sqrt(4 * Math.PI / 3)"));
@@ -21,13 +21,13 @@ public class TooStringReadMeExamples
     {
         // var anonObject = new { A = "boo", B = new Complex(3,4) };
         // anonObject.ToJson();
-        // anonObject.TooString(TooStringHow.Json);
+        // anonObject.TooString(TooStringStyle.Json);
         // Output is the System.Text.Json output:
         // {"A":"boo","B":{"Real":3,"Imaginary":4,"Magnitude":5,"Phase":0.9272952180016122}}
 
         var anonObject = new { A = "boo", B = new Complex(3,4) };
         var actualJson1 = anonObject.ToJson();
-        var actualJson2 = anonObject.TooString(TooStringHow.Json);
+        var actualJson2 = anonObject.TooString(TooStringStyle.Json);
         Assert.That(actualJson1, Is.EqualTo(
                 """
                 {"A":"boo","B":{"Real":3,"Imaginary":4,"Magnitude":5,"Phase":0.9272952180016122}}
@@ -38,10 +38,10 @@ public class TooStringReadMeExamples
     public void ExampleIsCorrectGivenAnonObjectReflection()
     {
         var anonObject = new { A = "boo", B = new Complex(3,4) };
-        // anonObject.TooString(TooStringHow.Reflection);
+        // anonObject.TooString(TooStringStyle.DebugView);
         // anonObject.ToDebugViewString();
         // Output is "{ A = boo, B = [3,4] }" or "{ A = boo, B = <3;4> }"
-        var actual = anonObject.TooString(TooStringHow.Reflection);
+        var actual = anonObject.TooString(TooStringStyle.DebugView);
         var actual2 = anonObject.ToDebugViewString();
         var expected = $"{{ A = boo, B = {new Complex(3,4)} }}";
         Assert.That(actual, Is.EqualTo(expected));
@@ -52,7 +52,7 @@ public class TooStringReadMeExamples
     public void ExampleIsCorrectGivenValueTupleJson()
     {
         var valueTuple = (one: 1, two: "2", three: new Complex(3,4));
-        var actual = valueTuple.TooString(TooStringHow.Json);
+        var actual = valueTuple.TooString(TooStringStyle.Json);
         Assert.That(actual, Is.EqualTo("""[1,"2",[3,4]]"""));;
 
         var stjOutput = System.Text.Json.JsonSerializer.Serialize(valueTuple);

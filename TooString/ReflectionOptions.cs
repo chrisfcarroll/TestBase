@@ -3,7 +3,7 @@ using System.Reflection;
 namespace TooString;
 
 /// <summary>
-/// Options for what to stringify when using <see cref="TooStringHow.Reflection"/>
+/// Options for what to stringify when using reflection-based styles
 /// /// </summary>
 /// <param name="WhichProperties"><see cref="BindingFlags"/> to pick out the properties and fields to stringify</param>
 /// <param name="Style">Defaults to <see cref="ReflectionStyle.Json"/></param>

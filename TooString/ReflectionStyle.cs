@@ -1,7 +1,7 @@
 namespace TooString;
 
 /// <summary>
-/// Only used for <see cref="TooStringHow.Reflection"/>.
+/// Used for reflection-based styles (<see cref="TooStringStyle.DebugView"/>, <see cref="TooStringStyle.ReflectionJson"/>, <see cref="TooStringStyle.CSharp"/>).
 /// Choose between Json {"A":"B"}, DebugView { A = "B" }, or CSharp /*Type*/ new { A = "B" }
 /// </summary>
 public enum ReflectionStyle
