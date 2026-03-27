@@ -84,6 +84,12 @@ public static class Differ
         if (left is string ls && right is string rs)
             return DiffStrings(ls, rs, path);
 
+        // Type objects — compare by equality, show simple name (avoid recursing into Type's many properties)
+        if (left is Type lt && right is Type rt)
+            return lt == rt
+                ? DiffResult.Equal
+                : DiffResult.Different(path, lt.FullName ?? lt.Name, rt.FullName ?? rt.Name);
+
         // Floating-point with tolerance
         if (IsFloatingPoint(left) && IsFloatingPoint(right))
             return DiffFloats(Convert.ToDouble(left), Convert.ToDouble(right), path, opts.FloatTolerance);
