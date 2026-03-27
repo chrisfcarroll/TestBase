@@ -30,6 +30,26 @@ namespace TestBase
                 comment,
                 false);
         }
+
+        /// <summary>
+        ///     Assert equality-by-value using custom <see cref="DiffOptions"/>.
+        /// </summary>
+        /// <param name="actual"></param>
+        /// <param name="expectedValue"></param>
+        /// <param name="options"></param>
+        /// <param name="message"></param>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        public static T ShouldEqualByValue<T>(
+            this T          actual,
+            object          expectedValue,
+            DiffOptions     options,
+            string          message = null,
+            params object[] args)
+        {
+            AssertEqualByDiff(actual, expectedValue, "ShouldEqualByValue", null, options, message: message, args: args);
+            return actual;
+        }
 #endif
 
         /// <summary>

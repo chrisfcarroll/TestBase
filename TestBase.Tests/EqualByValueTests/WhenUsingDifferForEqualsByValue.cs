@@ -152,6 +152,49 @@ public class WhenUsingDifferForEqualsByValue
 
 #if NET6_0_OR_GREATER
     [Test]
+    public void ShouldEqualByValue_with_DiffOptions_can_be_used()
+    {
+        var left = new { Id = 1, Name = "Alice", Secret = "xyz" };
+        var right = new { Id = 1, Name = "Bob", Secret = "abc" };
+
+        var options = DiffOptions.Default
+            .WithExclusions("Name", "Secret");
+
+        // Should pass because we're excluding the differing properties
+        left.ShouldEqualByValue(right, options);
+    }
+
+    [Test]
+    public void ShouldEqualByValue_with_DiffOptions_fails_when_not_excluded()
+    {
+        var left = new { Id = 1, Name = "Alice" };
+        var right = new { Id = 1, Name = "Bob" };
+
+        var options = DiffOptions.Default;
+
+        var ex = Assert.Throws<Assertion>(() => left.ShouldEqualByValue(right, options));
+
+        TestContext.WriteLine(ex.Message);
+        ex.Message.ShouldContain("Name");
+    }
+
+    [Test]
+    public void ShouldEqualByValue_with_DiffOptions_and_custom_message()
+    {
+        var left = new { Id = 1 };
+        var right = new { Id = 2 };
+        var options = DiffOptions.Default;
+
+        var ex = Assert.Throws<Assertion>(() =>
+            left.ShouldEqualByValue(right, options, "Custom message {0}", "here"));
+
+        TestContext.WriteLine(ex.Message);
+        ex.Message.ShouldContain("Custom message here");
+    }
+#endif
+
+#if NET6_0_OR_GREATER
+    [Test]
     public void Diff_output_does_not_contain_expression_tree_noise()
     {
         var ex = Assert.Throws<Assertion>(() =>
