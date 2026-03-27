@@ -309,6 +309,9 @@ public static class Differ
         {
             if (diffsFound >= opts.MaxDifferences) break;
 
+            // Skip compiler-generated EqualityContract property on records
+            if (prop.Name == "EqualityContract") continue;
+
             var memberPath = string.IsNullOrEmpty(path) ? prop.Name : $"{path}.{prop.Name}";
 
             if (IsExcluded(memberPath, opts)) continue;
@@ -390,6 +393,10 @@ public static class Differ
         foreach (var prop in rightType.GetProperties(bindingFlags | BindingFlags.GetProperty))
         {
             if (diffsFound >= opts.MaxDifferences) break;
+
+            // Skip compiler-generated EqualityContract property on records
+            if (prop.Name == "EqualityContract") continue;
+
             var memberPath = string.IsNullOrEmpty(path) ? prop.Name : $"{path}.{prop.Name}";
             if (IsExcluded(memberPath, opts)) continue;
             if (!IsIncluded(memberPath, opts)) continue;
