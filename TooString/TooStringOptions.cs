@@ -142,8 +142,8 @@ public record TooStringOptions
     {
         var style = advancedOptions?.Style switch
         {
-            ReflectionStyle.Json => TooStringStyle.JsonStringifier,
-            ReflectionStyle.CSharp => TooStringStyle.CSharp,
+            TooStringStyle.JsonStringifier => TooStringStyle.JsonStringifier,
+            TooStringStyle.CSharp => TooStringStyle.CSharp,
             _ => TooStringStyle.DebugView
         };
         return advancedOptions is null
@@ -202,8 +202,8 @@ public record TooStringOptions
                DefaultJsonOptions,
                advancedOptions.Style switch
                {
-                   ReflectionStyle.Json => TooStringStyle.JsonStringifier,
-                   ReflectionStyle.CSharp => TooStringStyle.CSharp,
+                   TooStringStyle.JsonStringifier => TooStringStyle.JsonStringifier,
+                   TooStringStyle.CSharp => TooStringStyle.CSharp,
                    _ => TooStringStyle.DebugView
                });
 

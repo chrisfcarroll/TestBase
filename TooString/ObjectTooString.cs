@@ -83,7 +83,7 @@ public static partial class ObjectTooString
             options2 = options2 with
             {
                 Fallbacks = TooStringOptions.Default.Fallbacks.Prepend(style),
-                AdvancedOptions = options2.AdvancedOptions with { Style = style.ToReflectionStyle() }
+                AdvancedOptions = options2.AdvancedOptions with { Style = style.ToTooStringStyle() }
             };
         }
         else
@@ -131,7 +131,7 @@ public static partial class ObjectTooString
             AdvancedOptions = TooStringOptions.Default.AdvancedOptions
                 with
                 {
-                    Style = style.ToReflectionStyle(),
+                    Style = style.ToTooStringStyle(),
                     MaxDepth = maxDepth,
                     MaxEnumerationLength = maxLength
                 }
@@ -154,8 +154,8 @@ public static partial class ObjectTooString
     {
         var style = advancedOptions.Style switch
         {
-            ReflectionStyle.Json => TooStringStyle.JsonStringifier,
-            ReflectionStyle.CSharp => TooStringStyle.CSharp,
+            TooStringStyle.JsonStringifier => TooStringStyle.JsonStringifier,
+            TooStringStyle.CSharp => TooStringStyle.CSharp,
             _ => TooStringStyle.DebugView
         };
         var options = TooStringOptions.Default with
@@ -232,49 +232,49 @@ public static partial class ObjectTooString
         }
 
         Func<string,string> qname =
-            options.AdvancedOptions.Style==ReflectionStyle.Json
+            options.AdvancedOptions.Style==TooStringStyle.JsonStringifier
                 ? s => $"\"{s?.Replace("`","\\u0060").Replace("\"","\\\"")}\""
                 : s => s;
 
-        var isCSharp = options.AdvancedOptions.Style == ReflectionStyle.CSharp;
+        var isCSharp = options.AdvancedOptions.Style == TooStringStyle.CSharp;
         try
         {
             var indent=
                 (options.AdvancedOptions.Style, options.JsonOptions.WriteIndented) switch
                 {
                     (_,true) => NewLineSpaces400.AsSpan().Slice(0, 1 + (options.Depth + 1) * 2),
-                    (ReflectionStyle.Json,false) => "".AsSpan(),
-                    (ReflectionStyle.DebugView,false) => " ".AsSpan(),
-                    (ReflectionStyle.CSharp,false) => " ".AsSpan(),
+                    (TooStringStyle.JsonStringifier,false) => "".AsSpan(),
+                    (TooStringStyle.DebugView,false) => " ".AsSpan(),
+                    (TooStringStyle.CSharp,false) => " ".AsSpan(),
                     (_,_) => " ".AsSpan()
                 };
             var outdent =
                 (options.AdvancedOptions.Style, options.JsonOptions.WriteIndented) switch
                 {
-                    (ReflectionStyle.DebugView,true) => NewLineSpaces400.AsSpan().Slice(0, options.Depth * 2),
-                    (ReflectionStyle.CSharp,true) => NewLineSpaces400.AsSpan().Slice(0, options.Depth * 2),
-                    (ReflectionStyle.Json,true) => NewLineSpaces400.AsSpan().Slice(0, 1 + (options.Depth) * 2),
-                    (ReflectionStyle.Json,false) => "".AsSpan(),
-                    (ReflectionStyle.DebugView,false) => " ".AsSpan(),
-                    (ReflectionStyle.CSharp,false) => " ".AsSpan(),
+                    (TooStringStyle.DebugView,true) => NewLineSpaces400.AsSpan().Slice(0, options.Depth * 2),
+                    (TooStringStyle.CSharp,true) => NewLineSpaces400.AsSpan().Slice(0, options.Depth * 2),
+                    (TooStringStyle.JsonStringifier,true) => NewLineSpaces400.AsSpan().Slice(0, 1 + (options.Depth) * 2),
+                    (TooStringStyle.JsonStringifier,false) => "".AsSpan(),
+                    (TooStringStyle.DebugView,false) => " ".AsSpan(),
+                    (TooStringStyle.CSharp,false) => " ".AsSpan(),
                     (_,_) => "".AsSpan()
                 };
             var delimiter = (options.AdvancedOptions.Style, options.JsonOptions.WriteIndented) switch
                 {
-                    (ReflectionStyle.DebugView,true) => CommaCrLfSpaces400.AsSpan().Slice(0,5 + options.Depth*2),
-                    (ReflectionStyle.CSharp,true) => CommaCrLfSpaces400.AsSpan().Slice(0,5 + options.Depth*2),
-                    (ReflectionStyle.Json,true) => CommaCrLfSpaces400.AsSpan().Slice(0,2 + (options.Depth + 1) *2),
-                    (ReflectionStyle.Json, false) =>",",
-                    (ReflectionStyle.DebugView, false) => ", ",
-                    (ReflectionStyle.CSharp, false) => ", ",
+                    (TooStringStyle.DebugView,true) => CommaCrLfSpaces400.AsSpan().Slice(0,5 + options.Depth*2),
+                    (TooStringStyle.CSharp,true) => CommaCrLfSpaces400.AsSpan().Slice(0,5 + options.Depth*2),
+                    (TooStringStyle.JsonStringifier,true) => CommaCrLfSpaces400.AsSpan().Slice(0,2 + (options.Depth + 1) *2),
+                    (TooStringStyle.JsonStringifier, false) =>",",
+                    (TooStringStyle.DebugView, false) => ", ",
+                    (TooStringStyle.CSharp, false) => ", ",
                     (_,_) => ", "
                 };
             var separator = (options.AdvancedOptions.Style, options.JsonOptions.WriteIndented) switch
             {
-                (ReflectionStyle.Json,true) => ": ",
-                (ReflectionStyle.Json, false) =>":",
-                (ReflectionStyle.DebugView, _) => " = ",
-                (ReflectionStyle.CSharp, _) => " = ",
+                (TooStringStyle.JsonStringifier,true) => ": ",
+                (TooStringStyle.JsonStringifier, false) =>":",
+                (TooStringStyle.DebugView, _) => " = ",
+                (TooStringStyle.CSharp, _) => " = ",
                 (_,_) => " = "
             };
 
@@ -380,7 +380,7 @@ public static partial class ObjectTooString
 
     static string DelimitTuple<T>(T value, OptionsWithState options) where T : ITuple
     {
-        var (start, delimiter,end) = options.AdvancedOptions.Style == ReflectionStyle.Json
+        var (start, delimiter,end) = options.AdvancedOptions.Style == TooStringStyle.JsonStringifier
             ? ("[", "," , "]")
             : ("(", ", ", ")");
         var b = new StringBuilder(start);
@@ -403,7 +403,7 @@ public static partial class ObjectTooString
         }
         if (options.Depth + 1 == options.AdvancedOptions.MaxDepth
             &&
-            options.AdvancedOptions.Style is ReflectionStyle.DebugView or ReflectionStyle.CSharp
+            options.AdvancedOptions.Style is TooStringStyle.DebugView or TooStringStyle.CSharp
             &&
             typeof(T).GetMethod("ToString",BindingFlags.DeclaredOnly|BindingFlags.Instance|BindingFlags.Public) is null)
         {
@@ -419,8 +419,8 @@ public static partial class ObjectTooString
         int i = 0;
         var (start, delimiter, end) = options.AdvancedOptions.Style switch
         {
-            ReflectionStyle.Json => ("[", ",", "]"),
-            ReflectionStyle.CSharp => ("new[] { ", ", ", " }"),
+            TooStringStyle.JsonStringifier => ("[", ",", "]"),
+            TooStringStyle.CSharp => ("new[] { ", ", ", " }"),
             _ => ("[ ", ", ", " ]")
         };
         var b = new StringBuilder(start);
@@ -441,20 +441,20 @@ public static partial class ObjectTooString
     /// <summary>
     /// Stringify <paramref name="value"/> using reflection.
     /// <list type="bullet">
-    /// <item><see cref="ReflectionStyle.Json"/>: <c>{"A":1}</c></item>
-    /// <item><see cref="ReflectionStyle.CSharp"/>: <c>/*TypeName*/ new { A = 1 }</c> (valid C# syntax)</item>
-    /// <item><see cref="ReflectionStyle.DebugView"/>: <c>TypeName { A = 1 }</c></item>
+    /// <item><see cref="TooStringStyle.JsonStringifier"/>: <c>{"A":1}</c></item>
+    /// <item><see cref="TooStringStyle.CSharp"/>: <c>/*TypeName*/ new { A = 1 }</c> (valid C# syntax)</item>
+    /// <item><see cref="TooStringStyle.DebugView"/>: <c>TypeName { A = 1 }</c></item>
     /// </list>
     /// </summary>
     /// <param name="value"></param>
     /// <param name="style"></param>
     /// <param name="whichProperties"></param>
     /// <param name="indentedJson">Only relevant if <paramref name="style"/>
-    ///     is <see cref="ReflectionStyle.Json"/></param>
+    ///     is <see cref="TooStringStyle.JsonStringifier"/></param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
     public static string ToStringified<T>(this T? value,
-                                              ReflectionStyle style = ReflectionStyle.CSharp,
+                                              TooStringStyle style = TooStringStyle.CSharp,
                                               BindingFlags whichProperties =
                                                   BindingFlags.Instance | BindingFlags.Public,
                                               bool indentedJson = false)
@@ -488,8 +488,8 @@ public static partial class ObjectTooString
     static string ScalarishToShortReflectedString(object? value, OptionsWithState options)
     {
         var style = options.AdvancedOptions.Style;
-        var isJson = style == ReflectionStyle.Json;
-        var isCSharp = style == ReflectionStyle.CSharp;
+        var isJson = style == TooStringStyle.JsonStringifier;
+        var isCSharp = style == TooStringStyle.CSharp;
 
         Func<string, string> qstr =
                 isJson || isCSharp

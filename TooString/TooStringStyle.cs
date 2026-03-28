@@ -56,11 +56,11 @@ public static class TooStringStyleExtensions
     public static bool IsReflection(this TooStringStyle style) =>
         style is TooStringStyle.JsonStringifier or TooStringStyle.DebugView or TooStringStyle.CSharp;
 
-    /// <summary>Convert to the internal <see cref="ReflectionStyle"/> used by <see cref="AdvancedOptions"/></summary>
-    public static ReflectionStyle ToReflectionStyle(this TooStringStyle style) => style switch
+    /// <summary>Convert to the internal <see cref="TooStringStyle"/> used by <see cref="AdvancedOptions"/></summary>
+    public static TooStringStyle ToTooStringStyle(this TooStringStyle style) => style switch
     {
-        TooStringStyle.JsonStringifier => ReflectionStyle.Json,
-        TooStringStyle.CSharp => ReflectionStyle.CSharp,
-        _ => ReflectionStyle.DebugView
+        TooStringStyle.JsonStringifier => TooStringStyle.JsonStringifier,
+        TooStringStyle.CSharp => TooStringStyle.CSharp,
+        _ => TooStringStyle.DebugView
     };
 }

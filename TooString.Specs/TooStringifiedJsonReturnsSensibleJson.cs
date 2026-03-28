@@ -73,7 +73,7 @@ public class TooStringifiedJsonReturnsSensibleJson
         //var value = new KeyValuePair<int, string>(1, "boo");
         var value = new AStruct { A = "boo", B = new Complex(3, 4) };
 
-        TestContext.Progress.WriteLine(value.ToStringified(ReflectionStyle.Json));
+        TestContext.Progress.WriteLine(value.ToStringified(TooStringStyle.JsonStringifier));
         
         Assert.That(
             value.TooString(TooStringStyle.JsonStringifier),

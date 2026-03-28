@@ -6,7 +6,7 @@ namespace TooString;
 /// Options for what to stringify when using reflection-based styles
 /// /// </summary>
 /// <param name="WhichProperties"><see cref="BindingFlags"/> to pick out the properties and fields to stringify</param>
-/// <param name="Style">Defaults to <see cref="ReflectionStyle.Json"/></param>
+/// <param name="Style">Defaults to <see cref="TooStringStyle.JsonStringifier"/></param>
 /// <param name="MaxDepth">
 /// How deep into nested structures should we print before stopping the recursion?
 /// Defaults to 3, which may be plenty for logging and monitoring.</param>
@@ -24,7 +24,7 @@ namespace TooString;
 /// <param name="TimeSpanFormat">Defaults to "". The preferred <see cref="TimeSpan.ToString()"/> option</param>
 public record AdvancedOptions(
     BindingFlags WhichProperties = BindingFlags.Instance | BindingFlags.Public,
-    ReflectionStyle Style = ReflectionStyle.CSharp,
+    TooStringStyle Style = TooStringStyle.CSharp,
     int MaxDepth = 3,
     int MaxEnumerationLength = 9,
     string DateTimeFormat = "O",
@@ -37,7 +37,7 @@ public record AdvancedOptions(
     /// <code>
     /// public record AdvancedOptions(
     ///     BindingFlags WhichProperties = BindingFlags.Instance | BindingFlags.Public,
-    ///     ReflectionStyle Style = ReflectionStyle.DebugView,
+    ///     TooStringStyle Style = TooStringStyle.DebugView,
     ///     int MaxDepth = 3,
     ///     int MaxLength = 9,
     ///     string DateTimeFormat = "O",
@@ -52,7 +52,7 @@ public record AdvancedOptions(
     /// <code>
     /// public record AdvancedOptions(
     ///     BindingFlags WhichProperties = BindingFlags.Instance | BindingFlags.Public,
-    ///     ReflectionStyle Style = ReflectionStyle.Json,
+    ///     TooStringStyle Style = TooStringStyle.Json,
     ///     int MaxDepth = 3,
     ///     int MaxLength = 9,
     ///     string DateTimeFormat = "O",
@@ -63,7 +63,7 @@ public record AdvancedOptions(
     /// </summary>
     public static readonly AdvancedOptions ForJson = ForCSharp with
     {
-        Style = ReflectionStyle.Json
+        Style = TooStringStyle.JsonStringifier
     };
 
 
@@ -71,7 +71,7 @@ public record AdvancedOptions(
     /// <code>
     /// public record AdvancedOptions(
     ///     BindingFlags WhichProperties = BindingFlags.Instance | BindingFlags.Public,
-    ///     ReflectionStyle Style = ReflectionStyle.DebugView,
+    ///     TooStringStyle Style = TooStringStyle.DebugView,
     ///     int MaxDepth = 3,
     ///     int MaxLength = 9,
     ///     string DateTimeFormat = "O",
@@ -82,7 +82,7 @@ public record AdvancedOptions(
     /// </summary>
     public static readonly AdvancedOptions ForDebugView = ForCSharp with
     {
-        Style = ReflectionStyle.DebugView
+        Style = TooStringStyle.DebugView
     };
 
     /// <summary>

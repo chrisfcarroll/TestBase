@@ -24,8 +24,8 @@ TooString is not a serializer.
 
 - ToJson() defaults to using System.Text.Json, falling back to reflection for un-serializable types.
 whereas
-- TooString(ReflectionStyle.Json) 
-- TooString(ReflectionStyle.CSharp)
+- TooString(TooStringStyle.Json) 
+- TooString(TooStringStyle.CSharp)
 - ToStringified()
 all defaults to MaxDepth = 4, MaxEnumerationLength = 9.
 
@@ -44,7 +44,7 @@ var tuple = (one: 1, two: "2", three: new Complex(3,4));
 System.Text.Json.JsonSerializer.Serialize(tuple) // Output is "{}" because there  
                                                  // are no public properties on a tuple
 
-tuple.TooString(ReflectionStyle.Json)
+tuple.TooString(TooStringStyle.Json)
 // Output is created by reflection and stringifies the tuple and the Complex number as arrays
 // [1,"2",[3,4]] 
 
@@ -75,15 +75,15 @@ Try one of these approaches:
 value.ToJson()
 value.TooString( new JsonSerializerOptions(JsonSerializerDefaults.Web){WriteIndented = true})
 // For Json using Reflection
-value.TooString( ReflectionStyle.Json )
+value.TooString( TooStringStyle.Json )
 value.TooString( AdvancedOptions.ForJson with {} )
 
 
 // For Stringified
 value.ToStringified()
-value.TooString( ReflectionStyle.Stringified )
+value.TooString( TooStringStyle.Stringified )
 value.TooString( AdvancedOptions.ForStringified.With(...) ) // Same output as value.ToStringified()
-value.TooString( maxDepth:4, maxLength:9, style:ReflectionStyle.Stringified )
+value.TooString( maxDepth:4, maxLength:9, style:TooStringStyle.Stringified )
 value.TooString( AdvancedOptions.ForStringified with 
 {
     DateTimeFormat = "yyyyMMdd HH:mm:ss",

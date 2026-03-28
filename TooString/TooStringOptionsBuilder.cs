@@ -24,7 +24,7 @@ namespace TooString;
 public class TooStringOptionsBuilder
 {
     TooStringStyle _style = TooStringStyle.BestEffort;
-    ReflectionStyle _reflectionStyle = ReflectionStyle.DebugView;
+    TooStringStyle _reflectionStyle = TooStringStyle.DebugView;
     int _maxDepth = 3;
     int _maxEnumerationLength = 9;
     bool _writeIndented;
@@ -47,7 +47,7 @@ public class TooStringOptionsBuilder
     public TooStringOptionsBuilder UseDebugView()
     {
         _style = TooStringStyle.DebugView;
-        _reflectionStyle = ReflectionStyle.DebugView;
+        _reflectionStyle = TooStringStyle.DebugView;
         return this;
     }
 
@@ -55,7 +55,7 @@ public class TooStringOptionsBuilder
     public TooStringOptionsBuilder UseReflectionJson()
     {
         _style = TooStringStyle.JsonStringifier;
-        _reflectionStyle = ReflectionStyle.Json;
+        _reflectionStyle = TooStringStyle.JsonStringifier;
         return this;
     }
 
@@ -63,7 +63,7 @@ public class TooStringOptionsBuilder
     public TooStringOptionsBuilder UseCSharp()
     {
         _style = TooStringStyle.CSharp;
-        _reflectionStyle = ReflectionStyle.CSharp;
+        _reflectionStyle = TooStringStyle.CSharp;
         return this;
     }
 

@@ -74,7 +74,7 @@ public class TooStringIndentOptionSpecs
 
         // var actual2 = circular.TooString(new AdvancedOptions()
         // {
-        //     Style = ReflectionStyle.Json
+        //     Style = TooStringStyle.Json
         // });
         // Assert.That(actual2, Is.EqualTo(expected1));
     }

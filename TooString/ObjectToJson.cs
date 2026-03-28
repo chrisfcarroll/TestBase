@@ -27,7 +27,7 @@ public static partial class ObjectTooString
             (value is ITuple && !tooStringOptions.JsonOptions.IncludeFields)
            )
         {
-            return ToStringified(value, tooStringOptions with {AdvancedOptions = tooStringOptions.AdvancedOptions with {Style = ReflectionStyle.Json}});
+            return ToStringified(value, tooStringOptions with {AdvancedOptions = tooStringOptions.AdvancedOptions with {Style = TooStringStyle.JsonStringifier}});
         }
 
         try
