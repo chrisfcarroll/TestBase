@@ -7,7 +7,7 @@ namespace TooString.Specs;
 public struct AStruct { public string A {get; init; } public Complex B { get; init; } }
 
 [TestFixture]
-public class TooStringReflectionDebugViewReturnsDebugView
+public class TooStringifiedDebugViewReturnsDebugView
 {
     internal static readonly HttpClient httpClient = new HttpClient() { BaseAddress = new Uri("http://127.0.0.1") };
 
@@ -94,7 +94,7 @@ public class TooStringReflectionDebugViewReturnsDebugView
         //var value = new KeyValuePair<int, string>(1, "boo");
         var value = new AStruct { A = "boo", B = new Complex(3, 4) };
 
-        TestContext.Progress.WriteLine(value.ToDebugViewString());
+        TestContext.Progress.WriteLine(value.ToStringified());
         
         Assert.That(
             value.TooString(TooStringStyle.DebugView ), 
@@ -113,7 +113,7 @@ public class TooStringReflectionDebugViewReturnsDebugView
                 five= new CompositeA{A = "A", B= new Complex(3,4)}
             };
         
-        TestContext.Progress.WriteLine(value.ToDebugViewString());
+        TestContext.Progress.WriteLine(value.ToStringified());
         
         Assert.That(
             value.TooString(TooStringStyle.DebugView ), 

@@ -1,7 +1,7 @@
 namespace TooString.Specs;
 
 [TestFixture]
-public class TooStringReflectionCSharpReturnsCSharp
+public class TooStringifiedCSharpReturnsCSharp
 {
     record Person(int Id, string Name, bool Active);
     record Address(string Street, string City);

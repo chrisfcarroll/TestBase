@@ -39,7 +39,7 @@ public static class ObjectTooString
     /// stringified. The default <see cref="TooStringStyle.BestEffort"/> will
     /// use <see cref="TooStringStyle.CallerArgument"/>
     /// if <paramref name="argumentExpression"/> holds more than just a parameter name,
-    /// or <see cref="TooStringStyle.Json"/> otherwise.
+    /// or <see cref="TooStringStyle.JsonSerializer"/> otherwise.
     /// </param>
     /// <param name="options"></param>
     /// <param name="argumentExpression">
@@ -60,7 +60,7 @@ public static class ObjectTooString
         options ??= style switch
                     {
                         _ when style.IsReflection() => TooStringOptions.ForReflection(),
-                        TooStringStyle.Json => TooStringOptions.ForJson(),
+                        TooStringStyle.JsonSerializer => TooStringOptions.ForJson(),
                         _ => TooStringOptions.Default
                     };
         if (style.IsReflection())
@@ -96,7 +96,7 @@ public static class ObjectTooString
     /// Further items will simply be omitted.
     /// </param>
     /// <param name="style">
-    /// Choose between <see cref="TooStringStyle.ReflectionJson"/>,
+    /// Choose between <see cref="TooStringStyle.JsonStringifier"/>,
     /// <see cref="TooStringStyle.DebugView"/>, or
     /// <see cref="TooStringStyle.CSharp"/> (valid C# syntax with type names in comments)
     /// </param>
@@ -108,7 +108,7 @@ public static class ObjectTooString
     public static string TooString<T>(this T value,
                                       int maxDepth,
                                       int maxLength = 9,
-                                      TooStringStyle style = TooStringStyle.ReflectionJson)
+                                      TooStringStyle style = TooStringStyle.JsonStringifier)
     {
         var options = TooStringOptions.Default with
         {
@@ -139,7 +139,7 @@ public static class ObjectTooString
     {
         var style = reflectionOptions.Style switch
         {
-            ReflectionStyle.Json => TooStringStyle.ReflectionJson,
+            ReflectionStyle.Json => TooStringStyle.JsonStringifier,
             ReflectionStyle.CSharp => TooStringStyle.CSharp,
             _ => TooStringStyle.DebugView
         };
@@ -202,8 +202,8 @@ public static class ObjectTooString
                {
                    TooStringStyle.BestEffort => CallerArgumentOrNextPreference(),
                    TooStringStyle.CallerArgument => argumentExpression,
-                   TooStringStyle.Json => ToJson(value,tooStringOptions),
-                   TooStringStyle.ReflectionJson or TooStringStyle.DebugView or TooStringStyle.CSharp
+                   TooStringStyle.JsonSerializer => ToJson(value,tooStringOptions),
+                   TooStringStyle.JsonStringifier or TooStringStyle.DebugView or TooStringStyle.CSharp
                        => BuildReflectedString(value, new OptionsWithState(0, tooStringOptions)),
                    _ => value?.ToString()
                }
@@ -222,9 +222,9 @@ public static class ObjectTooString
                          && !Regex.IsMatch(argumentExpression,
                                            RegexTypeNameOrIdentifierWithCharsOnly):
                         return argumentExpression;
-                    case TooStringStyle.ReflectionJson or TooStringStyle.DebugView or TooStringStyle.CSharp:
-                        return ToDebugViewString(value,tooStringOptions);
-                    case TooStringStyle.Json:
+                    case TooStringStyle.JsonStringifier or TooStringStyle.DebugView or TooStringStyle.CSharp:
+                        return ToStringified(value,tooStringOptions);
+                    case TooStringStyle.JsonSerializer:
                         return ToJson(value,tooStringOptions);
                 }
             }
@@ -235,14 +235,14 @@ public static class ObjectTooString
     /// <summary>
     /// Try to use <see cref="JsonSerializer"/> to serialize <paramref name="value"/>.
     /// If that fails — for instance for types in System.Reflection, and for System.Type itself,
-    /// returns <see cref="ToDebugViewString{T}(T?,TooString.TooStringOptions)"/>
+    /// returns <see cref="ToStringified{T}"/>
     /// </summary>
     /// <param name="value"></param>
     /// <param name="tooStringOptions"></param>
     /// <typeparam name="T"></typeparam>
     /// <returns>
-    /// JsonSerializer.Serialize(value,tooStringOptions.JsonOptions), unless that fails,
-    /// in which case <see cref="ToDebugViewString{T}(T?,TooString.TooStringOptions)"/>.
+    /// System.Text.Json.JsonSerializer.Serialize(value,tooStringOptions.JsonOptions), unless that fails,
+    /// in which case <see cref="ToStringified{T}"/>.
     /// </returns>
     public static string ToJson<T>(this T? value, TooStringOptions tooStringOptions)
     {
@@ -250,9 +250,10 @@ public static class ObjectTooString
             ||
             typeof(T).FullName?.StartsWith("System.Reflection") is true
             ||
-            (value is ITuple && !tooStringOptions.JsonOptions.IncludeFields))
+            (value is ITuple && !tooStringOptions.JsonOptions.IncludeFields)
+            )
         {
-            return ToDebugViewString(value, tooStringOptions with {ReflectionOptions = tooStringOptions.ReflectionOptions with {Style = ReflectionStyle.Json}});
+            return ToStringified(value, tooStringOptions with {ReflectionOptions = tooStringOptions.ReflectionOptions with {Style = ReflectionStyle.Json}});
         }
 
         try
@@ -261,7 +262,7 @@ public static class ObjectTooString
         }
         catch
         {
-            return ToDebugViewString(value,TooStringOptions.ForJson() with {JsonOptions = tooStringOptions.JsonOptions});;
+            return ToStringified(value,TooStringOptions.ForJson() with {JsonOptions = tooStringOptions.JsonOptions});;
         }
     }
 
@@ -292,7 +293,7 @@ public static class ObjectTooString
     /// <param name="options"></param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public static string ToDebugViewString<T>(this T? value, TooStringOptions options)
+    public static string ToStringified<T>(this T? value, TooStringOptions options)
         => BuildReflectedString(value, new OptionsWithState(0, options));
 
     static string BuildReflectedString<T>(T? value, OptionsWithState options)
@@ -524,7 +525,7 @@ public static class ObjectTooString
     ///     is <see cref="ReflectionStyle.Json"/></param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public static string ToDebugViewString<T>(this T? value,
+    public static string ToStringified<T>(this T? value,
                                               ReflectionStyle style = ReflectionStyle.DebugView,
                                               BindingFlags whichProperties =
                                                   BindingFlags.Instance | BindingFlags.Public,

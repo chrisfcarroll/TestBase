@@ -17,7 +17,7 @@ public class TooStringJsonReturnsJson
     [TestCase(1.2d, "1.2")]
     public void GivenAScalar(object value, string expected)
     {
-        Assert.That(value.TooString(TooStringStyle.Json ), Is.EqualTo(expected));
+        Assert.That(value.TooString(TooStringStyle.JsonSerializer ), Is.EqualTo(expected));
     }
 
     [Test]
@@ -32,7 +32,7 @@ public class TooStringJsonReturnsJson
         }
 
         Assert.That(
-            now.TooString(TooStringStyle.Json),
+            now.TooString(TooStringStyle.JsonSerializer),
             Is.EqualTo($"\"{now.ToString("O")}\""));
     }
 
@@ -43,10 +43,10 @@ public class TooStringJsonReturnsJson
         var expected = 
             "{\"A\":\"boo\",\"B\":{\"Real\":3,\"Imaginary\":4,\"Magnitude\":5,\"Phase\":0.9272952180016122}}";
         
-        TestContext.Progress.WriteLine(value.TooString(TooStringStyle.Json));
+        TestContext.Progress.WriteLine(value.TooString(TooStringStyle.JsonSerializer));
         
         Assert.That(
-            value.TooString(TooStringStyle.Json), 
+            value.TooString(TooStringStyle.JsonSerializer), 
             Is.EqualTo(expected) 
         );
     }
@@ -58,10 +58,10 @@ public class TooStringJsonReturnsJson
         var expected =
             "{\"A\":null,\"B\":null}";
 
-        TestContext.Progress.WriteLine(value.TooString(TooStringStyle.Json));
+        TestContext.Progress.WriteLine(value.TooString(TooStringStyle.JsonSerializer));
 
         Assert.That(
-            value.TooString(TooStringStyle.Json),
+            value.TooString(TooStringStyle.JsonSerializer),
             Is.EqualTo(expected)
             );
     }
@@ -73,10 +73,10 @@ public class TooStringJsonReturnsJson
         var expected = 
             "{\"A\":\"boo\",\"B\":{\"Real\":3,\"Imaginary\":4,\"Magnitude\":5,\"Phase\":0.9272952180016122}}";
         
-        TestContext.Progress.WriteLine(value.TooString(TooStringStyle.Json));
+        TestContext.Progress.WriteLine(value.TooString(TooStringStyle.JsonSerializer));
         
         Assert.That(
-            value.TooString(TooStringStyle.Json), 
+            value.TooString(TooStringStyle.JsonSerializer), 
             Is.EqualTo(expected) 
         );
     }
@@ -90,7 +90,7 @@ public class TooStringJsonReturnsJson
             "{\"A\":\"boo\",\"B\":null,\"C\":null}";
         
         Assert.That(
-            value.TooString(TooStringStyle.Json), 
+            value.TooString(TooStringStyle.JsonSerializer), 
             Is.EqualTo(expected) 
         );
     }
@@ -105,7 +105,7 @@ public class TooStringJsonReturnsJson
             "\"Timeout\":\"00:01:40\",\"MaxResponseContentBufferSize\":2147483647}";
         
         Assert.That(
-            value.TooString(TooStringStyle.Json), 
+            value.TooString(TooStringStyle.JsonSerializer), 
             Is.EqualTo(expected) 
         );
     }
@@ -115,7 +115,7 @@ public class TooStringJsonReturnsJson
     public void AndTestMethodsToRedactFilePathsDontBreakTheseTests()
     {
         var anAssembly = Assembly.GetExecutingAssembly();
-        var actual = anAssembly.ManifestModule.FullyQualifiedName.TooString(TooStringStyle.Json);
+        var actual = anAssembly.ManifestModule.FullyQualifiedName.TooString(TooStringStyle.JsonSerializer);
         var expected = "\"" +
                        /* expect Json to escape backslashes with backslashes */
                        Path.Combine(Directory.GetCurrentDirectory(), "TooString.Specs.dll").Replace("\\","\\\\") +
@@ -154,7 +154,7 @@ public class TooStringJsonReturnsJson
         TestContext.Progress.WriteLine("ToString:" + value);
 
         Assert.That(
-            value.TooString(TooStringStyle.Json),
+            value.TooString(TooStringStyle.JsonSerializer),
             Is.EqualTo("""[1,"boo",false,"Absolute",{"A":"A","B":[3,4]}]"""));
 
         var valueAsAnonymousObject = new
@@ -164,7 +164,7 @@ public class TooStringJsonReturnsJson
         };
         Assert.That(
             jsonnedIncludeFields,
-            Is.EqualTo( valueAsAnonymousObject.TooString(TooStringStyle.Json)));
+            Is.EqualTo( valueAsAnonymousObject.TooString(TooStringStyle.JsonSerializer)));
     }
 
     [Test]
@@ -178,11 +178,11 @@ public class TooStringJsonReturnsJson
                        """;
         //A
         var optionsD3L3 = TooStringOptions.ForJson(js => js.MaxDepth = 3) with {ReflectionOptions = ReflectionOptions.ForJson with{MaxEnumerationLength = 3}};
-        var actual = value.TooString(TooStringStyle.Json, optionsD3L3);
+        var actual = value.TooString(TooStringStyle.JsonSerializer, optionsD3L3);
 
         //A
         var comparableValue = actual.RegexReplaceCompilationDependentValuesWithPseudoValues();
-        var expandoString = JsonSerializer.Deserialize<ExpandoObject>(actual).TooString(TooStringStyle.Json, optionsD3L3);
+        var expandoString = JsonSerializer.Deserialize<ExpandoObject>(actual).TooString(TooStringStyle.JsonSerializer, optionsD3L3);
         var comparableExpandoString = expandoString.RegexReplaceCompilationDependentValuesWithPseudoValues();
         TestContext.Progress.WriteLine(comparableExpandoString);
 
@@ -206,11 +206,11 @@ public class TooStringJsonReturnsJson
         
         //A
         var optionsD3L3 = TooStringOptions.ForJson(js => js.MaxDepth = 3) with {ReflectionOptions = ReflectionOptions.ForJson with{ MaxEnumerationLength = 3 }};
-        var actual = value.TooString(TooStringStyle.Json, optionsD3L3);
+        var actual = value.TooString(TooStringStyle.JsonSerializer, optionsD3L3);
 
         //A
         var comparableValue = actual.RegexReplaceCompilationDependentValuesWithPseudoValues();
-        var expandoString = JsonSerializer.Deserialize<ExpandoObject>(actual).TooString(TooStringStyle.Json, optionsD3L3);
+        var expandoString = JsonSerializer.Deserialize<ExpandoObject>(actual).TooString(TooStringStyle.JsonSerializer, optionsD3L3);
         var comparableExpandoString = expandoString.RegexReplaceCompilationDependentValuesWithPseudoValues();
         TestContext.Progress.WriteLine(comparableExpandoString);
 

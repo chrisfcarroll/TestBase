@@ -36,10 +36,10 @@ public class TooStringOptionsBuilder
     JsonSerializerOptions? _jsonOptions;
     readonly List<TooStringStyle> _fallbacks = new();
 
-    /// <summary>Use <see cref="TooStringStyle.Json"/> (System.Text.Json serialization)</summary>
+    /// <summary>Use <see cref="TooStringStyle.JsonSerializer"/> (System.Text.Json serialization)</summary>
     public TooStringOptionsBuilder UseJson()
     {
-        _style = TooStringStyle.Json;
+        _style = TooStringStyle.JsonSerializer;
         return this;
     }
 
@@ -51,10 +51,10 @@ public class TooStringOptionsBuilder
         return this;
     }
 
-    /// <summary>Use <see cref="TooStringStyle.ReflectionJson"/> (reflection with <c>{"A":"B"}</c> style)</summary>
+    /// <summary>Use <see cref="TooStringStyle.JsonStringifier"/> (reflection with <c>{"A":"B"}</c> style)</summary>
     public TooStringOptionsBuilder UseReflectionJson()
     {
-        _style = TooStringStyle.ReflectionJson;
+        _style = TooStringStyle.JsonStringifier;
         _reflectionStyle = ReflectionStyle.Json;
         return this;
     }

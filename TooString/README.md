@@ -10,12 +10,15 @@ TooString offers 3 extension method groups on Object:
 ```csharp
 value.TooString();
 value.ToJson();
-value.ToDebugViewString();
+value.ToStringified();
 ```
-TooString is not a serializer. A serializer should be fail-fast, but TooString is best-effort.
-A Serializer should throw if it cannot deterministically serialize the input, but TooString 
+- TooString is not a serializer. A serializer should be fail-fast, but TooString is best-effort.
+- A Serializer should throw if it cannot deterministically serialize the input, but TooString 
 will attempt to return a partial or alternative representation of the input even when input 
 cannot reliably be serialized.
+- TooString offers both MaxDepth and MaxEnumerationLength options for abbreviated output.
+- TooString can generate Json, C# objects, and [CallerArgumentExpression] code. 
+
 
 #### Default behaviour
 
@@ -23,7 +26,7 @@ cannot reliably be serialized.
 whereas
 - TooString(ReflectionStyle.Json) 
 - TooString(ReflectionStyle.DebugView)
-- ToDebugView()
+- ToStringified()
 all defaults to MaxDepth = 4, MaxEnumerationLength = 9.
 
 Example:
@@ -31,7 +34,7 @@ Example:
 var value = new { A = "boo", B = new Complex(3,4) };
 
 value.ToJson();           // Output Is System.Text.Json {"A":"boo","B":{"Real":3,"Imaginary":...}}
-value.ToDebugViewString(),//Output is { A = boo, B = <3; 4> } depending on .Net version.
+value.ToStringified(),//Output is { A = boo, B = <3; 4> } depending on .Net version.
 
 ( Math.Sqrt(4 * Math.PI / 3)  ).TooString( TooStringHow.CallerArgument ) 
 // Output is the literal code: "Math.Sqrt(4 * Math.PI / 3)"
@@ -45,7 +48,7 @@ tuple.TooString(ReflectionStyle.Json)
 // Output is created by reflection and stringifies the tuple and the Complex number as arrays
 // [1,"2",[3,4]] 
 
-tuple.ToDebugViewString()
+tuple.ToStringified()
 tuple.TooString(TooStringHow.Reflection)
 // Output is created by reflection and mimics typical debugger display
 // on Net6.0: {item1 = 1, item2 = "2", item3 = (3,4)}  
@@ -76,12 +79,12 @@ value.TooString( ReflectionStyle.Json )
 value.TooString( ReflectionOptions.ForJson with {} )
 
 
-// For DebugView
-value.ToDebugViewString()
-value.TooString( ReflectionStyle.DebugView )
-value.TooString( ReflectionOptions.ForDebugView.With(...) ) // Same output as value.ToDebugViewString()
-value.TooString( maxDepth:4, maxLength:9, style:ReflectionStyle.DebugView )
-value.TooString( ReflectionOptions.ForDebugView with 
+// For Stringified
+value.ToStringified()
+value.TooString( ReflectionStyle.Stringified )
+value.TooString( ReflectionOptions.ForStringified.With(...) ) // Same output as value.ToStringified()
+value.TooString( maxDepth:4, maxLength:9, style:ReflectionStyle.Stringified )
+value.TooString( ReflectionOptions.ForStringified with 
 {
     DateTimeFormat = "yyyyMMdd HH:mm:ss",
     TimeSpanFormat = @"d\.hh\:mm\:ss"

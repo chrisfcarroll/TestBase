@@ -11,7 +11,7 @@ public enum TooStringStyle
 {
     /// <summary>If <see cref="CallerArgument"/> returns more than just a parameter
     /// name, then use it.
-    /// Otherwise use <see cref="JsonSerializer"/>
+    /// Otherwise use <see cref="System.Text.Json.JsonSerializer"/>
     /// </summary>
     BestEffort = 0,
 
@@ -23,12 +23,12 @@ public enum TooStringStyle
     /// <summary>Use
     /// <see cref="JsonSerializer.Serialize(object?,System.Type,System.Text.Json.JsonSerializerOptions?)"/>
     /// </summary>
-    Json,
+    JsonSerializer,
 
     /// <summary>
     /// Use Reflection to stringify with JSON-style output: <c>{"A":"B"}</c>
     /// </summary>
-    ReflectionJson,
+    JsonStringifier,
 
     /// <summary>
     /// Use Reflection to stringify with Debug View style: <c>{ A = "B" }</c>
@@ -53,12 +53,12 @@ public static class TooStringStyleExtensions
 {
     /// <summary>Whether this style uses reflection-based serialization</summary>
     public static bool IsReflection(this TooStringStyle style) =>
-        style is TooStringStyle.ReflectionJson or TooStringStyle.DebugView or TooStringStyle.CSharp;
+        style is TooStringStyle.JsonStringifier or TooStringStyle.DebugView or TooStringStyle.CSharp;
 
     /// <summary>Convert to the internal <see cref="ReflectionStyle"/> used by <see cref="ReflectionOptions"/></summary>
     public static ReflectionStyle ToReflectionStyle(this TooStringStyle style) => style switch
     {
-        TooStringStyle.ReflectionJson => ReflectionStyle.Json,
+        TooStringStyle.JsonStringifier => ReflectionStyle.Json,
         TooStringStyle.CSharp => ReflectionStyle.CSharp,
         _ => ReflectionStyle.DebugView
     };

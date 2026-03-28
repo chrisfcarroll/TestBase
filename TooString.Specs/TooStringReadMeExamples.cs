@@ -27,7 +27,7 @@ public class TooStringReadMeExamples
 
         var anonObject = new { A = "boo", B = new Complex(3,4) };
         var actualJson1 = anonObject.ToJson();
-        var actualJson2 = anonObject.TooString(TooStringStyle.Json);
+        var actualJson2 = anonObject.TooString(TooStringStyle.JsonSerializer);
         Assert.That(actualJson1, Is.EqualTo(
                 """
                 {"A":"boo","B":{"Real":3,"Imaginary":4,"Magnitude":5,"Phase":0.9272952180016122}}
@@ -42,7 +42,7 @@ public class TooStringReadMeExamples
         // anonObject.ToDebugViewString();
         // Output is "{ A = boo, B = [3,4] }" or "{ A = boo, B = <3;4> }"
         var actual = anonObject.TooString(TooStringStyle.DebugView);
-        var actual2 = anonObject.ToDebugViewString();
+        var actual2 = anonObject.ToStringified();
         var expected = $"{{ A = boo, B = {new Complex(3,4)} }}";
         Assert.That(actual, Is.EqualTo(expected));
         Assert.That(actual2, Is.EqualTo(expected));
@@ -52,7 +52,7 @@ public class TooStringReadMeExamples
     public void ExampleIsCorrectGivenValueTupleJson()
     {
         var valueTuple = (one: 1, two: "2", three: new Complex(3,4));
-        var actual = valueTuple.TooString(TooStringStyle.Json);
+        var actual = valueTuple.TooString(TooStringStyle.JsonSerializer);
         Assert.That(actual, Is.EqualTo("""[1,"2",[3,4]]"""));;
 
         var stjOutput = System.Text.Json.JsonSerializer.Serialize(valueTuple);
@@ -65,7 +65,7 @@ public class TooStringReadMeExamples
     {
         var valueTuple = (one: 1, two: "2", three: new Complex(3,4));
 
-        var actual3 = valueTuple.ToDebugViewString();
+        var actual3 = valueTuple.ToStringified();
         #if NET8_0_OR_GREATER
         Assert.That(actual3, Is.EqualTo("(1, 2, <3; 4>)"));
         #else

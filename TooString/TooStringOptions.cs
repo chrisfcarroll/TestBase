@@ -15,7 +15,7 @@ public record TooStringOptions
     /// </summary>
     /// <param name="ReflectionOptions">
     /// The options for reflection-based styles
-    /// (<see cref="TooStringStyle.DebugView"/>, <see cref="TooStringStyle.ReflectionJson"/>,
+    /// (<see cref="TooStringStyle.DebugView"/>, <see cref="TooStringStyle.JsonStringifier"/>,
     /// <see cref="TooStringStyle.CSharp"/>).
     /// The <see cref="Default"/> value is <see cref="TooString.ReflectionOptions.ForDebugView"/>
     /// </param>
@@ -108,7 +108,7 @@ public record TooStringOptions
     /// <see cref="JsonSerializerDefaults"/>
     /// </param>
     /// <returns>
-    /// Default options for <see cref="TooStringStyle.Json"/> with {JsonOptions modified by nonDefaults}
+    /// Default options for <see cref="TooStringStyle.JsonSerializer"/> with {JsonOptions modified by nonDefaults}
     /// </returns>
     public static TooStringOptions ForJson(Action<JsonSerializerOptions>? reconfigure = null,
                                            JsonSerializerDefaults jsDefaults = JsonSerializerDefaults.General)
@@ -121,7 +121,7 @@ public record TooStringOptions
         return Default with
         {
             JsonOptions = js,
-            Fallbacks = Default.Fallbacks.Prepend(TooStringStyle.Json),
+            Fallbacks = Default.Fallbacks.Prepend(TooStringStyle.JsonSerializer),
             ReflectionOptions = ReflectionOptions.ForJson
         };
     }
@@ -141,7 +141,7 @@ public record TooStringOptions
     {
         var style = reflectionOptions?.Style switch
         {
-            ReflectionStyle.Json => TooStringStyle.ReflectionJson,
+            ReflectionStyle.Json => TooStringStyle.JsonStringifier,
             ReflectionStyle.CSharp => TooStringStyle.CSharp,
             _ => TooStringStyle.DebugView
         };
@@ -189,7 +189,7 @@ public record TooStringOptions
     public static implicit operator TooStringOptions(JsonSerializerOptions jsonSerializerOptions)
         => new(ReflectionOptions.ForJson,
                jsonSerializerOptions,
-               TooStringStyle.Json);
+               TooStringStyle.JsonSerializer);
 
     /// <summary>
     /// Create <see cref="TooStringOptions"/> from <paramref name="reflectionOptions"/>
@@ -201,7 +201,7 @@ public record TooStringOptions
                DefaultJsonOptions,
                reflectionOptions.Style switch
                {
-                   ReflectionStyle.Json => TooStringStyle.ReflectionJson,
+                   ReflectionStyle.Json => TooStringStyle.JsonStringifier,
                    ReflectionStyle.CSharp => TooStringStyle.CSharp,
                    _ => TooStringStyle.DebugView
                });

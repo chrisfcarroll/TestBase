@@ -36,9 +36,9 @@ public class TooStringIndentOptionSpecs
     public void NoIndentOutputIsSingleLine()
     {
         Assert.That(depth4.ToJson(writeIndented: false).IndexOf('\n'), Is.EqualTo(-1));
-        Assert.That(depth4.ToDebugViewString().IndexOf('\n'), Is.EqualTo(-1));
+        Assert.That(depth4.ToStringified().IndexOf('\n'), Is.EqualTo(-1));
         Assert.That(depth1.ToJson(writeIndented: false).IndexOf('\n'), Is.EqualTo(-1));
-        Assert.That(depth1.ToDebugViewString().IndexOf('\n'), Is.EqualTo(-1));
+        Assert.That(depth1.ToStringified().IndexOf('\n'), Is.EqualTo(-1));
     }
 
     [Test]
@@ -58,7 +58,7 @@ public class TooStringIndentOptionSpecs
         var expected1 = System.Text.Json.JsonSerializer.Serialize(depth4,stjOptionsForIndentedNoCycles);
 
         var actual = depth4.TooString(
-            TooStringStyle.ReflectionJson,
+            TooStringStyle.JsonStringifier,
             TooStringOptions.ForJson(o=>
             {
                 o.WriteIndented = true;
