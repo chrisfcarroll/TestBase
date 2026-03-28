@@ -12,10 +12,10 @@ value.TooString();
 value.ToJson();
 value.ToStringified();
 ```
-- TooString is not a serializer. A serializer should be fail-fast, but TooString is best-effort.
-- A Serializer should throw if it cannot deterministically serialize the input, but TooString 
-will attempt to return a partial or alternative representation of the input even when input 
-cannot reliably be serialized.
+TooString is not a serializer. 
+- A serializer should be fail-fast, but TooString is best-effort. A Serializer should throw 
+  if it cannot deterministically serialize the input, but TooString will attempt to return 
+  a partial or alternative representation of the input if the input cannot be reliably serialized.
 - TooString offers both MaxDepth and MaxEnumerationLength options for abbreviated output.
 - TooString can generate Json, C# objects, and [CallerArgumentExpression] code. 
 
@@ -25,7 +25,7 @@ cannot reliably be serialized.
 - ToJson() defaults to using System.Text.Json, falling back to reflection for un-serializable types.
 whereas
 - TooString(ReflectionStyle.Json) 
-- TooString(ReflectionStyle.DebugView)
+- TooString(ReflectionStyle.CSharp)
 - ToStringified()
 all defaults to MaxDepth = 4, MaxEnumerationLength = 9.
 
@@ -63,7 +63,7 @@ type.ToJson() // Outputs truncated Json with default MaxDepth = 4, MaxEnumeratio
 ### Options
 
 Options are finicky because we can do either Json serialization, or Reflection-based stringification
-with Json output or with Debugview output, or CallerArgumentExpression.
+with Json output or with CSharp output, or CallerArgumentExpression.
 For Json serialization, the options are System.Text.Json.JsonSerializationOptions. 
 For Reflection-based output, there are options for MaxDepth, but also MaxLength (of 
 enumerable display), and for DateTime, DateOnly, TimeOnly, and TimeSpan formatting.

@@ -513,9 +513,9 @@ public static class ObjectTooString
     /// <summary>
     /// Stringify <paramref name="value"/> using reflection.
     /// <list type="bullet">
-    /// <item><see cref="ReflectionStyle.DebugView"/>: <c>TypeName { A = 1 }</c></item>
     /// <item><see cref="ReflectionStyle.Json"/>: <c>{"A":1}</c></item>
     /// <item><see cref="ReflectionStyle.CSharp"/>: <c>/*TypeName*/ new { A = 1 }</c> (valid C# syntax)</item>
+    /// <item><see cref="ReflectionStyle.DebugView"/>: <c>TypeName { A = 1 }</c></item>
     /// </list>
     /// </summary>
     /// <param name="value"></param>
@@ -526,7 +526,7 @@ public static class ObjectTooString
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
     public static string ToStringified<T>(this T? value,
-                                              ReflectionStyle style = ReflectionStyle.DebugView,
+                                              ReflectionStyle style = ReflectionStyle.CSharp,
                                               BindingFlags whichProperties =
                                                   BindingFlags.Instance | BindingFlags.Public,
                                               bool indentedJson = false)
@@ -537,7 +537,7 @@ public static class ObjectTooString
                 {
                     JsonOptions = TooStringOptions.DefaultJsonOptions
                         .With(o=> o.WriteIndented=indentedJson),
-                    ReflectionOptions = ReflectionOptions.ForDebugView with
+                    ReflectionOptions = ReflectionOptions.ForCSharp with
                     {
                         Style = style,
                         WhichProperties = whichProperties,

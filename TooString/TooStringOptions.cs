@@ -17,7 +17,7 @@ public record TooStringOptions
     /// The options for reflection-based styles
     /// (<see cref="TooStringStyle.DebugView"/>, <see cref="TooStringStyle.JsonStringifier"/>,
     /// <see cref="TooStringStyle.CSharp"/>).
-    /// The <see cref="Default"/> value is <see cref="TooString.ReflectionOptions.ForDebugView"/>
+    /// The <see cref="Default"/> value is <see cref="TooString.ReflectionOptions.ForCSharp"/>
     /// </param>
     /// <param name="JsonOptions">
     /// The <see cref="Default"/> value is <see cref="DefaultJsonOptions"/>, which has
@@ -61,13 +61,13 @@ public record TooStringOptions
     /// </c>
     /// </summary>
     public static readonly TooStringOptions Default =
-        new(ReflectionOptions.ForDebugView,
+        new(ReflectionOptions.ForCSharp,
             DefaultJsonOptions,
             new List<TooStringStyle>(){TooStringStyle.BestEffort }.AsReadOnly());
 
     /// <summary>
     /// The options for reflection-based styles.
-    /// The <see cref="Default"/> value is <see cref="TooString.ReflectionOptions.ForDebugView"/>
+    /// The <see cref="Default"/> value is <see cref="TooString.ReflectionOptions.ForCSharp"/>
     /// </summary>
     public ReflectionOptions ReflectionOptions { get; init; }
 

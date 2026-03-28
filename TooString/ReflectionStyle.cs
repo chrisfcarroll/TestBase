@@ -2,18 +2,19 @@ namespace TooString;
 
 /// <summary>
 /// Used for reflection-based styles (<see cref="TooStringStyle.DebugView"/>, <see cref="TooStringStyle.JsonStringifier"/>, <see cref="TooStringStyle.CSharp"/>).
-/// Choose between Json {"A":"B"}, DebugView { A = "B" }, or CSharp /*Type*/ new { A = "B" }
+/// Choose between JSON {"A":"B"}, CSharp /*Type*/ new { A = "B" } or DebugView { A = B }
 /// </summary>
 public enum ReflectionStyle
 {
-    /// <summary>{"A":"B"} JSON style</summary>
-    Json = 0,
-    /// <summary>{ A = "B" } style</summary>
-    DebugView = 1,
+    /// <summary>Prints JSON <c>{"A":"B"}</c> output</summary>
+    Json,
 
     /// <summary>
-    /// /*Type*/ new { A = "B" } style - copy/pastable C#  anonymous objects
-    /// with type names in comments
+    /// Prints C# anonymous object output,  <c>/*Type*/ new { A = "B" }</c>,
+    /// with type names commented out.
     /// </summary>
-    CSharp = 2
+    CSharp,
+
+    /// <summary>Prints ‘DebugView’ output { A = B }.</summary>
+    DebugView,
 }

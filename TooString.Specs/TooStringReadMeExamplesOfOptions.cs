@@ -30,13 +30,13 @@ public class TooStringReadMeExamplesOfOptions
     }
 
     [Test]
-    public void ToDebugViewStringExamples()
+    public void ToCSharpStringExamples()
     {
         var value = circular;
         var d1= value.ToStringified();
-        var d2 = value.TooString(ReflectionOptions.ForDebugView);
-        var d3 = value.TooString(maxDepth: 4,maxLength: 9,style: TooStringStyle.DebugView);
-        var d4= value.TooString(ReflectionOptions.ForDebugView with
+        var d2 = value.TooString(ReflectionOptions.ForCSharp);
+        var d3 = value.TooString(maxDepth: 4,maxLength: 9,style: TooStringStyle.CSharp);
+        var d4= value.TooString(ReflectionOptions.ForCSharp with
                         {
                             DateTimeFormat = "yyyyMMdd HH:mm:ss",
                             TimeSpanFormat = @"d\.hh\:mm\:ss",

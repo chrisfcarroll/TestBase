@@ -10,7 +10,7 @@ namespace TooString;
 /// <param name="MaxDepth">
 /// How deep into nested structures should we print before stopping the recursion?
 /// Defaults to 3, which may be plenty for logging and monitoring.</param>
-/// <param name="MaxLength">
+/// <param name="MaxEnumerationLength">
 /// How many elements of an Array or other IEnumerable should we print before stopping the loop?
 /// Defaults to 3.
 /// <p><b>NB MaxLength = 0 does not mean carry on for ever</b>. Use MaxLength = int.MaxValue for that.
@@ -24,7 +24,7 @@ namespace TooString;
 /// <param name="TimeSpanFormat">Defaults to "". The preferred <see cref="TimeSpan.ToString()"/> option</param>
 public record ReflectionOptions(
     BindingFlags WhichProperties = BindingFlags.Instance | BindingFlags.Public,
-    ReflectionStyle Style = ReflectionStyle.DebugView,
+    ReflectionStyle Style = ReflectionStyle.CSharp,
     int MaxDepth = 3,
     int MaxEnumerationLength = 9,
     string DateTimeFormat = "O",
@@ -46,7 +46,7 @@ public record ReflectionOptions(
     ///     string TimeSpanFormat = "c")
     /// </code>
     /// </summary>
-    public static readonly ReflectionOptions ForDebugView = new();
+    public static readonly ReflectionOptions ForCSharp = new();
 
     /// <summary>
     /// <code>
@@ -61,9 +61,28 @@ public record ReflectionOptions(
     ///     string TimeSpanFormat = "c")
     /// </code>
     /// </summary>
-    public static readonly ReflectionOptions ForJson = ForDebugView with
+    public static readonly ReflectionOptions ForJson = ForCSharp with
     {
         Style = ReflectionStyle.Json
+    };
+
+
+    /// <summary>
+    /// <code>
+    /// public record ReflectionOptions(
+    ///     BindingFlags WhichProperties = BindingFlags.Instance | BindingFlags.Public,
+    ///     ReflectionStyle Style = ReflectionStyle.DebugView,
+    ///     int MaxDepth = 3,
+    ///     int MaxLength = 9,
+    ///     string DateTimeFormat = "O",
+    ///     string DateOnlyFormat = "O",
+    ///     string TimeOnlyFormat = "HH:mm:ss",
+    ///     string TimeSpanFormat = "c")
+    /// </code>
+    /// </summary>
+    public static readonly ReflectionOptions ForDebugView = ForCSharp with
+    {
+        Style = ReflectionStyle.DebugView
     };
 
     /// <summary>

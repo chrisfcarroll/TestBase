@@ -41,9 +41,9 @@ public class TooStringReadMeExamples
         // anonObject.TooString(TooStringStyle.DebugView);
         // anonObject.ToDebugViewString();
         // Output is "{ A = boo, B = [3,4] }" or "{ A = boo, B = <3;4> }"
-        var actual = anonObject.TooString(TooStringStyle.DebugView);
+        var actual = anonObject.TooString(TooStringStyle.CSharp);
         var actual2 = anonObject.ToStringified();
-        var expected = $"{{ A = boo, B = {new Complex(3,4)} }}";
+        var expected = $"{{ A = \"boo\", B = {new Complex(3,4)} }}";
         Assert.That(actual, Is.EqualTo(expected));
         Assert.That(actual2, Is.EqualTo(expected));
     }
@@ -67,9 +67,9 @@ public class TooStringReadMeExamples
 
         var actual3 = valueTuple.ToStringified();
         #if NET8_0_OR_GREATER
-        Assert.That(actual3, Is.EqualTo("(1, 2, <3; 4>)"));
+        Assert.That(actual3, Is.EqualTo("(1, \"2\", <3; 4>)"));
         #else
-        Assert.That(actual3, Is.EqualTo("(1, 2, (3, 4))"));
+        Assert.That(actual3, Is.EqualTo("(1, \"2\", (3, 4))"));
         #endif
 
         var options = TooStringOptions.Default with
