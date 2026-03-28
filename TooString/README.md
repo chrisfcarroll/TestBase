@@ -76,15 +76,15 @@ value.ToJson()
 value.TooString( new JsonSerializerOptions(JsonSerializerDefaults.Web){WriteIndented = true})
 // For Json using Reflection
 value.TooString( ReflectionStyle.Json )
-value.TooString( ReflectionOptions.ForJson with {} )
+value.TooString( AdvancedOptions.ForJson with {} )
 
 
 // For Stringified
 value.ToStringified()
 value.TooString( ReflectionStyle.Stringified )
-value.TooString( ReflectionOptions.ForStringified.With(...) ) // Same output as value.ToStringified()
+value.TooString( AdvancedOptions.ForStringified.With(...) ) // Same output as value.ToStringified()
 value.TooString( maxDepth:4, maxLength:9, style:ReflectionStyle.Stringified )
-value.TooString( ReflectionOptions.ForStringified with 
+value.TooString( AdvancedOptions.ForStringified with 
 {
     DateTimeFormat = "yyyyMMdd HH:mm:ss",
     TimeSpanFormat = @"d\.hh\:mm\:ss"

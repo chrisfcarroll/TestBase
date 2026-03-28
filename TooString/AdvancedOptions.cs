@@ -22,7 +22,7 @@ namespace TooString;
 /// <param name="DateOnlyFormat">Defaults to O. The preferred <see cref="DateOnly.ToString()"/> option</param>
 /// <param name="TimeOnlyFormat">Defaults to O. The preferred <see cref="TimeOnly.ToString()"/> option</param>
 /// <param name="TimeSpanFormat">Defaults to "". The preferred <see cref="TimeSpan.ToString()"/> option</param>
-public record ReflectionOptions(
+public record AdvancedOptions(
     BindingFlags WhichProperties = BindingFlags.Instance | BindingFlags.Public,
     ReflectionStyle Style = ReflectionStyle.CSharp,
     int MaxDepth = 3,
@@ -35,7 +35,7 @@ public record ReflectionOptions(
     /// <summary>
     /// Default instance is
     /// <code>
-    /// public record ReflectionOptions(
+    /// public record AdvancedOptions(
     ///     BindingFlags WhichProperties = BindingFlags.Instance | BindingFlags.Public,
     ///     ReflectionStyle Style = ReflectionStyle.DebugView,
     ///     int MaxDepth = 3,
@@ -46,11 +46,11 @@ public record ReflectionOptions(
     ///     string TimeSpanFormat = "c")
     /// </code>
     /// </summary>
-    public static readonly ReflectionOptions ForCSharp = new();
+    public static readonly AdvancedOptions ForCSharp = new();
 
     /// <summary>
     /// <code>
-    /// public record ReflectionOptions(
+    /// public record AdvancedOptions(
     ///     BindingFlags WhichProperties = BindingFlags.Instance | BindingFlags.Public,
     ///     ReflectionStyle Style = ReflectionStyle.Json,
     ///     int MaxDepth = 3,
@@ -61,7 +61,7 @@ public record ReflectionOptions(
     ///     string TimeSpanFormat = "c")
     /// </code>
     /// </summary>
-    public static readonly ReflectionOptions ForJson = ForCSharp with
+    public static readonly AdvancedOptions ForJson = ForCSharp with
     {
         Style = ReflectionStyle.Json
     };
@@ -69,7 +69,7 @@ public record ReflectionOptions(
 
     /// <summary>
     /// <code>
-    /// public record ReflectionOptions(
+    /// public record AdvancedOptions(
     ///     BindingFlags WhichProperties = BindingFlags.Instance | BindingFlags.Public,
     ///     ReflectionStyle Style = ReflectionStyle.DebugView,
     ///     int MaxDepth = 3,
@@ -80,7 +80,7 @@ public record ReflectionOptions(
     ///     string TimeSpanFormat = "c")
     /// </code>
     /// </summary>
-    public static readonly ReflectionOptions ForDebugView = ForCSharp with
+    public static readonly AdvancedOptions ForDebugView = ForCSharp with
     {
         Style = ReflectionStyle.DebugView
     };
@@ -94,7 +94,7 @@ public record ReflectionOptions(
     /// <returns>
     /// a copy of the current options reconfigured with <paramref name="reconfigure"/>
     /// </returns>
-    public ReflectionOptions With(Action<ReflectionOptions> reconfigure)
+    public AdvancedOptions With(Action<AdvancedOptions> reconfigure)
     {
         var mutated = this with { };
         reconfigure(mutated);

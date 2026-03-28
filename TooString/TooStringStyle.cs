@@ -20,6 +20,12 @@ public enum TooStringStyle
     /// </summary>
     CallerArgument,
 
+
+    /// <summary>
+    /// Use Reflection to stringify with C# anonymous object style: <c>/*Type*/ new { A = "B" }</c>
+    /// </summary>
+    CSharp,
+
     /// <summary>Use
     /// <see cref="JsonSerializer.Serialize(object?,System.Type,System.Text.Json.JsonSerializerOptions?)"/>
     /// </summary>
@@ -31,14 +37,9 @@ public enum TooStringStyle
     JsonStringifier,
 
     /// <summary>
-    /// Use Reflection to stringify with Debug View style: <c>{ A = "B" }</c>
+    /// Use Reflection to stringify with Debug View style: <c>{ A = B }</c>
     /// </summary>
     DebugView,
-
-    /// <summary>
-    /// Use Reflection to stringify with C# anonymous object style: <c>/*Type*/ new { A = "B" }</c>
-    /// </summary>
-    CSharp,
 
     /// <summary>Use
     /// <c>value?.ToString()??<see cref="ObjectTooString.Null"/></c>
@@ -55,7 +56,7 @@ public static class TooStringStyleExtensions
     public static bool IsReflection(this TooStringStyle style) =>
         style is TooStringStyle.JsonStringifier or TooStringStyle.DebugView or TooStringStyle.CSharp;
 
-    /// <summary>Convert to the internal <see cref="ReflectionStyle"/> used by <see cref="ReflectionOptions"/></summary>
+    /// <summary>Convert to the internal <see cref="ReflectionStyle"/> used by <see cref="AdvancedOptions"/></summary>
     public static ReflectionStyle ToReflectionStyle(this TooStringStyle style) => style switch
     {
         TooStringStyle.JsonStringifier => ReflectionStyle.Json,

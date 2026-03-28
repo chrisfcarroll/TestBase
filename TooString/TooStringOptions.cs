@@ -13,11 +13,11 @@ public record TooStringOptions
     /// <summary>
     /// The complete set of stringification options.
     /// </summary>
-    /// <param name="ReflectionOptions">
+    /// <param name="AdvancedOptions">
     /// The options for reflection-based styles
     /// (<see cref="TooStringStyle.DebugView"/>, <see cref="TooStringStyle.JsonStringifier"/>,
     /// <see cref="TooStringStyle.CSharp"/>).
-    /// The <see cref="Default"/> value is <see cref="TooString.ReflectionOptions.ForCSharp"/>
+    /// The <see cref="Default"/> value is <see cref="AdvancedOptions.ForCSharp"/>
     /// </param>
     /// <param name="JsonOptions">
     /// The <see cref="Default"/> value is <see cref="DefaultJsonOptions"/>, which has
@@ -32,11 +32,11 @@ public record TooStringOptions
     /// What styles — <see cref="TooStringStyle"/> — to try to stringify, and in what order.
     /// The <see cref="Default"/> value is a single entry of <see cref="TooStringStyle.BestEffort"/>
     /// </param>
-    public TooStringOptions(ReflectionOptions ReflectionOptions,
+    public TooStringOptions(AdvancedOptions AdvancedOptions,
                             JsonSerializerOptions JsonOptions,
                             params IEnumerable<TooStringStyle> Fallbacks)
     {
-        this.ReflectionOptions = ReflectionOptions;
+        this.AdvancedOptions = AdvancedOptions;
         this.JsonOptions = JsonOptions;
         this.Fallbacks = Fallbacks;
     }
@@ -55,21 +55,21 @@ public record TooStringOptions
 
     /// <summary><c>
     /// new(
-    ///     ReflectionOptions:ReflectionOptions.ForDebugView,
+    ///     AdvancedOptions:AdvancedOptions.ForDebugView,
     ///     JsonSerializerOptions:DefaultJsonOptions,
     ///     Fallbacks:[TooStringStyle.BestEffort],
     /// </c>
     /// </summary>
     public static readonly TooStringOptions Default =
-        new(ReflectionOptions.ForCSharp,
+        new(AdvancedOptions.ForCSharp,
             DefaultJsonOptions,
             new List<TooStringStyle>(){TooStringStyle.BestEffort }.AsReadOnly());
 
     /// <summary>
     /// The options for reflection-based styles.
-    /// The <see cref="Default"/> value is <see cref="TooString.ReflectionOptions.ForCSharp"/>
+    /// The <see cref="Default"/> value is <see cref="AdvancedOptions.ForCSharp"/>
     /// </summary>
-    public ReflectionOptions ReflectionOptions { get; init; }
+    public AdvancedOptions AdvancedOptions { get; init; }
 
     /// <summary>
     /// The <see cref="Default"/> value is <see cref="DefaultJsonOptions"/>.
@@ -82,14 +82,14 @@ public record TooStringOptions
     /// </summary>
     public IEnumerable<TooStringStyle> Fallbacks { get; init; }
 
-    /// <param name="reflectionOptions"></param>
+    /// <param name="advancedOptions"></param>
     /// <param name="jsonOptions"></param>
     /// <param name="fallbacks"></param>
-    public void Deconstruct(out ReflectionOptions reflectionOptions,
+    public void Deconstruct(out AdvancedOptions advancedOptions,
                             out JsonSerializerOptions jsonOptions,
                             out IEnumerable<TooStringStyle> fallbacks)
     {
-        reflectionOptions = ReflectionOptions;
+        advancedOptions = AdvancedOptions;
         jsonOptions = JsonOptions;
         fallbacks = Fallbacks;
     }
@@ -122,37 +122,38 @@ public record TooStringOptions
         {
             JsonOptions = js,
             Fallbacks = Default.Fallbacks.Prepend(TooStringStyle.JsonSerializer),
-            ReflectionOptions = ReflectionOptions.ForJson
+            AdvancedOptions = AdvancedOptions.ForJson
         };
     }
+
     ///<summary>
     /// Returns a <see cref="TooStringOptions"/> instance which will try reflection serialization
     /// as its first choice, using either <see cref="Default"/> options, or else the
-    /// supplied <paramref name="reflectionOptions"/>.
+    /// supplied <paramref name="advancedOptions"/>.
     /// </summary>
-    /// <param name="reflectionOptions">
-    /// If not null, then return options with <see cref="ReflectionOptions"/> set to
-    /// <paramref name="reflectionOptions"/>.
+    /// <param name="advancedOptions">
+    /// If not null, then return options with <see cref="AdvancedOptions"/> set to
+    /// <paramref name="advancedOptions"/>.
     /// </param>
     /// <returns>
-    /// Default options as modified by <paramref name="reflectionOptions"/>
+    /// Default options as modified by <paramref name="advancedOptions"/>
     /// </returns>
-    public static TooStringOptions ForReflection(ReflectionOptions? reflectionOptions = null)
+    public static TooStringOptions WithAdvancedOptions(AdvancedOptions? advancedOptions = null)
     {
-        var style = reflectionOptions?.Style switch
+        var style = advancedOptions?.Style switch
         {
             ReflectionStyle.Json => TooStringStyle.JsonStringifier,
             ReflectionStyle.CSharp => TooStringStyle.CSharp,
             _ => TooStringStyle.DebugView
         };
-        return reflectionOptions is null
+        return advancedOptions is null
             ? Default with
                       {
                           Fallbacks = Default.Fallbacks.Prepend(TooStringStyle.DebugView)
                       }
             : Default with
                       {
-                          ReflectionOptions = reflectionOptions,
+                          AdvancedOptions = advancedOptions,
                           Fallbacks = Default.Fallbacks.Prepend(style)
                       };
     }
@@ -187,19 +188,19 @@ public record TooStringOptions
     /// <param name="jsonSerializerOptions"></param>
     /// <returns></returns>
     public static implicit operator TooStringOptions(JsonSerializerOptions jsonSerializerOptions)
-        => new(ReflectionOptions.ForJson,
+        => new(AdvancedOptions.ForJson,
                jsonSerializerOptions,
                TooStringStyle.JsonSerializer);
 
     /// <summary>
-    /// Create <see cref="TooStringOptions"/> from <paramref name="reflectionOptions"/>
+    /// Create <see cref="TooStringOptions"/> from <paramref name="advancedOptions"/>
     /// </summary>
-    /// <param name="reflectionOptions"></param>
+    /// <param name="advancedOptions"></param>
     /// <returns></returns>
-    public static implicit operator TooStringOptions(ReflectionOptions reflectionOptions)
-        => new(reflectionOptions,
+    public static implicit operator TooStringOptions(AdvancedOptions advancedOptions)
+        => new(advancedOptions,
                DefaultJsonOptions,
-               reflectionOptions.Style switch
+               advancedOptions.Style switch
                {
                    ReflectionStyle.Json => TooStringStyle.JsonStringifier,
                    ReflectionStyle.CSharp => TooStringStyle.CSharp,
@@ -209,11 +210,11 @@ public record TooStringOptions
 }
 
 internal record OptionsWithState(int Depth,
-                                 ReflectionOptions ReflectionOptions,
+                                 AdvancedOptions AdvancedOptions,
                                  JsonSerializerOptions JsonOptions,
                                  IEnumerable<TooStringStyle> Fallbacks)
-                : TooStringOptions(ReflectionOptions, JsonOptions, Fallbacks)
+                : TooStringOptions(AdvancedOptions, JsonOptions, Fallbacks)
 {
     public OptionsWithState(int depth, TooStringOptions @from)
-           : this(depth, from.ReflectionOptions,from.JsonOptions, from.Fallbacks) { }
+           : this(depth, from.AdvancedOptions,from.JsonOptions, from.Fallbacks) { }
 }

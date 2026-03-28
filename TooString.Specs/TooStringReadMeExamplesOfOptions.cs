@@ -13,7 +13,7 @@ public class TooStringReadMeExamplesOfOptions
     {
         var toJson = circular.ToJson();
         var webIndented1 = circular.ToJson(this.webIndented);
-        var webIndented2 = circular.TooString(this.webIndented);
+        var webIndented2 = ObjectTooString.ToJson(circular,this.webIndented);
         Assert.That(webIndented1, Is.EqualTo(webIndented2));
     }
 
@@ -22,7 +22,7 @@ public class TooStringReadMeExamplesOfOptions
     {
         var toJson = (one:1, two:"2").TooString( TooStringStyle.JsonSerializer );
         var stj = System.Text.Json.JsonSerializer.Serialize((one: 1,two: "2"));
-        var reflected = (one:1, two:"2").TooString( ReflectionOptions.ForJson);
+        var reflected = (one:1, two:"2").TooString( AdvancedOptions.ForJson);
 
         Assert.That(toJson, Is.EqualTo("""[1,"2"]"""));
         Assert.That(stj, Is.EqualTo("{}"));
@@ -34,9 +34,9 @@ public class TooStringReadMeExamplesOfOptions
     {
         var value = circular;
         var d1= value.ToStringified();
-        var d2 = value.TooString(ReflectionOptions.ForCSharp);
+        var d2 = value.TooString(AdvancedOptions.ForCSharp);
         var d3 = value.TooString(maxDepth: 4,maxLength: 9,style: TooStringStyle.CSharp);
-        var d4= value.TooString(ReflectionOptions.ForCSharp with
+        var d4= value.TooString(AdvancedOptions.ForCSharp with
                         {
                             DateTimeFormat = "yyyyMMdd HH:mm:ss",
                             TimeSpanFormat = @"d\.hh\:mm\:ss",

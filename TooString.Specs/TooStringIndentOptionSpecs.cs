@@ -48,7 +48,7 @@ public class TooStringIndentOptionSpecs
         var expected1 = System.Text.Json.JsonSerializer.Serialize(depth4,stjOptionsForIndentedNoCycles);
         Assert.That(actual1, Is.EqualTo(expected1));
 
-        var actual2 = depth4.TooString(stjOptionsForIndentedNoCycles);
+        var actual2 = ObjectTooString.ToJson(depth4,stjOptionsForIndentedNoCycles);
         Assert.That(actual2, Is.EqualTo(expected1));
     }
 
@@ -72,7 +72,7 @@ public class TooStringIndentOptionSpecs
         //A
         Assert.That(actual, Is.EqualTo(expected1));
 
-        // var actual2 = circular.TooString(new ReflectionOptions()
+        // var actual2 = circular.TooString(new AdvancedOptions()
         // {
         //     Style = ReflectionStyle.Json
         // });

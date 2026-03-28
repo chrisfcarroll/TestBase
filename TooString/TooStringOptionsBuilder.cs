@@ -171,7 +171,7 @@ public class TooStringOptionsBuilder
         };
         if (_writeIndented) jsonOpts = jsonOpts.With(o => o.WriteIndented = true);
 
-        var reflectionOpts = new ReflectionOptions(
+        var reflectionOpts = new AdvancedOptions(
             WhichProperties: _whichProperties,
             Style: _reflectionStyle,
             MaxDepth: _maxDepth,
