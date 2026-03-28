@@ -380,7 +380,7 @@ public static class ObjectTooString
                 var sb_ = gotLock ? sb.Clear() : new StringBuilder();
                 try
                 {
-                    if (isCSharp)
+                    if (isCSharp && !value.GetType().Name.StartsWith("<>"))
                     {
                         var typeName = value.GetType().Name;
                         var backtick = typeName.IndexOf('`');
