@@ -11,21 +11,21 @@ public class TooStringCallerArgumentExpressionReturnsLiteralCode
     public void GivenASimpleExpression()
     {
         Assert.That( 
-            (1+1).TooString(TooStringStyle.CallerArgument), 
+            (1+1).TooString(TooStringStyle.CallerArgument),
             Is.EqualTo( "1+1" ) );
         
         Assert.That( 
-            ( 2 + 2 ).TooString(TooStringStyle.CallerArgument), 
+            ( 2 + 2 ).TooString(TooStringStyle.CallerArgument),
             Is.EqualTo( "2 + 2" ) );
         
         TestContext.Progress.WriteLine( ( Sqrt(4 * PI / 3)  ).TooString(TooStringStyle.CallerArgument));
         
         Assert.That( 
-            ( Sqrt(4 * PI / 3)  ).TooString(TooStringStyle.CallerArgument), 
+            ( Sqrt(4 * PI / 3)  ).TooString(TooStringStyle.CallerArgument),
             Is.EqualTo( "Sqrt(4 * PI / 3)" ) );
 
         Assert.That( 
-            ( Math.Sqrt(4 * Math.PI / 3)  ).TooString(TooStringStyle.CallerArgument), 
+            ( Math.Sqrt(4 * Math.PI / 3)  ).TooString(TooStringStyle.CallerArgument),
             Is.EqualTo( "Math.Sqrt(4 * Math.PI / 3)" ) );
     }
 
