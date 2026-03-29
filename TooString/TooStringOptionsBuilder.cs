@@ -23,168 +23,150 @@ namespace TooString;
 /// </summary>
 public class TooStringOptionsBuilder
 {
-    TooStringStyle _style = TooStringStyle.BestEffort;
-    TooStringStyle _reflectionStyle = TooStringStyle.DebugView;
-    int _maxDepth = 3;
-    int _maxEnumerationLength = 9;
-    bool _writeIndented;
-    BindingFlags _whichProperties = BindingFlags.Instance | BindingFlags.Public;
-    string _dateTimeFormat = "O";
-    string _dateOnlyFormat = "O";
-    string _timeOnlyFormat = "HH:mm:ss";
-    string _timeSpanFormat = "c";
-    JsonSerializerOptions? _jsonOptions;
-    readonly List<TooStringStyle> _fallbacks = new();
+    TooStringStyle style = TooStringStyle.JsonSerializer;
+    TooStringStyle reflectionStyle = TooStringStyle.DebugView;
+    int maxDepth = 3;
+    int maxEnumerationLength = 9;
+    bool writeIndented;
+    BindingFlags whichProperties = BindingFlags.Instance | BindingFlags.Public;
+    string dateTimeFormat = "O";
+    string dateOnlyFormat = "O";
+    string timeOnlyFormat = "HH:mm:ss";
+    string timeSpanFormat = "c";
+    JsonSerializerOptions? jsonOptions;
 
     /// <summary>Use <see cref="TooStringStyle.JsonSerializer"/> (System.Text.Json serialization)</summary>
     public TooStringOptionsBuilder UseJson()
     {
-        _style = TooStringStyle.JsonSerializer;
+        style = TooStringStyle.JsonSerializer;
         return this;
     }
 
     /// <summary>Use <see cref="TooStringStyle.DebugView"/> (reflection with <c>{ A = "B" }</c> style)</summary>
     public TooStringOptionsBuilder UseDebugView()
     {
-        _style = TooStringStyle.DebugView;
-        _reflectionStyle = TooStringStyle.DebugView;
+        style = TooStringStyle.DebugView;
+        reflectionStyle = TooStringStyle.DebugView;
         return this;
     }
 
     /// <summary>Use <see cref="TooStringStyle.JsonStringifier"/> (reflection with <c>{"A":"B"}</c> style)</summary>
     public TooStringOptionsBuilder UseReflectionJson()
     {
-        _style = TooStringStyle.JsonStringifier;
-        _reflectionStyle = TooStringStyle.JsonStringifier;
+        style = TooStringStyle.JsonStringifier;
+        reflectionStyle = TooStringStyle.JsonStringifier;
         return this;
     }
 
     /// <summary>Use <see cref="TooStringStyle.CSharp"/> (reflection with <c>/*Type*/ new { A = "B" }</c> style)</summary>
     public TooStringOptionsBuilder UseCSharp()
     {
-        _style = TooStringStyle.CSharp;
-        _reflectionStyle = TooStringStyle.CSharp;
-        return this;
-    }
-
-    /// <summary>Use <see cref="TooStringStyle.CallerArgument"/></summary>
-    public TooStringOptionsBuilder UseCallerArgument()
-    {
-        _style = TooStringStyle.CallerArgument;
+        style = TooStringStyle.CSharp;
+        reflectionStyle = TooStringStyle.CSharp;
         return this;
     }
 
     /// <summary>Use <see cref="TooStringStyle.ToString"/></summary>
     public TooStringOptionsBuilder UseToString()
     {
-        _style = TooStringStyle.ToString;
+        style = TooStringStyle.ToString;
         return this;
     }
 
     /// <summary>Set the maximum depth for nested object traversal</summary>
     public TooStringOptionsBuilder MaxDepth(int maxDepth)
     {
-        _maxDepth = maxDepth;
+        this.maxDepth = maxDepth;
         return this;
     }
 
     /// <summary>Set the maximum number of enumerable items to stringify</summary>
     public TooStringOptionsBuilder MaxLength(int maxLength)
     {
-        _maxEnumerationLength = maxLength;
+        maxEnumerationLength = maxLength;
         return this;
     }
 
     /// <summary>Enable indented output (multiline)</summary>
     public TooStringOptionsBuilder WriteIndented(bool indented = true)
     {
-        _writeIndented = indented;
+        writeIndented = indented;
         return this;
     }
 
     /// <summary>Set which properties to include via <see cref="BindingFlags"/></summary>
     public TooStringOptionsBuilder WhichProperties(BindingFlags flags)
     {
-        _whichProperties = flags;
+        whichProperties = flags;
         return this;
     }
 
     /// <summary>Set the DateTime format string</summary>
     public TooStringOptionsBuilder DateTimeFormat(string format)
     {
-        _dateTimeFormat = format;
+        dateTimeFormat = format;
         return this;
     }
 
     /// <summary>Set the DateOnly format string</summary>
     public TooStringOptionsBuilder DateOnlyFormat(string format)
     {
-        _dateOnlyFormat = format;
+        dateOnlyFormat = format;
         return this;
     }
 
     /// <summary>Set the TimeOnly format string</summary>
     public TooStringOptionsBuilder TimeOnlyFormat(string format)
     {
-        _timeOnlyFormat = format;
+        timeOnlyFormat = format;
         return this;
     }
 
     /// <summary>Set the TimeSpan format string</summary>
     public TooStringOptionsBuilder TimeSpanFormat(string format)
     {
-        _timeSpanFormat = format;
+        timeSpanFormat = format;
         return this;
     }
 
     /// <summary>Supply custom <see cref="JsonSerializerOptions"/> for JSON serialization</summary>
     public TooStringOptionsBuilder JsonOptions(JsonSerializerOptions options)
     {
-        _jsonOptions = options;
+        jsonOptions = options;
         return this;
     }
 
     /// <summary>Configure custom <see cref="JsonSerializerOptions"/> via an action</summary>
     public TooStringOptionsBuilder JsonOptions(Action<JsonSerializerOptions> configure)
     {
-        _jsonOptions = new JsonSerializerOptions(JsonSerializerDefaults.General)
+        jsonOptions = new JsonSerializerOptions(JsonSerializerDefaults.General)
         {
             ReferenceHandler = ReferenceHandler.IgnoreCycles
         };
-        configure(_jsonOptions);
-        return this;
-    }
-
-    /// <summary>Add a fallback style to try if the primary style fails</summary>
-    public TooStringOptionsBuilder FallbackTo(TooStringStyle style)
-    {
-        _fallbacks.Add(style);
+        configure(jsonOptions);
         return this;
     }
 
     /// <summary>Build the <see cref="TooStringOptions"/> instance</summary>
     public TooStringOptions Build()
     {
-        var jsonOpts = _jsonOptions ?? new JsonSerializerOptions(JsonSerializerDefaults.General)
+        var jsonOpts = jsonOptions ?? new JsonSerializerOptions(JsonSerializerDefaults.General)
         {
             ReferenceHandler = ReferenceHandler.IgnoreCycles
         };
-        if (_writeIndented) jsonOpts = jsonOpts.With(o => o.WriteIndented = true);
+        if (writeIndented) jsonOpts = jsonOpts.With(o => o.WriteIndented = true);
 
-        var reflectionOpts = new AdvancedOptions(
-            WhichProperties: _whichProperties,
-            Style: _reflectionStyle,
-            MaxDepth: _maxDepth,
-            MaxEnumerationLength: _maxEnumerationLength,
-            DateTimeFormat: _dateTimeFormat,
-            DateOnlyFormat: _dateOnlyFormat,
-            TimeOnlyFormat: _timeOnlyFormat,
-            TimeSpanFormat: _timeSpanFormat);
+        var advancedOptions = new AdvancedOptions(
+            WhichProperties: whichProperties,
+            Style: reflectionStyle,
+            MaxDepth: maxDepth,
+            MaxEnumerationLength: maxEnumerationLength,
+            DateTimeFormat: dateTimeFormat,
+            DateOnlyFormat: dateOnlyFormat,
+            TimeOnlyFormat: timeOnlyFormat,
+            TimeSpanFormat: timeSpanFormat);
 
-        var fallbacks = new List<TooStringStyle> { _style };
-        fallbacks.AddRange(_fallbacks);
-        fallbacks.Add(TooStringStyle.BestEffort);
-
-        return new TooStringOptions(reflectionOpts, jsonOpts, fallbacks.AsReadOnly());
+        var stringifyAs = style;
+        return new TooStringOptions(advancedOptions, jsonOpts, stringifyAs);
     }
 }

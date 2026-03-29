@@ -28,17 +28,17 @@ public record TooStringOptions
     ///     };
     /// </code>
     /// </param>
-    /// <param name="Fallbacks">
+    /// <param name="StringifyAs">
     /// What styles — <see cref="TooStringStyle"/> — to try to stringify, and in what order.
     /// The <see cref="Default"/> value is a single entry of <see cref="TooStringStyle.BestEffort"/>
     /// </param>
     public TooStringOptions(AdvancedOptions AdvancedOptions,
                             JsonSerializerOptions JsonOptions,
-                            params IEnumerable<TooStringStyle> Fallbacks)
+                            TooStringStyle StringifyAs)
     {
         this.AdvancedOptions = AdvancedOptions;
         this.JsonOptions = JsonOptions;
-        this.Fallbacks = Fallbacks;
+        this.StringifyAs = StringifyAs;
     }
 
     /// <summary><c>
@@ -63,7 +63,7 @@ public record TooStringOptions
     public static readonly TooStringOptions Default =
         new(AdvancedOptions.ForJson,
             DefaultJsonOptions,
-            new List<TooStringStyle>(){TooStringStyle.BestEffort }.AsReadOnly());
+            TooStringStyle.JsonSerializer);
 
     /// <summary>
     /// The options for reflection-based styles.
@@ -80,19 +80,21 @@ public record TooStringOptions
     /// What styles — <see cref="TooStringStyle"/> — to try to stringify, and in what order.
     /// The <see cref="Default"/> value is a single entry of <see cref="TooStringStyle.BestEffort"/>
     /// </summary>
-    public IEnumerable<TooStringStyle> Fallbacks { get; init; }
+    public TooStringStyle StringifyAs { get; init; }
 
     /// <param name="advancedOptions"></param>
     /// <param name="jsonOptions"></param>
-    /// <param name="fallbacks"></param>
+    /// <param name="stringifyAs"></param>
     public void Deconstruct(out AdvancedOptions advancedOptions,
                             out JsonSerializerOptions jsonOptions,
-                            out IEnumerable<TooStringStyle> fallbacks)
+                            out TooStringStyle stringifyAs)
     {
         advancedOptions = AdvancedOptions;
         jsonOptions = JsonOptions;
-        fallbacks = Fallbacks;
+        stringifyAs = StringifyAs;
     }
+
+
 
     ///<summary>
     /// Returns a <see cref="TooStringOptions"/> instance which will try json serialization
@@ -121,7 +123,7 @@ public record TooStringOptions
         return Default with
         {
             JsonOptions = js,
-            Fallbacks = Default.Fallbacks.Prepend(TooStringStyle.JsonSerializer),
+            StringifyAs = TooStringStyle.JsonSerializer,
             AdvancedOptions = AdvancedOptions.ForJson
         };
     }
@@ -147,14 +149,11 @@ public record TooStringOptions
             _ => TooStringStyle.DebugView
         };
         return advancedOptions is null
-            ? Default with
-                      {
-                          Fallbacks = Default.Fallbacks.Prepend(TooStringStyle.DebugView)
-                      }
+            ? Default
             : Default with
                       {
                           AdvancedOptions = advancedOptions,
-                          Fallbacks = Default.Fallbacks.Prepend(style)
+                          StringifyAs = style
                       };
     }
 
@@ -212,9 +211,9 @@ public record TooStringOptions
 internal record OptionsWithState(int Depth,
                                  AdvancedOptions AdvancedOptions,
                                  JsonSerializerOptions JsonOptions,
-                                 IEnumerable<TooStringStyle> Fallbacks)
-                : TooStringOptions(AdvancedOptions, JsonOptions, Fallbacks)
+                                 TooStringStyle StringifyAs)
+                : TooStringOptions(AdvancedOptions, JsonOptions, StringifyAs)
 {
     public OptionsWithState(int depth, TooStringOptions @from)
-           : this(depth, from.AdvancedOptions,from.JsonOptions, from.Fallbacks) { }
+           : this(depth, from.AdvancedOptions,from.JsonOptions, from.StringifyAs) { }
 }

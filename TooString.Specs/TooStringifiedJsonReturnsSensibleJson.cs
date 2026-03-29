@@ -130,7 +130,7 @@ public class TooStringifiedJsonReturnsSensibleJson
                                                  {
                                                      IncludeFields = true
                                                  },
-                                                 new[] { TooStringStyle.JsonSerializer }));
+                                                 TooStringStyle.JsonSerializer));
         
         TestContext.Progress.WriteLine("jsonnedIncludeFields  :" + jsonnedIncludeFields);
         TestContext.Progress.WriteLine("defaultJsonned:" + defaultJsonned);

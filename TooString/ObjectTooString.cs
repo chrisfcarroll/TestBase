@@ -2,8 +2,6 @@ using System.Collections;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
-using System.Text.Json;
-using System.Text.RegularExpressions;
 
 namespace TooString;
 
@@ -62,16 +60,9 @@ public static partial class ObjectTooString
     /// </summary>
     /// <param name="value">The value to stringify</param>
     /// <param name="style">The <em>style</em> by which the value is
-    /// stringified. The default <see cref="TooStringStyle.BestEffort"/> will
-    /// use <see cref="TooStringStyle.CallerArgument"/>
-    /// if <paramref name="argumentExpression"/> holds more than just a parameter name,
-    /// or <see cref="TooStringStyle.JsonSerializer"/> otherwise.
+    /// stringified.
     /// </param>
     /// <param name="options"></param>
-    /// <param name="argumentExpression">
-    /// This parameter should be ignored. It is automatically populated by the Compiler using
-    /// <see cref="CallerArgumentExpressionAttribute"/>
-    /// </param>
     /// <typeparam name="T"></typeparam>
     /// <returns>
     /// A string representation of <paramref name="value"/> according to the
@@ -79,32 +70,10 @@ public static partial class ObjectTooString
     /// </returns>
     public static string TooString<T>(this T value,
                                       TooStringStyle style = TooStringStyle.JsonSerializer,
-                                      TooStringOptions? options = null,
-                                      [CallerArgumentExpression("value")]
-                                      string? argumentExpression = null)
+                                      TooStringOptions? options = null)
     {
-        TooStringOptions options2 = options ?? style switch
-                    {
-                        _ when style.IsReflection() => TooStringOptions.WithAdvancedOptions(),
-                        TooStringStyle.JsonSerializer => TooStringOptions.ForJson(),
-                        _ => TooStringOptions.Default
-                    };
-        if (style.IsReflection())
-        {
-            options2 = options2 with
-            {
-                Fallbacks = TooStringOptions.Default.Fallbacks.Prepend(style),
-                AdvancedOptions = options2.AdvancedOptions with { Style = style.ToTooStringStyle() }
-            };
-        }
-        else
-        {
-            options2 = options2 with
-            {
-                Fallbacks = TooStringOptions.Default.Fallbacks.Prepend(style),
-            };
-        }
-        return TooString(value,options2,argumentExpression);
+        options = (options??TooStringOptions.Default) with { StringifyAs = style };
+        return TooString(value,options);
     }
 
     /// <summary>
@@ -138,11 +107,11 @@ public static partial class ObjectTooString
     {
         var options = TooStringOptions.Default with
         {
-            Fallbacks = TooStringOptions.Default.Fallbacks.Prepend(style),
+            StringifyAs = style,
             AdvancedOptions = TooStringOptions.Default.AdvancedOptions
                 with
                 {
-                    Style = style.ToTooStringStyle(),
+                    Style = style,
                     MaxDepth = maxDepth,
                     MaxEnumerationLength = maxLength
                 }
@@ -163,15 +132,9 @@ public static partial class ObjectTooString
     /// </returns>
     public static string TooString<T>(this T value, AdvancedOptions advancedOptions)
     {
-        var style = advancedOptions.Style switch
-        {
-            TooStringStyle.JsonStringifier => TooStringStyle.JsonStringifier,
-            TooStringStyle.CSharp => TooStringStyle.CSharp,
-            _ => TooStringStyle.DebugView
-        };
         var options = TooStringOptions.Default with
         {
-            Fallbacks = TooStringOptions.Default.Fallbacks.Prepend(style),
+            StringifyAs = advancedOptions.Style,
             AdvancedOptions = advancedOptions
         };
         return TooString(value,options);
@@ -187,52 +150,16 @@ public static partial class ObjectTooString
     /// The easy way to change options may be to use <see cref="TooStringOptions.Default"/>
     /// with a <c>with</c> expression: <c>TooStringOptions.Default with { ... }</c>
     /// </param>
-    /// <param name="argumentExpression">
-    /// This parameter should be ignored. It is automatically populated by the Compiler using
-    /// <see cref="CallerArgumentExpressionAttribute"/>
-    /// </param>
     /// <typeparam name="T"></typeparam>
     /// <returns>
     /// A string representation of <paramref name="value"/> according to the
     /// <paramref name="tooStringOptions"/> chosen.
     /// </returns>
-    public static string TooString<T>(this T value,
-                                      TooStringOptions tooStringOptions,
-                                      [CallerArgumentExpression("value")]
-                                      string? argumentExpression = null)
+    public static string TooString<T>(this T value, TooStringOptions tooStringOptions)
     {
-        return tooStringOptions.Fallbacks.FirstOrDefault() switch
-               {
-                   TooStringStyle.BestEffort => CallerArgumentOrNextPreference(),
-                   TooStringStyle.CallerArgument => argumentExpression,
-                   TooStringStyle.JsonSerializer => ToJson(value,tooStringOptions),
-                   TooStringStyle.JsonStringifier or TooStringStyle.DebugView or TooStringStyle.CSharp
-                       => BuildReflectedString(value, new OptionsWithState(0, tooStringOptions)),
-                   _ => value?.ToString()
-               }
-               ??
-               Null;
-
-        string CallerArgumentOrNextPreference()
-        {
-            foreach (var pref in tooStringOptions.Fallbacks.Skip(1))
-            {
-                switch (pref)
-                {
-                    //Only choose CallerArgument if we captured an expression
-                    case TooStringStyle.CallerArgument
-                    when argumentExpression is not null
-                         && !Regex.IsMatch(argumentExpression,
-                                           RegexTypeNameOrIdentifierWithCharsOnly):
-                        return argumentExpression;
-                    case TooStringStyle.JsonStringifier or TooStringStyle.DebugView or TooStringStyle.CSharp:
-                        return ToStringified(value,tooStringOptions);
-                    case TooStringStyle.JsonSerializer:
-                        return ToJson(value,tooStringOptions);
-                }
-            }
-            return ToJson(value, tooStringOptions);
-        }
+        return tooStringOptions.StringifyAs is TooStringStyle.JsonSerializer
+            ? ToJson(value,tooStringOptions)
+            : BuildReflectedString(value,new OptionsWithState(0,tooStringOptions));
     }
 
     static string BuildReflectedString<T>(T? value, OptionsWithState options)
@@ -243,47 +170,54 @@ public static partial class ObjectTooString
         }
 
         Func<string,string> qname =
-            options.AdvancedOptions.Style==TooStringStyle.JsonStringifier
+            options.StringifyAs is TooStringStyle.JsonStringifier or TooStringStyle.JsonSerializer
                 ? s => $"\"{s?.Replace("`","\\u0060").Replace("\"","\\\"")}\""
                 : s => s;
 
-        var isCSharp = options.AdvancedOptions.Style == TooStringStyle.CSharp;
+        var isCSharp = options.StringifyAs == TooStringStyle.CSharp;
         try
         {
             var indent=
-                (options.AdvancedOptions.Style, options.JsonOptions.WriteIndented) switch
+                (options.StringifyAs, options.JsonOptions.WriteIndented) switch
                 {
                     (_,true) => NewLineSpaces400.AsSpan().Slice(0, 1 + (options.Depth + 1) * 2),
                     (TooStringStyle.JsonStringifier,false) => "".AsSpan(),
+                    (TooStringStyle.JsonSerializer,false) => "".AsSpan(),
                     (TooStringStyle.DebugView,false) => " ".AsSpan(),
                     (TooStringStyle.CSharp,false) => " ".AsSpan(),
                     (_,_) => " ".AsSpan()
                 };
             var outdent =
-                (options.AdvancedOptions.Style, options.JsonOptions.WriteIndented) switch
+                (options.StringifyAs, options.JsonOptions.WriteIndented) switch
                 {
-                    (TooStringStyle.DebugView,true) => NewLineSpaces400.AsSpan().Slice(0, options.Depth * 2),
-                    (TooStringStyle.CSharp,true) => NewLineSpaces400.AsSpan().Slice(0, options.Depth * 2),
                     (TooStringStyle.JsonStringifier,true) => NewLineSpaces400.AsSpan().Slice(0, 1 + (options.Depth) * 2),
                     (TooStringStyle.JsonStringifier,false) => "".AsSpan(),
-                    (TooStringStyle.DebugView,false) => " ".AsSpan(),
+                    (TooStringStyle.JsonSerializer,true) => NewLineSpaces400.AsSpan().Slice(0, 1 + (options.Depth) * 2),
+                    (TooStringStyle.JsonSerializer,false) => "".AsSpan(),
+                    (TooStringStyle.CSharp,true) => NewLineSpaces400.AsSpan().Slice(0, options.Depth * 2),
                     (TooStringStyle.CSharp,false) => " ".AsSpan(),
+                    (TooStringStyle.DebugView,true) => NewLineSpaces400.AsSpan().Slice(0, options.Depth * 2),
+                    (TooStringStyle.DebugView,false) => " ".AsSpan(),
                     (_,_) => "".AsSpan()
                 };
-            var delimiter = (options.AdvancedOptions.Style, options.JsonOptions.WriteIndented) switch
+            var delimiter = (options.StringifyAs, options.JsonOptions.WriteIndented) switch
                 {
-                    (TooStringStyle.DebugView,true) => CommaCrLfSpaces400.AsSpan().Slice(0,5 + options.Depth*2),
-                    (TooStringStyle.CSharp,true) => CommaCrLfSpaces400.AsSpan().Slice(0,5 + options.Depth*2),
                     (TooStringStyle.JsonStringifier,true) => CommaCrLfSpaces400.AsSpan().Slice(0,2 + (options.Depth + 1) *2),
                     (TooStringStyle.JsonStringifier, false) =>",",
-                    (TooStringStyle.DebugView, false) => ", ",
+                    (TooStringStyle.JsonSerializer,true) => CommaCrLfSpaces400.AsSpan().Slice(0,2 + (options.Depth + 1) *2),
+                    (TooStringStyle.JsonSerializer, false) =>",",
+                    (TooStringStyle.CSharp,true) => CommaCrLfSpaces400.AsSpan().Slice(0,5 + options.Depth*2),
                     (TooStringStyle.CSharp, false) => ", ",
+                    (TooStringStyle.DebugView,true) => CommaCrLfSpaces400.AsSpan().Slice(0,5 + options.Depth*2),
+                    (TooStringStyle.DebugView, false) => ", ",
                     (_,_) => ", "
                 };
-            var separator = (options.AdvancedOptions.Style, options.JsonOptions.WriteIndented) switch
+            var separator = (options.StringifyAs, options.JsonOptions.WriteIndented) switch
             {
                 (TooStringStyle.JsonStringifier,true) => ": ",
                 (TooStringStyle.JsonStringifier, false) =>":",
+                (TooStringStyle.JsonSerializer,true) => ": ",
+                (TooStringStyle.JsonSerializer, false) =>":",
                 (TooStringStyle.DebugView, _) => " = ",
                 (TooStringStyle.CSharp, _) => " = ",
                 (_,_) => " = "
@@ -391,7 +325,7 @@ public static partial class ObjectTooString
 
     static string DelimitTuple<T>(T value, OptionsWithState options) where T : ITuple
     {
-        var (start, delimiter,end) = options.AdvancedOptions.Style == TooStringStyle.JsonStringifier
+        var (start, delimiter,end) = options.StringifyAs is TooStringStyle.JsonStringifier or TooStringStyle.JsonSerializer
             ? ("[", "," , "]")
             : ("(", ", ", ")");
         var b = new StringBuilder(start);
@@ -414,7 +348,7 @@ public static partial class ObjectTooString
         }
         if (options.Depth + 1 == options.AdvancedOptions.MaxDepth
             &&
-            options.AdvancedOptions.Style is TooStringStyle.DebugView or TooStringStyle.CSharp
+            options.StringifyAs is TooStringStyle.DebugView or TooStringStyle.CSharp
             &&
             typeof(T).GetMethod("ToString",BindingFlags.DeclaredOnly|BindingFlags.Instance|BindingFlags.Public) is null)
         {
@@ -428,9 +362,9 @@ public static partial class ObjectTooString
         if(maxLength == 0) return ScalarishToShortReflectedString(value,options);
 
         int i = 0;
-        var (start, delimiter, end) = options.AdvancedOptions.Style switch
+        var (start, delimiter, end) = options.StringifyAs switch
         {
-            TooStringStyle.JsonStringifier => ("[", ",", "]"),
+            TooStringStyle.JsonStringifier or TooStringStyle.JsonSerializer=> ("[", ",", "]"),
             TooStringStyle.CSharp => ("new[] { ", ", ", " }"),
             _ => ("[ ", ", ", " ]")
         };
@@ -474,11 +408,11 @@ public static partial class ObjectTooString
             new OptionsWithState(0,
                 TooStringOptions.Default with
                 {
+                    StringifyAs = style,
                     JsonOptions = TooStringOptions.DefaultJsonOptions
                         .With(o=> o.WriteIndented=indentedJson),
                     AdvancedOptions = AdvancedOptions.ForCSharp with
                     {
-                        Style = style,
                         WhichProperties = whichProperties,
                     },
                 })
@@ -498,8 +432,8 @@ public static partial class ObjectTooString
 
     static string ScalarishToShortReflectedString(object? value, OptionsWithState options)
     {
-        var style = options.AdvancedOptions.Style;
-        var isJson = style == TooStringStyle.JsonStringifier;
+        var style = options.StringifyAs;
+        var isJson = style is TooStringStyle.JsonStringifier or TooStringStyle.JsonSerializer;
         var isCSharp = style == TooStringStyle.CSharp;
 
         Func<string, string> qstr =

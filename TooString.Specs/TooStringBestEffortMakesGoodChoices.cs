@@ -39,12 +39,12 @@ public class TooStringBestEffortMakesGoodChoices
         var value = new CompositeA { A = "boo", B = new Complex(3,4) };
         var expected = 
             "{\"A\":\"boo\",\"B\":{\"Real\":3,\"Imaginary\":4,\"Magnitude\":5,\"Phase\":0.9272952180016122}}";
-        
-        Assert.That(
-            value.TooString(TooStringOptions.Default), 
-            Is.EqualTo(expected) 
-        );
+
+        var actual = value.TooString(TooStringOptions.Default);
+        //D
         TestContext.Progress.WriteLine(value.TooString());
+        //A
+        Assert.That(actual,Is.EqualTo(expected));
     }
     
     [Test]
@@ -52,8 +52,7 @@ public class TooStringBestEffortMakesGoodChoices
     {
         var value = new Circular{ A = "boo"};
         value.B = value;
-        var expected = 
-            "{\"A\":\"boo\",\"B\":null,\"C\":null}";
+        var expected = "{\"A\":\"boo\",\"B\":null,\"C\":null}";
         
         Assert.That(
             value.TooString(), 
@@ -65,30 +64,33 @@ public class TooStringBestEffortMakesGoodChoices
     [Test]
     public void GivenAValueTuple__ReturnsReflectedJson()
     {
+        //A
         var value = (1,"boo",new Complex(3,4));
         var expected = """[1,"boo",[3,4]]""";
-
-        Assert.That(
-            value.TooString(),
-            Is.EqualTo(expected)
-            );
-        TestContext.Progress.WriteLine(value.TooString());
+        //A
+        var actual = value.TooString();
+        //D
+        TestContext.Progress.WriteLine(actual);
+        // A
+        Assert.That(actual,Is.EqualTo(expected));
     }
 
     [Test/*,Ignore("Don't create HttpClient on each run")*/]
     public void GivenDifficultObject__ReturnsReflectedJson()
     {
+        //A
         var value = TooStringJsonReturnsJson.httpClient;
         var expected = 
             "{\"DefaultRequestHeaders\":[],\"DefaultRequestVersion\":\"1.1\"," +
             "\"DefaultVersionPolicy\":0,\"BaseAddress\":\"http://127.0.0.1\"," +
             "\"Timeout\":\"00:01:40\",\"MaxResponseContentBufferSize\":2147483647}";
-        
-        Assert.That(
-            value.TooString(), 
-            Is.EqualTo(expected) 
-        );
-        TestContext.Progress.WriteLine(value.TooString());
+
+        //A
+        var actual = value.TooString();
+        //D
+        TestContext.Progress.WriteLine(actual);
+        // A
+        Assert.That(actual,Is.EqualTo(expected));
     }
 
     [Test]
