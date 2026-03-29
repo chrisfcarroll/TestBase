@@ -66,13 +66,6 @@ public class TooStringOptionsBuilder
         return this;
     }
 
-    /// <summary>Use <see cref="TooStringStyle.ToString"/></summary>
-    public TooStringOptionsBuilder UseToString()
-    {
-        style = TooStringStyle.ToString;
-        return this;
-    }
-
     /// <summary>Set the maximum depth for nested object traversal</summary>
     public TooStringOptionsBuilder MaxDepth(int maxDepth)
     {
