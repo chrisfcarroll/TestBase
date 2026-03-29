@@ -36,9 +36,9 @@ public class TooStringIndentOptionSpecs
     public void NoIndentOutputIsSingleLine()
     {
         Assert.That(depth4.ToJson(writeIndented: false).IndexOf('\n'), Is.EqualTo(-1));
-        Assert.That(depth4.ToStringified().IndexOf('\n'), Is.EqualTo(-1));
+        Assert.That(depth4.TooString().IndexOf('\n'), Is.EqualTo(-1));
         Assert.That(depth1.ToJson(writeIndented: false).IndexOf('\n'), Is.EqualTo(-1));
-        Assert.That(depth1.ToStringified().IndexOf('\n'), Is.EqualTo(-1));
+        Assert.That(depth1.TooString().IndexOf('\n'), Is.EqualTo(-1));
     }
 
     [Test]

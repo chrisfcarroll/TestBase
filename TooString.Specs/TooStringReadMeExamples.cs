@@ -38,21 +38,17 @@ public class TooStringReadMeExamples
     public void ExampleIsCorrectGivenAnonObjectReflection()
     {
         var anonObject = new { A = "boo", B = new Complex(3,4) };
-        // anonObject.TooString(TooStringStyle.DebugView);
-        // anonObject.ToDebugViewString();
         // Output is "{ A = boo, B = [3,4] }" or "{ A = boo, B = <3;4> }"
         var actual = anonObject.TooString(TooStringStyle.CSharp);
-        var actual2 = anonObject.ToStringified();
         var expected = $"{{ A = \"boo\", B = {new Complex(3,4)} }}";
         Assert.That(actual, Is.EqualTo(expected));
-        Assert.That(actual2, Is.EqualTo(expected));
     }
 
     [Test]
     public void ExampleIsCorrectGivenValueTupleJson()
     {
         var valueTuple = (one: 1, two: "2", three: new Complex(3,4));
-        var actual = valueTuple.TooString(TooStringStyle.JsonSerializer);
+        var actual = valueTuple.TooString(TooStringStyle.JsonStringifier);
         Assert.That(actual, Is.EqualTo("""[1,"2",[3,4]]"""));;
 
         var stjOutput = System.Text.Json.JsonSerializer.Serialize(valueTuple);
@@ -65,7 +61,7 @@ public class TooStringReadMeExamples
     {
         var valueTuple = (one: 1, two: "2", three: new Complex(3,4));
 
-        var actual3 = valueTuple.ToStringified();
+        var actual3 = valueTuple.TooString(TooStringStyle.CSharp);
         #if NET8_0_OR_GREATER
         Assert.That(actual3, Is.EqualTo("(1, \"2\", <3; 4>)"));
         #else

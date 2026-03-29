@@ -20,7 +20,7 @@ public class TooStringReadMeExamplesOfOptions
     [Test]
     public void ValueTupleToJsonExample()
     {
-        var toJson = (one:1, two:"2").TooString( TooStringStyle.JsonSerializer );
+        var toJson = (one:1, two:"2").TooString( TooStringStyle.JsonStringifier );
         var stj = System.Text.Json.JsonSerializer.Serialize((one: 1,two: "2"));
         var reflected = (one:1, two:"2").TooString( AdvancedOptions.Default);
 
@@ -33,8 +33,8 @@ public class TooStringReadMeExamplesOfOptions
     public void ToCSharpStringExamples()
     {
         var value = circular;
-        var d1= value.ToStringified();
-        var d2 = value.TooString(TooStringStyle.CSharp);
+        var d1 = value.TooString(TooStringStyle.CSharp);
+        var d2= value.TooString(TooStringOptions.Default with {StringifyAs = TooStringStyle.CSharp});
         var d3 = value.TooString(maxDepth: 4,maxLength: 9,style: TooStringStyle.CSharp);
         var d4= value.TooString(
                         TooStringStyle.CSharp,

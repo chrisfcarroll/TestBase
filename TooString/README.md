@@ -4,7 +4,7 @@ TooString() can
 - make a best effort to stringify objects that JsonSerializer won't, including 
   System.Reflection classes and System.Type, or that JsonSerializer surprises 
   you with, such as ValueTuples.
-- Output as Json, or ‘debug view’ style, or as [CallerArgumentExpression] 
+- Output as Json or C# objects or ‘debug view’ style, or as [CallerArgumentExpression] 
 
 TooString offers 3 extension method groups on Object:
 ```csharp
@@ -12,31 +12,35 @@ value.ToStringified();
 value.ToJson();
 value.ToCallerArgumentString();
 ```
-TooString is not a serializer. 
-- A serializer should be fail-fast, but TooString is best-effort. A Serializer should throw 
-  if it cannot deterministically serialize the input, but TooString will attempt to return 
-  a partial or alternative representation of the input if the input cannot be reliably serialized.
+_TooString is not a serializer._ 
+
+- A serializer should be fail-fast, but TooString is best-effort. 
+- A Serializer should throw if it cannot deterministically serialize the input, but TooString 
+  will attempt to return a partial or alternative representation of the input if the input 
+  cannot be reliably serialized.
 - TooString offers both MaxDepth and MaxEnumerationLength options for abbreviated output.
-- TooString can generate Json, C# objects, and [CallerArgumentExpression] code. 
 
 
 #### Default behaviour
 
-- ToJson() defaults to using System.Text.Json, falling back to reflection for un-serializable types.
+- ToJson() or TooString(TooStringStyle.JsonStringifier) default to using System.Text.Json, 
+  falling back to reflection for un-serializable types.
+
 whereas
-- TooString(TooStringStyle.Json) 
+- TooString()
+- TooString(TooStringStyle.JsonStringifier) 
 - TooString(TooStringStyle.CSharp)
-- ToStringified()
+- TooString(TooStringStyle.DebugView)
 all defaults to MaxDepth = 4, MaxEnumerationLength = 9.
 
 Example:
 ```
 var value = new { A = "boo", B = new Complex(3,4) };
 
-value.ToJson();           // Output Is System.Text.Json {"A":"boo","B":{"Real":3,"Imaginary":...}}
-value.ToStringified(),//Output is { A = boo, B = <3; 4> } depending on .Net version.
+value.ToJson();       // Output Is System.Text.Json {"A":"boo","B":{"Real":3,"Imaginary":...}}
+value.TooString(),    //Output is { A = boo, B = <3; 4> } depending on .Net version.
 
-( Math.Sqrt(4 * Math.PI / 3)  ).TooString( TooStringHow.CallerArgument ) 
+( Math.Sqrt(4 * Math.PI / 3)  ).ToArgumentExpression() 
 // Output is the literal code: "Math.Sqrt(4 * Math.PI / 3)"
 
 var tuple = (one: 1, two: "2", three: new Complex(3,4));
@@ -45,12 +49,12 @@ System.Text.Json.JsonSerializer.Serialize(tuple) // Output is "{}" because there
                                                  // are no public properties on a tuple
 
 tuple.TooString(TooStringStyle.Json)
-// Output is created by reflection and stringifies the tuple and the Complex number as arrays
+// Output stringifies the tuple and the Complex number as arrays
 // [1,"2",[3,4]] 
 
 tuple.ToStringified()
-tuple.TooString(TooStringHow.Reflection)
-// Output is created by reflection and mimics typical debugger display
+tuple.TooString(TooStringStyle.CSharp)
+// Output is created by reflection and 
 // on Net6.0: {item1 = 1, item2 = "2", item3 = (3,4)}  
 // on Net8.0: {item1 = 1, item2 = "2", item3 = <3;4>}
 
@@ -62,39 +66,38 @@ type.ToJson() // Outputs truncated Json with default MaxDepth = 4, MaxEnumeratio
 
 ### Options
 
-Options are finicky because we can do either Json serialization, or Reflection-based stringification
-with Json output or with CSharp output, or CallerArgumentExpression.
-For Json serialization, the options are System.Text.Json.JsonSerializationOptions. 
-For Reflection-based output, there are options for MaxDepth, but also MaxLength (of 
-enumerable display), and for DateTime, DateOnly, TimeOnly, and TimeSpan formatting.
+Options are finicky because we can do 
+- Json serialization using System.Text.Json, 
+- or Reflection-based stringification with 
+  - Json output or with 
+  - CSharp output, 
+  - or with DebugView output,
+    - these all having MaxDepth, MaxEnumerationLength, and time/date format options. 
+- or CallerArgumentExpression.
+
+- For Json serialization, the options are System.Text.Json.JsonSerializationOptions. 
+- For stringifying, there are options for MaxDepth, MaxEnumerationLength (for 
+enumerables), and for DateTime, DateOnly, TimeOnly, and TimeSpan formatting.
 
 Try one of these approaches:
 
 ```csharp
-// For Json using STJ
+// For Json Output
 value.ToJson()
-value.TooString( new JsonSerializerOptions(JsonSerializerDefaults.Web){WriteIndented = true})
-// For Json using Reflection
-value.TooString( TooStringStyle.Json )
-value.TooString( AdvancedOptions.ForJson with {} )
+value.TooString(TooStringStyle.JsonSerializer)
+value.TooString( TooStringStyle.JsonStringifier )
+value.TooString( AdvancedOptions.ForJson with { MaxEnumerationLength = 9 } )
 
 
-// For Stringified
-value.ToStringified()
-value.TooString( TooStringStyle.Stringified )
-value.TooString( AdvancedOptions.ForStringified.With(...) ) // Same output as value.ToStringified()
-value.TooString( maxDepth:4, maxLength:9, style:TooStringStyle.Stringified )
+// For CSharp objects,
+value.TooString( TooStringStyle.CSharp)
+value.TooString( AdvancedOptions.ForCSharp.With(...) )
+value.TooString( maxDepth:4, maxLength:9, style:TooStringStyle.CSharp )
 value.TooString( AdvancedOptions.ForStringified with 
 {
     DateTimeFormat = "yyyyMMdd HH:mm:ss",
     TimeSpanFormat = @"d\.hh\:mm\:ss"
 })
-
-// For Either
-value.TooString( TooStringOptions.Default with { ... } )
-
-//CallerArgumentExpression will automatically be chosen if the expression is not just a name:
-(1 + value).TooString()
 ```
 
 

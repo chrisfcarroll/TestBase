@@ -123,41 +123,6 @@ public static partial class ObjectTooString
             : BuildReflectedString(value,new OptionsWithState(0,tooStringOptions));
     }
 
-
-    /// <summary>
-    /// Stringify <paramref name="value"/> using reflection.
-    /// <list type="bullet">
-    /// <item><see cref="TooStringStyle.JsonStringifier"/>: <c>{"A":1}</c></item>
-    /// <item><see cref="TooStringStyle.CSharp"/>: <c>/*TypeName*/ new { A = 1 }</c> (valid C# syntax)</item>
-    /// <item><see cref="TooStringStyle.DebugView"/>: <c>TypeName { A = 1 }</c></item>
-    /// </list>
-    /// </summary>
-    /// <param name="value"></param>
-    /// <param name="style"></param>
-    /// <param name="whichProperties"></param>
-    /// <param name="indentedJson">Only relevant if <paramref name="style"/>
-    ///     is <see cref="TooStringStyle.JsonStringifier"/></param>
-    /// <typeparam name="T"></typeparam>
-    /// <returns></returns>
-    public static string ToStringified<T>(this T? value,
-                                          TooStringStyle style = TooStringStyle.CSharp,
-                                          BindingFlags whichProperties = BindingFlags.Instance | BindingFlags.Public,
-                                          bool indentedJson = false)
-        => BuildReflectedString(
-            value,
-            new OptionsWithState(0,
-                                 TooStringOptions.Default with
-                                 {
-                                     StringifyAs = style,
-                                     JsonOptions = TooStringOptions.DefaultJsonSerializerOptions
-                                         .With(o=> o.WriteIndented=indentedJson),
-                                     AdvancedOptions = AdvancedOptions.Default with
-                                     {
-                                         WhichProperties = whichProperties,
-                                     },
-                                 })
-            );
-
     static string BuildReflectedString<T>(T? value, OptionsWithState options)
     {
         if (options.Depth >= options.AdvancedOptions.MaxDepth)

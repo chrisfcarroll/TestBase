@@ -73,7 +73,7 @@ public class TooStringifiedJsonReturnsSensibleJson
         //var value = new KeyValuePair<int, string>(1, "boo");
         var value = new AStruct { A = "boo", B = new Complex(3, 4) };
 
-        TestContext.Progress.WriteLine(value.ToStringified(TooStringStyle.JsonStringifier));
+        TestContext.Progress.WriteLine(value.TooString(TooStringStyle.JsonStringifier));
         
         Assert.That(
             value.TooString(TooStringStyle.JsonStringifier),
@@ -92,7 +92,7 @@ public class TooStringifiedJsonReturnsSensibleJson
                 five= new CompositeA{A = "A", B= new Complex(3,4)}
             };
         
-        TestContext.Progress.WriteLine(value.ToStringified());
+        TestContext.Progress.WriteLine(value.TooString());
         
         Assert.That(
             value.TooString(TooStringStyle.JsonStringifier ),
@@ -242,7 +242,7 @@ public class TooStringifiedJsonReturnsSensibleJson
             .Module;
 #if NET10_0_OR_GREATER
         var expected = """
-                       {"MDStreamVersion":131072,"FullyQualifiedName":"--filename--","ModuleVersionId":{"Variant":11,"Version":4},"MetadataToken":100000000,"ScopeName":"System.Private.CoreLib.dll","Name":"System.Private.CoreLib.dll","Assembly":{"CodeBase":"file:///--filename--","FullName":"System.Private.CoreLib, Version=X.X.X.X, Culture=neutral, PublicKeyToken=7cec85d7bea7798e","EntryPoint":null,"DefinedTypes":[],"IsCollectible":false,"ManifestModule":"System.Private.CoreLib.dll","ReflectionOnly":false,"Location":"--filename--","ImageRuntimeVersion":"v4.0.30319","GlobalAssemblyCache":false,"HostContext":0,"IsDynamic":false,"ExportedTypes":[],"IsFullyTrusted":true,"CustomAttributes":[],"EscapedCodeBase":"file:///--filename--","Modules":[],"SecurityRuleSet":"None"},"ModuleHandle":{"MDStreamVersion":131072},"CustomAttributes":["[System.Runtime.CompilerServices.NullablePublicOnlyAttribute((Boolean)False)]","[System.Runtime.CompilerServices.SkipLocalsInitAttribute()]"]}
+                       {"MDStreamVersion":131072,"FullyQualifiedName":"--filename--","ModuleVersionId":{"Variant":00,"Version":00},"MetadataToken":100000000,"ScopeName":"System.Private.CoreLib.dll","Name":"System.Private.CoreLib.dll","Assembly":{"CodeBase":"file:///--filename--","FullName":"System.Private.CoreLib, Version=X.X.X.X, Culture=neutral, PublicKeyToken=7cec85d7bea7798e","EntryPoint":null,"DefinedTypes":[],"IsCollectible":false,"ManifestModule":"System.Private.CoreLib.dll","ReflectionOnly":false,"Location":"--filename--","ImageRuntimeVersion":"v4.0.30319","GlobalAssemblyCache":false,"HostContext":0,"IsDynamic":false,"ExportedTypes":[],"IsFullyTrusted":true,"CustomAttributes":[],"EscapedCodeBase":"file:///--filename--","Modules":[],"SecurityRuleSet":"None"},"ModuleHandle":{"MDStreamVersion":131072},"CustomAttributes":["[System.Runtime.CompilerServices.RefSafetyRulesAttribute((Int32)11)]","[System.Runtime.CompilerServices.NullablePublicOnlyAttribute((Boolean)False)]","[System.Runtime.CompilerServices.SkipLocalsInitAttribute()]"]}
                        """;
 #else
         var expected = """
