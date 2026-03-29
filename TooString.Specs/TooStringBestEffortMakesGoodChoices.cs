@@ -27,7 +27,7 @@ public class TooStringBestEffortMakesGoodChoices
             "{\"A\":\"boo\",\"B\":{\"Real\":3,\"Imaginary\":4,\"Magnitude\":5,\"Phase\":0.9272952180016122}}";
         
         Assert.That(
-            value.TooString(), 
+            value.ToJson(),
             Is.EqualTo(expected) 
         );
         TestContext.Progress.WriteLine(value.TooString());
@@ -40,7 +40,7 @@ public class TooStringBestEffortMakesGoodChoices
         var expected = 
             "{\"A\":\"boo\",\"B\":{\"Real\":3,\"Imaginary\":4,\"Magnitude\":5,\"Phase\":0.9272952180016122}}";
 
-        var actual = value.TooString(TooStringOptions.Default);
+        var actual = value.ToJson();
         //D
         TestContext.Progress.WriteLine(value.TooString());
         //A
@@ -55,7 +55,7 @@ public class TooStringBestEffortMakesGoodChoices
         var expected = "{\"A\":\"boo\",\"B\":null,\"C\":null}";
         
         Assert.That(
-            value.TooString(), 
+            value.ToJson(),
             Is.EqualTo(expected) 
         );
         TestContext.Progress.WriteLine(value.TooString());
@@ -68,7 +68,7 @@ public class TooStringBestEffortMakesGoodChoices
         var value = (1,"boo",new Complex(3,4));
         var expected = """[1,"boo",[3,4]]""";
         //A
-        var actual = value.TooString();
+        var actual = value.ToJson();
         //D
         TestContext.Progress.WriteLine(actual);
         // A
@@ -86,7 +86,7 @@ public class TooStringBestEffortMakesGoodChoices
             "\"Timeout\":\"00:01:40\",\"MaxResponseContentBufferSize\":2147483647}";
 
         //A
-        var actual = value.TooString();
+        var actual = value.ToJson();
         //D
         TestContext.Progress.WriteLine(actual);
         // A

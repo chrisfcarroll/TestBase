@@ -63,18 +63,43 @@ public record TooStringOptions
     public static readonly TooStringOptions Default =
         new(AdvancedOptions.Default,
             DefaultJsonSerializerOptions,
-            TooStringStyle.JsonSerializer);
+            TooStringStyle.CSharp);
 
     /// <summary>
-    /// The options for reflection-based styles.
+    /// Advanced options for reflected output.
     /// The <see cref="Default"/> value is <see cref="TooString.AdvancedOptions.Default"/>
     /// </summary>
     public AdvancedOptions AdvancedOptions { get; init; }
 
     /// <summary>
-    /// The <see cref="Default"/> value is <see cref="DefaultJsonSerializerOptions"/>.
+    /// Gets or sets whether output should use indents and newlines.
+    /// Defaults to false
     /// </summary>
-    public JsonSerializerOptions JsonOptions { get; init; }
+    public bool WriteIndented
+    {
+        get => JsonOptions.WriteIndented;
+        set
+        {
+            if (JsonOptions.WriteIndented != value)
+            {
+                jsonOptions = new JsonSerializerOptions(JsonOptions) { WriteIndented = value };
+            }
+        }
+    }
+
+    JsonSerializerOptions jsonOptions;
+
+    /// <summary>
+    /// Options for System.Text.Json serialization.
+    /// </summary>
+    /// <remarks>
+    /// ⚠️Only used when <see cref="StringifyAs"/> is <see cref="TooStringStyle.JsonSerializer"/>
+    /// </remarks>
+    public JsonSerializerOptions JsonOptions
+    {
+        get => jsonOptions;
+        init => jsonOptions = value;
+    }
 
     /// <summary>
     /// The <see cref="TooStringStyle"/> to stringify to.
@@ -94,35 +119,43 @@ public record TooStringOptions
     }
 
 
-
-    ///<summary>
-    /// Returns a <see cref="TooStringOptions"/> instance which will try json serialization
-    /// as its first choice, using either <see cref="DefaultJsonSerializerOptions"/>, or
-    /// <see cref="JsonOptions"/> as configured by <paramref name="jsDefaults"/> and
-    /// <paramref name="reconfigure"/>.
-    /// </summary>
-    /// <param name="reconfigure">
-    /// If not null, then return options with <see cref="JsonOptions"/> reconfigured
-    /// from the default by applying <paramref name="reconfigure"/>.
-    /// </param>
-    /// <param name="jsDefaults">
-    /// <see cref="JsonSerializerDefaults"/>
+    /// <summary>
+    ///  Returns a <see cref="TooStringOptions"/> instance which will try json serialization
+    ///  as its first choice, using either <see cref="DefaultJsonSerializerOptions"/>, or
+    ///  <see cref="JsonOptions"/> as configured by <paramref name="jsDefaults"/> and
+    ///  <paramref name="reconfigure"/>.
+    ///  </summary>
+    ///  <param name="reconfigure">
+    ///  If not null, then return options with <see cref="JsonOptions"/> reconfigured
+    ///  from the default by applying <paramref name="reconfigure"/>.
+    ///  </param>
+    ///  <param name="jsDefaults">
+    ///  <see cref="JsonSerializerDefaults"/>
+    ///  </param>
+    /// <param name="serializeOrStringify">
+    /// Specify <see cref="TooStringStyle.JsonStringifier"/> to force using our
+    /// stringify without trying <see cref="System.Text.Json.JsonSerializer"/>
     /// </param>
     /// <returns>
-    /// Default options for <see cref="TooStringStyle.JsonSerializer"/> with {JsonOptions modified by nonDefaults}
-    /// </returns>
+    ///  Default options for <see cref="TooStringStyle.JsonSerializer"/> with {JsonOptions modified by nonDefaults}
+    ///  </returns>
     public static TooStringOptions ForJson(Action<JsonSerializerOptions>? reconfigure = null,
-                                           JsonSerializerDefaults jsDefaults = JsonSerializerDefaults.General)
+                                           JsonSerializerDefaults jsDefaults = JsonSerializerDefaults.General,
+                                           TooStringStyle serializeOrStringify = TooStringStyle.JsonSerializer)
     {
         var js= new JsonSerializerOptions(jsDefaults)
         {
             ReferenceHandler = ReferenceHandler.IgnoreCycles,
         };
         reconfigure?.Invoke(js);
+        if (serializeOrStringify is not TooStringStyle.JsonSerializer)
+        {
+            serializeOrStringify = TooStringStyle.JsonSerializer;
+        }
         return Default with
         {
             JsonOptions = js,
-            StringifyAs = TooStringStyle.JsonSerializer,
+            StringifyAs = serializeOrStringify,
             AdvancedOptions = AdvancedOptions.Default
         };
     }

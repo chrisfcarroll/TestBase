@@ -33,6 +33,22 @@ public class TooStringIndentOptionSpecs
     }
 
     [Test]
+    public void TooStringOptionsWriteIndentedMatchesJsonOptionsWriteIdented()
+    {
+        var options = TooStringOptions.Default;
+        Assert.That(options.WriteIndented, Is.False);
+        Assert.That(options.JsonOptions.WriteIndented, Is.False);
+
+        options.WriteIndented = true;
+        Assert.That(options.WriteIndented, Is.True);
+        Assert.That(options.JsonOptions.WriteIndented, Is.True);
+
+        options.WriteIndented = false;
+        Assert.That(options.WriteIndented, Is.False);
+        Assert.That(options.JsonOptions.WriteIndented, Is.False);
+    }
+
+    [Test]
     public void NoIndentOutputIsSingleLine()
     {
         Assert.That(depth4.ToJson(writeIndented: false).IndexOf('\n'), Is.EqualTo(-1));

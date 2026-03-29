@@ -1,10 +1,10 @@
 TooString is a Stringifier that goes places serializers don't.
 
-TooString() can
+TooString can
 - make a best effort to stringify objects that JsonSerializer won't, including 
   System.Reflection classes and System.Type, or that JsonSerializer surprises 
   you with, such as ValueTuples.
-- Output as Json or C# objects or ‘debug view’ style, or as [CallerArgumentExpression] 
+- Output as Json or C# object notation, or ‘debug view’ style, or [CallerArgumentExpression] 
 
 TooString offers 3 extension method groups on Object:
 ```csharp

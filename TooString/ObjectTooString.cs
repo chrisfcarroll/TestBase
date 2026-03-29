@@ -55,7 +55,7 @@ public static partial class ObjectTooString
     /// <paramref name="style"/> chosen.
     /// </returns>
     public static string TooString<T>(this T value,
-                                      TooStringStyle style = TooStringStyle.JsonSerializer,
+                                      TooStringStyle style = TooStringStyle.CSharp,
                                       TooStringOptions? options = null)
         =>
         TooString(value,(options??TooStringOptions.Default) with { StringifyAs = style });
@@ -75,7 +75,14 @@ public static partial class ObjectTooString
     /// Further items will simply be omitted.
     /// </param>
     /// <param name="style">
-    /// Choose between <see cref="TooStringStyle.JsonStringifier"/>,
+    /// Choose between
+    /// <list type="bullet">
+    /// <item><see cref="TooStringStyle.CSharp"/> (the default)</item>
+    /// <item><see cref="TooStringStyle.JsonStringifier"/>,</item>
+    /// <item><see cref="TooStringStyle.JsonSerializer"/>,</item>
+    /// <item><see cref="TooStringStyle.DebugView"/>,</item>
+    /// </list>
+    /// <see cref="TooStringStyle.JsonStringifier"/>,
     /// <see cref="TooStringStyle.DebugView"/>, or
     /// <see cref="TooStringStyle.CSharp"/> (valid C# syntax with type names in comments)
     /// </param>
@@ -87,7 +94,7 @@ public static partial class ObjectTooString
     public static string TooString<T>(this T value,
                                       int maxDepth,
                                       int maxLength = 9,
-                                      TooStringStyle style = TooStringStyle.JsonStringifier)
+                                      TooStringStyle style = TooStringStyle.CSharp)
         =>
         TooString(value,TooStringOptions.Default with
                         {
@@ -139,7 +146,7 @@ public static partial class ObjectTooString
         try
         {
             var indent=
-                (options.StringifyAs, options.JsonOptions.WriteIndented) switch
+                (options.StringifyAs, options.WriteIndented) switch
                 {
                     (_,true) => NewLineSpaces400.AsSpan().Slice(0, 1 + (options.Depth + 1) * 2),
                     (TooStringStyle.JsonStringifier,false) => "".AsSpan(),
@@ -149,7 +156,7 @@ public static partial class ObjectTooString
                     (_,_) => " ".AsSpan()
                 };
             var outdent =
-                (options.StringifyAs, options.JsonOptions.WriteIndented) switch
+                (options.StringifyAs, options.WriteIndented) switch
                 {
                     (TooStringStyle.JsonStringifier,true) => NewLineSpaces400.AsSpan().Slice(0, 1 + (options.Depth) * 2),
                     (TooStringStyle.JsonStringifier,false) => "".AsSpan(),
@@ -161,7 +168,7 @@ public static partial class ObjectTooString
                     (TooStringStyle.DebugView,false) => " ".AsSpan(),
                     (_,_) => "".AsSpan()
                 };
-            var delimiter = (options.StringifyAs, options.JsonOptions.WriteIndented) switch
+            var delimiter = (options.StringifyAs, options.WriteIndented) switch
                 {
                     (TooStringStyle.JsonStringifier,true) => CommaCrLfSpaces400.AsSpan().Slice(0,2 + (options.Depth + 1) *2),
                     (TooStringStyle.JsonStringifier, false) =>",",
@@ -173,7 +180,7 @@ public static partial class ObjectTooString
                     (TooStringStyle.DebugView, false) => ", ",
                     (_,_) => ", "
                 };
-            var separator = (options.StringifyAs, options.JsonOptions.WriteIndented) switch
+            var separator = (options.StringifyAs, options.WriteIndented) switch
             {
                 (TooStringStyle.JsonStringifier,true) => ": ",
                 (TooStringStyle.JsonStringifier, false) =>":",

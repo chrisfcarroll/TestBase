@@ -140,7 +140,7 @@ public class TooStringJsonReturnsJson
 
         var defaultJsonned = JsonSerializer.Serialize(value);
 
-        var options = TooStringOptions.Default with
+        var options = TooStringOptions.ForJson() with
         {
             JsonOptions = new JsonSerializerOptions { IncludeFields = true }
         };
