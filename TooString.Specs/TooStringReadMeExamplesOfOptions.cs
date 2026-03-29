@@ -41,10 +41,7 @@ public class TooStringReadMeExamplesOfOptions
                             DateTimeFormat = "yyyyMMdd HH:mm:ss",
                             TimeSpanFormat = @"d\.hh\:mm\:ss",
                         });
-        var d5 = value.TooString(TooStringOptions.Default with
-        {
-            Fallbacks = [TooStringStyle.DebugView]
-        });
+        var d5 = value.TooString(TooStringOptions.WithAdvancedOptions(new(Style:TooStringStyle.CSharp)));
         Assert.That(d1, Is.EqualTo(d2));
         Assert.That(d1, Is.EqualTo(d3));
         Assert.That(d1, Is.EqualTo(d4));

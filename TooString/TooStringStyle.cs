@@ -9,16 +9,7 @@ namespace TooString;
 /// </summary>
 public enum TooStringStyle
 {
-    /// <summary>If <see cref="CallerArgument"/> returns more than just a parameter
-    /// name, then use it.
-    /// Otherwise use <see cref="System.Text.Json.JsonSerializer"/>
-    /// </summary>
     BestEffort = 0,
-
-    /// <summary>Use
-    /// <see cref="CallerArgumentExpressionAttribute"/> available on Net5.0 and above
-    /// </summary>
-    CallerArgument,
 
 
     /// <summary>
@@ -55,12 +46,4 @@ public static class TooStringStyleExtensions
     /// <summary>Whether this style uses reflection-based serialization</summary>
     public static bool IsReflection(this TooStringStyle style) =>
         style is TooStringStyle.JsonStringifier or TooStringStyle.DebugView or TooStringStyle.CSharp;
-
-    /// <summary>Convert to the internal <see cref="TooStringStyle"/> used by <see cref="AdvancedOptions"/></summary>
-    public static TooStringStyle ToTooStringStyle(this TooStringStyle style) => style switch
-    {
-        TooStringStyle.JsonStringifier => TooStringStyle.JsonStringifier,
-        TooStringStyle.CSharp => TooStringStyle.CSharp,
-        _ => TooStringStyle.DebugView
-    };
 }

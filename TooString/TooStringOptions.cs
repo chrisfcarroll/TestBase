@@ -61,7 +61,7 @@ public record TooStringOptions
     /// </c>
     /// </summary>
     public static readonly TooStringOptions Default =
-        new(AdvancedOptions.ForCSharp,
+        new(AdvancedOptions.ForJson,
             DefaultJsonOptions,
             new List<TooStringStyle>(){TooStringStyle.BestEffort }.AsReadOnly());
 

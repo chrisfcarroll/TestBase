@@ -8,9 +8,9 @@ TooString() can
 
 TooString offers 3 extension method groups on Object:
 ```csharp
-value.TooString();
-value.ToJson();
 value.ToStringified();
+value.ToJson();
+value.ToCallerArgumentString();
 ```
 TooString is not a serializer. 
 - A serializer should be fail-fast, but TooString is best-effort. A Serializer should throw 

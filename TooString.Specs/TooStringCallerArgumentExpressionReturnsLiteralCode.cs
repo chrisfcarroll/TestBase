@@ -11,21 +11,21 @@ public class TooStringCallerArgumentExpressionReturnsLiteralCode
     public void GivenASimpleExpression()
     {
         Assert.That( 
-            (1+1).TooString(TooStringStyle.CallerArgument),
+            (1+1).ToArgumentExpression(),
             Is.EqualTo( "1+1" ) );
         
         Assert.That( 
-            ( 2 + 2 ).TooString(TooStringStyle.CallerArgument),
+            ( 2 + 2 ).ToArgumentExpression(),
             Is.EqualTo( "2 + 2" ) );
         
-        TestContext.Progress.WriteLine( ( Sqrt(4 * PI / 3)  ).TooString(TooStringStyle.CallerArgument));
+        TestContext.Progress.WriteLine( ( Sqrt(4 * PI / 3)  ).ToArgumentExpression());
         
         Assert.That( 
-            ( Sqrt(4 * PI / 3)  ).TooString(TooStringStyle.CallerArgument),
+            ( Sqrt(4 * PI / 3)  ).ToArgumentExpression(),
             Is.EqualTo( "Sqrt(4 * PI / 3)" ) );
 
         Assert.That( 
-            ( Math.Sqrt(4 * Math.PI / 3)  ).TooString(TooStringStyle.CallerArgument),
+            ( Math.Sqrt(4 * Math.PI / 3)  ).ToArgumentExpression(),
             Is.EqualTo( "Math.Sqrt(4 * Math.PI / 3)" ) );
     }
 
@@ -36,14 +36,14 @@ public class TooStringCallerArgumentExpressionReturnsLiteralCode
         var actual = 4;
 
         var expectedContainsActual =
-            (expectedOneOf.Contains(actual)).TooString(TooStringStyle.CallerArgument);
+            (expectedOneOf.Contains(actual)).ToArgumentExpression();
         
         TestContext.Progress.WriteLine(expectedContainsActual);
         Assert.That( 
             expectedContainsActual, 
             Is.EqualTo( "expectedOneOf.Contains(actual)" ) );
 
-        var expectedOneOfAny = ( expectedOneOf.Any(e=> e==actual)  ).TooString(TooStringStyle.CallerArgument);
+        var expectedOneOfAny = ( expectedOneOf.Any(e=> e==actual)  ).ToArgumentExpression();
         TestContext.Progress.WriteLine(expectedOneOfAny);
         Assert.That( 
             expectedOneOfAny, 
@@ -54,7 +54,7 @@ public class TooStringCallerArgumentExpressionReturnsLiteralCode
     public void GivenAnObjectInitializer()
     {
         var newCompositeA = ( new CompositeA { A = "boo", B = new Complex(123,45) }  )
-            .TooString(TooStringStyle.CallerArgument);
+            .ToArgumentExpression();
         TestContext.Progress.WriteLine(newCompositeA);
         Assert.That( 
             newCompositeA, 
@@ -65,7 +65,7 @@ public class TooStringCallerArgumentExpressionReturnsLiteralCode
     public void GivenAnAnonymousObjectInitializer()
     {
         var newCompositeA = 
-            new { A = "boo", B = new Complex(123,45) }.TooString(TooStringStyle.CallerArgument);
+            new { A = "boo", B = new Complex(123,45) }.ToArgumentExpression();
         
         TestContext.Progress.WriteLine(newCompositeA);
         Assert.That( 

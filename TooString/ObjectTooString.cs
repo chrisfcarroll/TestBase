@@ -32,6 +32,17 @@ public static partial class ObjectTooString
         @"^[_\p{L}\p{Nl}\p{Mn}\p{Mc}\p{Nd}\p{Pc}\p{Cf}\.\`]+$";
 
 
+    /// <param name="value"></param>
+    /// <param name="expression"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns>
+    /// Returns the <see cref="CallerArgumentExpressionAttribute"/> string
+    /// for <paramref name="value"/>.
+    /// </returns>
+    public static string ToArgumentExpression<T>(this T? value,
+                                                 [CallerArgumentExpression("value")]
+                                                 string expression="") => expression;
+
     /// <summary>
     /// Stringify value generating an output that is similar to Visual Studio's Debug View
     /// output style.
@@ -67,7 +78,7 @@ public static partial class ObjectTooString
     /// <paramref name="style"/> chosen.
     /// </returns>
     public static string TooString<T>(this T value,
-                                      TooStringStyle style = TooStringStyle.BestEffort,
+                                      TooStringStyle style = TooStringStyle.JsonSerializer,
                                       TooStringOptions? options = null,
                                       [CallerArgumentExpression("value")]
                                       string? argumentExpression = null)
