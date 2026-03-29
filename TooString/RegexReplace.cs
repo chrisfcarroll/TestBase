@@ -43,7 +43,7 @@ static class RegexReplace
             .ReplaceRegex("\"MetadataToken\":\\d+","\"MetadataToken\":100000000")
             .ReplaceRegex("\"DefinedTypes\":\"System.RuntimeType\\[\\d+\\]", "\"DefinedTypes\":\"System.RuntimeType[99]")
             .ReplaceRegex("\"ExportedTypes\":\"System.Type\\[\\d+\\]", "\"ExportedTypes\":\"System.Type[99]")
-
+            .ReplaceRegex("\"ModuleVersionId\":{\"Variant\":\\d+,\"Version\":\\d+}","\"ModuleVersionId\":{\"Variant\":00,\"Version\":00}")
             .ReplaceRegex(" (/[^\" ,]+)+,"," --filename--,")
             .ReplaceRegex(" file:///[^\" ,]+,"," file:///--filename--,")
             .ReplaceRegex(" file:///[BCD]:(/[^\",]+)+,"," file:///--filename--,")
@@ -60,6 +60,7 @@ static class RegexReplace
             .ReplaceRegex("\\\\u002B[a-f0-9A-F]{40}","+" + new string('a',40))
             .ReplaceRegex("[a-f0-9A-F]{40}",new string('a',40))
             .ReplaceRegex("\\\\u0022","\\\"")
+            .ReplaceRegex("\\\\u002B","+")
             .ReplaceRegex("[0-9a-fA-F]{8}[-][0-9a-fA-F]{4}[-][0-9a-fA-F]{4}[-][0-9a-fA-F]{4}[-][0-9a-fA-F]{12}",Guid.Empty.ToString())
             .ReplaceRegex("[a-f0-9A-F]{32}",new string('0',32));
 }

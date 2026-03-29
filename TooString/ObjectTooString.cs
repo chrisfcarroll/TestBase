@@ -118,6 +118,7 @@ public static partial class ObjectTooString
     public static string TooString<T>(this T value, TooStringOptions tooStringOptions)
     {
         return tooStringOptions.StringifyAs is TooStringStyle.JsonSerializer
+               // to ponder && tooStringOptions.AdvancedOptions == AdvancedOptions.MatchingStj
             ? ToJson(value,tooStringOptions)
             : BuildReflectedString(value,new OptionsWithState(0,tooStringOptions));
     }

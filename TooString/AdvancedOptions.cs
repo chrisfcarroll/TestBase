@@ -46,6 +46,8 @@ public record AdvancedOptions(
     /// </summary>
     public static readonly AdvancedOptions Default = new();
 
+    internal static readonly AdvancedOptions MatchingStj = Default with { MaxDepth = 0, MaxEnumerationLength = int.MaxValue};
+
 
     /// <summary>
     /// Re-configured the current options by applying
