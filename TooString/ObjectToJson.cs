@@ -9,14 +9,14 @@ public static partial class ObjectTooString
     /// <summary>
     /// Try to use <see cref="JsonSerializer"/> to serialize <paramref name="value"/>.
     /// If that fails — for instance, for types in System.Reflection, and for System.Type itself,
-    /// returns <see cref="ToStringified{T}(T,TooStringOptions)"/>
+    /// returns <see cref="TooString{T}(T,TooStringOptions)"/>
     /// </summary>
     /// <param name="value"></param>
     /// <param name="tooStringOptions"></param>
     /// <typeparam name="T"></typeparam>
     /// <returns>
     /// System.Text.Json.JsonSerializer.Serialize(value,tooStringOptions.JsonOptions), unless that fails,
-    /// in which case <see cref="ToStringified{T}(T,TooStringOptions)"/> is called.
+    /// in which case <see cref="TooString{T}(T,TooStringOptions)"/> is called.
     /// </returns>
     public static string ToJson<T>(this T? value, TooStringOptions tooStringOptions)
     {
@@ -27,7 +27,8 @@ public static partial class ObjectTooString
             (value is ITuple && !tooStringOptions.JsonOptions.IncludeFields)
            )
         {
-            return ToStringified(value, tooStringOptions with {AdvancedOptions = tooStringOptions.AdvancedOptions with {Style = TooStringStyle.JsonStringifier}});
+            TooStringOptions options = tooStringOptions with {AdvancedOptions = tooStringOptions.AdvancedOptions with { }};
+            return BuildReflectedString(value, new OptionsWithState(0, options));
         }
 
         try
@@ -36,7 +37,8 @@ public static partial class ObjectTooString
         }
         catch
         {
-            return ToStringified(value,TooStringOptions.ForJson() with {JsonOptions = tooStringOptions.JsonOptions});;
+            TooStringOptions options = TooStringOptions.ForJson() with {JsonOptions = tooStringOptions.JsonOptions};
+            return BuildReflectedString(value, new OptionsWithState(0, options));;
         }
     }
 
@@ -52,7 +54,7 @@ public static partial class ObjectTooString
                   TooStringOptions.Default with
                   {
                       JsonOptions =
-                      TooStringOptions.DefaultJsonOptions.With(o
+                      TooStringOptions.DefaultJsonSerializerOptions.With(o
                                                                    => o.WriteIndented = writeIndented)
                   });
 

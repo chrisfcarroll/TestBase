@@ -42,20 +42,6 @@ public static partial class ObjectTooString
                                                  string expression="") => expression;
 
     /// <summary>
-    /// Stringify value generating an output that is similar to Visual Studio's Debug View
-    /// output style.
-    /// <code>
-    /// TypeName { A = 1, B = "A String", C = TypeName { D = 1.0 , E = 2025-06-01T14:00.1234456+01:00 } }
-    /// </code>
-    /// </summary>
-    /// <param name="value"></param>
-    /// <param name="options"></param>
-    /// <typeparam name="T"></typeparam>
-    /// <returns></returns>
-    static string ToStringified<T>(this T? value, TooStringOptions options)
-        => BuildReflectedString(value, new OptionsWithState(0, options));
-
-    /// <summary>
     /// Stringifies a value using the specified style.
     /// </summary>
     /// <param name="value">The value to stringify</param>
