@@ -8,9 +8,9 @@
     </PropertyGroup>
     
     <PropertyGroup>
-        <AssemblyVersion>0.5.1</AssemblyVersion>
-        <AssemblyFileVersion>0.5.1</AssemblyFileVersion>
-        <PackageVersion>0.5.1-preview</PackageVersion>
+        <AssemblyVersion>0.6</AssemblyVersion>
+        <AssemblyFileVersion>0.6</AssemblyFileVersion>
+        <PackageVersion>0.6</PackageVersion>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <Title>obj.TooString() — The stringifier for DebugView, Json, and CallerArgumentExpression, going places that serializers don't.</Title>
         <PackageDescription><![CDATA[TooString() can
@@ -51,6 +51,9 @@ new { A = "boo", B = new Complex(3,4) }.ToDebugViewString();
         <PackageReleaseNotes>
             ChangeLog
             ---------
+            0.6.0  TooString() defaults to CSharp.
+            &#x2007;&#x2008;&#x2007;&#x2008;&#x2007;&#x2008;&#x2007; Add TooStringOptions.WriteIndented property.
+            &#x2007;&#x2008;&#x2007;&#x2008;&#x2007;&#x2008;&#x2007; Delete redundant styles.
             0.5.1  ReflectionOptions.Json and JsonOptions.WriteIndented output matchs STJ indentation. | Added net10.0
             0.5.0  ReflectionOptions.MaxEnumerationLength renamed from MaxLength | Options.With(...) methods for easy configuration
             0.4.0  ReflectionOptions.MaxLength default = 9 | ReflectionOptions.ForJson and ReflectionOptions.ForDebugView instead of Default | More overloads.
