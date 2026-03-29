@@ -94,7 +94,7 @@ public class TooStringifiedDebugViewReturnsDebugView
         //var value = new KeyValuePair<int, string>(1, "boo");
         var value = new AStruct { A = "boo", B = new Complex(3, 4) };
 
-        TestContext.Progress.WriteLine(value.ToStringified());
+        TestContext.Progress.WriteLine(value.TooString());
         
         Assert.That(
             value.TooString(TooStringStyle.DebugView ), 
@@ -113,7 +113,7 @@ public class TooStringifiedDebugViewReturnsDebugView
                 five= new CompositeA{A = "A", B= new Complex(3,4)}
             };
         
-        TestContext.Progress.WriteLine(value.ToStringified());
+        TestContext.Progress.WriteLine(value.TooString());
         
         Assert.That(
             value.TooString(TooStringStyle.DebugView ), 

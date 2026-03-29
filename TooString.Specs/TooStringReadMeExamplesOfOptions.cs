@@ -22,7 +22,7 @@ public class TooStringReadMeExamplesOfOptions
     {
         var toJson = (one:1, two:"2").TooString( TooStringStyle.JsonSerializer );
         var stj = System.Text.Json.JsonSerializer.Serialize((one: 1,two: "2"));
-        var reflected = (one:1, two:"2").TooString( AdvancedOptions.ForJson);
+        var reflected = (one:1, two:"2").TooString( AdvancedOptions.Default);
 
         Assert.That(toJson, Is.EqualTo("""[1,"2"]"""));
         Assert.That(stj, Is.EqualTo("{}"));
@@ -34,17 +34,17 @@ public class TooStringReadMeExamplesOfOptions
     {
         var value = circular;
         var d1= value.ToStringified();
-        var d2 = value.TooString(AdvancedOptions.ForCSharp);
+        var d2 = value.TooString(TooStringStyle.CSharp);
         var d3 = value.TooString(maxDepth: 4,maxLength: 9,style: TooStringStyle.CSharp);
-        var d4= value.TooString(AdvancedOptions.ForCSharp with
+        var d4= value.TooString(
+                        TooStringStyle.CSharp,
+                        AdvancedOptions.Default with
                         {
                             DateTimeFormat = "yyyyMMdd HH:mm:ss",
                             TimeSpanFormat = @"d\.hh\:mm\:ss",
                         });
-        var d5 = value.TooString(TooStringOptions.WithAdvancedOptions(new(Style:TooStringStyle.CSharp)));
         Assert.That(d1, Is.EqualTo(d2));
         Assert.That(d1, Is.EqualTo(d3));
         Assert.That(d1, Is.EqualTo(d4));
-        Assert.That(d1, Is.EqualTo(d5));
     }
 }

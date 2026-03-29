@@ -57,10 +57,8 @@ public static partial class ObjectTooString
     public static string TooString<T>(this T value,
                                       TooStringStyle style = TooStringStyle.JsonSerializer,
                                       TooStringOptions? options = null)
-    {
-        options = (options??TooStringOptions.Default) with { StringifyAs = style };
-        return TooString(value,options);
-    }
+        =>
+        TooString(value,(options??TooStringOptions.Default) with { StringifyAs = style });
 
     /// <summary>
     /// Stringifies a value using one of CallerArgumentExpressionAttribute, Json serialization,
@@ -90,41 +88,17 @@ public static partial class ObjectTooString
                                       int maxDepth,
                                       int maxLength = 9,
                                       TooStringStyle style = TooStringStyle.JsonStringifier)
-    {
-        var options = TooStringOptions.Default with
-        {
-            StringifyAs = style,
-            AdvancedOptions = TooStringOptions.Default.AdvancedOptions
-                with
-                {
-                    Style = style,
-                    MaxDepth = maxDepth,
-                    MaxEnumerationLength = maxLength
-                }
-        };
-        return TooString(value,options);
-    }
-
-    /// <summary>
-    /// Stringifies a value using reflection, with the options specified.
-    /// </summary>
-    /// <param name="value">The value to stringify</param>
-    /// <param name="advancedOptions"></param>
-    /// <typeparam name="T"></typeparam>
-    /// <returns>
-    /// A string representation of <paramref name="value"/> built by recursively
-    /// reflecting the properties of <paramref name="value"/> using the
-    /// <paramref name="advancedOptions"/> chosen.
-    /// </returns>
-    public static string TooString<T>(this T value, AdvancedOptions advancedOptions)
-    {
-        var options = TooStringOptions.Default with
-        {
-            StringifyAs = advancedOptions.Style,
-            AdvancedOptions = advancedOptions
-        };
-        return TooString(value,options);
-    }
+        =>
+        TooString(value,TooStringOptions.Default with
+                        {
+                            StringifyAs = style,
+                            AdvancedOptions = AdvancedOptions.Default
+                                with
+                                {
+                                    MaxDepth = maxDepth,
+                                    MaxEnumerationLength = maxLength
+                                }
+                        });
 
     /// <summary>
     /// Stringifies a value using the configured options.
@@ -147,6 +121,41 @@ public static partial class ObjectTooString
             ? ToJson(value,tooStringOptions)
             : BuildReflectedString(value,new OptionsWithState(0,tooStringOptions));
     }
+
+
+    /// <summary>
+    /// Stringify <paramref name="value"/> using reflection.
+    /// <list type="bullet">
+    /// <item><see cref="TooStringStyle.JsonStringifier"/>: <c>{"A":1}</c></item>
+    /// <item><see cref="TooStringStyle.CSharp"/>: <c>/*TypeName*/ new { A = 1 }</c> (valid C# syntax)</item>
+    /// <item><see cref="TooStringStyle.DebugView"/>: <c>TypeName { A = 1 }</c></item>
+    /// </list>
+    /// </summary>
+    /// <param name="value"></param>
+    /// <param name="style"></param>
+    /// <param name="whichProperties"></param>
+    /// <param name="indentedJson">Only relevant if <paramref name="style"/>
+    ///     is <see cref="TooStringStyle.JsonStringifier"/></param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    public static string ToStringified<T>(this T? value,
+                                          TooStringStyle style = TooStringStyle.CSharp,
+                                          BindingFlags whichProperties = BindingFlags.Instance | BindingFlags.Public,
+                                          bool indentedJson = false)
+        => BuildReflectedString(
+            value,
+            new OptionsWithState(0,
+                                 TooStringOptions.Default with
+                                 {
+                                     StringifyAs = style,
+                                     JsonOptions = TooStringOptions.DefaultJsonSerializerOptions
+                                         .With(o=> o.WriteIndented=indentedJson),
+                                     AdvancedOptions = AdvancedOptions.Default with
+                                     {
+                                         WhichProperties = whichProperties,
+                                     },
+                                 })
+            );
 
     static string BuildReflectedString<T>(T? value, OptionsWithState options)
     {
@@ -368,41 +377,6 @@ public static partial class ObjectTooString
 
         return b.ToString();
     }
-
-    /// <summary>
-    /// Stringify <paramref name="value"/> using reflection.
-    /// <list type="bullet">
-    /// <item><see cref="TooStringStyle.JsonStringifier"/>: <c>{"A":1}</c></item>
-    /// <item><see cref="TooStringStyle.CSharp"/>: <c>/*TypeName*/ new { A = 1 }</c> (valid C# syntax)</item>
-    /// <item><see cref="TooStringStyle.DebugView"/>: <c>TypeName { A = 1 }</c></item>
-    /// </list>
-    /// </summary>
-    /// <param name="value"></param>
-    /// <param name="style"></param>
-    /// <param name="whichProperties"></param>
-    /// <param name="indentedJson">Only relevant if <paramref name="style"/>
-    ///     is <see cref="TooStringStyle.JsonStringifier"/></param>
-    /// <typeparam name="T"></typeparam>
-    /// <returns></returns>
-    public static string ToStringified<T>(this T? value,
-                                              TooStringStyle style = TooStringStyle.CSharp,
-                                              BindingFlags whichProperties =
-                                                  BindingFlags.Instance | BindingFlags.Public,
-                                              bool indentedJson = false)
-        => BuildReflectedString(
-            value,
-            new OptionsWithState(0,
-                TooStringOptions.Default with
-                {
-                    StringifyAs = style,
-                    JsonOptions = TooStringOptions.DefaultJsonOptions
-                        .With(o=> o.WriteIndented=indentedJson),
-                    AdvancedOptions = AdvancedOptions.ForCSharp with
-                    {
-                        WhichProperties = whichProperties,
-                    },
-                })
-        );
 
     static string ToJsonEscapedString(string s)
         => s.Replace("\\","\\\\")

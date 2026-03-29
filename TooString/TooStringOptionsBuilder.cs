@@ -158,7 +158,6 @@ public class TooStringOptionsBuilder
 
         var advancedOptions = new AdvancedOptions(
             WhichProperties: whichProperties,
-            Style: reflectionStyle,
             MaxDepth: maxDepth,
             MaxEnumerationLength: maxEnumerationLength,
             DateTimeFormat: dateTimeFormat,

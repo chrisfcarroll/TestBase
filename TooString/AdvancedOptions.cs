@@ -6,7 +6,6 @@ namespace TooString;
 /// Options for what to stringify when using reflection-based styles
 /// /// </summary>
 /// <param name="WhichProperties"><see cref="BindingFlags"/> to pick out the properties and fields to stringify</param>
-/// <param name="Style">Defaults to <see cref="TooStringStyle.JsonStringifier"/></param>
 /// <param name="MaxDepth">
 /// How deep into nested structures should we print before stopping the recursion?
 /// Defaults to 3, which may be plenty for logging and monitoring.</param>
@@ -24,7 +23,6 @@ namespace TooString;
 /// <param name="TimeSpanFormat">Defaults to "". The preferred <see cref="TimeSpan.ToString()"/> option</param>
 public record AdvancedOptions(
     BindingFlags WhichProperties = BindingFlags.Instance | BindingFlags.Public,
-    TooStringStyle Style = TooStringStyle.CSharp,
     int MaxDepth = 3,
     int MaxEnumerationLength = 9,
     string DateTimeFormat = "O",
@@ -46,44 +44,8 @@ public record AdvancedOptions(
     ///     string TimeSpanFormat = "c")
     /// </code>
     /// </summary>
-    public static readonly AdvancedOptions ForCSharp = new();
+    public static readonly AdvancedOptions Default = new();
 
-    /// <summary>
-    /// <code>
-    /// public record AdvancedOptions(
-    ///     BindingFlags WhichProperties = BindingFlags.Instance | BindingFlags.Public,
-    ///     TooStringStyle Style = TooStringStyle.Json,
-    ///     int MaxDepth = 3,
-    ///     int MaxLength = 9,
-    ///     string DateTimeFormat = "O",
-    ///     string DateOnlyFormat = "O",
-    ///     string TimeOnlyFormat = "HH:mm:ss",
-    ///     string TimeSpanFormat = "c")
-    /// </code>
-    /// </summary>
-    public static readonly AdvancedOptions ForJson = ForCSharp with
-    {
-        Style = TooStringStyle.JsonStringifier
-    };
-
-
-    /// <summary>
-    /// <code>
-    /// public record AdvancedOptions(
-    ///     BindingFlags WhichProperties = BindingFlags.Instance | BindingFlags.Public,
-    ///     TooStringStyle Style = TooStringStyle.DebugView,
-    ///     int MaxDepth = 3,
-    ///     int MaxLength = 9,
-    ///     string DateTimeFormat = "O",
-    ///     string DateOnlyFormat = "O",
-    ///     string TimeOnlyFormat = "HH:mm:ss",
-    ///     string TimeSpanFormat = "c")
-    /// </code>
-    /// </summary>
-    public static readonly AdvancedOptions ForDebugView = ForCSharp with
-    {
-        Style = TooStringStyle.DebugView
-    };
 
     /// <summary>
     /// Re-configured the current options by applying
