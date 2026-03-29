@@ -38,7 +38,7 @@ Example:
 var value = new { A = "boo", B = new Complex(3,4) };
 
 value.ToJson();       // Output Is System.Text.Json {"A":"boo","B":{"Real":3,"Imaginary":...}}
-value.TooString(),    //Output is { A = boo, B = <3; 4> } depending on .Net version.
+value.TooString(),    //Output is { A = "boo", B = <3; 4> } depending on .Net version.
 
 ( Math.Sqrt(4 * Math.PI / 3)  ).ToArgumentExpression() 
 // Output is the literal code: "Math.Sqrt(4 * Math.PI / 3)"
@@ -52,7 +52,7 @@ tuple.TooString(TooStringStyle.Json)
 // Output stringifies the tuple and the Complex number as arrays
 // [1,"2",[3,4]] 
 
-tuple.TooString()()
+tuple.TooString()
 tuple.TooString(TooStringStyle.CSharp)
 // Output is created by reflection and 
 // on Net6.0: {item1 = 1, item2 = "2", item3 = (3,4)}  

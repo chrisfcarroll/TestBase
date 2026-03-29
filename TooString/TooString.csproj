@@ -13,7 +13,7 @@
         <PackageVersion>0.6</PackageVersion>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <Title>value.TooString() — The stringifier for CSharp and Json output, going places that serializers don't.</Title>
-        <PackageDescription><![CDATA[TooString is a Stringifier that goes places serializers don't.
+        <PackageDescription><![CDATA[TooString is a Stringifier, not a serializer, for CSharp and Json output.
 
 TooString can
 - make a best effort to stringify objects that JsonSerializer won't, including
@@ -38,13 +38,31 @@ _TooString is not a serializer._
 
 Example:
 ```
-( Math.Sqrt(4 * Math.PI / 3)  ).TooString( TooStringHow.CallerArgument )
+var value = new { A = "boo", B = new Complex(3,4) };
+
+value.ToJson();       // Output Is System.Text.Json {"A":"boo","B":{"Real":3,"Imaginary":...}}
+value.TooString(),    //Output is { A = "boo", B = <3; 4> } depending on .Net version.
+
+( Math.Sqrt(4 * Math.PI / 3)  ).ToArgumentExpression()
 // Output is the literal code: "Math.Sqrt(4 * Math.PI / 3)"
 
-new { A = "boo", B = new Complex(3,4) }.ToJson();
-// Output is the System.Text.Json output:
-// {"A":"boo","B":{"Real":3,"Imaginary":4,"Magnitude":5,"Phase":0.9272952180016122}}
+var tuple = (one: 1, two: "2", three: new Complex(3,4));
 
+System.Text.Json.JsonSerializer.Serialize(tuple) // Output is "{}" because there
+                                                 // are no public properties on a tuple
+
+tuple.TooString(TooStringStyle.Json)
+// Output stringifies the tuple and the Complex number as arrays
+// [1,"2",[3,4]]
+
+tuple.TooString()
+tuple.TooString(TooStringStyle.CSharp)
+// Output is created by reflection and
+// on Net6.0: {item1 = 1, item2 = "2", item3 = (3,4)}
+// on Net8.0: {item1 = 1, item2 = "2", item3 = <3;4>}
+
+var type = value.GetType();
+System.Text.Json.JsonSerializer.Serialize(type) // Throws NotSupportedException
 var tuple = (one: 1, two: "2", three: new Complex(3,4));
 tuple.ToJson()
 // Output is not the System.Text.Json output, which would be empty "{}"
@@ -59,8 +77,8 @@ new { A = "boo", B = new Complex(3,4) }.ToDebugViewString();
             ChangeLog
             ---------
             0.6.0  TooString() defaults to CSharp.
-            &#x2007;&#x2008;&#x2007;&#x2008;&#x2007;&#x2008;&#x2007; Add TooStringOptions.WriteIndented property.
-            &#x2007;&#x2008;&#x2007;&#x2008;&#x2007;&#x2008;&#x2007; Delete redundant styles.
+            &#x2007;&#x2008;&#x2007;&#x2008;&#x2007;&#x2008; Add TooStringOptions.WriteIndented property.
+            &#x2007;&#x2008;&#x2007;&#x2008;&#x2007;&#x2008; Delete redundant styles.
             0.5.1  ReflectionOptions.Json and JsonOptions.WriteIndented output matchs STJ indentation. | Added net10.0
             0.5.0  ReflectionOptions.MaxEnumerationLength renamed from MaxLength | Options.With(...) methods for easy configuration
             0.4.0  ReflectionOptions.MaxLength default = 9 | ReflectionOptions.ForJson and ReflectionOptions.ForDebugView instead of Default | More overloads.
