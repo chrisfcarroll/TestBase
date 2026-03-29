@@ -8,7 +8,7 @@ TooString can
 
 TooString offers 3 extension method groups on Object:
 ```csharp
-value.ToStringified();
+value.TooString();
 value.ToJson();
 value.ToCallerArgumentString();
 ```
@@ -52,7 +52,7 @@ tuple.TooString(TooStringStyle.Json)
 // Output stringifies the tuple and the Complex number as arrays
 // [1,"2",[3,4]] 
 
-tuple.ToStringified()
+tuple.TooString()()
 tuple.TooString(TooStringStyle.CSharp)
 // Output is created by reflection and 
 // on Net6.0: {item1 = 1, item2 = "2", item3 = (3,4)}  

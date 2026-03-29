@@ -12,22 +12,29 @@
         <AssemblyFileVersion>0.6</AssemblyFileVersion>
         <PackageVersion>0.6</PackageVersion>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
-        <Title>obj.TooString() — The stringifier for DebugView, Json, and CallerArgumentExpression, going places that serializers don't.</Title>
-        <PackageDescription><![CDATA[TooString() can
-- make a best effort to stringify unserializable objects.
-- Output as Json, or C# Code, or ‘debug’ output
+        <Title>value.TooString() — The stringifier for CSharp and Json output, going places that serializers don't.</Title>
+        <PackageDescription><![CDATA[TooString is a Stringifier that goes places serializers don't.
+
+TooString can
+- make a best effort to stringify objects that JsonSerializer won't, including
+  System.Reflection classes and System.Type, or that JsonSerializer surprises
+  you with, such as ValueTuples.
+- Output as Json or C# object notation, or ‘debug view’ style, or [CallerArgumentExpression]
 
 TooString offers 3 extension method groups on Object:
 ```csharp
 value.TooString();
 value.ToJson();
-value.ToDebugViewString();
+value.ToCallerArgumentString();
 ```
+_TooString is not a serializer._
 
-TooString is not a serializer because it is not fail-fast. Instead, given something that is not
-serializable, it will return a best-effort string, rather than throw an exception.
+- A serializer should be fail-fast, but TooString is best-effort.
+- A Serializer should throw if it cannot deterministically serialize the input, but TooString
+  will attempt to return a partial or alternative representation of the input if the input
+  cannot be reliably serialized.
+- TooString offers both MaxDepth and MaxEnumerationLength options for abbreviated output.
 
-It is intended for test, diagnostic and monitoring output.
 
 Example:
 ```
@@ -71,7 +78,7 @@ new { A = "boo", B = new Complex(3,4) }.ToDebugViewString();
         <RepositoryUrl>https://github.com/chrisfcarroll/TestBase</RepositoryUrl>
         <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
         <IncludeSymbols>true</IncludeSymbols>
-        <PackageTags>test;unittest;tdd;fluent assertions;stringify;tostring;debug;reflection;CallerArgumentExpression</PackageTags>
+        <PackageTags>stringify;serialization;tostring;debug;reflection;CallerArgumentExpression</PackageTags>
         <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
     
