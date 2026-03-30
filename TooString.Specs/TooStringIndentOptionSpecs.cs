@@ -75,11 +75,14 @@ public class TooStringIndentOptionSpecs
 
         var actual = depth4.TooString(
             TooStringStyle.JsonStringifier,
-            TooStringOptions.ForJson(o=>
+            TooStringOptions.ForJson with
             {
-                o.WriteIndented = true;
-                o.MaxDepth = 99;
-            }));
+                JsonOptions = TooStringOptions.DefaultJsonSerializerOptions.With(js =>
+                {
+                    js.MaxDepth = 99;
+                    js.WriteIndented = true;
+                }),
+            });
 
         //D
         TestContext.Out.WriteLine(expected1);

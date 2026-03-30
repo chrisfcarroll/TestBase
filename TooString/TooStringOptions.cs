@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -7,37 +8,34 @@ namespace TooString;
 
 /// <summary>
 /// The complete set of stringification options.
+/// Use <c>new TooStringOptions { StringifyAs = ..., WriteIndented = true }</c>
+/// or start from a preset like <see cref="ForJson"/> or <see cref="ForCSharp"/>
+/// and customise with <see cref="With(TooStringOptions)"/> or
+/// <see cref="With(bool?,TooStringStyle?,BindingFlags?,int?,int?,string?,string?,string?,string?)"/>.
 /// </summary>
 public record TooStringOptions
 {
     /// <summary>
-    /// The complete set of stringification options.
+    /// Parameterless constructor with sensible defaults.
+    /// All properties are settable via init or set, so you can use
+    /// <c>new TooStringOptions { StringifyAs = TooStringStyle.JsonSerializer, WriteIndented = true }</c>
     /// </summary>
-    /// <param name="AdvancedOptions">
-    /// The options for reflection-based styles
-    /// (<see cref="TooStringStyle.DebugView"/>, <see cref="TooStringStyle.JsonStringifier"/>,
-    /// <see cref="TooStringStyle.CSharp"/>).
-    /// The <see cref="Default"/> value is <see cref="TooString.AdvancedOptions.Default"/>
-    /// </param>
-    /// <param name="JsonOptions">
-    /// The <see cref="Default"/> value is <see cref="DefaultJsonSerializerOptions"/>, which has
-    /// <code>
-    /// DefaultJsonOptions = new(JsonSerializerDefaults.General)
-    ///     {
-    ///         ReferenceHandler = ReferenceHandler.IgnoreCycles
-    ///     };
-    /// </code>
-    /// </param>
-    /// <param name="StringifyAs">
-    /// What styles — <see cref="TooStringStyle"/> — to try to stringify, and in what order.
-    /// The <see cref="Default"/> value is <see cref="TooStringStyle.CSharp"/>
-    /// </param>
+    public TooStringOptions()
+    {
+        AdvancedOptions = AdvancedOptions.Default;
+        jsonOptions = DefaultJsonSerializerOptions;
+        StringifyAs = TooStringStyle.CSharp;
+    }
+
+    /// <summary>
+    /// Constructor taking all top-level options.
+    /// </summary>
     public TooStringOptions(AdvancedOptions AdvancedOptions,
                             JsonSerializerOptions JsonOptions,
                             TooStringStyle StringifyAs)
     {
         this.AdvancedOptions = AdvancedOptions;
-        this.JsonOptions = JsonOptions;
+        this.jsonOptions = JsonOptions;
         this.StringifyAs = StringifyAs;
     }
 
@@ -53,17 +51,27 @@ public record TooStringOptions
             ReferenceHandler = ReferenceHandler.IgnoreCycles
         };
 
-    /// <summary><c>
-    /// new(
-    ///     AdvancedOptions:AdvancedOptions.ForDebugView,
-    ///     JsonSerializerOptions:DefaultJsonOptions,
-    ///     TooStringStyle.JsonSerializer,
-    /// </c>
+    /// <summary>
+    /// Default options: CSharp style, default AdvancedOptions, default JsonSerializerOptions.
     /// </summary>
     public static readonly TooStringOptions Default =
         new(AdvancedOptions.Default,
             DefaultJsonSerializerOptions,
             TooStringStyle.CSharp);
+
+    /// <summary>
+    /// Preset for JSON serialization via <see cref="System.Text.Json.JsonSerializer"/>.
+    /// Customise further with <c>.With(...)</c> or <c>with { ... }</c>.
+    /// </summary>
+    public static TooStringOptions ForJson
+        => Default with { StringifyAs = TooStringStyle.JsonSerializer };
+
+    /// <summary>
+    /// Preset for CSharp-style output via reflection.
+    /// Customise further with <c>.With(...)</c> or <c>with { ... }</c>.
+    /// </summary>
+    public static TooStringOptions ForCSharp
+        => Default with { StringifyAs = TooStringStyle.CSharp };
 
     /// <summary>
     /// Advanced options for reflected output.
@@ -118,79 +126,14 @@ public record TooStringOptions
         stringifyAs = StringifyAs;
     }
 
+    // ──────────────────────────────────────────────
+    //  With() overloads
+    // ──────────────────────────────────────────────
 
     /// <summary>
-    ///  Returns a <see cref="TooStringOptions"/> instance which will try json serialization
-    ///  as its first choice, using either <see cref="DefaultJsonSerializerOptions"/>, or
-    ///  <see cref="JsonOptions"/> as configured by <paramref name="jsDefaults"/> and
-    ///  <paramref name="reconfigure"/>.
-    ///  </summary>
-    ///  <param name="reconfigure">
-    ///  If not null, then return options with <see cref="JsonOptions"/> reconfigured
-    ///  from the default by applying <paramref name="reconfigure"/>.
-    ///  </param>
-    ///  <param name="jsDefaults">
-    ///  <see cref="JsonSerializerDefaults"/>
-    ///  </param>
-    /// <param name="serializeOrStringify">
-    /// Specify <see cref="TooStringStyle.JsonStringifier"/> to force using our
-    /// stringify without trying <see cref="System.Text.Json.JsonSerializer"/>
-    /// </param>
-    /// <returns>
-    ///  Default options for <see cref="TooStringStyle.JsonSerializer"/> with {JsonOptions modified by nonDefaults}
-    ///  </returns>
-    public static TooStringOptions ForJson(Action<JsonSerializerOptions>? reconfigure = null,
-                                           JsonSerializerDefaults jsDefaults = JsonSerializerDefaults.General,
-                                           TooStringStyle serializeOrStringify = TooStringStyle.JsonSerializer)
-    {
-        var js= new JsonSerializerOptions(jsDefaults)
-        {
-            ReferenceHandler = ReferenceHandler.IgnoreCycles,
-        };
-        reconfigure?.Invoke(js);
-        if (serializeOrStringify is not TooStringStyle.JsonSerializer)
-        {
-            serializeOrStringify = TooStringStyle.JsonSerializer;
-        }
-        return Default with
-        {
-            JsonOptions = js,
-            StringifyAs = serializeOrStringify,
-            AdvancedOptions = AdvancedOptions.Default
-        };
-    }
-
-    ///<summary>
-    /// Returns a <see cref="TooStringOptions"/> instance which will try reflection serialization
-    /// as its first choice, using either <see cref="Default"/> options, or else the
-    /// supplied <paramref name="advancedOptions"/>.
+    /// Returns a copy of the current options reconfigured by applying the
+    /// <paramref name="reconfigure"/> action.
     /// </summary>
-    /// <param name="advancedOptions">
-    /// If not null, then return options with <see cref="AdvancedOptions"/> set to
-    /// <paramref name="advancedOptions"/>.
-    /// </param>
-    /// <returns>
-    /// Default options as modified by <paramref name="advancedOptions"/>
-    /// </returns>
-    public static TooStringOptions WithAdvancedOptions(AdvancedOptions? advancedOptions = null)
-    {
-        return advancedOptions is null
-            ? Default
-            : Default with
-                      {
-                          AdvancedOptions = advancedOptions,
-                      };
-    }
-
-    /// <summary>
-    /// Re-configured the current options by applying
-    /// configuration action <paramref name="reconfigure"/>,
-    /// and return the re-configured options.
-    /// </summary>
-    /// <param name="reconfigure"></param>
-    /// <returns>
-    /// a copy of the current options reconfigured with <paramref name="reconfigure"/>
-    /// </returns>
     public TooStringOptions With(Action<TooStringOptions> reconfigure)
     {
         var mutated = this with { };
@@ -199,18 +142,76 @@ public record TooStringOptions
     }
 
     /// <summary>
+    /// Returns a copy of the current options with all values replaced by
+    /// those from <paramref name="other"/>.
+    /// Useful for programmatic composition of option sets.
+    /// </summary>
+    public TooStringOptions With(TooStringOptions other)
+        => this with
+        {
+            AdvancedOptions = other.AdvancedOptions,
+            JsonOptions = other.JsonOptions,
+            StringifyAs = other.StringifyAs,
+        };
+
+    /// <summary>
+    /// Returns a copy of the current options with
+    /// <see cref="AdvancedOptions"/> replaced by <paramref name="advancedOptions"/>.
+    /// </summary>
+    public TooStringOptions With(AdvancedOptions advancedOptions)
+        => this with { AdvancedOptions = advancedOptions };
+
+    /// <summary>
+    /// Returns a copy of the current options with any supplied parameters overridden.
+    /// Parameters left as <c>null</c> retain their current value.
+    /// </summary>
+    public TooStringOptions With(
+        bool? writeIndented = null,
+        TooStringStyle? stringifyAs = null,
+        BindingFlags? whichProperties = null,
+        int? maxDepth = null,
+        int? maxEnumerationLength = null,
+        string? dateTimeFormat = null,
+        string? dateOnlyFormat = null,
+        string? timeOnlyFormat = null,
+        string? timeSpanFormat = null)
+    {
+        var advanced = AdvancedOptions with
+        {
+            WhichProperties = whichProperties ?? AdvancedOptions.WhichProperties,
+            MaxDepth = maxDepth ?? AdvancedOptions.MaxDepth,
+            MaxEnumerationLength = maxEnumerationLength ?? AdvancedOptions.MaxEnumerationLength,
+            DateTimeFormat = dateTimeFormat ?? AdvancedOptions.DateTimeFormat,
+            DateOnlyFormat = dateOnlyFormat ?? AdvancedOptions.DateOnlyFormat,
+            TimeOnlyFormat = timeOnlyFormat ?? AdvancedOptions.TimeOnlyFormat,
+            TimeSpanFormat = timeSpanFormat ?? AdvancedOptions.TimeSpanFormat,
+        };
+
+        var result = this with
+        {
+            AdvancedOptions = advanced,
+            StringifyAs = stringifyAs ?? StringifyAs,
+        };
+
+        if (writeIndented.HasValue)
+            result.WriteIndented = writeIndented.Value;
+
+        return result;
+    }
+
+    // ──────────────────────────────────────────────
+    //  Implicit operators
+    // ──────────────────────────────────────────────
+
+    /// <summary>
     /// Extract the <see cref="JsonOptions"/> out of <paramref name="o"/>
     /// </summary>
-    /// <param name="o"></param>
-    /// <returns><c>o.JsonOptions</c></returns>
     public static implicit operator JsonSerializerOptions(TooStringOptions o)
         => o.JsonOptions;
 
     /// <summary>
     /// Create <see cref="TooStringOptions"/> from <paramref name="jsonSerializerOptions"/>
     /// </summary>
-    /// <param name="jsonSerializerOptions"></param>
-    /// <returns></returns>
     public static implicit operator TooStringOptions(JsonSerializerOptions jsonSerializerOptions)
         => new(AdvancedOptions.Default,
                jsonSerializerOptions,
@@ -219,8 +220,6 @@ public record TooStringOptions
     /// <summary>
     /// Create <see cref="TooStringOptions"/> from <paramref name="advancedOptions"/>
     /// </summary>
-    /// <param name="advancedOptions"></param>
-    /// <returns></returns>
     public static implicit operator TooStringOptions(AdvancedOptions advancedOptions)
         => new(advancedOptions,DefaultJsonSerializerOptions,TooStringStyle.JsonSerializer);
 

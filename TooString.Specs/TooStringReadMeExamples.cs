@@ -68,7 +68,7 @@ public class TooStringReadMeExamples
         Assert.That(actual3, Is.EqualTo("(1, \"2\", (3, 4))"));
         #endif
 
-        var options = TooStringOptions.ForJson() with
+        var options = TooStringOptions.ForJson with
         {
             JsonOptions = new JsonSerializerOptions { IncludeFields = true }
         };

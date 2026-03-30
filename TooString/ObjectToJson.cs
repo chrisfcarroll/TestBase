@@ -50,7 +50,7 @@ public static partial class ObjectTooString
     /// <returns></returns>
     public static string ToJson<T>(this T? value, bool writeIndented = false)
         => ToJson(value,
-                  TooStringOptions.ForJson(o=>o.WriteIndented=writeIndented));
+                  TooStringOptions.ForJson.With(o=>o.WriteIndented=writeIndented));
 
 
     /// <summary>
