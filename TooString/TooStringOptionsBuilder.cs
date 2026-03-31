@@ -149,16 +149,17 @@ public class TooStringOptionsBuilder
         };
         if (writeIndented) jsonOpts = jsonOpts.With(o => o.WriteIndented = true);
 
-        var advancedOptions = new AdvancedOptions(
-            WhichProperties: whichProperties,
-            MaxDepth: maxDepth,
-            MaxEnumerationLength: maxEnumerationLength,
-            DateTimeFormat: dateTimeFormat,
-            DateOnlyFormat: dateOnlyFormat,
-            TimeOnlyFormat: timeOnlyFormat,
-            TimeSpanFormat: timeSpanFormat);
-
-        var stringifyAs = style;
-        return new TooStringOptions(advancedOptions, jsonOpts, stringifyAs);
+        return new TooStringOptions
+        {
+            JsonOptions = jsonOpts,
+            StringifyAs = style,
+            WhichProperties = whichProperties,
+            MaxDepth = maxDepth,
+            MaxEnumerationLength = maxEnumerationLength,
+            DateTimeFormat = dateTimeFormat,
+            DateOnlyFormat = dateOnlyFormat,
+            TimeOnlyFormat = timeOnlyFormat,
+            TimeSpanFormat = timeSpanFormat,
+        };
     }
 }

@@ -28,7 +28,7 @@ public static partial class ObjectTooString
            )
         {
             options = options with {StringifyAs = TooStringStyle.JsonStringifier};
-            return BuildReflectedString(value, new OptionsWithState(0, options));
+            return BuildReflectedString(value, OptionsWithState.From(0, options));
         }
         else try
             {
@@ -37,7 +37,7 @@ public static partial class ObjectTooString
             catch
             {
                 options = options with {StringifyAs = TooStringStyle.JsonStringifier};
-                return BuildReflectedString(value, new OptionsWithState(0, options));;
+                return BuildReflectedString(value, OptionsWithState.From(0, options));;
             }
     }
 

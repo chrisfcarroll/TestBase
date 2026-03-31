@@ -8,7 +8,7 @@ namespace TooString;
 
 /// <summary>
 /// The complete set of stringification options.
-/// Use <c>new TooStringOptions { StringifyAs = ..., WriteIndented = true }</c>
+/// Use <c>new TooStringOptions { StringifyAs = ..., WriteIndented = true, MaxDepth = 5 }</c>
 /// or start from a preset like <see cref="ForJson"/> or <see cref="ForCSharp"/>
 /// and customise with <see cref="With(TooStringOptions)"/> or
 /// <see cref="With(bool?,TooStringStyle?,BindingFlags?,int?,int?,string?,string?,string?,string?)"/>.
@@ -18,25 +18,19 @@ public record TooStringOptions
     /// <summary>
     /// Parameterless constructor with sensible defaults.
     /// All properties are settable via init or set, so you can use
-    /// <c>new TooStringOptions { StringifyAs = TooStringStyle.JsonSerializer, WriteIndented = true }</c>
+    /// <c>new TooStringOptions { StringifyAs = TooStringStyle.JsonSerializer, MaxDepth = 5 }</c>
     /// </summary>
     public TooStringOptions()
     {
-        AdvancedOptions = AdvancedOptions.Default;
         jsonOptions = DefaultJsonSerializerOptions;
         StringifyAs = TooStringStyle.CSharp;
-    }
-
-    /// <summary>
-    /// Constructor taking all top-level options.
-    /// </summary>
-    public TooStringOptions(AdvancedOptions AdvancedOptions,
-                            JsonSerializerOptions JsonOptions,
-                            TooStringStyle StringifyAs)
-    {
-        this.AdvancedOptions = AdvancedOptions;
-        this.jsonOptions = JsonOptions;
-        this.StringifyAs = StringifyAs;
+        WhichProperties = BindingFlags.Instance | BindingFlags.Public;
+        MaxDepth = 3;
+        MaxEnumerationLength = 9;
+        DateTimeFormat = "O";
+        DateOnlyFormat = "O";
+        TimeOnlyFormat = "HH:mm:ss";
+        TimeSpanFormat = "c";
     }
 
     /// <summary><c>
@@ -52,12 +46,9 @@ public record TooStringOptions
         };
 
     /// <summary>
-    /// Default options: CSharp style, default AdvancedOptions, default JsonSerializerOptions.
+    /// Default options: CSharp style, default JsonSerializerOptions, MaxDepth 3, MaxEnumerationLength 9.
     /// </summary>
-    public static readonly TooStringOptions Default =
-        new(AdvancedOptions.Default,
-            DefaultJsonSerializerOptions,
-            TooStringStyle.CSharp);
+    public static readonly TooStringOptions Default = new();
 
     /// <summary>
     /// Preset for JSON serialization via <see cref="System.Text.Json.JsonSerializer"/>.
@@ -73,11 +64,14 @@ public record TooStringOptions
     public static TooStringOptions ForCSharp
         => Default with { StringifyAs = TooStringStyle.CSharp };
 
+    // ──────────────────────────────────────────────
+    //  Properties
+    // ──────────────────────────────────────────────
+
     /// <summary>
-    /// Advanced options for reflected output.
-    /// The <see cref="Default"/> value is <see cref="TooString.AdvancedOptions.Default"/>
+    /// The <see cref="TooStringStyle"/> to stringify to.
     /// </summary>
-    public AdvancedOptions AdvancedOptions { get; init; }
+    public TooStringStyle StringifyAs { get; init; }
 
     /// <summary>
     /// Gets or sets whether output should use indents and newlines.
@@ -110,21 +104,48 @@ public record TooStringOptions
     }
 
     /// <summary>
-    /// The <see cref="TooStringStyle"/> to stringify to.
+    /// <see cref="BindingFlags"/> to pick out the properties and fields to stringify via reflection.
+    /// Defaults to <c>BindingFlags.Instance | BindingFlags.Public</c>.
     /// </summary>
-    public TooStringStyle StringifyAs { get; init; }
+    public BindingFlags WhichProperties { get; init; }
 
-    /// <param name="advancedOptions"></param>
-    /// <param name="jsonOptions"></param>
-    /// <param name="stringifyAs"></param>
-    public void Deconstruct(out AdvancedOptions advancedOptions,
-                            out JsonSerializerOptions jsonOptions,
-                            out TooStringStyle stringifyAs)
-    {
-        advancedOptions = AdvancedOptions;
-        jsonOptions = JsonOptions;
-        stringifyAs = StringifyAs;
-    }
+    /// <summary>
+    /// How deep into nested structures should we print before stopping the recursion?
+    /// Defaults to 3.
+    /// </summary>
+    public int MaxDepth { get; init; }
+
+    /// <summary>
+    /// How many elements of an Array or other IEnumerable should we print before stopping the loop?
+    /// Defaults to 9.
+    /// <para><b>NB MaxEnumerationLength = 0 does not mean carry on for ever</b>.
+    /// Use MaxEnumerationLength = int.MaxValue for that.
+    /// MaxEnumerationLength = 0 means don't print any elements of an enumerable.</para>
+    /// <para><b>Negative MaxEnumerationLength</b> will start at the positive length given,
+    /// then count down as depth is descended. For instance, MaxEnumerationLength = -2
+    /// will use a length of 2 at depth 1, but of zero at depth 3.</para>
+    /// </summary>
+    public int MaxEnumerationLength { get; init; }
+
+    /// <summary>
+    /// The preferred <see cref="DateTime.ToString()"/> format. Defaults to "O" (ISO 8601).
+    /// </summary>
+    public string DateTimeFormat { get; init; }
+
+    /// <summary>
+    /// The preferred <see cref="DateOnly.ToString()"/> format. Defaults to "O".
+    /// </summary>
+    public string DateOnlyFormat { get; init; }
+
+    /// <summary>
+    /// The preferred <see cref="TimeOnly.ToString()"/> format. Defaults to "HH:mm:ss".
+    /// </summary>
+    public string TimeOnlyFormat { get; init; }
+
+    /// <summary>
+    /// The preferred <see cref="TimeSpan.ToString()"/> format. Defaults to "c".
+    /// </summary>
+    public string TimeSpanFormat { get; init; }
 
     // ──────────────────────────────────────────────
     //  With() overloads
@@ -149,17 +170,16 @@ public record TooStringOptions
     public TooStringOptions With(TooStringOptions other)
         => this with
         {
-            AdvancedOptions = other.AdvancedOptions,
             JsonOptions = other.JsonOptions,
             StringifyAs = other.StringifyAs,
+            WhichProperties = other.WhichProperties,
+            MaxDepth = other.MaxDepth,
+            MaxEnumerationLength = other.MaxEnumerationLength,
+            DateTimeFormat = other.DateTimeFormat,
+            DateOnlyFormat = other.DateOnlyFormat,
+            TimeOnlyFormat = other.TimeOnlyFormat,
+            TimeSpanFormat = other.TimeSpanFormat,
         };
-
-    /// <summary>
-    /// Returns a copy of the current options with
-    /// <see cref="AdvancedOptions"/> replaced by <paramref name="advancedOptions"/>.
-    /// </summary>
-    public TooStringOptions With(AdvancedOptions advancedOptions)
-        => this with { AdvancedOptions = advancedOptions };
 
     /// <summary>
     /// Returns a copy of the current options with any supplied parameters overridden.
@@ -176,21 +196,16 @@ public record TooStringOptions
         string? timeOnlyFormat = null,
         string? timeSpanFormat = null)
     {
-        var advanced = AdvancedOptions with
-        {
-            WhichProperties = whichProperties ?? AdvancedOptions.WhichProperties,
-            MaxDepth = maxDepth ?? AdvancedOptions.MaxDepth,
-            MaxEnumerationLength = maxEnumerationLength ?? AdvancedOptions.MaxEnumerationLength,
-            DateTimeFormat = dateTimeFormat ?? AdvancedOptions.DateTimeFormat,
-            DateOnlyFormat = dateOnlyFormat ?? AdvancedOptions.DateOnlyFormat,
-            TimeOnlyFormat = timeOnlyFormat ?? AdvancedOptions.TimeOnlyFormat,
-            TimeSpanFormat = timeSpanFormat ?? AdvancedOptions.TimeSpanFormat,
-        };
-
         var result = this with
         {
-            AdvancedOptions = advanced,
             StringifyAs = stringifyAs ?? StringifyAs,
+            WhichProperties = whichProperties ?? WhichProperties,
+            MaxDepth = maxDepth ?? MaxDepth,
+            MaxEnumerationLength = maxEnumerationLength ?? MaxEnumerationLength,
+            DateTimeFormat = dateTimeFormat ?? DateTimeFormat,
+            DateOnlyFormat = dateOnlyFormat ?? DateOnlyFormat,
+            TimeOnlyFormat = timeOnlyFormat ?? TimeOnlyFormat,
+            TimeSpanFormat = timeSpanFormat ?? TimeSpanFormat,
         };
 
         if (writeIndented.HasValue)
@@ -213,24 +228,25 @@ public record TooStringOptions
     /// Create <see cref="TooStringOptions"/> from <paramref name="jsonSerializerOptions"/>
     /// </summary>
     public static implicit operator TooStringOptions(JsonSerializerOptions jsonSerializerOptions)
-        => new(AdvancedOptions.Default,
-               jsonSerializerOptions,
-               TooStringStyle.JsonSerializer);
-
-    /// <summary>
-    /// Create <see cref="TooStringOptions"/> from <paramref name="advancedOptions"/>
-    /// </summary>
-    public static implicit operator TooStringOptions(AdvancedOptions advancedOptions)
-        => new(advancedOptions,DefaultJsonSerializerOptions,TooStringStyle.JsonSerializer);
-
+        => new() { JsonOptions = jsonSerializerOptions, StringifyAs = TooStringStyle.JsonSerializer };
 }
 
-internal record OptionsWithState(int Depth,
-                                 AdvancedOptions AdvancedOptions,
-                                 JsonSerializerOptions JsonOptions,
-                                 TooStringStyle StringifyAs)
-                : TooStringOptions(AdvancedOptions, JsonOptions, StringifyAs)
+internal record OptionsWithState : TooStringOptions
 {
-    public OptionsWithState(int depth, TooStringOptions @from)
-           : this(depth, from.AdvancedOptions,from.JsonOptions, from.StringifyAs) { }
+    public int Depth { get; init; }
+
+    internal static OptionsWithState From(int depth, TooStringOptions from)
+        => new()
+        {
+            Depth = depth,
+            JsonOptions = from.JsonOptions,
+            StringifyAs = from.StringifyAs,
+            WhichProperties = from.WhichProperties,
+            MaxDepth = from.MaxDepth,
+            MaxEnumerationLength = from.MaxEnumerationLength,
+            DateTimeFormat = from.DateTimeFormat,
+            DateOnlyFormat = from.DateOnlyFormat,
+            TimeOnlyFormat = from.TimeOnlyFormat,
+            TimeSpanFormat = from.TimeSpanFormat,
+        };
 }

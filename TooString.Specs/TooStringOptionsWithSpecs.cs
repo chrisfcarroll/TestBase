@@ -14,7 +14,10 @@ public class TooStringOptionsWithSpecs
 
         Assert.That(options.StringifyAs, Is.EqualTo(TooStringStyle.CSharp));
         Assert.That(options.WriteIndented, Is.False);
-        Assert.That(options.AdvancedOptions, Is.EqualTo(AdvancedOptions.Default));
+        Assert.That(options.MaxDepth, Is.EqualTo(3));
+        Assert.That(options.MaxEnumerationLength, Is.EqualTo(9));
+        Assert.That(options.WhichProperties, Is.EqualTo(BindingFlags.Instance | BindingFlags.Public));
+        Assert.That(options.DateTimeFormat, Is.EqualTo("O"));
         Assert.That(options.JsonOptions.ReferenceHandler, Is.EqualTo(ReferenceHandler.IgnoreCycles));
     }
 
@@ -25,12 +28,12 @@ public class TooStringOptionsWithSpecs
         {
             StringifyAs = TooStringStyle.JsonSerializer,
             WriteIndented = true,
-            AdvancedOptions = new AdvancedOptions(MaxDepth: 5),
+            MaxDepth = 5,
         };
 
         Assert.That(options.StringifyAs, Is.EqualTo(TooStringStyle.JsonSerializer));
         Assert.That(options.WriteIndented, Is.True);
-        Assert.That(options.AdvancedOptions.MaxDepth, Is.EqualTo(5));
+        Assert.That(options.MaxDepth, Is.EqualTo(5));
     }
 
     [Test]
@@ -39,7 +42,7 @@ public class TooStringOptionsWithSpecs
         var options = TooStringOptions.ForJson;
 
         Assert.That(options.StringifyAs, Is.EqualTo(TooStringStyle.JsonSerializer));
-        Assert.That(options.AdvancedOptions, Is.EqualTo(AdvancedOptions.Default));
+        Assert.That(options.MaxDepth, Is.EqualTo(3));
     }
 
     [Test]
@@ -48,7 +51,7 @@ public class TooStringOptionsWithSpecs
         var options = TooStringOptions.ForCSharp;
 
         Assert.That(options.StringifyAs, Is.EqualTo(TooStringStyle.CSharp));
-        Assert.That(options.AdvancedOptions, Is.EqualTo(AdvancedOptions.Default));
+        Assert.That(options.MaxDepth, Is.EqualTo(3));
     }
 
     [Test]
@@ -63,13 +66,10 @@ public class TooStringOptionsWithSpecs
     [Test]
     public void ForCSharp_CanBeCustomisedWithRecordWith()
     {
-        var options = TooStringOptions.ForCSharp with
-        {
-            AdvancedOptions = new AdvancedOptions(MaxDepth: 7)
-        };
+        var options = TooStringOptions.ForCSharp with { MaxDepth = 7 };
 
         Assert.That(options.StringifyAs, Is.EqualTo(TooStringStyle.CSharp));
-        Assert.That(options.AdvancedOptions.MaxDepth, Is.EqualTo(7));
+        Assert.That(options.MaxDepth, Is.EqualTo(7));
     }
 
     // ──────────────────────────────────────────────
@@ -98,39 +98,13 @@ public class TooStringOptionsWithSpecs
         var overrides = new TooStringOptions
         {
             StringifyAs = TooStringStyle.DebugView,
-            AdvancedOptions = new AdvancedOptions(MaxDepth: 10),
+            MaxDepth = 10,
         };
 
         var merged = baseOptions.With(overrides);
 
         Assert.That(merged.StringifyAs, Is.EqualTo(TooStringStyle.DebugView));
-        Assert.That(merged.AdvancedOptions.MaxDepth, Is.EqualTo(10));
-    }
-
-    // ──────────────────────────────────────────────
-    //  With(AdvancedOptions)
-    // ──────────────────────────────────────────────
-
-    [Test]
-    public void WithAdvancedOptions_ReplacesAdvancedOptions()
-    {
-        var options = TooStringOptions.ForJson
-            .With(new AdvancedOptions(MaxDepth: 2, MaxEnumerationLength: 5));
-
-        Assert.That(options.StringifyAs, Is.EqualTo(TooStringStyle.JsonSerializer));
-        Assert.That(options.AdvancedOptions.MaxDepth, Is.EqualTo(2));
-        Assert.That(options.AdvancedOptions.MaxEnumerationLength, Is.EqualTo(5));
-    }
-
-    [Test]
-    public void WithAdvancedOptions_PreservesOtherProperties()
-    {
-        var baseOptions = TooStringOptions.ForJson.With(o => o.WriteIndented = true);
-
-        var modified = baseOptions.With(new AdvancedOptions(MaxDepth: 1));
-
-        Assert.That(modified.WriteIndented, Is.True, "WriteIndented should be preserved");
-        Assert.That(modified.StringifyAs, Is.EqualTo(TooStringStyle.JsonSerializer));
+        Assert.That(merged.MaxDepth, Is.EqualTo(10));
     }
 
     // ──────────────────────────────────────────────
@@ -144,12 +118,12 @@ public class TooStringOptionsWithSpecs
 
         var modified = original.With(maxDepth: 10, writeIndented: true);
 
-        Assert.That(modified.AdvancedOptions.MaxDepth, Is.EqualTo(10));
+        Assert.That(modified.MaxDepth, Is.EqualTo(10));
         Assert.That(modified.WriteIndented, Is.True);
         // Unspecified values should remain at defaults
         Assert.That(modified.StringifyAs, Is.EqualTo(TooStringStyle.CSharp));
-        Assert.That(modified.AdvancedOptions.MaxEnumerationLength, Is.EqualTo(9));
-        Assert.That(modified.AdvancedOptions.DateTimeFormat, Is.EqualTo("O"));
+        Assert.That(modified.MaxEnumerationLength, Is.EqualTo(9));
+        Assert.That(modified.DateTimeFormat, Is.EqualTo("O"));
     }
 
     [Test]
@@ -161,7 +135,7 @@ public class TooStringOptionsWithSpecs
     }
 
     [Test]
-    public void WithIndividualParams_CanOverrideAllAdvancedFields()
+    public void WithIndividualParams_CanOverrideAllFields()
     {
         var modified = TooStringOptions.Default.With(
             whichProperties: BindingFlags.NonPublic | BindingFlags.Instance,
@@ -172,14 +146,14 @@ public class TooStringOptionsWithSpecs
             timeOnlyFormat: "HH:mm",
             timeSpanFormat: @"d\.hh\:mm");
 
-        Assert.That(modified.AdvancedOptions.WhichProperties,
+        Assert.That(modified.WhichProperties,
                     Is.EqualTo(BindingFlags.NonPublic | BindingFlags.Instance));
-        Assert.That(modified.AdvancedOptions.MaxDepth, Is.EqualTo(7));
-        Assert.That(modified.AdvancedOptions.MaxEnumerationLength, Is.EqualTo(20));
-        Assert.That(modified.AdvancedOptions.DateTimeFormat, Is.EqualTo("yyyy-MM-dd"));
-        Assert.That(modified.AdvancedOptions.DateOnlyFormat, Is.EqualTo("yyyy-MM-dd"));
-        Assert.That(modified.AdvancedOptions.TimeOnlyFormat, Is.EqualTo("HH:mm"));
-        Assert.That(modified.AdvancedOptions.TimeSpanFormat, Is.EqualTo(@"d\.hh\:mm"));
+        Assert.That(modified.MaxDepth, Is.EqualTo(7));
+        Assert.That(modified.MaxEnumerationLength, Is.EqualTo(20));
+        Assert.That(modified.DateTimeFormat, Is.EqualTo("yyyy-MM-dd"));
+        Assert.That(modified.DateOnlyFormat, Is.EqualTo("yyyy-MM-dd"));
+        Assert.That(modified.TimeOnlyFormat, Is.EqualTo("HH:mm"));
+        Assert.That(modified.TimeSpanFormat, Is.EqualTo(@"d\.hh\:mm"));
     }
 
     [Test]
@@ -191,8 +165,8 @@ public class TooStringOptionsWithSpecs
 
         Assert.That(modified.WriteIndented, Is.True, "WriteIndented from base should be preserved");
         Assert.That(modified.StringifyAs, Is.EqualTo(TooStringStyle.JsonSerializer));
-        Assert.That(modified.AdvancedOptions.MaxDepth, Is.EqualTo(1));
-        Assert.That(modified.AdvancedOptions.MaxEnumerationLength, Is.EqualTo(9),
+        Assert.That(modified.MaxDepth, Is.EqualTo(1));
+        Assert.That(modified.MaxEnumerationLength, Is.EqualTo(9),
                     "Unspecified MaxEnumerationLength should be preserved from base");
     }
 
@@ -203,7 +177,7 @@ public class TooStringOptionsWithSpecs
         var copy = original.With();
 
         Assert.That(copy.StringifyAs, Is.EqualTo(original.StringifyAs));
-        Assert.That(copy.AdvancedOptions, Is.EqualTo(original.AdvancedOptions));
+        Assert.That(copy.MaxDepth, Is.EqualTo(original.MaxDepth));
     }
 
     // ──────────────────────────────────────────────
@@ -214,14 +188,14 @@ public class TooStringOptionsWithSpecs
     public void WithMethods_CanBeChained()
     {
         var options = TooStringOptions.ForJson
-            .With(new AdvancedOptions(MaxDepth: 5))
+            .With(maxDepth: 5)
             .With(o => o.WriteIndented = true)
             .With(maxEnumerationLength: 20);
 
         Assert.That(options.StringifyAs, Is.EqualTo(TooStringStyle.JsonSerializer));
-        Assert.That(options.AdvancedOptions.MaxDepth, Is.EqualTo(5));
+        Assert.That(options.MaxDepth, Is.EqualTo(5));
         Assert.That(options.WriteIndented, Is.True);
-        Assert.That(options.AdvancedOptions.MaxEnumerationLength, Is.EqualTo(20));
+        Assert.That(options.MaxEnumerationLength, Is.EqualTo(20));
     }
 
     // ──────────────────────────────────────────────
@@ -261,6 +235,6 @@ public class TooStringOptionsWithSpecs
         Assert.That(d5, Does.Contain("A"));
         // The With(maxDepth:) parameter should actually set it
         var opts = TooStringOptions.Default.With(maxDepth: 7);
-        Assert.That(opts.AdvancedOptions.MaxDepth, Is.EqualTo(7));
+        Assert.That(opts.MaxDepth, Is.EqualTo(7));
     }
 }

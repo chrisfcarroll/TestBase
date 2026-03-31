@@ -99,12 +99,8 @@ public static partial class ObjectTooString
         TooString(value,TooStringOptions.Default with
                         {
                             StringifyAs = style,
-                            AdvancedOptions = AdvancedOptions.Default
-                                with
-                                {
-                                    MaxDepth = maxDepth,
-                                    MaxEnumerationLength = maxLength
-                                }
+                            MaxDepth = maxDepth,
+                            MaxEnumerationLength = maxLength
                         });
 
     /// <summary>
@@ -125,14 +121,14 @@ public static partial class ObjectTooString
     public static string TooString<T>(this T value, TooStringOptions tooStringOptions)
     {
         return tooStringOptions.StringifyAs is TooStringStyle.JsonSerializer
-               // to ponder && tooStringOptions.AdvancedOptions == AdvancedOptions.MatchingStj
+               // to ponder: && tooStringOptions matches STJ defaults
             ? ToJson(value,tooStringOptions)
-            : BuildReflectedString(value,new OptionsWithState(0,tooStringOptions));
+            : BuildReflectedString(value,OptionsWithState.From(0,tooStringOptions));
     }
 
     static string BuildReflectedString<T>(T? value, OptionsWithState options)
     {
-        if (options.Depth >= options.AdvancedOptions.MaxDepth)
+        if (options.Depth >= options.MaxDepth)
         {
             return ScalarishToShortReflectedString(value,options);
         }
@@ -209,7 +205,7 @@ public static partial class ObjectTooString
             {
                 var props = value.GetType()
                     .GetTypeInfo()
-                    .GetProperties(options.AdvancedOptions.WhichProperties)
+                    .GetProperties(options.WhichProperties)
                     .Where(p => p.CanRead).ToList();
                 debugdepth = options.Depth;
                 var contents = props
@@ -259,7 +255,7 @@ public static partial class ObjectTooString
             try
             {
                 if (IsScalarish(p.PropertyType)
-                    || options.Depth > options.AdvancedOptions.MaxDepth)
+                    || options.Depth > options.MaxDepth)
                     return ScalarishToShortReflectedString(p.GetValue(value), options);
                 else if(p.GetIndexParameters().Any())
                     return qname(p.PropertyType.Name);
@@ -310,11 +306,11 @@ public static partial class ObjectTooString
     }
     static string DelimitEnumerable<T>(T value, OptionsWithState options) where T : IEnumerable
     {
-        if (options.Depth >= options.AdvancedOptions.MaxDepth)
+        if (options.Depth >= options.MaxDepth)
         {
             return ScalarishToShortReflectedString(value,options);
         }
-        if (options.Depth + 1 == options.AdvancedOptions.MaxDepth
+        if (options.Depth + 1 == options.MaxDepth
             &&
             options.StringifyAs is TooStringStyle.DebugView or TooStringStyle.CSharp
             &&
@@ -324,7 +320,7 @@ public static partial class ObjectTooString
             //then better to halt at this level, where we can show more metadata i.e. Length
             return ScalarishToShortReflectedString(value,options);
         }
-        var maxLength = options.AdvancedOptions.MaxEnumerationLength;
+        var maxLength = options.MaxEnumerationLength;
         if (maxLength < 0) maxLength = - maxLength - options.Depth;
 
         if(maxLength == 0) return ScalarishToShortReflectedString(value,options);
@@ -411,13 +407,13 @@ public static partial class ObjectTooString
             if (value is ValueType val && IsMultiDimensionalNumeric(val.GetType()))
                 return numericToArrayIfJson(val);
             if (value is DateTime dateTime)
-                return qstr(dateTime.ToString(options.AdvancedOptions.DateTimeFormat));
+                return qstr(dateTime.ToString(options.DateTimeFormat));
             if (value is DateOnly date)
-                return qstr(date.ToString(options.AdvancedOptions.DateOnlyFormat));
+                return qstr(date.ToString(options.DateOnlyFormat));
             if (value is TimeOnly time)
-                return qstr(time.ToString(options.AdvancedOptions.TimeOnlyFormat));
+                return qstr(time.ToString(options.TimeOnlyFormat));
             if (value is TimeSpan span)
-                return qstr(span.ToString(options.AdvancedOptions.TimeSpanFormat));
+                return qstr(span.ToString(options.TimeSpanFormat));
             if(value is Type type) return qstr( type.FullName??$"{type.Namespace}.{type.Name}" );
 
             if (value.GetType().IsAssignableTo(typeof(IEnumerable)))
