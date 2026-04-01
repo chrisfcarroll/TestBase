@@ -1,10 +1,10 @@
 TooString is a Stringifier that goes places serializers don't.
 
 TooString can
-- make a best effort to stringify objects that JsonSerializer won't, including 
-  System.Reflection classes and System.Type, or that JsonSerializer surprises 
-  you with, such as ValueTuples.
-- Output as Json or C# object notation, or ‘debug view’ style, or [CallerArgumentExpression] 
+- make a best effort to stringify objects that JsonSerializer won't, including
+  System.Reflection classes and System.Type; or for which JsonSerializer returns
+  empty output, such as ValueTuples.
+- Output as Json or C# object notation, or ‘debug view’ style, or [CallerArgumentExpression]
 
 TooString offers 3 extension method groups on Object:
 ```csharp
@@ -55,13 +55,13 @@ tuple.TooString(StringifyAs.Json)
 tuple.TooString()
 tuple.TooString(StringifyAs.CSharp)
 // Output is created by reflection and 
-// on Net6.0: {item1 = 1, item2 = "2", item3 = (3,4)}  
-// on Net8.0: {item1 = 1, item2 = "2", item3 = <3;4>}
+// on Net6.0 : {item1 = 1, item2 = "2", item3 = (3,4)}  
+// on Net8.0 : {item1 = 1, item2 = "2", item3 = <3;4>}
+// on Net10.0: {item1 = 1, item2 = "2", item3 = <3;4>}
 
 var type = value.GetType();
 System.Text.Json.JsonSerializer.Serialize(type) // Throws NotSupportedException
-
-type.ToJson() // Outputs truncated Json with default MaxDepth = 4, MaxEnumerationLength = 9
+type.ToJson() // Outputs the type object, truncated to default MaxDepth = 4, MaxEnumerationLength = 9
 ```
 
 ### Options
@@ -85,29 +85,23 @@ Try one of these approaches:
 // For Json Output
 value.ToJson()
 value.TooString(StringifyAs.JsonSerializer)
-value.TooString( StringifyAs.JsonStringifier )
-value.TooString( AdvancedOptions.ForJson with { MaxEnumerationLength = 9 } )
-
+value.TooString(StringifyAs.JsonStringifier )
+value.TooString(TooStringOptions.ForJson with { MaxEnumerationLength = 9 } )
 
 // For CSharp objects,
 value.TooString( StringifyAs.CSharp)
-value.TooString( AdvancedOptions.ForCSharp.With(...) )
 value.TooString( maxDepth:4, maxLength:9, style:StringifyAs.CSharp )
-value.TooString( AdvancedOptions.ForStringified with 
-{
+value.TooString( new TooStringOptions() {
     DateTimeFormat = "yyyyMMdd HH:mm:ss",
     TimeSpanFormat = @"d\.hh\:mm\:ss"
 })
+value.TooString( TooStringOptions.ForCSharp.With(...) )
 ```
 
 
 ### Gotchas
 
-Example: Json-serializing value tuples is something of a surprise because (unlike anonymous objects or 
-records or structs) they have no public properties and their public fields are not named as 
-per your code. Takeaway: don't choose value tuples for public apis that must be jsonned.
-
-Use modifications of `TooStringOptions.Default` to customise the results.
+Example: Json-serializing value tuples is something of a surprise because (unlike anonymous objects or records or structs) they have no public properties and their public fields are not named as per your code. Takeaway: don't choose value tuples for public apis that must be jsonned.
 
 ```
 System.Text.Json.JsonSerializer.Serialize(  (one:1, two:"2")  )
@@ -122,6 +116,8 @@ System.Text.Json.JsonSerializer.Serialize(  (one:1, two:"2")  )
 <pre>
 ChangeLog
 ---------
+0.7.0  Easier to build new TooStringOptions(){...}. Sanitize overloads.
+0.6.0  TooString() defaults to CSharp.
 0.5.0  ReflectionOptions.With(...), TooStringOptions.With(...). Fixes. 
 0.4.0  ReflectionOptions.MaxLength default = 9 
        ReflectionOptions.ForJson and ReflectionOptions.ForDebugView instead of Default. 
