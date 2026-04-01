@@ -7,7 +7,7 @@ namespace TooString.Specs;
 [TestFixture]
 public class TooStringifiedJsonReturnsSensibleJson
 {
-    internal static readonly HttpClient httpClient = new HttpClient() { BaseAddress = new Uri("http://127.0.0.1") };
+    static readonly HttpClient httpClient = new HttpClient() { BaseAddress = new Uri("http://127.0.0.1") };
 
     [TestCase(null, "null")]
     [TestCase("boo", "\"boo\"")]

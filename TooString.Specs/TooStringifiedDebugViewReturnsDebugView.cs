@@ -1,6 +1,5 @@
 using System.Numerics;
 using System.Reflection;
-using NUnit.Framework.Constraints;
 
 namespace TooString.Specs;
 
@@ -30,13 +29,13 @@ public class TooStringifiedDebugViewReturnsDebugView
     [TestCase(UriKind.Absolute,"Absolute")]
     public void GivenAnEnumerable(object value, string expectedPart)
     {
-        var subject= new object[] { value, 1};
+        var subject= new[] { value, 1};
         var expected= "[ " + expectedPart + ", 1 ]";
         var actual = subject.TooString(StringifyAs.DebugView );
         TestContext.Progress.WriteLine(actual);
         Assert.That(actual, Is.EqualTo(expected));
 
-        var subject2= new object[] { 1, value, 3};
+        var subject2= new[] { 1, value, 3};
         var expected2= "[ 1, " + expectedPart + ", 3 ]";
         var actual2 = subject2.TooString(StringifyAs.DebugView );
         TestContext.Progress.WriteLine(actual2);
