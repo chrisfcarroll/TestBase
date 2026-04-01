@@ -199,6 +199,7 @@ public record TooStringOptions
         var result = this with
         {
             StringifyAs = stringifyAs ?? StringifyAs,
+            WriteIndented = writeIndented ?? WriteIndented,
             WhichProperties = whichProperties ?? WhichProperties,
             MaxDepth = maxDepth ?? MaxDepth,
             MaxEnumerationLength = maxEnumerationLength ?? MaxEnumerationLength,
@@ -207,10 +208,6 @@ public record TooStringOptions
             TimeOnlyFormat = timeOnlyFormat ?? TimeOnlyFormat,
             TimeSpanFormat = timeSpanFormat ?? TimeSpanFormat,
         };
-
-        if (writeIndented.HasValue)
-            result.WriteIndented = writeIndented.Value;
-
         return result;
     }
 
