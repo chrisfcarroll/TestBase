@@ -73,16 +73,14 @@ public class TooStringIndentOptionSpecs
     {
         var expected1 = System.Text.Json.JsonSerializer.Serialize(depth4,stjOptionsForIndentedNoCycles);
 
-        var actual = depth4.TooString(
-            StringifyAs.JsonStringifier,
-            TooStringOptions.ForJson with
+        var actual = depth4.TooString(options: TooStringOptions.ForJson with
+        {
+            JsonOptions = TooStringOptions.DefaultJsonSerializerOptions.With(js =>
             {
-                JsonOptions = TooStringOptions.DefaultJsonSerializerOptions.With(js =>
-                {
-                    js.MaxDepth = 99;
-                    js.WriteIndented = true;
-                }),
-            });
+                js.MaxDepth = 99;
+                js.WriteIndented = true;
+            }),
+        });
 
         //D
         TestContext.Out.WriteLine(expected1);

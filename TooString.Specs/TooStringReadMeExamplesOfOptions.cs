@@ -36,13 +36,11 @@ public class TooStringReadMeExamplesOfOptions
         var d1 = value.TooString(StringifyAs.CSharp);
         var d2= value.TooString(TooStringOptions.Default with {StringifyAs = StringifyAs.CSharp});
         var d3 = value.TooString(maxDepth: 4,maxLength: 9,style: StringifyAs.CSharp);
-        var d4= value.TooString(
-                        StringifyAs.CSharp,
-                        TooStringOptions.Default with
-                        {
-                            DateTimeFormat = "yyyyMMdd HH:mm:ss",
-                            TimeSpanFormat = @"d\.hh\:mm\:ss",
-                        });
+        var d4= value.TooString(options: TooStringOptions.Default with
+        {
+            DateTimeFormat = "yyyyMMdd HH:mm:ss",
+            TimeSpanFormat = @"d\.hh\:mm\:ss",
+        });
         Assert.That(d1, Is.EqualTo(d2));
         Assert.That(d1, Is.EqualTo(d3));
         Assert.That(d1, Is.EqualTo(d4));

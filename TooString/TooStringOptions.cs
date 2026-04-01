@@ -24,6 +24,7 @@ public record TooStringOptions
     public TooStringOptions()
     {
         jsonOptions = DefaultJsonSerializerOptions;
+        WriteIndented = false;
         StringifyAs = StringifyAs.CSharp;
         WhichProperties = BindingFlags.Instance | BindingFlags.Public;
         MaxDepth = 3;
@@ -47,23 +48,25 @@ public record TooStringOptions
         };
 
     /// <summary>
-    /// Default options: CSharp style, default JsonSerializerOptions, MaxDepth 3, MaxEnumerationLength 9.
-    /// </summary>
-    public static readonly TooStringOptions Default = new();
-
-    /// <summary>
-    /// Preset for JSON serialization via <see cref="System.Text.Json.JsonSerializer"/>.
-    /// Customise further with <c>.With(...)</c> or <c>with { ... }</c>.
-    /// </summary>
-    public static TooStringOptions ForJson
-        => Default with { StringifyAs = StringifyAs.STJsonSerialization };
-
-    /// <summary>
     /// Preset for CSharp-style output via reflection.
     /// Customise further with <c>.With(...)</c> or <c>with { ... }</c>.
     /// </summary>
-    public static TooStringOptions ForCSharp
-        => Default with { StringifyAs = StringifyAs.CSharp };
+    public static readonly TooStringOptions ForCSharp = new() ;
+
+    /// <summary>
+    /// Default options: CSharp style, default JsonSerializerOptions, MaxDepth 3, MaxEnumerationLength 9.
+    /// </summary>
+    public static readonly TooStringOptions Default = ForCSharp;
+
+    /// <summary>
+    /// Preset for JSON serialization via <see cref="System.Text.Json.JsonSerializer"/>.
+    /// Customize further with <c>.With(...)</c> or <c>with { ... }</c>.
+    /// </summary>
+    public static readonly TooStringOptions ForJson
+        = Default with
+        {
+            StringifyAs = StringifyAs.STJsonSerialization,
+        };
 
     // ──────────────────────────────────────────────
     //  Properties

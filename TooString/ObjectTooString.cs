@@ -55,10 +55,16 @@ public static partial class ObjectTooString
     /// <paramref name="style"/> chosen.
     /// </returns>
     public static string TooString<T>(this T value,
-                                      StringifyAs style = StringifyAs.CSharp,
-                                      TooStringOptions? options = null)
+                                      StringifyAs style = StringifyAs.CSharp)
         =>
-        TooString(value,(options??TooStringOptions.Default) with { StringifyAs = style });
+            TooString(value,style switch
+            {
+                StringifyAs.CSharp => TooStringOptions.Default,
+                StringifyAs.STJsonSerialization => TooStringOptions.ForJson,
+                StringifyAs.JsonStringifier => TooStringOptions.ForJson with { StringifyAs = StringifyAs.JsonStringifier },
+                StringifyAs.DebugView => TooStringOptions.Default with { StringifyAs = StringifyAs.DebugView },
+                _ => throw new ArgumentOutOfRangeException(nameof(style),style,null)
+            });
 
     /// <summary>
     /// Stringifies a value using one of CallerArgumentExpressionAttribute, Json serialization,
@@ -107,7 +113,7 @@ public static partial class ObjectTooString
     /// Stringifies a value using the configured options.
     /// </summary>
     /// <param name="value">The value to stringify</param>
-    /// <param name="tooStringOptions">Configure the style used, and the options
+    /// <param name="options">Configure the style used, and the options
     /// relevant to the style used.
     /// See <see cref="TooStringOptions"/> for details of what can be configured.
     /// The easy way to change options may be to use <see cref="TooStringOptions.Default"/>
@@ -116,14 +122,14 @@ public static partial class ObjectTooString
     /// <typeparam name="T"></typeparam>
     /// <returns>
     /// A string representation of <paramref name="value"/> according to the
-    /// <paramref name="tooStringOptions"/> chosen.
+    /// <paramref name="options"/> chosen.
     /// </returns>
-    public static string TooString<T>(this T value, TooStringOptions tooStringOptions)
+    public static string TooString<T>(this T value, TooStringOptions options)
     {
-        return tooStringOptions.StringifyAs is StringifyAs.STJsonSerialization
+        return options.StringifyAs is StringifyAs.STJsonSerialization
                // to ponder: && tooStringOptions matches STJ defaults
-            ? ToJson(value,tooStringOptions)
-            : BuildReflectedString(value,OptionsWithState.From(0,tooStringOptions));
+            ? ToJson(value,options)
+            : BuildReflectedString(value,OptionsWithState.From(0,options));
     }
 
     static string BuildReflectedString<T>(T? value, OptionsWithState options)

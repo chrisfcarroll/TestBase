@@ -187,7 +187,7 @@ public class TooStringJsonReturnsJson
 #endif
         //A
         var optionsD3L3 = TooStringOptions.ForJson with {JsonOptions = TooStringOptions.DefaultJsonSerializerOptions.With(js => js.MaxDepth = 3), MaxEnumerationLength = 3};
-        var actual = value.TooString(StringifyAs.STJsonSerialization, optionsD3L3);
+        var actual = value.TooString(options: optionsD3L3);
 
         //A
         var comparableActual = actual.RegexReplaceCompilationDependentValuesWithPseudoValues();
@@ -207,7 +207,7 @@ public class TooStringJsonReturnsJson
                        """;
         //A
         var optionsD3L3 = TooStringOptions.ForJson with {JsonOptions = TooStringOptions.DefaultJsonSerializerOptions.With(js => js.MaxDepth = 3), MaxEnumerationLength = 3};
-        var actual = value.TooString(StringifyAs.STJsonSerialization, optionsD3L3);
+        var actual = value.TooString(options: optionsD3L3);
 
         //A
         var comparableActual = actual.RegexReplaceCompilationDependentValuesWithPseudoValues();
@@ -247,7 +247,7 @@ public class TooStringJsonReturnsJson
 #endif
         //A
         var optionsD3L3 = TooStringOptions.ForJson with {JsonOptions = TooStringOptions.DefaultJsonSerializerOptions.With(js => js.MaxDepth = 3), MaxDepth = 3};
-        var actual = value.TooString(StringifyAs.STJsonSerialization, optionsD3L3);
+        var actual = value.TooString(options: optionsD3L3);
         var comparableValue = actual.RegexReplaceCompilationDependentValuesWithPseudoValues();
         //D
         TestContext.Progress.WriteLine(comparableValue);
