@@ -7,16 +7,18 @@ public static partial class ObjectTooString
 {
 
     /// <summary>
-    /// Try to use <see cref="JsonSerializer"/> to serialize <paramref name="value"/>.
-    /// If that fails — for instance, for types in System.Reflection, and for System.Type itself,
-    /// returns <see cref="TooString{T}(T,TooStringOptions)"/>
+    /// Try to use <see cref="JsonSerializer"/> to serialize <paramref name="value"/>,
+    /// or else use <see cref="TooString{T}(T,TooStringOptions)"/> with
+    /// <see cref="StringifyAs.JsonStringifier"/>.
     /// </summary>
     /// <param name="value"></param>
     /// <param name="options"></param>
     /// <typeparam name="T"></typeparam>
     /// <returns>
-    /// System.Text.Json.JsonSerializer.Serialize(value,tooStringOptions.JsonOptions), unless that fails,
-    /// in which case <see cref="TooString{T}(T,TooStringOptions)"/> is called.
+    /// System.Text.Json.JsonSerializer.Serialize(value,tooStringOptions.JsonOptions),
+    /// unless that fails, or <paramref name="value"/> is an <see cref="ITuple"/>,
+    /// in which case <see cref="TooString{T}(T,TooStringOptions)"/> is called
+    /// with <paramref name="options"/> modified to use <see cref="StringifyAs.JsonStringifier"/>.
     /// </returns>
     public static string ToJson<T>(this T? value, TooStringOptions options)
     {
