@@ -19,7 +19,7 @@ public record TooStringOptions
     /// <summary>
     /// Parameterless constructor with sensible defaults.
     /// All properties are settable via init or set, so you can use
-    /// <c>new TooStringOptions { StringifyAs = TooStringStyle.JsonSerializer, MaxDepth = 5 }</c>
+    /// <c>new TooStringOptions { StringifyAs = StringifyAs.JsonSerializer, MaxDepth = 5 }</c>
     /// </summary>
     public TooStringOptions()
     {

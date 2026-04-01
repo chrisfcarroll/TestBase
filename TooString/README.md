@@ -23,14 +23,14 @@ _TooString is not a serializer._
 
 #### Default behaviour
 
-- ToJson() or TooString(TooStringStyle.JsonStringifier) default to using System.Text.Json, 
+- ToJson() or TooString(StringifyAs.JsonStringifier) default to using System.Text.Json, 
   falling back to reflection for un-serializable types.
 
 whereas
 - TooString()
-- TooString(TooStringStyle.JsonStringifier) 
-- TooString(TooStringStyle.CSharp)
-- TooString(TooStringStyle.DebugView)
+- TooString(StringifyAs.JsonStringifier) 
+- TooString(StringifyAs.CSharp)
+- TooString(StringifyAs.DebugView)
 all defaults to MaxDepth = 4, MaxEnumerationLength = 9.
 
 Example:
@@ -48,12 +48,12 @@ var tuple = (one: 1, two: "2", three: new Complex(3,4));
 System.Text.Json.JsonSerializer.Serialize(tuple) // Output is "{}" because there  
                                                  // are no public properties on a tuple
 
-tuple.TooString(TooStringStyle.Json)
+tuple.TooString(StringifyAs.Json)
 // Output stringifies the tuple and the Complex number as arrays
 // [1,"2",[3,4]] 
 
 tuple.TooString()
-tuple.TooString(TooStringStyle.CSharp)
+tuple.TooString(StringifyAs.CSharp)
 // Output is created by reflection and 
 // on Net6.0: {item1 = 1, item2 = "2", item3 = (3,4)}  
 // on Net8.0: {item1 = 1, item2 = "2", item3 = <3;4>}
@@ -84,15 +84,15 @@ Try one of these approaches:
 ```csharp
 // For Json Output
 value.ToJson()
-value.TooString(TooStringStyle.JsonSerializer)
-value.TooString( TooStringStyle.JsonStringifier )
+value.TooString(StringifyAs.JsonSerializer)
+value.TooString( StringifyAs.JsonStringifier )
 value.TooString( AdvancedOptions.ForJson with { MaxEnumerationLength = 9 } )
 
 
 // For CSharp objects,
-value.TooString( TooStringStyle.CSharp)
+value.TooString( StringifyAs.CSharp)
 value.TooString( AdvancedOptions.ForCSharp.With(...) )
-value.TooString( maxDepth:4, maxLength:9, style:TooStringStyle.CSharp )
+value.TooString( maxDepth:4, maxLength:9, style:StringifyAs.CSharp )
 value.TooString( AdvancedOptions.ForStringified with 
 {
     DateTimeFormat = "yyyyMMdd HH:mm:ss",
@@ -128,7 +128,7 @@ ChangeLog
        More overloads.
 0.3.0  ReflectionOptions.MaxLength limits display of enumerable elements
 0.2.0  Added Net8 (NB Net8 Json and Numerics output is different from Net6)
-       Rename TooStringStyle to TooStringHow.
+       Rename StringifyAs to TooStringHow.
        Fix SerializationStyle.Reflection output of DateTime, DateOnly, TimeOnly.
 0.1.0  Can use DebugView, Json, ToString() or [CallerArgumentExpression] and can output Json or Debug strings.
 </pre>
