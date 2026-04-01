@@ -39,11 +39,11 @@ public class TooStringIndentOptionSpecs
         Assert.That(options.WriteIndented, Is.False);
         Assert.That(options.JsonOptions.WriteIndented, Is.False);
 
-        options.WriteIndented = true;
+        options = options with { WriteIndented = true };
         Assert.That(options.WriteIndented, Is.True);
         Assert.That(options.JsonOptions.WriteIndented, Is.True);
 
-        options.WriteIndented = false;
+        options = options with {WriteIndented = false};
         Assert.That(options.WriteIndented, Is.False);
         Assert.That(options.JsonOptions.WriteIndented, Is.False);
     }
@@ -74,7 +74,7 @@ public class TooStringIndentOptionSpecs
         var expected1 = System.Text.Json.JsonSerializer.Serialize(depth4,stjOptionsForIndentedNoCycles);
 
         var actual = depth4.TooString(
-            TooStringStyle.JsonStringifier,
+            StringifyAs.JsonStringifier,
             TooStringOptions.ForJson with
             {
                 JsonOptions = TooStringOptions.DefaultJsonSerializerOptions.With(js =>

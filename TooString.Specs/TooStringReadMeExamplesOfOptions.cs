@@ -20,9 +20,9 @@ public class TooStringReadMeExamplesOfOptions
     [Test]
     public void ValueTupleToJsonExample()
     {
-        var toJson = (one:1, two:"2").TooString( TooStringStyle.JsonStringifier );
+        var toJson = (one:1, two:"2").TooString( StringifyAs.JsonStringifier );
         var stj = System.Text.Json.JsonSerializer.Serialize((one: 1,two: "2"));
-        var reflected = (one:1, two:"2").TooString( TooStringStyle.JsonStringifier);
+        var reflected = (one:1, two:"2").TooString( StringifyAs.JsonStringifier);
 
         Assert.That(toJson, Is.EqualTo("""[1,"2"]"""));
         Assert.That(stj, Is.EqualTo("{}"));
@@ -33,11 +33,11 @@ public class TooStringReadMeExamplesOfOptions
     public void ToCSharpStringExamples()
     {
         var value = circular;
-        var d1 = value.TooString(TooStringStyle.CSharp);
-        var d2= value.TooString(TooStringOptions.Default with {StringifyAs = TooStringStyle.CSharp});
-        var d3 = value.TooString(maxDepth: 4,maxLength: 9,style: TooStringStyle.CSharp);
+        var d1 = value.TooString(StringifyAs.CSharp);
+        var d2= value.TooString(TooStringOptions.Default with {StringifyAs = StringifyAs.CSharp});
+        var d3 = value.TooString(maxDepth: 4,maxLength: 9,style: StringifyAs.CSharp);
         var d4= value.TooString(
-                        TooStringStyle.CSharp,
+                        StringifyAs.CSharp,
                         TooStringOptions.Default with
                         {
                             DateTimeFormat = "yyyyMMdd HH:mm:ss",

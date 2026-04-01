@@ -1,12 +1,10 @@
-using System.Text.Json;
-
 namespace TooString;
 
 /// <summary>
-/// How <see cref="ObjectTooString.TooString{T}(T,TooStringStyle,TooStringOptions?)"/>
+/// How <see cref="ObjectTooString.TooString{T}(T,StringifyAs,TooStringOptions?)"/>
 /// will stringify a value.
 /// </summary>
-public enum TooStringStyle
+public enum StringifyAs
 {
     /// <summary>
     /// Stringify to C# anonymous object style: <c>/*Type*/ new { A = "B" }</c>
@@ -14,9 +12,10 @@ public enum TooStringStyle
     CSharp,
 
     /// <summary>Use
-    /// <see cref="JsonSerializer.Serialize(object?,System.Type,System.Text.Json.JsonSerializerOptions?)"/>
+    /// <see cref="System.Text.Json.JsonSerializer.Serialize(object?,System.Type,System.Text.Json.JsonSerializerOptions?)"/>
+    /// to serialize, unless that throws an exception, in which case fall back to <see cref="JsonStringifier"/>.
     /// </summary>
-    JsonSerializer,
+    STJsonSerialization,
 
     /// <summary>
     /// Stringify to JSON-style output: <c>{"A":"B"}</c>

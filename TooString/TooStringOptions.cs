@@ -2,6 +2,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+
 [assembly:InternalsVisibleTo("TooString.Specs")]
 
 namespace TooString;
@@ -11,7 +12,7 @@ namespace TooString;
 /// Use <c>new TooStringOptions { StringifyAs = ..., WriteIndented = true, MaxDepth = 5 }</c>
 /// or start from a preset like <see cref="ForJson"/> or <see cref="ForCSharp"/>
 /// and customise with <see cref="With(TooStringOptions)"/> or
-/// <see cref="With(bool?,TooStringStyle?,BindingFlags?,int?,int?,string?,string?,string?,string?)"/>.
+/// <see cref="With(bool?,TooString.StringifyAs?,BindingFlags?,int?,int?,string?,string?,string?,string?)"/>.
 /// </summary>
 public record TooStringOptions
 {
@@ -23,7 +24,7 @@ public record TooStringOptions
     public TooStringOptions()
     {
         jsonOptions = DefaultJsonSerializerOptions;
-        StringifyAs = TooStringStyle.CSharp;
+        StringifyAs = StringifyAs.CSharp;
         WhichProperties = BindingFlags.Instance | BindingFlags.Public;
         MaxDepth = 3;
         MaxEnumerationLength = 9;
@@ -55,23 +56,23 @@ public record TooStringOptions
     /// Customise further with <c>.With(...)</c> or <c>with { ... }</c>.
     /// </summary>
     public static TooStringOptions ForJson
-        => Default with { StringifyAs = TooStringStyle.JsonSerializer };
+        => Default with { StringifyAs = StringifyAs.STJsonSerialization };
 
     /// <summary>
     /// Preset for CSharp-style output via reflection.
     /// Customise further with <c>.With(...)</c> or <c>with { ... }</c>.
     /// </summary>
     public static TooStringOptions ForCSharp
-        => Default with { StringifyAs = TooStringStyle.CSharp };
+        => Default with { StringifyAs = StringifyAs.CSharp };
 
     // ──────────────────────────────────────────────
     //  Properties
     // ──────────────────────────────────────────────
 
     /// <summary>
-    /// The <see cref="TooStringStyle"/> to stringify to.
+    /// The <see cref="TooString.StringifyAs"/> to stringify to.
     /// </summary>
-    public TooStringStyle StringifyAs { get; init; }
+    public StringifyAs StringifyAs { get; init; }
 
     /// <summary>
     /// Gets or sets whether output should use indents and newlines.
@@ -80,7 +81,7 @@ public record TooStringOptions
     public bool WriteIndented
     {
         get => JsonOptions.WriteIndented;
-        set
+        init
         {
             if (JsonOptions.WriteIndented != value)
             {
@@ -95,7 +96,7 @@ public record TooStringOptions
     /// Options for System.Text.Json serialization.
     /// </summary>
     /// <remarks>
-    /// ⚠️Only used when <see cref="StringifyAs"/> is <see cref="TooStringStyle.JsonSerializer"/>
+    /// ⚠️Only used when <see cref="StringifyAs"/> is <see cref="TooString.StringifyAs.STJsonSerialization"/>
     /// </remarks>
     public JsonSerializerOptions JsonOptions
     {
@@ -187,7 +188,7 @@ public record TooStringOptions
     /// </summary>
     public TooStringOptions With(
         bool? writeIndented = null,
-        TooStringStyle? stringifyAs = null,
+        StringifyAs? stringifyAs = null,
         BindingFlags? whichProperties = null,
         int? maxDepth = null,
         int? maxEnumerationLength = null,
@@ -225,7 +226,7 @@ public record TooStringOptions
     /// Create <see cref="TooStringOptions"/> from <paramref name="jsonSerializerOptions"/>
     /// </summary>
     public static implicit operator TooStringOptions(JsonSerializerOptions jsonSerializerOptions)
-        => new() { JsonOptions = jsonSerializerOptions, StringifyAs = TooStringStyle.JsonSerializer };
+        => new() { JsonOptions = jsonSerializerOptions, StringifyAs = StringifyAs.STJsonSerialization };
 }
 
 internal record OptionsWithState : TooStringOptions
@@ -236,6 +237,7 @@ internal record OptionsWithState : TooStringOptions
         => new()
         {
             Depth = depth,
+            WriteIndented = from.WriteIndented,
             JsonOptions = from.JsonOptions,
             StringifyAs = from.StringifyAs,
             WhichProperties = from.WhichProperties,

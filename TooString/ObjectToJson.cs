@@ -27,7 +27,7 @@ public static partial class ObjectTooString
             (value is ITuple && !options.JsonOptions.IncludeFields)
            )
         {
-            options = options with {StringifyAs = TooStringStyle.JsonStringifier};
+            options = options with {StringifyAs = StringifyAs.JsonStringifier};
             return BuildReflectedString(value, OptionsWithState.From(0, options));
         }
         else try
@@ -36,7 +36,7 @@ public static partial class ObjectTooString
             }
             catch
             {
-                options = options with {StringifyAs = TooStringStyle.JsonStringifier};
+                options = options with {StringifyAs = StringifyAs.JsonStringifier};
                 return BuildReflectedString(value, OptionsWithState.From(0, options));;
             }
     }
@@ -50,7 +50,7 @@ public static partial class ObjectTooString
     /// <returns></returns>
     public static string ToJson<T>(this T? value, bool writeIndented = false)
         => ToJson(value,
-                  TooStringOptions.ForJson.With(o=>o.WriteIndented=writeIndented));
+                  TooStringOptions.ForJson.With(writeIndented:writeIndented));
 
 
     /// <summary>

@@ -10,7 +10,7 @@ namespace TooString;
 /// It differs from a serializer primarily in <b>not</b> being fail-fast.
 /// If it can't stringify an object correctly, it will return a best-effort
 /// rather than fail.
-/// For the stringify styles offered, <see cref="TooStringStyle"/>
+/// For the stringify styles offered, <see cref="StringifyAs"/>
 /// </summary>
 public static partial class ObjectTooString
 {
@@ -55,7 +55,7 @@ public static partial class ObjectTooString
     /// <paramref name="style"/> chosen.
     /// </returns>
     public static string TooString<T>(this T value,
-                                      TooStringStyle style = TooStringStyle.CSharp,
+                                      StringifyAs style = StringifyAs.CSharp,
                                       TooStringOptions? options = null)
         =>
         TooString(value,(options??TooStringOptions.Default) with { StringifyAs = style });
@@ -77,14 +77,14 @@ public static partial class ObjectTooString
     /// <param name="style">
     /// Choose between
     /// <list type="bullet">
-    /// <item><see cref="TooStringStyle.CSharp"/> (the default)</item>
-    /// <item><see cref="TooStringStyle.JsonStringifier"/>,</item>
-    /// <item><see cref="TooStringStyle.JsonSerializer"/>,</item>
-    /// <item><see cref="TooStringStyle.DebugView"/>,</item>
+    /// <item><see cref="StringifyAs.CSharp"/> (the default)</item>
+    /// <item><see cref="StringifyAs.JsonStringifier"/>,</item>
+    /// <item><see cref="StringifyAs.STJsonSerialization"/>,</item>
+    /// <item><see cref="StringifyAs.DebugView"/>,</item>
     /// </list>
-    /// <see cref="TooStringStyle.JsonStringifier"/>,
-    /// <see cref="TooStringStyle.DebugView"/>, or
-    /// <see cref="TooStringStyle.CSharp"/> (valid C# syntax with type names in comments)
+    /// <see cref="StringifyAs.JsonStringifier"/>,
+    /// <see cref="StringifyAs.DebugView"/>, or
+    /// <see cref="StringifyAs.CSharp"/> (valid C# syntax with type names in comments)
     /// </param>
     /// <typeparam name="T"></typeparam>
     /// <returns>
@@ -94,7 +94,7 @@ public static partial class ObjectTooString
     public static string TooString<T>(this T value,
                                       int maxDepth,
                                       int maxLength = 9,
-                                      TooStringStyle style = TooStringStyle.CSharp)
+                                      StringifyAs style = StringifyAs.CSharp)
         =>
         TooString(value,TooStringOptions.Default with
                         {
@@ -120,7 +120,7 @@ public static partial class ObjectTooString
     /// </returns>
     public static string TooString<T>(this T value, TooStringOptions tooStringOptions)
     {
-        return tooStringOptions.StringifyAs is TooStringStyle.JsonSerializer
+        return tooStringOptions.StringifyAs is StringifyAs.STJsonSerialization
                // to ponder: && tooStringOptions matches STJ defaults
             ? ToJson(value,tooStringOptions)
             : BuildReflectedString(value,OptionsWithState.From(0,tooStringOptions));
@@ -134,56 +134,56 @@ public static partial class ObjectTooString
         }
 
         Func<string,string> qname =
-            options.StringifyAs is TooStringStyle.JsonStringifier or TooStringStyle.JsonSerializer
+            options.StringifyAs is StringifyAs.JsonStringifier or StringifyAs.STJsonSerialization
                 ? s => $"\"{s?.Replace("`","\\u0060").Replace("\"","\\\"")}\""
                 : s => s;
 
-        var isCSharp = options.StringifyAs == TooStringStyle.CSharp;
+        var isCSharp = options.StringifyAs == StringifyAs.CSharp;
         try
         {
             var indent=
                 (options.StringifyAs, options.WriteIndented) switch
                 {
                     (_,true) => NewLineSpaces400.AsSpan().Slice(0, 1 + (options.Depth + 1) * 2),
-                    (TooStringStyle.JsonStringifier,false) => "".AsSpan(),
-                    (TooStringStyle.JsonSerializer,false) => "".AsSpan(),
-                    (TooStringStyle.DebugView,false) => " ".AsSpan(),
-                    (TooStringStyle.CSharp,false) => " ".AsSpan(),
+                    (StringifyAs.JsonStringifier,false) => "".AsSpan(),
+                    (StringifyAs.STJsonSerialization,false) => "".AsSpan(),
+                    (StringifyAs.DebugView,false) => " ".AsSpan(),
+                    (StringifyAs.CSharp,false) => " ".AsSpan(),
                     (_,_) => " ".AsSpan()
                 };
             var outdent =
                 (options.StringifyAs, options.WriteIndented) switch
                 {
-                    (TooStringStyle.JsonStringifier,true) => NewLineSpaces400.AsSpan().Slice(0, 1 + (options.Depth) * 2),
-                    (TooStringStyle.JsonStringifier,false) => "".AsSpan(),
-                    (TooStringStyle.JsonSerializer,true) => NewLineSpaces400.AsSpan().Slice(0, 1 + (options.Depth) * 2),
-                    (TooStringStyle.JsonSerializer,false) => "".AsSpan(),
-                    (TooStringStyle.CSharp,true) => NewLineSpaces400.AsSpan().Slice(0, options.Depth * 2),
-                    (TooStringStyle.CSharp,false) => " ".AsSpan(),
-                    (TooStringStyle.DebugView,true) => NewLineSpaces400.AsSpan().Slice(0, options.Depth * 2),
-                    (TooStringStyle.DebugView,false) => " ".AsSpan(),
+                    (StringifyAs.JsonStringifier,true) => NewLineSpaces400.AsSpan().Slice(0, 1 + (options.Depth) * 2),
+                    (StringifyAs.JsonStringifier,false) => "".AsSpan(),
+                    (StringifyAs.STJsonSerialization,true) => NewLineSpaces400.AsSpan().Slice(0, 1 + (options.Depth) * 2),
+                    (StringifyAs.STJsonSerialization,false) => "".AsSpan(),
+                    (StringifyAs.CSharp,true) => NewLineSpaces400.AsSpan().Slice(0, options.Depth * 2),
+                    (StringifyAs.CSharp,false) => " ".AsSpan(),
+                    (StringifyAs.DebugView,true) => NewLineSpaces400.AsSpan().Slice(0, options.Depth * 2),
+                    (StringifyAs.DebugView,false) => " ".AsSpan(),
                     (_,_) => "".AsSpan()
                 };
             var delimiter = (options.StringifyAs, options.WriteIndented) switch
                 {
-                    (TooStringStyle.JsonStringifier,true) => CommaCrLfSpaces400.AsSpan().Slice(0,2 + (options.Depth + 1) *2),
-                    (TooStringStyle.JsonStringifier, false) =>",",
-                    (TooStringStyle.JsonSerializer,true) => CommaCrLfSpaces400.AsSpan().Slice(0,2 + (options.Depth + 1) *2),
-                    (TooStringStyle.JsonSerializer, false) =>",",
-                    (TooStringStyle.CSharp,true) => CommaCrLfSpaces400.AsSpan().Slice(0,5 + options.Depth*2),
-                    (TooStringStyle.CSharp, false) => ", ",
-                    (TooStringStyle.DebugView,true) => CommaCrLfSpaces400.AsSpan().Slice(0,5 + options.Depth*2),
-                    (TooStringStyle.DebugView, false) => ", ",
+                    (StringifyAs.JsonStringifier,true) => CommaCrLfSpaces400.AsSpan().Slice(0,2 + (options.Depth + 1) *2),
+                    (StringifyAs.JsonStringifier, false) =>",",
+                    (StringifyAs.STJsonSerialization,true) => CommaCrLfSpaces400.AsSpan().Slice(0,2 + (options.Depth + 1) *2),
+                    (StringifyAs.STJsonSerialization, false) =>",",
+                    (StringifyAs.CSharp,true) => CommaCrLfSpaces400.AsSpan().Slice(0,5 + options.Depth*2),
+                    (StringifyAs.CSharp, false) => ", ",
+                    (StringifyAs.DebugView,true) => CommaCrLfSpaces400.AsSpan().Slice(0,5 + options.Depth*2),
+                    (StringifyAs.DebugView, false) => ", ",
                     (_,_) => ", "
                 };
             var separator = (options.StringifyAs, options.WriteIndented) switch
             {
-                (TooStringStyle.JsonStringifier,true) => ": ",
-                (TooStringStyle.JsonStringifier, false) =>":",
-                (TooStringStyle.JsonSerializer,true) => ": ",
-                (TooStringStyle.JsonSerializer, false) =>":",
-                (TooStringStyle.DebugView, _) => " = ",
-                (TooStringStyle.CSharp, _) => " = ",
+                (StringifyAs.JsonStringifier,true) => ": ",
+                (StringifyAs.JsonStringifier, false) =>":",
+                (StringifyAs.STJsonSerialization,true) => ": ",
+                (StringifyAs.STJsonSerialization, false) =>":",
+                (StringifyAs.DebugView, _) => " = ",
+                (StringifyAs.CSharp, _) => " = ",
                 (_,_) => " = "
             };
 
@@ -289,7 +289,7 @@ public static partial class ObjectTooString
 
     static string DelimitTuple<T>(T value, OptionsWithState options) where T : ITuple
     {
-        var (start, delimiter,end) = options.StringifyAs is TooStringStyle.JsonStringifier or TooStringStyle.JsonSerializer
+        var (start, delimiter,end) = options.StringifyAs is StringifyAs.JsonStringifier or StringifyAs.STJsonSerialization
             ? ("[", "," , "]")
             : ("(", ", ", ")");
         var b = new StringBuilder(start);
@@ -312,7 +312,7 @@ public static partial class ObjectTooString
         }
         if (options.Depth + 1 == options.MaxDepth
             &&
-            options.StringifyAs is TooStringStyle.DebugView or TooStringStyle.CSharp
+            options.StringifyAs is StringifyAs.DebugView or StringifyAs.CSharp
             &&
             typeof(T).GetMethod("ToString",BindingFlags.DeclaredOnly|BindingFlags.Instance|BindingFlags.Public) is null)
         {
@@ -328,8 +328,8 @@ public static partial class ObjectTooString
         int i = 0;
         var (start, delimiter, end) = options.StringifyAs switch
         {
-            TooStringStyle.JsonStringifier or TooStringStyle.JsonSerializer=> ("[", ",", "]"),
-            TooStringStyle.CSharp => ("new[] { ", ", ", " }"),
+            StringifyAs.JsonStringifier or StringifyAs.STJsonSerialization=> ("[", ",", "]"),
+            StringifyAs.CSharp => ("new[] { ", ", ", " }"),
             _ => ("[ ", ", ", " ]")
         };
         var b = new StringBuilder(start);
@@ -362,8 +362,8 @@ public static partial class ObjectTooString
     static string ScalarishToShortReflectedString(object? value, OptionsWithState options)
     {
         var style = options.StringifyAs;
-        var isJson = style is TooStringStyle.JsonStringifier or TooStringStyle.JsonSerializer;
-        var isCSharp = style == TooStringStyle.CSharp;
+        var isJson = style is StringifyAs.JsonStringifier or StringifyAs.STJsonSerialization;
+        var isCSharp = style == StringifyAs.CSharp;
 
         Func<string, string> qstr =
                 isJson || isCSharp

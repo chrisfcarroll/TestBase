@@ -19,7 +19,7 @@ public class TooStringifiedDebugViewReturnsDebugView
     [TestCase(UriKind.Absolute,"Absolute")]
     public void GivenAScalar(object value, string expected)
     {
-        Assert.That(value.TooString(TooStringStyle.DebugView ), Is.EqualTo(expected));
+        Assert.That(value.TooString(StringifyAs.DebugView ), Is.EqualTo(expected));
     }
 
     [TestCase(null, "null")]
@@ -32,13 +32,13 @@ public class TooStringifiedDebugViewReturnsDebugView
     {
         var subject= new object[] { value, 1};
         var expected= "[ " + expectedPart + ", 1 ]";
-        var actual = subject.TooString(TooStringStyle.DebugView );
+        var actual = subject.TooString(StringifyAs.DebugView );
         TestContext.Progress.WriteLine(actual);
         Assert.That(actual, Is.EqualTo(expected));
 
         var subject2= new object[] { 1, value, 3};
         var expected2= "[ 1, " + expectedPart + ", 3 ]";
-        var actual2 = subject2.TooString(TooStringStyle.DebugView );
+        var actual2 = subject2.TooString(StringifyAs.DebugView );
         TestContext.Progress.WriteLine(actual2);
         Assert.That(actual2, Is.EqualTo(expected2));
     }
@@ -57,7 +57,7 @@ public class TooStringifiedDebugViewReturnsDebugView
             var expected = example.ToString();
             TestContext.Progress.WriteLine(expected);
 
-            var actual = example.TooString(TooStringStyle.DebugView);
+            var actual = example.TooString(StringifyAs.DebugView);
             Assert.That(actual, Is.EqualTo(expected));
         }
     }
@@ -67,22 +67,22 @@ public class TooStringifiedDebugViewReturnsDebugView
     public void GivenADateTimeOrDateOrTimeOrTimeSpan()
     {
         var now = DateTime.Now;
-        var nowActual = now.TooString(TooStringStyle.DebugView);
+        var nowActual = now.TooString(StringifyAs.DebugView);
         Assert.That(nowActual,Is.EqualTo(now.ToString("O")));
         TestContext.Out.WriteLine("DateTime: " + nowActual);
 
         var dateOnly = DateOnly.FromDateTime(now);
-        var dateOnlyActual = dateOnly.TooString(TooStringStyle.DebugView);
+        var dateOnlyActual = dateOnly.TooString(StringifyAs.DebugView);
         Assert.That(dateOnlyActual,Is.EqualTo(dateOnly.ToString("O")));
         TestContext.Out.WriteLine("DateOnly: " + dateOnlyActual);
 
         var timeOnly = TimeOnly.FromDateTime(now);
-        var timeOnlyActual = timeOnly.TooString(TooStringStyle.DebugView);
+        var timeOnlyActual = timeOnly.TooString(StringifyAs.DebugView);
         Assert.That(timeOnlyActual,Is.EqualTo(timeOnly.ToString("HH:mm:ss")));
         TestContext.Out.WriteLine("TimeOnly: " + timeOnlyActual);
 
         var timeSpan = timeOnly.ToTimeSpan();
-        var timeSpanActual = timeSpan.TooString(TooStringStyle.DebugView);
+        var timeSpanActual = timeSpan.TooString(StringifyAs.DebugView);
         Assert.That(timeSpanActual,Is.EqualTo(timeSpan.ToString("c")));
         TestContext.Out.WriteLine("TimeSpan: " + timeSpanActual);
     }
@@ -97,7 +97,7 @@ public class TooStringifiedDebugViewReturnsDebugView
         TestContext.Progress.WriteLine(value.TooString());
         
         Assert.That(
-            value.TooString(TooStringStyle.DebugView ), 
+            value.TooString(StringifyAs.DebugView ), 
             Is.EqualTo($"{{ A = boo, B = {new Complex(3,4)} }}")
             );
     }
@@ -116,7 +116,7 @@ public class TooStringifiedDebugViewReturnsDebugView
         TestContext.Progress.WriteLine(value.TooString());
         
         Assert.That(
-            value.TooString(TooStringStyle.DebugView ), 
+            value.TooString(StringifyAs.DebugView ), 
             Is.EqualTo($"{{ one = 1, two = boo, three = False, four = Absolute, five = {{ A = A, B = {new Complex(3,4)} }} }}"));
     }
     
@@ -124,7 +124,7 @@ public class TooStringifiedDebugViewReturnsDebugView
     public void GivenTuple()
     {
         var value = (1,"boo",false,UriKind.Absolute);
-        Assert.That(value.TooString(TooStringStyle.DebugView ), Is.EqualTo(value.ToString()));
+        Assert.That(value.TooString(StringifyAs.DebugView ), Is.EqualTo(value.ToString()));
     }
     
     [Test]
@@ -132,10 +132,10 @@ public class TooStringifiedDebugViewReturnsDebugView
     {
         var value = (one:1, two:"boo", three:false, four:UriKind.Absolute, five: new CompositeA{A = "A", B= new (3,4)});
 
-        TestContext.Progress.WriteLine(value.TooString(TooStringStyle.DebugView));
-        TestContext.Progress.WriteLine(value.TooString(TooStringStyle.DebugView));
+        TestContext.Progress.WriteLine(value.TooString(StringifyAs.DebugView));
+        TestContext.Progress.WriteLine(value.TooString(StringifyAs.DebugView));
         
-        Assert.That(value.TooString(TooStringStyle.DebugView ), Is.EqualTo(value.ToString()));
+        Assert.That(value.TooString(StringifyAs.DebugView ), Is.EqualTo(value.ToString()));
     }
     
 
@@ -144,7 +144,7 @@ public class TooStringifiedDebugViewReturnsDebugView
     {
         var value = (one: new Complex(3,4), two:2);
 
-        var actual = value.TooString(TooStringStyle.DebugView );
+        var actual = value.TooString(StringifyAs.DebugView );
         var expected = $"({new Complex(3,4)}, 2)";
 
         Assert.That(actual,Is.EqualTo(expected));
@@ -157,7 +157,7 @@ public class TooStringifiedDebugViewReturnsDebugView
 
         TestContext.Progress.WriteLine("ToString:" + value);
 
-        var actual = value.TooString(TooStringStyle.DebugView );
+        var actual = value.TooString(StringifyAs.DebugView );
         var expected = $"(1, boo, False, Absolute, {{ A = A, B = {new Complex(3,4)} }})";
         Assert.That(actual,Is.EqualTo(expected));
     }
@@ -169,14 +169,14 @@ public class TooStringifiedDebugViewReturnsDebugView
         var expected = $"{{ A = boo, B = {new Complex(3,4)} }}";
         
         Assert.That(
-            value.TooString(TooStringStyle.DebugView), 
+            value.TooString(StringifyAs.DebugView), 
             Is.EqualTo(expected) 
         );
         
         Assert.That(
-            value.TooString(TooStringStyle.DebugView),
+            value.TooString(StringifyAs.DebugView),
             Is.EqualTo(
-                value.TooString(TooStringStyle.DebugView) 
+                value.TooString(StringifyAs.DebugView) 
                 ));
     }
     
@@ -188,7 +188,7 @@ public class TooStringifiedDebugViewReturnsDebugView
         var expected = "{ A = boo, B = { A = boo, B = { A = boo, B = TooString.Specs.Circular, C = null }, C = null }, C = null }";
         
         Assert.That(
-            value.TooString(TooStringStyle.DebugView), 
+            value.TooString(StringifyAs.DebugView), 
             Is.EqualTo(expected) 
         );
     }
@@ -203,7 +203,7 @@ public class TooStringifiedDebugViewReturnsDebugView
             "\"Timeout\":\"00:01:40\",\"MaxResponseContentBufferSize\":2147483647}";
         
         Assert.That(
-            value.TooString(TooStringStyle.DebugView), 
+            value.TooString(StringifyAs.DebugView), 
             Is.EqualTo(expected) 
         );
     }
@@ -216,7 +216,7 @@ public class TooStringifiedDebugViewReturnsDebugView
         var expected = """
                        { CodeBase = file:///--filename--, FullName = TooString.Specs, Version=X.X.X.X, Culture=neutral, PublicKeyToken=null, EntryPoint = { Name = Main, DeclaringType = AutoGeneratedProgram, ReflectedType = AutoGeneratedProgram, MemberType = Method, MetadataToken = 100000000, Module = TooString.Specs.dll, IsSecurityCritical = True, IsSecuritySafeCritical = False, IsSecurityTransparent = False, MethodHandle = System.RuntimeMethodHandle, Attributes = PrivateScope, Private, Static, HideBySig, CallingConvention = Standard, ReturnType = System.Void, ReturnTypeCustomAttributes = Void, ReturnParameter = Void, IsCollectible = False, IsGenericMethod = False, IsGenericMethodDefinition = False, ContainsGenericParameters = False, MethodImplementationFlags = Managed, IsAbstract = False, IsConstructor = False, IsFinal = False, IsHideBySig = True, IsSpecialName = False, IsStatic = True, IsVirtual = False, IsAssembly = False, IsFamily = False, IsFamilyAndAssembly = False, IsFamilyOrAssembly = False, IsPrivate = True, IsPublic = False, IsConstructedGenericMethod = False, CustomAttributes = System.Reflection.CustomAttributeData[0] }, DefinedTypes = System.RuntimeType[31], IsCollectible = False, ManifestModule = { MDStreamVersion = 131072, FullyQualifiedName = --filename--, ModuleVersionId = 00000000-0000-0000-0000-000000000000, MetadataToken = 100000000, ScopeName = TooString.Specs.dll, Name = TooString.Specs.dll, Assembly = TooString.Specs, Version=X.X.X.X, Culture=neutral, PublicKeyToken=null, ModuleHandle = System.ModuleHandle, CustomAttributes = { Type = ReadOnlyCollection<CustomAttributeData>, Count = 1 } }, ReflectionOnly = False, Location = --filename--, ImageRuntimeVersion = v4.0.30319, GlobalAssemblyCache = False, HostContext = 0, IsDynamic = False, ExportedTypes = System.Type[10], IsFullyTrusted = True, CustomAttributes = { Type = ReadOnlyCollection<CustomAttributeData>, Count = 10 }, EscapedCodeBase = file:///--filename--, Modules = System.Reflection.RuntimeModule[1], SecurityRuleSet = None }
                        """;
-        var actual = value.TooString(TooStringStyle.DebugView,TooStringOptions.Default with { MaxDepth = 2 });
+        var actual = value.TooString(StringifyAs.DebugView,TooStringOptions.Default with { MaxDepth = 2 });
 
         TestContext.Progress.WriteLine(actual.RegexReplaceCompilationDependentValuesWithPseudoValues());
 
@@ -248,7 +248,7 @@ public class TooStringifiedDebugViewReturnsDebugView
                        { MDStreamVersion = 131072, FullyQualifiedName = --filename--, ModuleVersionId = {  }, MetadataToken = 100000000, ScopeName = System.Private.CoreLib.dll, Name = System.Private.CoreLib.dll, Assembly = { CodeBase = file:///--filename--, FullName = System.Private.CoreLib, Version=X.X.X.X, Culture=neutral, PublicKeyToken=7cec85d7bea7798e, EntryPoint = null, DefinedTypes = System.RuntimeType[2341], IsCollectible = False, ManifestModule = System.Private.CoreLib.dll, ReflectionOnly = False, Location = --filename--, ImageRuntimeVersion = v4.0.30319, GlobalAssemblyCache = False, HostContext = 0, IsDynamic = False, ExportedTypes = System.Type[1186], IsFullyTrusted = True, CustomAttributes = { Type = ReadOnlyCollection<CustomAttributeData>, Count = 22 }, EscapedCodeBase = file:///--filename--, Modules = System.Reflection.RuntimeModule[1], SecurityRuleSet = None }, ModuleHandle = { MDStreamVersion = 131072 }, CustomAttributes = { Type = ReadOnlyCollection<CustomAttributeData>, Count = 2 } }
                        """;
 #endif
-        var actual = value.TooString(TooStringStyle.DebugView, TooStringOptions.Default with { MaxDepth = 2 });
+        var actual = value.TooString(StringifyAs.DebugView, TooStringOptions.Default with { MaxDepth = 2 });
 
         TestContext.Progress.WriteLine(actual.RegexReplaceCompilationDependentValuesWithPseudoValues());
 

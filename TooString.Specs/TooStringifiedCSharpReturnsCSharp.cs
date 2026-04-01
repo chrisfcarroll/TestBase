@@ -13,7 +13,7 @@ public class TooStringifiedCSharpReturnsCSharp
     public void CSharp_simple_object_has_valid_syntax()
     {
         var person = new Person(1, "John", true);
-        var result = person.TooString(TooStringStyle.CSharp);
+        var result = person.TooString(StringifyAs.CSharp);
         TestContext.Out.WriteLine(result);
 
         Assert.That(result, Does.StartWith("/*Person*/ new {"));
@@ -27,7 +27,7 @@ public class TooStringifiedCSharpReturnsCSharp
     public void CSharp_nested_object_has_valid_syntax()
     {
         var person = new PersonWithAddress(1, "John", new Address("123 Main St", "Springfield"));
-        var result = person.TooString(TooStringStyle.CSharp);
+        var result = person.TooString(StringifyAs.CSharp);
         TestContext.Out.WriteLine(result);
 
         Assert.That(result, Does.StartWith("/*PersonWithAddress*/ new {"));
@@ -39,7 +39,7 @@ public class TooStringifiedCSharpReturnsCSharp
     public void CSharp_array_uses_new_array_syntax()
     {
         var items = new[] { 1, 2, 3 };
-        var result = items.TooString(TooStringStyle.CSharp);
+        var result = items.TooString(StringifyAs.CSharp);
         TestContext.Out.WriteLine(result);
 
         Assert.That(result, Does.StartWith("new[] {"));
@@ -55,7 +55,7 @@ public class TooStringifiedCSharpReturnsCSharp
             new Person(1, "John", true),
             new Person(2, "Jane", false)
         };
-        var result = people.TooString(TooStringStyle.CSharp);
+        var result = people.TooString(StringifyAs.CSharp);
         TestContext.Out.WriteLine(result);
 
         Assert.That(result, Does.StartWith("new[] {"));
@@ -66,7 +66,7 @@ public class TooStringifiedCSharpReturnsCSharp
     public void CSharp_enum_uses_type_prefix()
     {
         var person = new PersonWithStatus(1, "John", Status.Active);
-        var result = person.TooString(TooStringStyle.CSharp);
+        var result = person.TooString(StringifyAs.CSharp);
         TestContext.Out.WriteLine(result);
 
         Assert.That(result, Does.Contain("Status.Active"));
@@ -76,7 +76,7 @@ public class TooStringifiedCSharpReturnsCSharp
     public void CSharp_string_is_quoted()
     {
         var text = "Hello World";
-        var result = text.TooString(TooStringStyle.CSharp);
+        var result = text.TooString(StringifyAs.CSharp);
         TestContext.Out.WriteLine(result);
 
         Assert.That(result, Is.EqualTo("\"Hello World\""));
@@ -88,15 +88,15 @@ public class TooStringifiedCSharpReturnsCSharp
         var t = true;
         var f = false;
 
-        Assert.That(t.TooString(TooStringStyle.CSharp), Is.EqualTo("true"));
-        Assert.That(f.TooString(TooStringStyle.CSharp), Is.EqualTo("false"));
+        Assert.That(t.TooString(StringifyAs.CSharp), Is.EqualTo("true"));
+        Assert.That(f.TooString(StringifyAs.CSharp), Is.EqualTo("false"));
     }
 
     [Test]
     public void CSharp_tuple_uses_parentheses()
     {
         var tuple = (Id: 1, Name: "John");
-        var result = tuple.TooString(TooStringStyle.CSharp);
+        var result = tuple.TooString(StringifyAs.CSharp);
         TestContext.Out.WriteLine(result);
 
         Assert.That(result, Does.StartWith("("));
@@ -109,7 +109,7 @@ public class TooStringifiedCSharpReturnsCSharp
     public void CSharp_null_is_lowercase()
     {
         string? value = null;
-        var result = value.TooString(TooStringStyle.CSharp);
+        var result = value.TooString(StringifyAs.CSharp);
 
         Assert.That(result, Is.EqualTo("null"));
     }
@@ -118,7 +118,7 @@ public class TooStringifiedCSharpReturnsCSharp
     public void CSharp_int_is_unchanged()
     {
         var n = 42;
-        var result = n.TooString(TooStringStyle.CSharp);
+        var result = n.TooString(StringifyAs.CSharp);
 
         Assert.That(result, Is.EqualTo("42"));
     }
@@ -127,7 +127,7 @@ public class TooStringifiedCSharpReturnsCSharp
     public void CSharp_output_is_valid_for_copy_paste()
     {
         var person = new Person(1, "John", true);
-        var result = person.TooString(TooStringStyle.CSharp);
+        var result = person.TooString(StringifyAs.CSharp);
         TestContext.Out.WriteLine("// Can be pasted into C# code:");
         TestContext.Out.WriteLine($"var obj = {result};");
 
@@ -140,7 +140,7 @@ public class TooStringifiedCSharpReturnsCSharp
     public void CSharp_list_uses_new_array_syntax()
     {
         var items = new List<int> { 1, 2, 3 };
-        var result = items.TooString(TooStringStyle.CSharp);
+        var result = items.TooString(StringifyAs.CSharp);
         TestContext.Out.WriteLine(result);
 
         Assert.That(result, Does.StartWith("new[] {"));
@@ -150,7 +150,7 @@ public class TooStringifiedCSharpReturnsCSharp
     public void CSharp_datetime_is_quoted_string()
     {
         var dt = new DateTime(2024, 1, 15, 10, 30, 0);
-        var result = dt.TooString(TooStringStyle.CSharp);
+        var result = dt.TooString(StringifyAs.CSharp);
         TestContext.Out.WriteLine(result);
 
         // DateTime becomes a quoted string in CSharp style since there's no literal
@@ -162,7 +162,7 @@ public class TooStringifiedCSharpReturnsCSharp
     public void CSharp_string_with_quotes_is_escaped()
     {
         var text = "Say \"Hello\"";
-        var result = text.TooString(TooStringStyle.CSharp);
+        var result = text.TooString(StringifyAs.CSharp);
         TestContext.Out.WriteLine(result);
 
         Assert.That(result, Does.Contain("\\"));
