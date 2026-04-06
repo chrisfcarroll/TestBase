@@ -23,22 +23,22 @@ public class TooStringBestEffortMakesGoodChoices
     public void GivenACompositeObject__ReturnsJson()
     {
         var value = new CompositeA { A = "boo", B = new Complex(3,4) };
-        var expected = 
-            "{\"A\":\"boo\",\"B\":{\"Real\":3,\"Imaginary\":4,\"Magnitude\":5,\"Phase\":0.9272952180016122}}";
-        
+        // ToJson() now uses JsonStringifier, which stringifies Complex as an array
+        var expected = """{"A":"boo","B":[3,4]}""";
+
         Assert.That(
             value.ToJson(),
-            Is.EqualTo(expected) 
+            Is.EqualTo(expected)
         );
         TestContext.Progress.WriteLine(value.TooString());
     }
-    
+
     [Test]
     public void GivenACompositeObjectAndDefaultOptions__ReturnsJson()
     {
         var value = new CompositeA { A = "boo", B = new Complex(3,4) };
-        var expected = 
-            "{\"A\":\"boo\",\"B\":{\"Real\":3,\"Imaginary\":4,\"Magnitude\":5,\"Phase\":0.9272952180016122}}";
+        // ToJson() now uses JsonStringifier, which stringifies Complex as an array
+        var expected = """{"A":"boo","B":[3,4]}""";
 
         var actual = value.ToJson();
         //D
@@ -52,13 +52,16 @@ public class TooStringBestEffortMakesGoodChoices
     {
         var value = new Circular{ A = "boo"};
         value.B = value;
-        var expected = "{\"A\":\"boo\",\"B\":null,\"C\":null}";
-        
-        Assert.That(
-            value.ToJson(),
-            Is.EqualTo(expected) 
-        );
-        TestContext.Progress.WriteLine(value.TooString());
+
+        // ToJson() uses JsonStringifier which recurses to MaxDepth (3)
+        var actual = value.ToJson();
+        Assert.That(actual, Does.StartWith("{\"A\":\"boo\",\"B\":{\"A\":\"boo\""));
+        TestContext.Progress.WriteLine(actual);
+
+        // ToSTJson with IgnoreCycles handles circular refs gracefully
+        var stj = value.ToSTJson(
+            referenceHandler: System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles);
+        Assert.That(stj, Is.EqualTo("{\"A\":\"boo\",\"B\":null,\"C\":null}"));
     }
 
     [Test]
@@ -80,17 +83,17 @@ public class TooStringBestEffortMakesGoodChoices
     {
         //A
         var value = TooStringJsonReturnsJson.httpClient;
-        var expected = 
-            "{\"DefaultRequestHeaders\":[],\"DefaultRequestVersion\":\"1.1\"," +
-            "\"DefaultVersionPolicy\":0,\"BaseAddress\":\"http://127.0.0.1\"," +
-            "\"Timeout\":\"00:01:40\",\"MaxResponseContentBufferSize\":2147483647}";
 
-        //A
+        //A — ToJson() now uses JsonStringifier (reflection-based)
         var actual = value.ToJson();
         //D
         TestContext.Progress.WriteLine(actual);
-        // A
-        Assert.That(actual,Is.EqualTo(expected));
+        // A — JsonStringifier reflects into properties instead of calling ToString()
+        Assert.That(actual, Does.Contain("\"DefaultRequestHeaders\":[]"));
+        Assert.That(actual, Does.Contain("\"Timeout\":\"00:01:40\""));
+        Assert.That(actual, Does.Contain("\"MaxResponseContentBufferSize\":2147483647"));
+        // BaseAddress is reflected as an object (Uri properties) not a string
+        Assert.That(actual, Does.Contain("\"OriginalString\":\"http://127.0.0.1\""));
     }
 
     [Test]

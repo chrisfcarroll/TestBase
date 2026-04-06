@@ -1,68 +1,65 @@
-using System.Runtime.CompilerServices;
-using System.Text.Json;
+using System.Reflection;
 
 namespace TooString;
 
 public static partial class ObjectTooString
 {
-
     /// <summary>
-    /// Try to use <see cref="JsonSerializer"/> to serialize <paramref name="value"/>,
-    /// or else use <see cref="TooString{T}(T,TooStringOptions)"/> with
+    /// Stringify <paramref name="value"/> as JSON using our reflection-based
     /// <see cref="StringifyAs.JsonStringifier"/>.
+    /// For pure System.Text.Json serialization, use <see cref="ToSTJson{T}(T?, System.Text.Json.JsonSerializerOptions)"/>.
     /// </summary>
-    /// <param name="value"></param>
-    /// <param name="options"></param>
+    /// <param name="value">The value to stringify as JSON</param>
+    /// <param name="options">
+    /// Options controlling the stringify behaviour. Only reflection-based
+    /// options are used; <see cref="TooStringOptions.JsonOptions"/> is ignored.
+    /// </param>
     /// <typeparam name="T"></typeparam>
-    /// <returns>
-    /// System.Text.Json.JsonSerializer.Serialize(value,tooStringOptions.JsonOptions),
-    /// unless that fails, or <paramref name="value"/> is an <see cref="ITuple"/>,
-    /// in which case <see cref="TooString{T}(T,TooStringOptions)"/> is called
-    /// with <paramref name="options"/> modified to use <see cref="StringifyAs.JsonStringifier"/>.
-    /// </returns>
+    /// <returns>A JSON-style string representation of <paramref name="value"/></returns>
     public static string ToJson<T>(this T? value, TooStringOptions options)
     {
-        if (typeof(T).FullName == "System.Type"
-            ||
-            typeof(T).FullName?.StartsWith("System.Reflection") is true
-            ||
-            (value is ITuple && !options.JsonOptions.IncludeFields)
-           )
-        {
-            options = options with {StringifyAs = StringifyAs.JsonStringifier};
-            return BuildReflectedString(value, OptionsWithState.From(0, options));
-        }
-        else try
-            {
-                return JsonSerializer.Serialize(value,options.JsonOptions);
-            }
-            catch
-            {
-                options = options with {StringifyAs = StringifyAs.JsonStringifier};
-                return BuildReflectedString(value, OptionsWithState.From(0, options));;
-            }
+        options = options with { StringifyAs = StringifyAs.JsonStringifier };
+        return BuildReflectedString(value, OptionsWithState.From(0, options));
     }
 
     /// <summary>
-    /// Try to serialize <paramref name="value"/> using System.Text.Json. Failing that
+    /// Stringify <paramref name="value"/> as JSON using our reflection-based
+    /// <see cref="StringifyAs.JsonStringifier"/>, with individually specified options.
+    /// For pure System.Text.Json serialization, use <see cref="ToSTJson{T}(T?, System.Text.Json.JsonSerializerOptions)"/>.
     /// </summary>
-    /// <param name="value"></param>
-    /// <param name="writeIndented"></param>
+    /// <param name="value">The value to stringify as JSON</param>
+    /// <param name="writeIndented">Whether to format with indentation and newlines</param>
+    /// <param name="whichProperties">
+    /// <see cref="BindingFlags"/> to select properties. Defaults to Instance | Public.
+    /// </param>
+    /// <param name="maxDepth">Maximum depth for nested objects. Defaults to 3.</param>
+    /// <param name="maxEnumerationLength">Maximum number of enumerable elements to include. Defaults to 9.</param>
+    /// <param name="dateTimeFormat">DateTime format string. Defaults to "O" (ISO 8601).</param>
+    /// <param name="dateOnlyFormat">DateOnly format string. Defaults to "O".</param>
+    /// <param name="timeOnlyFormat">TimeOnly format string. Defaults to "HH:mm:ss".</param>
+    /// <param name="timeSpanFormat">TimeSpan format string. Defaults to "c".</param>
     /// <typeparam name="T"></typeparam>
-    /// <returns></returns>
-    public static string ToJson<T>(this T? value, bool writeIndented = false)
-        => ToJson(value,
-                  TooStringOptions.ForJson.With(writeIndented:writeIndented));
-
-
-    /// <summary>
-    /// Serialize <paramref name="value"/> using System.Text.Json. Throws if serialization fails.
-    /// </summary>
-    /// <param name="value"></param>
-    /// <param name="jsonSerializerOptions"></param>
-    /// <typeparam name="T"></typeparam>
-    /// <returns></returns>
-    public static string ToJson<T>(this T? value, JsonSerializerOptions jsonSerializerOptions)
-        => JsonSerializer.Serialize(value,jsonSerializerOptions);
-
+    /// <returns>A JSON-style string representation of <paramref name="value"/></returns>
+    public static string ToJson<T>(this T? value,
+                                   bool writeIndented = false,
+                                   BindingFlags whichProperties =
+                                       BindingFlags.Instance | BindingFlags.Public,
+                                   int maxDepth = 3,
+                                   int maxEnumerationLength = 9,
+                                   string dateTimeFormat = "O",
+                                   string dateOnlyFormat = "O",
+                                   string timeOnlyFormat = "HH:mm:ss",
+                                   string timeSpanFormat = "c")
+        => ToJson(value, new TooStringOptions
+        {
+            StringifyAs = StringifyAs.JsonStringifier,
+            WriteIndented = writeIndented,
+            WhichProperties = whichProperties,
+            MaxDepth = maxDepth,
+            MaxEnumerationLength = maxEnumerationLength,
+            DateTimeFormat = dateTimeFormat,
+            DateOnlyFormat = dateOnlyFormat,
+            TimeOnlyFormat = timeOnlyFormat,
+            TimeSpanFormat = timeSpanFormat,
+        });
 }

@@ -11,10 +11,14 @@ public class TooStringReadMeExamplesOfOptions
     [Test]
     public void ToJsonExamples()
     {
+        // ToJson() uses JsonStringifier (reflection-based)
         var toJson = circular.ToJson();
-        var webIndented1 = circular.ToJson(this.webIndented);
-        var webIndented2 = ObjectTooString.ToJson(circular,this.webIndented);
-        Assert.That(webIndented1, Is.EqualTo(webIndented2));
+        Assert.That(toJson, Does.Contain("\"A\":\"1\""));
+
+        // ToSTJson() uses System.Text.Json
+        var stJson1 = circular.ToSTJson(this.webIndented);
+        var stJson2 = ObjectTooString.ToSTJson(circular,this.webIndented);
+        Assert.That(stJson1, Is.EqualTo(stJson2));
     }
 
     [Test]

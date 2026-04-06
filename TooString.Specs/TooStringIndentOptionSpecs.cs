@@ -60,12 +60,15 @@ public class TooStringIndentOptionSpecs
     [Test]
     public void IndentOutputIsMultiLineForSTJOutput()
     {
-        var actual1 = depth4.ToJson(writeIndented: true);
+        // ToSTJson uses System.Text.Json
+        var actual1 = depth4.ToSTJson(stjOptionsForIndentedNoCycles);
         var expected1 = System.Text.Json.JsonSerializer.Serialize(depth4,stjOptionsForIndentedNoCycles);
         Assert.That(actual1, Is.EqualTo(expected1));
 
-        var actual2 = ObjectTooString.ToJson(depth4,stjOptionsForIndentedNoCycles);
-        Assert.That(actual2, Is.EqualTo(expected1));
+        // ToJson uses JsonStringifier, so its indented output differs from STJ
+        var actual2 = depth4.ToJson(writeIndented: true);
+        Assert.That(actual2, Does.Contain("\n"));
+        Assert.That(actual2, Does.Contain("\"A\""));
     }
 
     [Test]

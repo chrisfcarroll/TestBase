@@ -127,9 +127,35 @@ public static partial class ObjectTooString
     public static string TooString<T>(this T value, TooStringOptions options)
     {
         return options.StringifyAs is StringifyAs.STJsonSerialization
-               // to ponder: && tooStringOptions matches STJ defaults
-            ? ToJson(value,options)
+            ? ToSTJsonWithFallback(value, options)
             : BuildReflectedString(value,OptionsWithState.From(0,options));
+    }
+
+    /// <summary>
+    /// Try System.Text.Json serialization first; fall back to JsonStringifier
+    /// for types STJ can't handle (Reflection types, ITuples without IncludeFields).
+    /// </summary>
+    static string ToSTJsonWithFallback<T>(T? value, TooStringOptions options)
+    {
+        if (typeof(T).FullName == "System.Type"
+            ||
+            typeof(T).FullName?.StartsWith("System.Reflection") is true
+            ||
+            (value is System.Runtime.CompilerServices.ITuple && !options.JsonOptions.IncludeFields)
+           )
+        {
+            return BuildReflectedString(value,
+                OptionsWithState.From(0, options with { StringifyAs = StringifyAs.JsonStringifier }));
+        }
+        else try
+            {
+                return System.Text.Json.JsonSerializer.Serialize(value, options.JsonOptions);
+            }
+            catch
+            {
+                return BuildReflectedString(value,
+                    OptionsWithState.From(0, options with { StringifyAs = StringifyAs.JsonStringifier }));
+            }
     }
 
     static string BuildReflectedString<T>(T? value, OptionsWithState options)

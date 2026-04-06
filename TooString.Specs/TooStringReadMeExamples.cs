@@ -19,20 +19,21 @@ public class TooStringReadMeExamples
     [Test]
     public void ExampleIsCorrectGivenAnonObjectJson()
     {
-        // var anonObject = new { A = "boo", B = new Complex(3,4) };
-        // anonObject.ToJson();
-        // anonObject.TooString(TooStringStyle.Json);
-        // Output is the System.Text.Json output:
-        // {"A":"boo","B":{"Real":3,"Imaginary":4,"Magnitude":5,"Phase":0.9272952180016122}}
-
         var anonObject = new { A = "boo", B = new Complex(3,4) };
-        var actualJson1 = anonObject.ToJson();
-        var actualJson2 = anonObject.TooString(StringifyAs.STJsonSerialization);
-        Assert.That(actualJson1, Is.EqualTo(
-                """
-                {"A":"boo","B":{"Real":3,"Imaginary":4,"Magnitude":5,"Phase":0.9272952180016122}}
-                """));
-        Assert.That(actualJson2, Is.EqualTo(actualJson1));
+
+        // ToJson() uses JsonStringifier (reflection-based)
+        var actualJsonStringifier = anonObject.ToJson();
+        Assert.That(actualJsonStringifier, Is.EqualTo(
+                """{"A":"boo","B":[3,4]}"""));
+
+        // ToSTJson() uses System.Text.Json
+        var actualSTJson = anonObject.ToSTJson();
+        Assert.That(actualSTJson, Is.EqualTo(
+                """{"A":"boo","B":{"Real":3,"Imaginary":4,"Magnitude":5,"Phase":0.9272952180016122}}"""));
+
+        // TooString(StringifyAs.STJsonSerialization) also uses System.Text.Json
+        var actualSTJsonViaTooString = anonObject.TooString(StringifyAs.STJsonSerialization);
+        Assert.That(actualSTJsonViaTooString, Is.EqualTo(actualSTJson));
     }
     [Test]
     public void ExampleIsCorrectGivenAnonObjectReflection()
