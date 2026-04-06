@@ -67,46 +67,47 @@ public static partial class ObjectTooString
             });
 
     /// <summary>
-    /// Stringifies a value using one of CallerArgumentExpressionAttribute, Json serialization,
-    /// reflection, or ToString.
+    /// Stringifies a value with individually specified options.
     /// </summary>
     /// <param name="value">The value to stringify</param>
-    /// <param name="maxDepth">
-    /// How deep in nested object structures to descend before stopping further serialization.
-    /// Properties at this level will be typically be stringified with their <see cref="object.ToString"/>
-    /// method.
+    /// <param name="maxDepth">Maximum depth for nested objects. Defaults to 3.</param>
+    /// <param name="maxLength">Maximum number of enumerable elements to include. Defaults to 9.</param>
+    /// <param name="style">The output style. Defaults to <see cref="StringifyAs.CSharp"/>.</param>
+    /// <param name="writeIndented">Whether to format with indentation and newlines.</param>
+    /// <param name="whichProperties">
+    /// <see cref="BindingFlags"/> to select properties. Defaults to Instance | Public.
     /// </param>
-    /// <param name="maxLength">
-    /// How many items of an <see cref="IEnumerable{T}"/> property to stringify.
-    /// Further items will simply be omitted.
-    /// </param>
-    /// <param name="style">
-    /// Choose between
-    /// <list type="bullet">
-    /// <item><see cref="StringifyAs.CSharp"/> (the default)</item>
-    /// <item><see cref="StringifyAs.JsonStringifier"/>,</item>
-    /// <item><see cref="StringifyAs.STJsonSerialization"/>,</item>
-    /// <item><see cref="StringifyAs.DebugView"/>,</item>
-    /// </list>
-    /// <see cref="StringifyAs.JsonStringifier"/>,
-    /// <see cref="StringifyAs.DebugView"/>, or
-    /// <see cref="StringifyAs.CSharp"/> (valid C# syntax with type names in comments)
-    /// </param>
+    /// <param name="dateTimeFormat">DateTime format string. Defaults to "O" (ISO 8601).</param>
+    /// <param name="dateOnlyFormat">DateOnly format string. Defaults to "O".</param>
+    /// <param name="timeOnlyFormat">TimeOnly format string. Defaults to "HH:mm:ss".</param>
+    /// <param name="timeSpanFormat">TimeSpan format string. Defaults to "c".</param>
     /// <typeparam name="T"></typeparam>
     /// <returns>
-    /// A string representation of <paramref name="value"/> according to the
-    /// <paramref name="style"/> chosen.
+    /// A string representation of <paramref name="value"/> according to the options chosen.
     /// </returns>
     public static string TooString<T>(this T value,
                                       int maxDepth,
                                       int maxLength = 9,
-                                      StringifyAs style = StringifyAs.CSharp)
+                                      StringifyAs style = StringifyAs.CSharp,
+                                      bool writeIndented = false,
+                                      BindingFlags whichProperties =
+                                          BindingFlags.Instance | BindingFlags.Public,
+                                      string dateTimeFormat = "O",
+                                      string dateOnlyFormat = "O",
+                                      string timeOnlyFormat = "HH:mm:ss",
+                                      string timeSpanFormat = "c")
         =>
-        TooString(value,TooStringOptions.Default with
+        TooString(value, new TooStringOptions
                         {
                             StringifyAs = style,
                             MaxDepth = maxDepth,
-                            MaxEnumerationLength = maxLength
+                            MaxEnumerationLength = maxLength,
+                            WriteIndented = writeIndented,
+                            WhichProperties = whichProperties,
+                            DateTimeFormat = dateTimeFormat,
+                            DateOnlyFormat = dateOnlyFormat,
+                            TimeOnlyFormat = timeOnlyFormat,
+                            TimeSpanFormat = timeSpanFormat,
                         });
 
     /// <summary>
