@@ -11,8 +11,7 @@ namespace TooString;
 /// The complete set of stringification options.
 /// Use <c>new TooStringOptions { StringifyAs = ..., WriteIndented = true, MaxDepth = 5 }</c>
 /// or start from a preset like <see cref="ForJson"/> or <see cref="ForCSharp"/>
-/// and customise with <see cref="With(TooStringOptions)"/> or
-/// <see cref="With(bool?,TooString.StringifyAs?,BindingFlags?,int?,int?,string?,string?,string?,string?)"/>.
+/// and customise with a <c>with</c> expression.
 /// </summary>
 public record TooStringOptions
 {
@@ -23,7 +22,7 @@ public record TooStringOptions
     /// </summary>
     public TooStringOptions()
     {
-        jsonOptions = DefaultJsonSerializerOptions;
+        JsonOptions = DefaultJsonSerializerOptions;
         WriteIndented = false;
         StringifyAs = StringifyAs.CSharp;
         WhichProperties = BindingFlags.Instance | BindingFlags.Public;
@@ -49,7 +48,7 @@ public record TooStringOptions
 
     /// <summary>
     /// Preset for CSharp-style output via reflection.
-    /// Customise further with <c>.With(...)</c> or <c>with { ... }</c>.
+    /// Customise further with <c>with { ... }</c>.
     /// </summary>
     public static readonly TooStringOptions ForCSharp = new() ;
 
@@ -60,7 +59,7 @@ public record TooStringOptions
 
     /// <summary>
     /// Preset for JSON serialization via <see cref="System.Text.Json.JsonSerializer"/>.
-    /// Customize further with <c>.With(...)</c> or <c>with { ... }</c>.
+    /// Customize further with <c>with { ... }</c>.
     /// </summary>
     public static readonly TooStringOptions ForJson
         = Default with
@@ -79,33 +78,16 @@ public record TooStringOptions
 
     /// <summary>
     /// Gets or sets whether output should use indents and newlines.
-    /// Defaults to false
+    /// Defaults to false.
     /// </summary>
-    public bool WriteIndented
-    {
-        get => JsonOptions.WriteIndented;
-        init
-        {
-            if (JsonOptions.WriteIndented != value)
-            {
-                jsonOptions = new JsonSerializerOptions(JsonOptions) { WriteIndented = value };
-            }
-        }
-    }
-
-    JsonSerializerOptions jsonOptions;
+    public bool WriteIndented { get; init; }
 
     /// <summary>
     /// Options for System.Text.Json serialization.
+    /// Only used when <see cref="StringifyAs"/> is <see cref="TooString.StringifyAs.STJsonSerialization"/>.
+    /// For pure System.Text.Json calls, use <see cref="ObjectTooString.ToSTJson{T}(T?, JsonSerializerOptions)"/> directly.
     /// </summary>
-    /// <remarks>
-    /// ⚠️Only used when <see cref="StringifyAs"/> is <see cref="TooString.StringifyAs.STJsonSerialization"/>
-    /// </remarks>
-    public JsonSerializerOptions JsonOptions
-    {
-        get => jsonOptions;
-        init => jsonOptions = value;
-    }
+    public JsonSerializerOptions JsonOptions { get; init; }
 
     /// <summary>
     /// <see cref="BindingFlags"/> to pick out the properties and fields to stringify via reflection.
@@ -152,38 +134,8 @@ public record TooStringOptions
     public string TimeSpanFormat { get; init; }
 
     // ──────────────────────────────────────────────
-    //  With() overloads
+    //  With() — single nullable-params overload
     // ──────────────────────────────────────────────
-
-    /// <summary>
-    /// Returns a copy of the current options reconfigured by applying the
-    /// <paramref name="reconfigure"/> action.
-    /// </summary>
-    public TooStringOptions With(Action<TooStringOptions> reconfigure)
-    {
-        var mutated = this with { };
-        reconfigure(mutated);
-        return mutated;
-    }
-
-    /// <summary>
-    /// Returns a copy of the current options with all values replaced by
-    /// those from <paramref name="other"/>.
-    /// Useful for programmatic composition of option sets.
-    /// </summary>
-    public TooStringOptions With(TooStringOptions other)
-        => this with
-        {
-            JsonOptions = other.JsonOptions,
-            StringifyAs = other.StringifyAs,
-            WhichProperties = other.WhichProperties,
-            MaxDepth = other.MaxDepth,
-            MaxEnumerationLength = other.MaxEnumerationLength,
-            DateTimeFormat = other.DateTimeFormat,
-            DateOnlyFormat = other.DateOnlyFormat,
-            TimeOnlyFormat = other.TimeOnlyFormat,
-            TimeSpanFormat = other.TimeSpanFormat,
-        };
 
     /// <summary>
     /// Returns a copy of the current options with any supplied parameters overridden.
@@ -200,7 +152,7 @@ public record TooStringOptions
         string? timeOnlyFormat = null,
         string? timeSpanFormat = null)
     {
-        var result = this with
+        return this with
         {
             StringifyAs = stringifyAs ?? StringifyAs,
             WriteIndented = writeIndented ?? WriteIndented,
@@ -212,11 +164,10 @@ public record TooStringOptions
             TimeOnlyFormat = timeOnlyFormat ?? TimeOnlyFormat,
             TimeSpanFormat = timeSpanFormat ?? TimeSpanFormat,
         };
-        return result;
     }
 
     // ──────────────────────────────────────────────
-    //  Implicit operators
+    //  Implicit operator
     // ──────────────────────────────────────────────
 
     /// <summary>
@@ -224,12 +175,6 @@ public record TooStringOptions
     /// </summary>
     public static implicit operator JsonSerializerOptions(TooStringOptions o)
         => o.JsonOptions;
-
-    /// <summary>
-    /// Create <see cref="TooStringOptions"/> from <paramref name="jsonSerializerOptions"/>
-    /// </summary>
-    public static implicit operator TooStringOptions(JsonSerializerOptions jsonSerializerOptions)
-        => new() { JsonOptions = jsonSerializerOptions, StringifyAs = StringifyAs.STJsonSerialization };
 }
 
 internal record OptionsWithState : TooStringOptions

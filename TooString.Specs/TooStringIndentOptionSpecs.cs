@@ -33,19 +33,16 @@ public class TooStringIndentOptionSpecs
     }
 
     [Test]
-    public void TooStringOptionsWriteIndentedMatchesJsonOptionsWriteIdented()
+    public void WriteIndented_IsIndependentOfJsonOptions()
     {
         var options = TooStringOptions.Default;
         Assert.That(options.WriteIndented, Is.False);
-        Assert.That(options.JsonOptions.WriteIndented, Is.False);
 
         options = options with { WriteIndented = true };
         Assert.That(options.WriteIndented, Is.True);
-        Assert.That(options.JsonOptions.WriteIndented, Is.True);
 
-        options = options with {WriteIndented = false};
+        options = options with { WriteIndented = false };
         Assert.That(options.WriteIndented, Is.False);
-        Assert.That(options.JsonOptions.WriteIndented, Is.False);
     }
 
     [Test]
@@ -78,10 +75,10 @@ public class TooStringIndentOptionSpecs
 
         var actual = depth4.TooString(options: TooStringOptions.ForJson with
         {
+            WriteIndented = true,
             JsonOptions = TooStringOptions.DefaultJsonSerializerOptions.With(js =>
             {
                 js.MaxDepth = 99;
-                js.WriteIndented = true;
             }),
         });
 

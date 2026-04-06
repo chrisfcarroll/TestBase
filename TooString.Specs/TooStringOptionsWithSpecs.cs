@@ -77,7 +77,7 @@ public class TooStringOptionsWithSpecs
     // ──────────────────────────────────────────────
 
     [Test]
-    public void WithAction_ReturnsMutatedCopy()
+    public void WithParams_ReturnsModifiedCopy()
     {
         var original = TooStringOptions.ForJson;
 
@@ -92,16 +92,15 @@ public class TooStringOptionsWithSpecs
     // ──────────────────────────────────────────────
 
     [Test]
-    public void WithOptions_ReplacesAllValues()
+    public void RecordWith_ReplacesSpecifiedValues()
     {
         var baseOptions = TooStringOptions.ForCSharp;
-        var overrides = new TooStringOptions
+
+        var merged = baseOptions with
         {
             StringifyAs = StringifyAs.DebugView,
             MaxDepth = 10,
         };
-
-        var merged = baseOptions.With(overrides);
 
         Assert.That(merged.StringifyAs, Is.EqualTo(StringifyAs.DebugView));
         Assert.That(merged.MaxDepth, Is.EqualTo(10));

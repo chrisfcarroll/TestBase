@@ -150,7 +150,11 @@ public static partial class ObjectTooString
         }
         else try
             {
-                return System.Text.Json.JsonSerializer.Serialize(value, options.JsonOptions);
+                var jsonOpts = options.JsonOptions;
+                if (jsonOpts.WriteIndented != options.WriteIndented)
+                    jsonOpts = new System.Text.Json.JsonSerializerOptions(jsonOpts)
+                        { WriteIndented = options.WriteIndented };
+                return System.Text.Json.JsonSerializer.Serialize(value, jsonOpts);
             }
             catch
             {
