@@ -28,6 +28,17 @@ namespace TestBase
             return @this;
         }
 
+#if NET6_0_OR_GREATER
+        public static string ShouldNotBeNullOrEmpty(this string @this, [CallerArgumentExpression("@this")] string actualExpression = null)
+        {
+            if (@this == null)
+                ThrowStringAssertion(@this, nameof(ShouldNotBeNullOrEmpty), "Expected: not null or empty, Actual: null", null, null, actualExpression);
+            if (@this.Length == 0)
+                ThrowStringAssertion(@this, nameof(ShouldNotBeNullOrEmpty), "Expected: not null or empty, Actual: \"\"", null, null, actualExpression);
+            return @this;
+        }
+#endif
+
         public static string ShouldNotBeNullOrEmptyOrWhiteSpace(
             this string     @this,
             string          message = null,
@@ -39,6 +50,17 @@ namespace TestBase
                 ThrowStringAssertion(@this, nameof(ShouldNotBeNullOrEmptyOrWhiteSpace), $"Expected: not null/empty/whitespace, Actual: \"{@this}\"", message, args);
             return @this;
         }
+
+#if NET6_0_OR_GREATER
+        public static string ShouldNotBeNullOrEmptyOrWhiteSpace(this string @this, [CallerArgumentExpression("@this")] string actualExpression = null)
+        {
+            if (@this == null)
+                ThrowStringAssertion(@this, nameof(ShouldNotBeNullOrEmptyOrWhiteSpace), "Expected: not null/empty/whitespace, Actual: null", null, null, actualExpression);
+            if (string.IsNullOrWhiteSpace(@this))
+                ThrowStringAssertion(@this, nameof(ShouldNotBeNullOrEmptyOrWhiteSpace), $"Expected: not null/empty/whitespace, Actual: \"{@this}\"", null, null, actualExpression);
+            return @this;
+        }
+#endif
 
         /// <summary>Asserts that <paramref name="@this" />.ToLower() equals <paramref name="expected" />.ToLower()</summary>
         /// <returns>@this</returns>
