@@ -223,6 +223,21 @@ namespace TestBase
             return actual;
         }
 
+#if NET6_0_OR_GREATER
+        /// <summary>Asserts that <code><paramref name="actual" />.Equals(true)</code></summary>
+        /// <returns>
+        ///     <paramref name="actual" />
+        /// </returns>
+        public static T ShouldBeTrue<T>(this T actual,
+            [CallerArgumentExpression("actual")] string actualExpression = null)
+        {
+            if (actual == null || !actual.Equals(true))
+                ThrowAssertion(actual, nameof(ShouldBeTrue),
+                    $"Expected: true, Actual: {actual ?? (object)"null"}", null, null, actualExpression);
+            return actual;
+        }
+#endif
+
         /// <summary>Asserts that <code><paramref name="actual" />.Equals(false)</code></summary>
         /// <returns>
         ///     <paramref name="actual" />
@@ -234,6 +249,21 @@ namespace TestBase
                     $"Expected: false, Actual: {actual ?? (object)"null"}", message, args);
             return actual;
         }
+
+#if NET6_0_OR_GREATER
+        /// <summary>Asserts that <code><paramref name="actual" />.Equals(false)</code></summary>
+        /// <returns>
+        ///     <paramref name="actual" />
+        /// </returns>
+        public static T ShouldBeFalse<T>(this T actual,
+            [CallerArgumentExpression("actual")] string actualExpression = null)
+        {
+            if (actual == null || !actual.Equals(false))
+                ThrowAssertion(actual, nameof(ShouldBeFalse),
+                    $"Expected: false, Actual: {actual ?? (object)"null"}", null, null, actualExpression);
+            return actual;
+        }
+#endif
 
         /// <summary>
         ///     Asserts that <paramref name="actual" /> is GreaterThan <paramref name="expected" />
