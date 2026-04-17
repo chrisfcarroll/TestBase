@@ -29,13 +29,28 @@ namespace TestBase
         /// <returns>
         ///     <paramref name="actual" />
         /// </returns>
-        [return:System.Diagnostics.CodeAnalysis.NotNull]
-        public static T ShouldNotBeNull<T>([System.Diagnostics.CodeAnalysis.NotNull]this T actual, string message = null, params object[] args)
+        [return:NotNull]
+        public static T ShouldNotBeNull<T>(
+            [NotNull]this T actual,
+            string message = null,
+            params object[] args)
         {
             if (actual == null)
                 ThrowAssertion(actual, nameof(ShouldNotBeNull), "Expected: not null, Actual: null", message, args);
             return actual;
         }
+
+#if NET6_0_OR_GREATER
+        [return:NotNull]
+        public static T ShouldNotBeNull<T>(
+            [NotNull]this T actual,
+            [CallerArgumentExpression("actual")] string actualExpression = null)
+        {
+            if (actual == null)
+                ThrowAssertion(actual, nameof(ShouldNotBeNull), "Expected: not null, Actual: null", null, null, actualExpression);
+            return actual;
+        }
+#endif
 
         /// <summary>Asserts that <code>actual==null</code></summary>
         public static void ShouldBeNull([AllowNull] this object actual, string message = null, params object[] args)
@@ -86,9 +101,9 @@ namespace TestBase
         /// <returns>
         ///     <paramref name="actual" />
         /// </returns>
-        [return:System.Diagnostics.CodeAnalysis.NotNull]
+        [return:NotNull]
         public static object ShouldNotBeNullOrEmptyOrWhitespace(
-            [System.Diagnostics.CodeAnalysis.NotNull]this object     actual,
+            [NotNull]this object     actual,
             string          message = null,
             params object[] args)
         {
@@ -101,6 +116,23 @@ namespace TestBase
                     $"Expected: not null/empty/whitespace, Actual: \"{actual}\"", message, args);
             return actual;
         }
+
+#if NET6_0_OR_GREATER
+        [return:NotNull]
+        public static object ShouldNotBeNullOrEmptyOrWhitespace(
+            [NotNull]this object     actual,
+            [CallerArgumentExpression("actual")] string actualExpression = null)
+        {
+            if (actual == null)
+                ThrowAssertion(actual, nameof(ShouldNotBeNullOrEmptyOrWhitespace),
+                    "Expected: not null/empty/whitespace, Actual: null", null, null, actualExpression);
+            var trimmed = (actual.ToString() ?? "").Trim();
+            if (trimmed.Length == 0)
+                ThrowAssertion(actual, nameof(ShouldNotBeNullOrEmptyOrWhitespace),
+                    $"Expected: not null/empty/whitespace, Actual: \"{actual}\"", null, null, actualExpression);
+            return actual;
+        }
+#endif
 
         /// <summary>
         ///     Asserts that <paramref name="actual" />.Equals(<paramref name="expected" />) or else that
@@ -145,7 +177,7 @@ namespace TestBase
                 || (actual != null && actual.Equals(expected));
             if (!areEqual)
                 ThrowAssertion(actual, $"{nameof(ShouldEqual)} {expected}",
-                    $"Expected: {expected ?? (object)"null"}, Actual: {actual ?? (object)"null"}", comment, args);
+                    $"Expected: {expected ?? "null"}, Actual: {actual ?? (object)"null"}", comment, args);
             return actual;
         }
 

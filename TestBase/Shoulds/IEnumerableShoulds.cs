@@ -129,6 +129,18 @@ namespace TestBase
             return actual;
         }
 
+#if NET6_0_OR_GREATER
+        public static IEnumerable<T> ShouldNotBeEmpty<T>(
+            this IEnumerable<T> actual,
+            [CallerArgumentExpression("actual")] string actualExpression = null)
+        {
+            if (!actual.Any())
+                ThrowCollectionAssertion(actual, nameof(ShouldNotBeEmpty),
+                    "Expected: non-empty collection, Actual: empty", null, null, actualExpression);
+            return actual;
+        }
+#endif
+
         /// <summary>Asserts that <paramref name="actual" /> is not null or empty</summary>
         /// <returns>
         ///     <paramref name="actual" />
@@ -142,6 +154,16 @@ namespace TestBase
             return actual.ShouldNotBeNull(message, args).ShouldNotBeEmpty(message, args);
         }
 
+#if NET6_0_OR_GREATER
+        [return:NotNull]
+        public static IEnumerable<T> ShouldNotBeNullOrEmpty<T>(
+            this IEnumerable<T> actual,
+            [CallerArgumentExpression("actual")] string actualExpression = null)
+        {
+            return actual.ShouldNotBeNull(actualExpression).ShouldNotBeEmpty(actualExpression);
+        }
+#endif
+
         /// <summary>Asserts that <paramref name="actual" /> is not empty</summary>
         /// <returns>
         ///     <paramref name="actual" />
@@ -154,6 +176,17 @@ namespace TestBase
                     "Expected: non-empty collection, Actual: empty", message, args);
             return actual;
         }
+
+#if NET6_0_OR_GREATER
+        public static T ShouldNotBeEmpty<T>(this T actual, [CallerArgumentExpression("actual")] string actualExpression = null)
+        where T : IEnumerable
+        {
+            if (!actual.HasAnyElements())
+                ThrowEnumerableAssertion(actual, nameof(ShouldNotBeEmpty),
+                    "Expected: non-empty collection, Actual: empty", null, null, actualExpression);
+            return actual;
+        }
+#endif
 
         /// <summary>Asserts that <paramref name="actual" /> is empty</summary>
         /// <returns>
