@@ -8,9 +8,9 @@
     </PropertyGroup>
     
     <PropertyGroup>
-        <AssemblyVersion>0.7</AssemblyVersion>
-        <AssemblyFileVersion>0.7</AssemblyFileVersion>
-        <PackageVersion>0.7-preview</PackageVersion>
+        <AssemblyVersion>0.8</AssemblyVersion>
+        <AssemblyFileVersion>0.8</AssemblyFileVersion>
+        <PackageVersion>0.8-preview</PackageVersion>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <Title>value.TooString() — The stringifier for CSharp and Json output, going places that serializers don't.</Title>
         <PackageDescription><![CDATA[TooString is a Stringifier (not a serializer) for CSharp and Json output.
@@ -21,10 +21,12 @@ TooString can
   empty output, such as ValueTuples.
 - Output as Json or C# object notation, or ‘debug view’ style, or [CallerArgumentExpression]
 
-TooString offers 3 extension method groups on Object:
+TooString offers 5 extension method groups on Object:
 ```csharp
-value.TooString();
+value.ToCSharpString()
 value.ToJson();
+value.ToSTJson()
+value.TooString();
 value.ToCallerArgumentString();
 ```
 _TooString is not a serializer._
@@ -76,6 +78,7 @@ new { A = "boo", B = new Complex(3,4) }.ToDebugViewString();
         <PackageReleaseNotes>
             ChangeLog
             ---------
+            0.8.0  5 extension method groups: ToCSharpString, ToJson, ToSTJson, TooString, ToCallerArgumentString.
             0.7.0  Easier to build new TooStringOptions(){...}. Sanitize overloads.
             0.6.0  TooString() defaults to CSharp.
             &#x2007;&#x2008;&#x2007;&#x2008;&#x2007;&#x2008; Add TooStringOptions.WriteIndented property.
