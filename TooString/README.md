@@ -23,15 +23,22 @@ _TooString is not a serializer._
 - TooString offers both MaxDepth and MaxEnumerationLength options for abbreviated output.
 
 
-#### Default behaviour
+### Default behaviour
 
-- ToJson() uses reflection-based JSON stringification (not System.Text.Json).
-- ToSTJson() uses System.Text.Json directly.
-- ToCSharpString() uses reflection-based C# anonymous-object notation.
+- ToCSharpString() returns reflection-based C# anonymous-object notation.
+- ToJson() returns reflection-based JSON stringification (not System.Text.Json).
+- ToSTJson() is a convenience method for System.Text.Json.JsonSerializer.Serialize(...).
 - TooString() defaults to CSharp style; pass a StringifyAs to choose the style.
 - ToCallerArgumentString() returns the literal code expression.
 
 All reflection-based methods default to MaxDepth = 3, MaxEnumerationLength = 9.
+
+#### What's the different between ToJson() and ToSTJson()?
+
+- System.Text.Json will return "{}" by default for any ValueTuple. ToJson() will return the tuple items as an array.
+- ToJson() can abbreviate output with both maxDepth and maxEnumerationLength options, System.Text.Json has no maxEnumerationLength option.
+- System.Text.Json throws given values in System.Reflection, delegates, Types, or other non-serializable types. ToJson() will tell you more than you want to know.
+- System.Text.Json will return property values for classes in System.Numerics, ToJson() will represent multi-dimensional numbers as arrays.
 
 Example:
 ```
