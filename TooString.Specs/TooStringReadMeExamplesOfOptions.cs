@@ -39,7 +39,7 @@ public class TooStringReadMeExamplesOfOptions
         var value = circular;
         var d1 = value.ToCSharpString();
         var d2 = value.TooString(StringifyAs.CSharp);
-        var d3 = value.ToCSharpString(maxDepth: 4, maxEnumerationLength: 9);
+        var d3 = value.ToCSharpString(maxDepth: 4, maxEnumerableLength: 9);
         var d4 = value.TooString(options: TooStringOptions.Default with
         {
             WriteIndented = true,

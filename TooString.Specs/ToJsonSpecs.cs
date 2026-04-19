@@ -64,8 +64,8 @@ public class ToJsonSpecs
     {
         var value = new { Items = Enumerable.Range(1, 100).ToArray() };
 
-        var limited = value.ToJson(maxEnumerationLength: 3);
-        var full = value.ToJson(maxEnumerationLength: 100);
+        var limited = value.ToJson(maxEnumerableLength: 3);
+        var full = value.ToJson(maxEnumerableLength: 100);
 
         Assert.That(limited.Length, Is.LessThan(full.Length));
     }

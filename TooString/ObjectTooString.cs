@@ -81,7 +81,7 @@ public static partial class ObjectTooString
     /// </summary>
     /// <param name="value">The value to stringify</param>
     /// <param name="maxDepth">Maximum depth for nested objects. Defaults to 3.</param>
-    /// <param name="maxLength">Maximum number of enumerable elements to include. Defaults to 9.</param>
+    /// <param name="maxEnumerableLength">Maximum number of enumerable elements to include. Defaults to 9.</param>
     /// <param name="style">The output style. Defaults to <see cref="StringifyAs.CSharp"/>.</param>
     /// <param name="writeIndented">Whether to format with indentation and newlines.</param>
     /// <param name="whichProperties">
@@ -97,7 +97,7 @@ public static partial class ObjectTooString
     /// </returns>
     public static string TooString<T>(this T value,
                                       int maxDepth,
-                                      int maxLength = 9,
+                                      int maxEnumerableLength = 9,
                                       StringifyAs style = StringifyAs.CSharp,
                                       bool writeIndented = true,
                                       BindingFlags whichProperties =
@@ -111,7 +111,7 @@ public static partial class ObjectTooString
                         {
                             StringifyAs = style,
                             MaxDepth = maxDepth,
-                            MaxEnumerationLength = maxLength,
+                            MaxEnumerationLength = maxEnumerableLength,
                             WriteIndented = writeIndented,
                             WhichProperties = whichProperties,
                             DateTimeFormat = dateTimeFormat,
@@ -367,10 +367,10 @@ public static partial class ObjectTooString
             //then better to halt at this level, where we can show more metadata i.e. Length
             return ScalarishToShortReflectedString(value,options);
         }
-        var maxLength = options.MaxEnumerationLength;
-        if (maxLength < 0) maxLength = - maxLength - options.Depth;
+        var maxEnumerableLength = options.MaxEnumerationLength;
+        if (maxEnumerableLength < 0) maxEnumerableLength = - maxEnumerableLength - options.Depth;
 
-        if(maxLength == 0) return ScalarishToShortReflectedString(value,options);
+        if(maxEnumerableLength == 0) return ScalarishToShortReflectedString(value,options);
 
         int i = 0;
         var (start, delimiter, end) = options.StringifyAs switch
@@ -385,7 +385,7 @@ public static partial class ObjectTooString
             if(i > 0){ b.Append(delimiter); }
             b.Append(BuildReflectedString(item, options with { Depth = options.Depth + 1 }));
 
-            if (++i >= maxLength) break;
+            if (++i >= maxEnumerableLength) break;
         }
         b.Append(end);
 

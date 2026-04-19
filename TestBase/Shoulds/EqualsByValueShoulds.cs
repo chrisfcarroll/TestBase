@@ -20,7 +20,7 @@ namespace TestBase
             if (diff.AreEqual) return;
             var comment = message != null && args?.Length > 0 ? string.Format(message, args) : message;
             string actualStr;
-            try { actualStr = actual?.TooString(maxDepth: 1, maxLength: 3) ?? "null"; }
+            try { actualStr = actual?.TooString(maxDepth: 1, maxEnumerableLength: 3) ?? "null"; }
             catch { actualStr = actual?.ToString() ?? "null"; }
             throw new Assertion<object>(
                 actualStr,

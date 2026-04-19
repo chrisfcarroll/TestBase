@@ -36,7 +36,7 @@ All reflection-based methods default to MaxDepth = 3, MaxEnumerationLength = 9.
 #### What's the different between ToJson() and ToSTJson()?
 
 - System.Text.Json will return "{}" by default for any ValueTuple. ToJson() will return the tuple items as an array.
-- ToJson() can abbreviate output with both maxDepth and maxEnumerationLength options, System.Text.Json has no maxEnumerationLength option.
+- ToJson() can abbreviate output with both maxDepth and maxEnumerableLength options, System.Text.Json has no maxEnumerableLength option.
 - System.Text.Json throws given values in System.Reflection, delegates, Types, or other non-serializable types. ToJson() will tell you more than you want to know.
 - System.Text.Json will return property values for classes in System.Numerics, ToJson() will represent multi-dimensional numbers as arrays.
 
@@ -90,7 +90,7 @@ value.ToSTJson(writeIndented: true, propertyNamingPolicy: JsonNamingPolicy.Camel
 // TooString with style selection
 value.TooString()
 value.TooString(StringifyAs.JsonStringifier)
-value.TooString(maxDepth: 4, maxLength: 9, style: StringifyAs.CSharp)
+value.TooString(maxDepth: 4, maxEnumerableLength: 9, style: StringifyAs.CSharp)
 value.TooString(TooStringOptions.ForJson with { MaxEnumerationLength = 9 })
 ```
 

@@ -91,19 +91,19 @@ public class TooStringLengthAndDepthOptionSpecs
     [Test]
     public void MaxLengthOptionIsRespected()
     {
-        var actual1= lengthy.TooString(maxDepth: 2, maxLength:1, style:StringifyAs.DebugView, writeIndented: false);
+        var actual1= lengthy.TooString(maxDepth: 2, maxEnumerableLength:1, style:StringifyAs.DebugView, writeIndented: false);
         var expected1 = """{ A = 0, B = { Type = List<CircularLong>, Count = 9 } }""";
         Assert.That(actual1, Is.EqualTo(expected1));
 
-        var actual2= lengthy.TooString(maxDepth: 2, maxLength:2, style:StringifyAs.DebugView, writeIndented: false);
+        var actual2= lengthy.TooString(maxDepth: 2, maxEnumerableLength:2, style:StringifyAs.DebugView, writeIndented: false);
         var expected2 = """{ A = 0, B = { Type = List<CircularLong>, Count = 9 } }""";
         Assert.That(actual2, Is.EqualTo(expected2));
 
-        var actual3= lengthy.TooString(maxDepth: 3, maxLength:2, style:StringifyAs.DebugView, writeIndented: false);
+        var actual3= lengthy.TooString(maxDepth: 3, maxEnumerableLength:2, style:StringifyAs.DebugView, writeIndented: false);
         var expected3 = """{ A = 0, B = [ { A = 1, B = { Type = List<CircularLong>, Count = 0 } }, { A = 2, B = { Type = List<CircularLong>, Count = 0 } } ] }""";
         Assert.That(actual3, Is.EqualTo(expected3));
 
-        var actual4= lengthy.TooString(maxDepth: 3, maxLength:4, style:StringifyAs.DebugView, writeIndented: false);
+        var actual4= lengthy.TooString(maxDepth: 3, maxEnumerableLength:4, style:StringifyAs.DebugView, writeIndented: false);
         var expected4 = "{ A = 0, B = [ " +
                                         "{ A = 1, B = { Type = List<CircularLong>, Count = 0 } }, " +
                                         "{ A = 2, B = { Type = List<CircularLong>, Count = 0 } }, " +
@@ -112,7 +112,7 @@ public class TooStringLengthAndDepthOptionSpecs
                                         "] }";
         Assert.That(actual4, Is.EqualTo(expected4));
 
-        var actual5= lengthy.TooString(maxDepth: 3, maxLength:99, style:StringifyAs.DebugView, writeIndented: false);
+        var actual5= lengthy.TooString(maxDepth: 3, maxEnumerableLength:99, style:StringifyAs.DebugView, writeIndented: false);
         var expected5 = "{ A = 0, B = [ " +
                         "{ A = 1, B = { Type = List<CircularLong>, Count = 0 } }, " +
                         "{ A = 2, B = { Type = List<CircularLong>, Count = 0 } }, " +
@@ -130,36 +130,36 @@ public class TooStringLengthAndDepthOptionSpecs
     [Test]
     public void MaxLength0IsRespected()
     {
-        var actual20= lengthy.TooString(maxDepth: 2, maxLength:0, style:StringifyAs.DebugView, writeIndented: false);
+        var actual20= lengthy.TooString(maxDepth: 2, maxEnumerableLength:0, style:StringifyAs.DebugView, writeIndented: false);
         var expected20 = """{ A = 0, B = { Type = List<CircularLong>, Count = 9 } }""";
         Assert.That(actual20, Is.EqualTo(expected20));
 
-        var actual30= lengthy.TooString(maxDepth: 3, maxLength:0, style:StringifyAs.DebugView, writeIndented: false);
+        var actual30= lengthy.TooString(maxDepth: 3, maxEnumerableLength:0, style:StringifyAs.DebugView, writeIndented: false);
         var expected30 = """{ A = 0, B = { Type = List<CircularLong>, Count = 9 } }""";
         Assert.That(actual30, Is.EqualTo(expected30));
     }
     [Test]
     public void NegativeMaxLengthOptionIsRespected()
     {
-        var actual21= lengthyAndDeep.TooString(maxDepth: 2, maxLength: -1, style:StringifyAs.DebugView, writeIndented: false);
+        var actual21= lengthyAndDeep.TooString(maxDepth: 2, maxEnumerableLength: -1, style:StringifyAs.DebugView, writeIndented: false);
         var expected21 = """{ A = 1, B = { Type = List<CircularLong>, Count = 3 } }""";
         Assert.That(actual21, Is.EqualTo(expected21));
 
-        var actual22= lengthyAndDeep.TooString(maxDepth: 2, maxLength: -2, style:StringifyAs.DebugView, writeIndented: false);
+        var actual22= lengthyAndDeep.TooString(maxDepth: 2, maxEnumerableLength: -2, style:StringifyAs.DebugView, writeIndented: false);
         var expected22 = """{ A = 1, B = { Type = List<CircularLong>, Count = 3 } }""";
         Assert.That(actual22, Is.EqualTo(expected22));
 
-        var actual32= lengthyAndDeep.TooString(maxDepth: 3, maxLength: -2, style:StringifyAs.DebugView, writeIndented: false);
+        var actual32= lengthyAndDeep.TooString(maxDepth: 3, maxEnumerableLength: -2, style:StringifyAs.DebugView, writeIndented: false);
         var expected32 = """{ A = 1, B = [ { A = 1, B = { Type = List<CircularLong>, Count = 3 } } ] }""";
         Assert.That(actual32, Is.EqualTo(expected32));
 
-        var actual92= lengthyAndDeep.TooString(maxDepth: 9, maxLength: -2, style:StringifyAs.DebugView, writeIndented: false);
+        var actual92= lengthyAndDeep.TooString(maxDepth: 9, maxEnumerableLength: -2, style:StringifyAs.DebugView, writeIndented: false);
         var expected92 = "{ A = 1, B = [ " +
                                         "{ A = 1, B = [ { A = 11, B = { Type = List<CircularLong>, Count = 0 } } ] } " +
                                         "] }";
         Assert.That(actual92, Is.EqualTo(expected92));
 
-        var actual94= lengthyAndDeep.TooString(maxDepth: 9, maxLength: -4, style:StringifyAs.DebugView, writeIndented: false);
+        var actual94= lengthyAndDeep.TooString(maxDepth: 9, maxEnumerableLength: -4, style:StringifyAs.DebugView, writeIndented: false);
         var expected94 =
             "{ A = 1, B = [ " +
                         "{ A = 1, B = [ { A = 11, B = { Type = List<CircularLong>, Count = 0 } } ] }, " +
@@ -168,7 +168,7 @@ public class TooStringLengthAndDepthOptionSpecs
                         "] }";
         Assert.That(actual94, Is.EqualTo(expected94));
 
-        var actual95= lengthyAndDeep.TooString(maxDepth: 9, maxLength: -5, style:StringifyAs.DebugView, writeIndented: false);
+        var actual95= lengthyAndDeep.TooString(maxDepth: 9, maxEnumerableLength: -5, style:StringifyAs.DebugView, writeIndented: false);
         var expected95 =
             "{ A = 1, B = [ " +
             "{ A = 1, B = [ { A = 11, B = { Type = List<CircularLong>, Count = 0 } }, { A = 12, B = { Type = List<CircularLong>, Count = 0 } } ] }, " +
@@ -177,7 +177,7 @@ public class TooStringLengthAndDepthOptionSpecs
             "] }";
         Assert.That(actual95, Is.EqualTo(expected95));
 
-        var actual96= lengthyAndDeep.TooString(maxDepth: 9, maxLength: -6, style:StringifyAs.DebugView, writeIndented: false);
+        var actual96= lengthyAndDeep.TooString(maxDepth: 9, maxEnumerableLength: -6, style:StringifyAs.DebugView, writeIndented: false);
         var expected96 =
             "{ A = 1, B = [ " +
             "{ A = 1, B = [ { A = 11, B = { Type = List<CircularLong>, Count = 0 } }, { A = 12, B = { Type = List<CircularLong>, Count = 0 } }, { A = 13, B = { Type = List<CircularLong>, Count = 0 } } ] }, " +

@@ -13,7 +13,7 @@ public static partial class ObjectTooString
                                            BindingFlags whichProperties =
                                                BindingFlags.Instance | BindingFlags.Public,
                                            int maxDepth = 3,
-                                           int maxEnumerationLength = 9,
+                                           int maxEnumerableLength = 9,
                                            string dateTimeFormat = "O",
                                            string dateOnlyFormat = "O",
                                            string timeOnlyFormat = "HH:mm:ss",
@@ -24,7 +24,7 @@ public static partial class ObjectTooString
             WriteIndented = writeIndented,
             WhichProperties = whichProperties,
             MaxDepth = maxDepth,
-            MaxEnumerationLength = maxEnumerationLength,
+            MaxEnumerationLength = maxEnumerableLength,
             DateTimeFormat = dateTimeFormat,
             DateOnlyFormat = dateOnlyFormat,
             TimeOnlyFormat = timeOnlyFormat,

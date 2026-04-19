@@ -25,8 +25,8 @@ public class TooStringFullOptionsSpecs
     {
         var value = Enumerable.Range(1, 20).ToArray();
 
-        var limited = value.TooString(maxDepth: 2, maxLength: 3, style: StringifyAs.CSharp);
-        var full = value.TooString(maxDepth: 2, maxLength: 20, style: StringifyAs.CSharp);
+        var limited = value.TooString(maxDepth: 2, maxEnumerableLength: 3, style: StringifyAs.CSharp);
+        var full = value.TooString(maxDepth: 2, maxEnumerableLength: 20, style: StringifyAs.CSharp);
 
         Assert.That(limited.Length, Is.LessThan(full.Length));
     }
@@ -105,7 +105,7 @@ public class TooStringFullOptionsSpecs
 
         var result = value.TooString(
             maxDepth: 5,
-            maxLength: 20,
+            maxEnumerableLength: 20,
             style: StringifyAs.JsonStringifier,
             writeIndented: true,
             dateTimeFormat: "yyyy-MM-dd");

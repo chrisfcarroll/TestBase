@@ -139,7 +139,7 @@ public class TooStringOptionsWithSpecs
         var modified = TooStringOptions.Default.With(
             whichProperties: BindingFlags.NonPublic | BindingFlags.Instance,
             maxDepth: 7,
-            maxEnumerationLength: 20,
+            maxEnumerableLength: 20,
             dateTimeFormat: "yyyy-MM-dd",
             dateOnlyFormat: "yyyy-MM-dd",
             timeOnlyFormat: "HH:mm",
@@ -189,7 +189,7 @@ public class TooStringOptionsWithSpecs
         var options = TooStringOptions.ForJson
             .With(maxDepth: 5)
             .With(writeIndented: true)
-            .With(maxEnumerationLength: 20);
+            .With(maxEnumerableLength: 20);
 
         Assert.That(options.StringifyAs, Is.EqualTo(StringifyAs.STJsonSerialization));
         Assert.That(options.MaxDepth, Is.EqualTo(5));
