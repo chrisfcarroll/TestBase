@@ -71,16 +71,11 @@ public class ToJsonSpecs
     }
 
     [Test]
-    public void ToJson_WithTooStringOptions_UsesJsonStringifier()
+    public void ToJson_WithMaxDepth_UsesJsonStringifier()
     {
         var value = new CompositeA { A = "test", B = new Complex(1, 2) };
-        var options = new TooStringOptions
-        {
-            StringifyAs = StringifyAs.CSharp, // should be overridden to JsonStringifier
-            MaxDepth = 5,
-        };
 
-        var result = value.ToJson(options);
+        var result = value.ToJson(maxDepth: 5);
 
         // Should be JSON, not CSharp style
         Assert.That(result, Does.Contain("\"A\":\"test\""));

@@ -9,8 +9,7 @@ public class TooStringReadMeExamples
     [Test]
     public void ExampleIsCorrectGivenCallerArgument()
     {
-
-        var actual = (Math.Sqrt(4 * Math.PI / 3)).ToArgumentExpression();
+        var actual = (Math.Sqrt(4 * Math.PI / 3)).ToCallerArgumentString();
         // Output is the literal code: "Math.Sqrt(4 * Math.PI / 3)"
 
         Assert.That(actual, Is.EqualTo("Math.Sqrt(4 * Math.PI / 3)"));

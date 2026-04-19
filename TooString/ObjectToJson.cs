@@ -10,24 +10,6 @@ public static partial class ObjectTooString
     /// For pure System.Text.Json serialization, use <see cref="ToSTJson{T}(T?, System.Text.Json.JsonSerializerOptions)"/>.
     /// </summary>
     /// <param name="value">The value to stringify as JSON</param>
-    /// <param name="options">
-    /// Options controlling the stringify behaviour. Only reflection-based
-    /// options are used; <see cref="TooStringOptions.JsonOptions"/> is ignored.
-    /// </param>
-    /// <typeparam name="T"></typeparam>
-    /// <returns>A JSON-style string representation of <paramref name="value"/></returns>
-    public static string ToJson<T>(this T? value, TooStringOptions options)
-    {
-        options = options with { StringifyAs = StringifyAs.JsonStringifier };
-        return BuildReflectedString(value, OptionsWithState.From(0, options));
-    }
-
-    /// <summary>
-    /// Stringify <paramref name="value"/> as JSON using our reflection-based
-    /// <see cref="StringifyAs.JsonStringifier"/>, with individually specified options.
-    /// For pure System.Text.Json serialization, use <see cref="ToSTJson{T}(T?, System.Text.Json.JsonSerializerOptions)"/>.
-    /// </summary>
-    /// <param name="value">The value to stringify as JSON</param>
     /// <param name="writeIndented">Whether to format with indentation and newlines</param>
     /// <param name="whichProperties">
     /// <see cref="BindingFlags"/> to select properties. Defaults to Instance | Public.
@@ -50,7 +32,7 @@ public static partial class ObjectTooString
                                    string dateOnlyFormat = "O",
                                    string timeOnlyFormat = "HH:mm:ss",
                                    string timeSpanFormat = "c")
-        => ToJson(value, new TooStringOptions
+        => BuildReflectedString(value, OptionsWithState.From(0, new TooStringOptions
         {
             StringifyAs = StringifyAs.JsonStringifier,
             WriteIndented = writeIndented,
@@ -61,5 +43,5 @@ public static partial class ObjectTooString
             DateOnlyFormat = dateOnlyFormat,
             TimeOnlyFormat = timeOnlyFormat,
             TimeSpanFormat = timeSpanFormat,
-        });
+        }));
 }

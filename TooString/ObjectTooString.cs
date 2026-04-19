@@ -41,6 +41,17 @@ public static partial class ObjectTooString
                                                  [CallerArgumentExpression("value")]
                                                  string expression="") => expression;
 
+    /// <param name="value"></param>
+    /// <param name="expression"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns>
+    /// Returns the <see cref="CallerArgumentExpressionAttribute"/> string
+    /// for <paramref name="value"/>.
+    /// </returns>
+    public static string ToCallerArgumentString<T>(this T? value,
+                                                   [CallerArgumentExpression("value")]
+                                                   string expression="") => expression;
+
     /// <summary>
     /// Stringifies a value using the specified style.
     /// </summary>
@@ -48,7 +59,6 @@ public static partial class ObjectTooString
     /// <param name="style">The <em>style</em> by which the value is
     /// stringified.
     /// </param>
-    /// <param name="options"></param>
     /// <typeparam name="T"></typeparam>
     /// <returns>
     /// A string representation of <paramref name="value"/> according to the
