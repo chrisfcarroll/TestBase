@@ -74,7 +74,7 @@ namespace TestBase
 #if NET6_0_OR_GREATER                    
                     { StringifyMethod.TooString, o => o.TooString(maxDepth: 1, maxLength: 3) },
 #else
-                    { StringifyMethod.TooString, o => o.TooString(maxDepth: 1, maxLength: 3) },
+                    { StringifyMethod.TooString, o => o.TooString() },
 #endif
                 };
 
@@ -182,7 +182,11 @@ namespace TestBase
                 AssertedDetail = assertionsExpression; 
                 Comment = string.Join(nl,
                     (comments ?? new List<(string, object)>())
-                    .Select(c => $"{c.Item1} : {c.Item2.TooString(maxDepth: 1, maxLength: 3)}"));
+#if NET6_0_OR_GREATER
+                    .Select(c => $"{c.Item1} : {c.Item2.TooString( maxDepth: 1, maxLength: 3 )}"));
+#else
+                    .Select(c => $"{c.Item1} : {c.Item2.TooString()}"));
+#endif
                 assertions(actual);
                 Result = true;
             }
