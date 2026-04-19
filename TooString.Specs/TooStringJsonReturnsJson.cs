@@ -17,7 +17,7 @@ public class TooStringJsonReturnsJson
     [TestCase(1.2d, "1.2")]
     public void GivenAScalar(object value, string expected)
     {
-        Assert.That(value.TooString(StringifyAs.STJsonSerialization ), Is.EqualTo(expected));
+        Assert.That(value.ToSTJson(), Is.EqualTo(expected));
     }
 
     [Test]
@@ -32,7 +32,7 @@ public class TooStringJsonReturnsJson
         }
 
         Assert.That(
-            now.TooString(StringifyAs.STJsonSerialization),
+            now.ToSTJson(),
             Is.EqualTo($"\"{now.ToString("O")}\""));
     }
 
@@ -40,14 +40,14 @@ public class TooStringJsonReturnsJson
     public void GivenACompositeObject()
     {
         var value = new CompositeA { A = "boo", B = new Complex(3,4) };
-        var expected = 
+        var expected =
             "{\"A\":\"boo\",\"B\":{\"Real\":3,\"Imaginary\":4,\"Magnitude\":5,\"Phase\":0.9272952180016122}}";
-        
-        TestContext.Progress.WriteLine(value.TooString(StringifyAs.STJsonSerialization));
-        
+
+        TestContext.Progress.WriteLine(value.ToSTJson());
+
         Assert.That(
-            value.TooString(StringifyAs.STJsonSerialization), 
-            Is.EqualTo(expected) 
+            value.ToSTJson(),
+            Is.EqualTo(expected)
         );
     }
 
@@ -58,10 +58,10 @@ public class TooStringJsonReturnsJson
         var expected =
             "{\"A\":null,\"B\":null}";
 
-        TestContext.Progress.WriteLine(value.TooString(StringifyAs.STJsonSerialization));
+        TestContext.Progress.WriteLine(value.ToSTJson());
 
         Assert.That(
-            value.TooString(StringifyAs.STJsonSerialization),
+            value.ToSTJson(),
             Is.EqualTo(expected)
             );
     }
@@ -70,28 +70,29 @@ public class TooStringJsonReturnsJson
     public void GivenAnAnonymousObject()
     {
         var value = new { A = "boo", B = new Complex(3,4) };
-        var expected = 
+        var expected =
             "{\"A\":\"boo\",\"B\":{\"Real\":3,\"Imaginary\":4,\"Magnitude\":5,\"Phase\":0.9272952180016122}}";
-        
-        TestContext.Progress.WriteLine(value.TooString(StringifyAs.STJsonSerialization));
-        
+
+        TestContext.Progress.WriteLine(value.ToSTJson());
+
         Assert.That(
-            value.TooString(StringifyAs.STJsonSerialization), 
-            Is.EqualTo(expected) 
+            value.ToSTJson(),
+            Is.EqualTo(expected)
         );
     }
-    
+
     [Test]
     public void WithCircularReferencesNulledOut__GivenCircularReferences()
     {
         var value = new Circular{ A = "boo"};
         value.B = value;
-        var expected = 
+        var expected =
             "{\"A\":\"boo\",\"B\":null,\"C\":null}";
-        
+
         Assert.That(
-            value.TooString(StringifyAs.STJsonSerialization), 
-            Is.EqualTo(expected) 
+            value.ToSTJson(
+                referenceHandler: System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles),
+            Is.EqualTo(expected)
         );
     }
     
@@ -152,7 +153,7 @@ public class TooStringJsonReturnsJson
         TestContext.Progress.WriteLine("ToString:" + value);
 
         Assert.That(
-            value.TooString(StringifyAs.STJsonSerialization),
+            value.ToJson(writeIndented: false),
             Is.EqualTo("""[1,"boo",false,"Absolute",{"A":"A","B":[3,4]}]"""));
 
         var valueAsAnonymousObject = new
@@ -162,7 +163,7 @@ public class TooStringJsonReturnsJson
         };
         Assert.That(
             jsonnedIncludeFields,
-            Is.EqualTo( valueAsAnonymousObject.TooString(StringifyAs.STJsonSerialization)));
+            Is.EqualTo( valueAsAnonymousObject.ToSTJson()));
     }
 
     [Test]
@@ -217,7 +218,7 @@ public class TooStringJsonReturnsJson
         var comparableActual = actual.RegexReplaceCompilationDependentValuesWithPseudoValues();
 
         var expandoObject = JsonSerializer.Deserialize<ExpandoObject>(actual);
-        var expandoString = expandoObject.TooString(StringifyAs.STJsonSerialization);
+        var expandoString = expandoObject.ToSTJson();
         var comparableExpandoString = expandoString.RegexReplaceCompilationDependentValuesWithPseudoValues();
         TestContext.Progress.WriteLine("Comparable Actual");
         TestContext.Progress.WriteLine(comparableActual);

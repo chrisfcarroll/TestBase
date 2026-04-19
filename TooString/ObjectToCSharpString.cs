@@ -9,7 +9,7 @@ public static partial class ObjectTooString
     /// using our reflection-based <see cref="StringifyAs.CSharp"/> style.
     /// </summary>
     public static string ToCSharpString<T>(this T value,
-                                           bool writeIndented = false,
+                                           bool writeIndented = true,
                                            BindingFlags whichProperties =
                                                BindingFlags.Instance | BindingFlags.Public,
                                            int maxDepth = 3,

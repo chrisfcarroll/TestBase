@@ -48,9 +48,9 @@ public class TooStringFullOptionsSpecs
     {
         var value = new { A = 1 };
 
-        var csharp = value.TooString(maxDepth: 3, style: StringifyAs.CSharp);
-        var json = value.TooString(maxDepth: 3, style: StringifyAs.JsonStringifier);
-        var debug = value.TooString(maxDepth: 3, style: StringifyAs.DebugView);
+        var csharp = value.TooString(maxDepth: 3, style: StringifyAs.CSharp, writeIndented: false);
+        var json = value.TooString(maxDepth: 3, style: StringifyAs.JsonStringifier, writeIndented: false);
+        var debug = value.TooString(maxDepth: 3, style: StringifyAs.DebugView, writeIndented: false);
 
         Assert.That(csharp, Does.Contain("A = 1"));
         Assert.That(json, Does.Contain("\"A\":1"));

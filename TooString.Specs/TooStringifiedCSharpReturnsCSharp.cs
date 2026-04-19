@@ -133,7 +133,7 @@ public class TooStringifiedCSharpReturnsCSharp
 
         // The output should be parseable as an anonymous object literal
         // (after removing the type comment)
-        Assert.That(result, Does.Match(@"/\*\w+\*/ new \{.*\}"));
+        Assert.That(result, Does.Match(@"(?s)/\*\w+\*/ new \{.*\}"));
     }
 
     [Test]

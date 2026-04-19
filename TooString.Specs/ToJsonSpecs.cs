@@ -12,20 +12,20 @@ public class ToJsonSpecs
         // Complex via STJ would give {"Real":3,...}, JsonStringifier gives [3,4]
         var value = new CompositeA { A = "boo", B = new Complex(3, 4) };
 
-        var result = value.ToJson();
+        var result = value.ToJson(writeIndented: false);
 
         Assert.That(result, Is.EqualTo("""{"A":"boo","B":[3,4]}"""));
     }
 
     [Test]
-    public void ToJson_DefaultIsCompact()
+    public void ToJson_DefaultIsIndented()
     {
         var value = new { A = 1, B = "two" };
 
         var result = value.ToJson();
 
-        Assert.That(result.IndexOf('\n'), Is.EqualTo(-1));
-        Assert.That(result, Does.Contain("\"A\":1"));
+        Assert.That(result, Does.Contain("\n"));
+        Assert.That(result, Does.Contain("\"A\": 1"));
     }
 
     [Test]
@@ -75,7 +75,7 @@ public class ToJsonSpecs
     {
         var value = new CompositeA { A = "test", B = new Complex(1, 2) };
 
-        var result = value.ToJson(maxDepth: 5);
+        var result = value.ToJson(writeIndented: false, maxDepth: 5);
 
         // Should be JSON, not CSharp style
         Assert.That(result, Does.Contain("\"A\":\"test\""));

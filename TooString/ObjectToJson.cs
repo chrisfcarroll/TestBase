@@ -23,7 +23,7 @@ public static partial class ObjectTooString
     /// <typeparam name="T"></typeparam>
     /// <returns>A JSON-style string representation of <paramref name="value"/></returns>
     public static string ToJson<T>(this T? value,
-                                   bool writeIndented = false,
+                                   bool writeIndented = true,
                                    BindingFlags whichProperties =
                                        BindingFlags.Instance | BindingFlags.Public,
                                    int maxDepth = 3,

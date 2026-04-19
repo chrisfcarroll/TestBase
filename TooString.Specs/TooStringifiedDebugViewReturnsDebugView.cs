@@ -18,7 +18,7 @@ public class TooStringifiedDebugViewReturnsDebugView
     [TestCase(UriKind.Absolute,"Absolute")]
     public void GivenAScalar(object value, string expected)
     {
-        Assert.That(value.TooString(StringifyAs.DebugView ), Is.EqualTo(expected));
+        Assert.That(value.TooString(maxDepth: 3, style: StringifyAs.DebugView, writeIndented: false), Is.EqualTo(expected));
     }
 
     [TestCase(null, "null")]
@@ -31,13 +31,13 @@ public class TooStringifiedDebugViewReturnsDebugView
     {
         var subject= new[] { value, 1};
         var expected= "[ " + expectedPart + ", 1 ]";
-        var actual = subject.TooString(StringifyAs.DebugView );
+        var actual = subject.TooString(maxDepth: 3, style: StringifyAs.DebugView, writeIndented: false);
         TestContext.Progress.WriteLine(actual);
         Assert.That(actual, Is.EqualTo(expected));
 
         var subject2= new[] { 1, value, 3};
         var expected2= "[ 1, " + expectedPart + ", 3 ]";
-        var actual2 = subject2.TooString(StringifyAs.DebugView );
+        var actual2 = subject2.TooString(maxDepth: 3, style: StringifyAs.DebugView, writeIndented: false);
         TestContext.Progress.WriteLine(actual2);
         Assert.That(actual2, Is.EqualTo(expected2));
     }
@@ -56,7 +56,7 @@ public class TooStringifiedDebugViewReturnsDebugView
             var expected = example.ToString();
             TestContext.Progress.WriteLine(expected);
 
-            var actual = example.TooString(StringifyAs.DebugView);
+            var actual = example.TooString(maxDepth: 3, style: StringifyAs.DebugView, writeIndented: false);
             Assert.That(actual, Is.EqualTo(expected));
         }
     }
@@ -66,22 +66,22 @@ public class TooStringifiedDebugViewReturnsDebugView
     public void GivenADateTimeOrDateOrTimeOrTimeSpan()
     {
         var now = DateTime.Now;
-        var nowActual = now.TooString(StringifyAs.DebugView);
+        var nowActual = now.TooString(maxDepth: 3, style: StringifyAs.DebugView, writeIndented: false);
         Assert.That(nowActual,Is.EqualTo(now.ToString("O")));
         TestContext.Out.WriteLine("DateTime: " + nowActual);
 
         var dateOnly = DateOnly.FromDateTime(now);
-        var dateOnlyActual = dateOnly.TooString(StringifyAs.DebugView);
+        var dateOnlyActual = dateOnly.TooString(maxDepth: 3, style: StringifyAs.DebugView, writeIndented: false);
         Assert.That(dateOnlyActual,Is.EqualTo(dateOnly.ToString("O")));
         TestContext.Out.WriteLine("DateOnly: " + dateOnlyActual);
 
         var timeOnly = TimeOnly.FromDateTime(now);
-        var timeOnlyActual = timeOnly.TooString(StringifyAs.DebugView);
+        var timeOnlyActual = timeOnly.TooString(maxDepth: 3, style: StringifyAs.DebugView, writeIndented: false);
         Assert.That(timeOnlyActual,Is.EqualTo(timeOnly.ToString("HH:mm:ss")));
         TestContext.Out.WriteLine("TimeOnly: " + timeOnlyActual);
 
         var timeSpan = timeOnly.ToTimeSpan();
-        var timeSpanActual = timeSpan.TooString(StringifyAs.DebugView);
+        var timeSpanActual = timeSpan.TooString(maxDepth: 3, style: StringifyAs.DebugView, writeIndented: false);
         Assert.That(timeSpanActual,Is.EqualTo(timeSpan.ToString("c")));
         TestContext.Out.WriteLine("TimeSpan: " + timeSpanActual);
     }
@@ -96,7 +96,7 @@ public class TooStringifiedDebugViewReturnsDebugView
         TestContext.Progress.WriteLine(value.TooString());
         
         Assert.That(
-            value.TooString(StringifyAs.DebugView ), 
+            value.TooString(maxDepth: 3, style: StringifyAs.DebugView, writeIndented: false), 
             Is.EqualTo($"{{ A = boo, B = {new Complex(3,4)} }}")
             );
     }
@@ -115,7 +115,7 @@ public class TooStringifiedDebugViewReturnsDebugView
         TestContext.Progress.WriteLine(value.TooString());
         
         Assert.That(
-            value.TooString(StringifyAs.DebugView ), 
+            value.TooString(maxDepth: 3, style: StringifyAs.DebugView, writeIndented: false), 
             Is.EqualTo($"{{ one = 1, two = boo, three = False, four = Absolute, five = {{ A = A, B = {new Complex(3,4)} }} }}"));
     }
     
@@ -123,7 +123,7 @@ public class TooStringifiedDebugViewReturnsDebugView
     public void GivenTuple()
     {
         var value = (1,"boo",false,UriKind.Absolute);
-        Assert.That(value.TooString(StringifyAs.DebugView ), Is.EqualTo(value.ToString()));
+        Assert.That(value.TooString(maxDepth: 3, style: StringifyAs.DebugView, writeIndented: false), Is.EqualTo(value.ToString()));
     }
     
     [Test]
@@ -131,10 +131,10 @@ public class TooStringifiedDebugViewReturnsDebugView
     {
         var value = (one:1, two:"boo", three:false, four:UriKind.Absolute, five: new CompositeA{A = "A", B= new (3,4)});
 
-        TestContext.Progress.WriteLine(value.TooString(StringifyAs.DebugView));
-        TestContext.Progress.WriteLine(value.TooString(StringifyAs.DebugView));
+        TestContext.Progress.WriteLine(value.TooString(maxDepth: 3, style: StringifyAs.DebugView, writeIndented: false));
+        TestContext.Progress.WriteLine(value.TooString(maxDepth: 3, style: StringifyAs.DebugView, writeIndented: false));
         
-        Assert.That(value.TooString(StringifyAs.DebugView ), Is.EqualTo(value.ToString()));
+        Assert.That(value.TooString(maxDepth: 3, style: StringifyAs.DebugView, writeIndented: false), Is.EqualTo(value.ToString()));
     }
     
 
@@ -143,7 +143,7 @@ public class TooStringifiedDebugViewReturnsDebugView
     {
         var value = (one: new Complex(3,4), two:2);
 
-        var actual = value.TooString(StringifyAs.DebugView );
+        var actual = value.TooString(maxDepth: 3, style: StringifyAs.DebugView, writeIndented: false);
         var expected = $"({new Complex(3,4)}, 2)";
 
         Assert.That(actual,Is.EqualTo(expected));
@@ -156,7 +156,7 @@ public class TooStringifiedDebugViewReturnsDebugView
 
         TestContext.Progress.WriteLine("ToString:" + value);
 
-        var actual = value.TooString(StringifyAs.DebugView );
+        var actual = value.TooString(maxDepth: 3, style: StringifyAs.DebugView, writeIndented: false);
         var expected = $"(1, boo, False, Absolute, {{ A = A, B = {new Complex(3,4)} }})";
         Assert.That(actual,Is.EqualTo(expected));
     }
@@ -168,14 +168,14 @@ public class TooStringifiedDebugViewReturnsDebugView
         var expected = $"{{ A = boo, B = {new Complex(3,4)} }}";
         
         Assert.That(
-            value.TooString(StringifyAs.DebugView), 
+            value.TooString(maxDepth: 3, style: StringifyAs.DebugView, writeIndented: false), 
             Is.EqualTo(expected) 
         );
         
         Assert.That(
-            value.TooString(StringifyAs.DebugView),
+            value.TooString(maxDepth: 3, style: StringifyAs.DebugView, writeIndented: false),
             Is.EqualTo(
-                value.TooString(StringifyAs.DebugView) 
+                value.TooString(maxDepth: 3, style: StringifyAs.DebugView, writeIndented: false) 
                 ));
     }
     
@@ -187,7 +187,7 @@ public class TooStringifiedDebugViewReturnsDebugView
         var expected = "{ A = boo, B = { A = boo, B = { A = boo, B = TooString.Specs.Circular, C = null }, C = null }, C = null }";
         
         Assert.That(
-            value.TooString(StringifyAs.DebugView), 
+            value.TooString(maxDepth: 3, style: StringifyAs.DebugView, writeIndented: false), 
             Is.EqualTo(expected) 
         );
     }
@@ -202,7 +202,7 @@ public class TooStringifiedDebugViewReturnsDebugView
             "\"Timeout\":\"00:01:40\",\"MaxResponseContentBufferSize\":2147483647}";
         
         Assert.That(
-            value.TooString(StringifyAs.DebugView), 
+            value.TooString(maxDepth: 3, style: StringifyAs.DebugView, writeIndented: false), 
             Is.EqualTo(expected) 
         );
     }

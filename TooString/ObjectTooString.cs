@@ -69,10 +69,10 @@ public static partial class ObjectTooString
         =>
             TooString(value,style switch
             {
-                StringifyAs.CSharp => TooStringOptions.Default,
-                StringifyAs.STJsonSerialization => TooStringOptions.ForJson,
-                StringifyAs.JsonStringifier => TooStringOptions.ForJson with { StringifyAs = StringifyAs.JsonStringifier },
-                StringifyAs.DebugView => TooStringOptions.Default with { StringifyAs = StringifyAs.DebugView },
+                StringifyAs.CSharp => TooStringOptions.Default with { WriteIndented = true },
+                StringifyAs.STJsonSerialization => TooStringOptions.ForJson with { WriteIndented = true },
+                StringifyAs.JsonStringifier => TooStringOptions.ForJson with { StringifyAs = StringifyAs.JsonStringifier, WriteIndented = true },
+                StringifyAs.DebugView => TooStringOptions.Default with { StringifyAs = StringifyAs.DebugView, WriteIndented = true },
                 _ => throw new ArgumentOutOfRangeException(nameof(style),style,null)
             });
 
@@ -99,7 +99,7 @@ public static partial class ObjectTooString
                                       int maxDepth,
                                       int maxLength = 9,
                                       StringifyAs style = StringifyAs.CSharp,
-                                      bool writeIndented = false,
+                                      bool writeIndented = true,
                                       BindingFlags whichProperties =
                                           BindingFlags.Instance | BindingFlags.Public,
                                       string dateTimeFormat = "O",

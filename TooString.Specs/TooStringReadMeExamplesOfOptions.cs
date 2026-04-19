@@ -11,9 +11,9 @@ public class TooStringReadMeExamplesOfOptions
     [Test]
     public void ToJsonExamples()
     {
-        // ToJson() uses JsonStringifier (reflection-based)
+        // ToJson() uses JsonStringifier (reflection-based), now indented by default
         var toJson = circular.ToJson();
-        Assert.That(toJson, Does.Contain("\"A\":\"1\""));
+        Assert.That(toJson, Does.Contain("\"A\": \"1\""));
 
         // ToSTJson() uses System.Text.Json
         var stJson1 = circular.ToSTJson(this.webIndented);
@@ -24,9 +24,9 @@ public class TooStringReadMeExamplesOfOptions
     [Test]
     public void ValueTupleToJsonExample()
     {
-        var toJson = (one:1, two:"2").TooString( StringifyAs.JsonStringifier );
+        var toJson = (one:1, two:"2").ToJson(writeIndented: false);
         var stj = System.Text.Json.JsonSerializer.Serialize((one: 1,two: "2"));
-        var reflected = (one:1, two:"2").TooString( StringifyAs.JsonStringifier);
+        var reflected = (one:1, two:"2").ToJson(writeIndented: false);
 
         Assert.That(toJson, Is.EqualTo("""[1,"2"]"""));
         Assert.That(stj, Is.EqualTo("{}"));
@@ -42,6 +42,7 @@ public class TooStringReadMeExamplesOfOptions
         var d3 = value.ToCSharpString(maxDepth: 4, maxEnumerationLength: 9);
         var d4 = value.TooString(options: TooStringOptions.Default with
         {
+            WriteIndented = true,
             DateTimeFormat = "yyyyMMdd HH:mm:ss",
             TimeSpanFormat = @"d\.hh\:mm\:ss",
         });

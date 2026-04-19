@@ -20,9 +20,9 @@ public class TooStringReadMeExamples
     {
         var anonObject = new { A = "boo", B = new Complex(3,4) };
 
-        // ToJson() uses JsonStringifier (reflection-based)
-        var actualJsonStringifier = anonObject.ToJson();
-        Assert.That(actualJsonStringifier, Is.EqualTo(
+        // ToJson() uses JsonStringifier (reflection-based), default is now indented
+        var actualJsonCompact = anonObject.ToJson(writeIndented: false);
+        Assert.That(actualJsonCompact, Is.EqualTo(
                 """{"A":"boo","B":[3,4]}"""));
 
         // ToSTJson() uses System.Text.Json
@@ -30,16 +30,15 @@ public class TooStringReadMeExamples
         Assert.That(actualSTJson, Is.EqualTo(
                 """{"A":"boo","B":{"Real":3,"Imaginary":4,"Magnitude":5,"Phase":0.9272952180016122}}"""));
 
-        // TooString(StringifyAs.STJsonSerialization) also uses System.Text.Json
-        var actualSTJsonViaTooString = anonObject.TooString(StringifyAs.STJsonSerialization);
+        // ToSTJson() matches what STJ produces
+        var actualSTJsonViaTooString = anonObject.ToSTJson();
         Assert.That(actualSTJsonViaTooString, Is.EqualTo(actualSTJson));
     }
     [Test]
     public void ExampleIsCorrectGivenAnonObjectReflection()
     {
         var anonObject = new { A = "boo", B = new Complex(3,4) };
-        // Output is "{ A = boo, B = [3,4] }" or "{ A = boo, B = <3;4> }"
-        var actual = anonObject.TooString(StringifyAs.CSharp);
+        var actual = anonObject.ToCSharpString(writeIndented: false);
         var expected = $"{{ A = \"boo\", B = {new Complex(3,4)} }}";
         Assert.That(actual, Is.EqualTo(expected));
     }
@@ -48,7 +47,7 @@ public class TooStringReadMeExamples
     public void ExampleIsCorrectGivenValueTupleJson()
     {
         var valueTuple = (one: 1, two: "2", three: new Complex(3,4));
-        var actual = valueTuple.TooString(StringifyAs.JsonStringifier);
+        var actual = valueTuple.ToJson(writeIndented: false);
         Assert.That(actual, Is.EqualTo("""[1,"2",[3,4]]"""));;
 
         var stjOutput = System.Text.Json.JsonSerializer.Serialize(valueTuple);
@@ -61,7 +60,7 @@ public class TooStringReadMeExamples
     {
         var valueTuple = (one: 1, two: "2", three: new Complex(3,4));
 
-        var actual3 = valueTuple.TooString(StringifyAs.CSharp);
+        var actual3 = valueTuple.ToCSharpString(writeIndented: false);
         #if NET8_0_OR_GREATER
         Assert.That(actual3, Is.EqualTo("(1, \"2\", <3; 4>)"));
         #else

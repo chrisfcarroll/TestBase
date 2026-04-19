@@ -27,7 +27,7 @@ public class TooStringBestEffortMakesGoodChoices
         var expected = """{"A":"boo","B":[3,4]}""";
 
         Assert.That(
-            value.ToJson(),
+            value.ToJson(writeIndented: false),
             Is.EqualTo(expected)
         );
         TestContext.Progress.WriteLine(value.TooString());
@@ -40,13 +40,13 @@ public class TooStringBestEffortMakesGoodChoices
         // ToJson() now uses JsonStringifier, which stringifies Complex as an array
         var expected = """{"A":"boo","B":[3,4]}""";
 
-        var actual = value.ToJson();
+        var actual = value.ToJson(writeIndented: false);
         //D
         TestContext.Progress.WriteLine(value.TooString());
         //A
         Assert.That(actual,Is.EqualTo(expected));
     }
-    
+
     [Test]
     public void GivenACompositeObjectWithCircularReferences__ReturnsReflectedJson()
     {
@@ -54,7 +54,7 @@ public class TooStringBestEffortMakesGoodChoices
         value.B = value;
 
         // ToJson() uses JsonStringifier which recurses to MaxDepth (3)
-        var actual = value.ToJson();
+        var actual = value.ToJson(writeIndented: false);
         Assert.That(actual, Does.StartWith("{\"A\":\"boo\",\"B\":{\"A\":\"boo\""));
         TestContext.Progress.WriteLine(actual);
 
@@ -71,7 +71,7 @@ public class TooStringBestEffortMakesGoodChoices
         var value = (1,"boo",new Complex(3,4));
         var expected = """[1,"boo",[3,4]]""";
         //A
-        var actual = value.ToJson();
+        var actual = value.ToJson(writeIndented: false);
         //D
         TestContext.Progress.WriteLine(actual);
         // A
@@ -85,7 +85,7 @@ public class TooStringBestEffortMakesGoodChoices
         var value = TooStringJsonReturnsJson.httpClient;
 
         //A — ToJson() now uses JsonStringifier (reflection-based)
-        var actual = value.ToJson();
+        var actual = value.ToJson(writeIndented: false);
         //D
         TestContext.Progress.WriteLine(actual);
         // A — JsonStringifier reflects into properties instead of calling ToString()
@@ -112,7 +112,7 @@ public class TooStringBestEffortMakesGoodChoices
                        {"Name":"GetMethods","DeclaringType":"System.Type","ReflectedType":"System.Type","MemberType":"Method","MetadataToken":100000000,"Module":{"MDStreamVersion":131072,"FullyQualifiedName":"--filename--","ModuleVersionId":{},"MetadataToken":100000000,"ScopeName":"System.Private.CoreLib.dll","Name":"System.Private.CoreLib.dll","Assembly":{"CodeBase":"file:///--filename--","FullName":"System.Private.CoreLib, Version=X.X.X.X, Culture=neutral, PublicKeyToken=7cec85d7bea7798e","EntryPoint":null,"DefinedTypes":[],"IsCollectible":false,"ManifestModule":"System.Private.CoreLib.dll","ReflectionOnly":false,"Location":"--filename--","ImageRuntimeVersion":"v4.0.30319","GlobalAssemblyCache":false,"HostContext":0,"IsDynamic":false,"ExportedTypes":[],"IsFullyTrusted":true,"CustomAttributes":[],"EscapedCodeBase":"file:///--filename--","Modules":[],"SecurityRuleSet":"None"},"ModuleHandle":{"MDStreamVersion":131072},"CustomAttributes":["[System.Runtime.CompilerServices.NullablePublicOnlyAttribute((Boolean)False)]","[System.Runtime.CompilerServices.SkipLocalsInitAttribute()]"]},"IsSecurityCritical":true,"IsSecuritySafeCritical":false,"IsSecurityTransparent":false,"MethodHandle":{"Value":9999999999},"Attributes":"PrivateScope, Public, HideBySig","CallingConvention":"Standard, HasThis","ReturnType":"System.Reflection.MethodInfo[]","ReturnTypeCustomAttributes":{"ParameterType":"System.Reflection.MethodInfo[]","Name":null,"HasDefaultValue":true,"DefaultValue":null,"RawDefaultValue":null,"MetadataToken":100000000,"Attributes":"None","Member":{"Name":"GetMethods","DeclaringType":"System.Type","ReflectedType":"System.Type","MemberType":"Method","MetadataToken":100000000,"Module":"System.Private.CoreLib.dll","IsSecurityCritical":true,"IsSecuritySafeCritical":false,"IsSecurityTransparent":false,"MethodHandle":"System.RuntimeMethodHandle","Attributes":"PrivateScope, Public, HideBySig","CallingConvention":"Standard, HasThis","ReturnType":"System.Reflection.MethodInfo[]","ReturnTypeCustomAttributes":"System.Reflection.MethodInfo[]","ReturnParameter":"System.Reflection.MethodInfo[]","IsCollectible":false,"IsGenericMethod":false,"IsGenericMethodDefinition":false,"ContainsGenericParameters":false,"MethodImplementationFlags":"Managed","IsAbstract":false,"IsConstructor":false,"IsFinal":false,"IsHideBySig":true,"IsSpecialName":false,"IsStatic":false,"IsVirtual":false,"IsAssembly":false,"IsFamily":false,"IsFamilyAndAssembly":false,"IsFamilyOrAssembly":false,"IsPrivate":false,"IsPublic":true,"IsConstructedGenericMethod":false,"CustomAttributes":[]},"Position":-1,"IsIn":false,"IsLcid":false,"IsOptional":false,"IsOut":false,"IsRetval":false,"CustomAttributes":[]},"ReturnParameter":{"ParameterType":"System.Reflection.MethodInfo[]","Name":null,"HasDefaultValue":true,"DefaultValue":null,"RawDefaultValue":null,"MetadataToken":100000000,"Attributes":"None","Member":{"Name":"GetMethods","DeclaringType":"System.Type","ReflectedType":"System.Type","MemberType":"Method","MetadataToken":100000000,"Module":"System.Private.CoreLib.dll","IsSecurityCritical":true,"IsSecuritySafeCritical":false,"IsSecurityTransparent":false,"MethodHandle":"System.RuntimeMethodHandle","Attributes":"PrivateScope, Public, HideBySig","CallingConvention":"Standard, HasThis","ReturnType":"System.Reflection.MethodInfo[]","ReturnTypeCustomAttributes":"System.Reflection.MethodInfo[]","ReturnParameter":"System.Reflection.MethodInfo[]","IsCollectible":false,"IsGenericMethod":false,"IsGenericMethodDefinition":false,"ContainsGenericParameters":false,"MethodImplementationFlags":"Managed","IsAbstract":false,"IsConstructor":false,"IsFinal":false,"IsHideBySig":true,"IsSpecialName":false,"IsStatic":false,"IsVirtual":false,"IsAssembly":false,"IsFamily":false,"IsFamilyAndAssembly":false,"IsFamilyOrAssembly":false,"IsPrivate":false,"IsPublic":true,"IsConstructedGenericMethod":false,"CustomAttributes":[]},"Position":-1,"IsIn":false,"IsLcid":false,"IsOptional":false,"IsOut":false,"IsRetval":false,"CustomAttributes":[]},"IsCollectible":false,"IsGenericMethod":false,"IsGenericMethodDefinition":false,"ContainsGenericParameters":false,"MethodImplementationFlags":"Managed","IsAbstract":false,"IsConstructor":false,"IsFinal":false,"IsHideBySig":true,"IsSpecialName":false,"IsStatic":false,"IsVirtual":false,"IsAssembly":false,"IsFamily":false,"IsFamilyAndAssembly":false,"IsFamilyOrAssembly":false,"IsPrivate":false,"IsPublic":true,"IsConstructedGenericMethod":false,"CustomAttributes":[{"Constructor":"Void .ctor(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes)","ConstructorArguments":[],"NamedArguments":[],"AttributeType":"System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembersAttribute"}]}
                        """;
 #endif
-        var actual = value.TooString(StringifyAs.STJsonSerialization);
+        var actual = value.TooString(options: TooStringOptions.ForJson);
 
         TestContext.Progress.WriteLine(actual.RegexReplaceCompilationDependentValuesWithPseudoValues());
 

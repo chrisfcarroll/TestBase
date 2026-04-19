@@ -18,7 +18,7 @@ public class TooStringifiedJsonReturnsSensibleJson
     public void GivenAScalar(object value, string expected)
     {
         Assert.That(
-            value.TooString(StringifyAs.JsonStringifier ),
+            value.ToJson(writeIndented: false),
             Is.EqualTo(expected));
     }
 
@@ -73,10 +73,10 @@ public class TooStringifiedJsonReturnsSensibleJson
         //var value = new KeyValuePair<int, string>(1, "boo");
         var value = new AStruct { A = "boo", B = new Complex(3, 4) };
 
-        TestContext.Progress.WriteLine(value.TooString(StringifyAs.JsonStringifier));
-        
+        TestContext.Progress.WriteLine(value.ToJson(writeIndented: false));
+
         Assert.That(
-            value.TooString(StringifyAs.JsonStringifier),
+            value.ToJson(writeIndented: false),
             Is.EqualTo($"{{\"A\":\"boo\",\"B\":[3,4]}}")
             );
     }
@@ -95,7 +95,7 @@ public class TooStringifiedJsonReturnsSensibleJson
         TestContext.Progress.WriteLine(value.TooString());
         
         Assert.That(
-            value.TooString(StringifyAs.JsonStringifier ),
+            value.ToJson(writeIndented: false),
             Is.EqualTo($"{{\"one\":1,\"two\":\"boo\",\"three\":false,\"four\":\"Absolute\",\"five\":{{\"A\":\"A\",\"B\":[3,4]}}}}"));
     }
     
@@ -103,7 +103,7 @@ public class TooStringifiedJsonReturnsSensibleJson
     public void GivenTuple()
     {
         var value = (1,"boo",false,UriKind.Absolute);
-        Assert.That(value.TooString(StringifyAs.JsonStringifier ),
+        Assert.That(value.ToJson(writeIndented: false),
                     Is.EqualTo("[1,\"boo\",false,\"Absolute\"]"));
     }
 
@@ -112,7 +112,7 @@ public class TooStringifiedJsonReturnsSensibleJson
     {
         var value = (one: new Complex(3,4), two:2);
 
-        var actual = value.TooString(StringifyAs.JsonStringifier );
+        var actual = value.ToJson(writeIndented: false);
         var expected = "[[3,4],2]";
 
         Assert.That(actual,Is.EqualTo(expected));
@@ -138,7 +138,7 @@ public class TooStringifiedJsonReturnsSensibleJson
         TestContext.Progress.WriteLine("defaultJsonned:" + defaultJsonned);
         TestContext.Progress.WriteLine("ToString:" + value);
 
-        var actual = value.TooString(StringifyAs.JsonStringifier );
+        var actual = value.ToJson(writeIndented: false);
         var expected = """
                        [1,"boo",false,"Absolute",{"A":"A","B":[3,4]}]
                        """;
@@ -153,8 +153,8 @@ public class TooStringifiedJsonReturnsSensibleJson
             "{\"A\":\"boo\",\"B\":[3,4]}";
         
         Assert.That(
-            value.TooString(StringifyAs.JsonStringifier),
-            Is.EqualTo(expected) 
+            value.ToJson(writeIndented: false),
+            Is.EqualTo(expected)
         );
     }
 
@@ -165,7 +165,7 @@ public class TooStringifiedJsonReturnsSensibleJson
         var expected = $"{{\"A\":null,\"B\":null}}";
 
         Assert.That(
-            value.TooString(StringifyAs.JsonStringifier),
+            value.ToJson(writeIndented: false),
             Is.EqualTo(expected)
             );
     }
@@ -176,25 +176,25 @@ public class TooStringifiedJsonReturnsSensibleJson
         var value = new Circular{ A = "boo"};
         value.B = value;
         var expected = "{\"A\":\"boo\",\"B\":{\"A\":\"boo\",\"B\":{\"A\":\"boo\",\"B\":\"TooString.Specs.Circular\",\"C\":null},\"C\":null},\"C\":null}";
-        
+
         Assert.That(
-            value.TooString(StringifyAs.JsonStringifier),
-            Is.EqualTo(expected) 
+            value.ToJson(writeIndented: false),
+            Is.EqualTo(expected)
         );
     }
-    
+
     [Test,Ignore("Don't create an HttpClient on every test run")]
     public void GivenDifficultObject()
     {
         var value = httpClient;
-        var expected = 
+        var expected =
             "{\"DefaultRequestHeaders\":[],\"DefaultRequestVersion\":\"1.1\"," +
             "\"DefaultVersionPolicy\":0,\"BaseAddress\":\"http://127.0.0.1\"," +
             "\"Timeout\":\"00:01:40\",\"MaxResponseContentBufferSize\":2147483647}";
-        
+
         Assert.That(
-            value.TooString(StringifyAs.JsonStringifier),
-            Is.EqualTo(expected) 
+            value.ToJson(writeIndented: false),
+            Is.EqualTo(expected)
         );
     }
     
