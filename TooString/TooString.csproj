@@ -27,7 +27,7 @@ value.ToCSharpString()
 value.ToJson();
 value.ToSTJson()
 value.TooString();
-value.ToCallerArgumentString();
+value.ToArgumentExpression();
 ```
 _TooString is not a serializer._
 
@@ -78,7 +78,7 @@ new { A = "boo", B = new Complex(3,4) }.ToDebugViewString();
         <PackageReleaseNotes>
             ChangeLog
             ---------
-            0.8.0  5 extension method groups: ToCSharpString, ToJson, ToSTJson, TooString, ToCallerArgumentString.
+            0.8.0  5 extension method groups: ToCSharpString, ToJson, ToSTJson, TooString, ToArgumentExpression.
             0.7.0  Easier to build new TooStringOptions(){...}. Sanitize overloads.
             0.6.0  TooString() defaults to CSharp.
             &#x2007;&#x2008;&#x2007;&#x2008;&#x2007;&#x2008; Add TooStringOptions.WriteIndented property.

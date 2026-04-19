@@ -41,16 +41,6 @@ public static partial class ObjectTooString
                                                  [CallerArgumentExpression("value")]
                                                  string expression="") => expression;
 
-    /// <param name="value"></param>
-    /// <param name="expression"></param>
-    /// <typeparam name="T"></typeparam>
-    /// <returns>
-    /// Returns the <see cref="CallerArgumentExpressionAttribute"/> string
-    /// for <paramref name="value"/>.
-    /// </returns>
-    public static string ToCallerArgumentString<T>(this T? value,
-                                                   [CallerArgumentExpression("value")]
-                                                   string expression="") => expression;
 
     /// <summary>
     /// Stringifies a value using the specified style.
@@ -69,10 +59,10 @@ public static partial class ObjectTooString
         =>
             TooString(value,style switch
             {
-                StringifyAs.CSharp => TooStringOptions.Default with { WriteIndented = true },
-                StringifyAs.STJsonSerialization => TooStringOptions.ForJson with { WriteIndented = true },
-                StringifyAs.JsonStringifier => TooStringOptions.ForJson with { StringifyAs = StringifyAs.JsonStringifier, WriteIndented = true },
-                StringifyAs.DebugView => TooStringOptions.Default with { StringifyAs = StringifyAs.DebugView, WriteIndented = true },
+                StringifyAs.CSharp => TooStringOptions.Default,
+                StringifyAs.STJsonSerialization => TooStringOptions.ForJson,
+                StringifyAs.JsonStringifier => TooStringOptions.ForJson with { StringifyAs = StringifyAs.JsonStringifier },
+                StringifyAs.DebugView => TooStringOptions.Default with { StringifyAs = StringifyAs.DebugView },
                 _ => throw new ArgumentOutOfRangeException(nameof(style),style,null)
             });
 

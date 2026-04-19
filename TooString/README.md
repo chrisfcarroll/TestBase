@@ -12,7 +12,7 @@ value.ToCSharpString()
 value.ToJson();
 value.ToSTJson()
 value.TooString();
-value.ToCallerArgumentString();
+value.ToArgumentExpression();
 ```
 _TooString is not a serializer._ 
 
@@ -29,7 +29,7 @@ _TooString is not a serializer._
 - ToJson() returns reflection-based JSON stringification (not System.Text.Json).
 - ToSTJson() is a convenience method for System.Text.Json.JsonSerializer.Serialize(...).
 - TooString() defaults to CSharp style; pass a StringifyAs to choose the style.
-- ToCallerArgumentString() returns the literal code expression.
+- ToArgumentExpression() returns the literal code expression.
 
 All reflection-based methods default to MaxDepth = 3, MaxEnumerationLength = 9.
 
@@ -48,7 +48,7 @@ value.ToCSharpString()  // Output is { A = "boo", B = <3; 4> } depending on .Net
 value.ToJson();         // Output is reflection-based JSON: {"A":"boo","B":[3,4]}
 value.ToSTJson();       // Output is System.Text.Json: {"A":"boo","B":{"Real":3,...}}
 
-( Math.Sqrt(4 * Math.PI / 3)  ).ToCallerArgumentString() 
+( Math.Sqrt(4 * Math.PI / 3)  ).ToArgumentExpression() 
 // Output is the literal code: "Math.Sqrt(4 * Math.PI / 3)"
 
 var tuple = (one: 1, two: "2", three: new Complex(3,4));
@@ -142,7 +142,7 @@ System.Text.Json.JsonSerializer.Serialize(  (one:1, two:"2")  )
 <pre>
 ChangeLog
 ---------
-0.8.0  5 extension method groups: ToCSharpString, ToJson, ToSTJson, TooString, ToCallerArgumentString.
+0.8.0  5 extension method groups: ToCSharpString, ToJson, ToSTJson, TooString, ToArgumentExpression.
        ToJson and ToCSharpString take individual parameters, no TooStringOptions overload.
 0.7.0  Easier to build new TooStringOptions(){...}. Sanitize overloads.
 0.6.0  TooString() defaults to CSharp.

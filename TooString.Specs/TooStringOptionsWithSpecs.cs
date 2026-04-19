@@ -13,7 +13,7 @@ public class TooStringOptionsWithSpecs
         var options = new TooStringOptions();
 
         Assert.That(options.StringifyAs, Is.EqualTo(StringifyAs.CSharp));
-        Assert.That(options.WriteIndented, Is.False);
+        Assert.That(options.WriteIndented, Is.True);
         Assert.That(options.MaxDepth, Is.EqualTo(3));
         Assert.That(options.MaxEnumerationLength, Is.EqualTo(9));
         Assert.That(options.WhichProperties, Is.EqualTo(BindingFlags.Instance | BindingFlags.Public));
@@ -57,10 +57,10 @@ public class TooStringOptionsWithSpecs
     [Test]
     public void ForJson_CanBeCustomisedWithRecordWith()
     {
-        var options = TooStringOptions.ForJson with { WriteIndented = true };
+        var options = TooStringOptions.ForJson with { WriteIndented = false };
 
         Assert.That(options.StringifyAs, Is.EqualTo(StringifyAs.STJsonSerialization));
-        Assert.That(options.WriteIndented, Is.True);
+        Assert.That(options.WriteIndented, Is.False);
     }
 
     [Test]
@@ -81,10 +81,10 @@ public class TooStringOptionsWithSpecs
     {
         var original = TooStringOptions.ForJson;
 
-        var modified = original.With(writeIndented:true);
+        var modified = original.With(writeIndented:false);
 
-        Assert.That(modified.WriteIndented, Is.True);
-        Assert.That(original.WriteIndented, Is.False, "original should be unchanged");
+        Assert.That(modified.WriteIndented, Is.False);
+        Assert.That(original.WriteIndented, Is.True, "original should be unchanged");
     }
 
     // ──────────────────────────────────────────────
@@ -207,8 +207,8 @@ public class TooStringOptionsWithSpecs
         var value = new { A = 1, B = "two" };
         var result = value.TooString(TooStringOptions.ForJson);
 
-        Assert.That(result, Does.Contain("\"A\":1"));
-        Assert.That(result, Does.Contain("\"B\":\"two\""));
+        Assert.That(result, Does.Contain("\"A\": 1"));
+        Assert.That(result, Does.Contain("\"B\": \"two\""));
     }
 
     [Test]

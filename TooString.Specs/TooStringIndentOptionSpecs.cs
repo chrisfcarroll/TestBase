@@ -36,13 +36,13 @@ public class TooStringIndentOptionSpecs
     public void WriteIndented_IsIndependentOfJsonOptions()
     {
         var options = TooStringOptions.Default;
-        Assert.That(options.WriteIndented, Is.False);
-
-        options = options with { WriteIndented = true };
         Assert.That(options.WriteIndented, Is.True);
 
         options = options with { WriteIndented = false };
         Assert.That(options.WriteIndented, Is.False);
+
+        options = options with { WriteIndented = true };
+        Assert.That(options.WriteIndented, Is.True);
     }
 
     [Test]

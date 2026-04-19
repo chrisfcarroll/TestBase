@@ -23,7 +23,7 @@ public record TooStringOptions
     public TooStringOptions()
     {
         JsonOptions = DefaultJsonSerializerOptions;
-        WriteIndented = false;
+        WriteIndented = true;
         StringifyAs = StringifyAs.CSharp;
         WhichProperties = BindingFlags.Instance | BindingFlags.Public;
         MaxDepth = 3;
@@ -78,7 +78,7 @@ public record TooStringOptions
 
     /// <summary>
     /// Gets or sets whether output should use indents and newlines.
-    /// Defaults to false.
+    /// Defaults to true.
     /// </summary>
     public bool WriteIndented { get; init; }
 
