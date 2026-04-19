@@ -72,9 +72,9 @@ namespace TestBase
                     },
                     { StringifyMethod.InheritedToString, o => o.ToString() },
 #if NET6_0_OR_GREATER                    
-                    { StringifyMethod.TooString, o => o.TooString() },
+                    { StringifyMethod.TooString, o => o.TooString(maxDepth: 1, maxLength: 3) },
 #else
-                    { StringifyMethod.TooString, o => o.TooString() },
+                    { StringifyMethod.TooString, o => o.TooString(maxDepth: 1, maxLength: 3) },
 #endif
                 };
 
@@ -182,7 +182,7 @@ namespace TestBase
                 AssertedDetail = assertionsExpression; 
                 Comment = string.Join(nl,
                     (comments ?? new List<(string, object)>())
-                    .Select(c => $"{c.Item1} : {c.Item2.TooString()}"));
+                    .Select(c => $"{c.Item1} : {c.Item2.TooString(maxDepth: 1, maxLength: 3)}"));
                 assertions(actual);
                 Result = true;
             }
