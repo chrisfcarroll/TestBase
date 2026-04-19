@@ -23,7 +23,7 @@ _TooString is not a serializer._
 - TooString offers both MaxDepth and MaxEnumerationLength options for abbreviated output.
 
 
-### Default behaviour
+## Default behaviour
 
 - ToCSharpString() returns reflection-based C# anonymous-object notation.
 - ToJson() returns reflection-based JSON stringification (not System.Text.Json).
@@ -33,7 +33,7 @@ _TooString is not a serializer._
 
 All reflection-based methods default to MaxDepth = 3, MaxEnumerationLength = 9.
 
-#### What's the different between ToJson() and ToSTJson()?
+### What's the different between ToJson() and ToSTJson()?
 
 - System.Text.Json will return "{}" by default for any ValueTuple. ToJson() will return the tuple items as an array.
 - ToJson() can abbreviate output with both maxDepth and maxEnumerableLength options, System.Text.Json has no maxEnumerableLength option.
@@ -70,9 +70,39 @@ System.Text.Json.JsonSerializer.Serialize(type) // Throws NotSupportedException
 type.ToJson() // Outputs the type object, truncated to default MaxDepth = 3, MaxEnumerationLength = 9
 ```
 
-### Options
+## Options
 
-Each method takes individual optional parameters (no TooStringOptions parameter needed):
+Options, and their default values, are:
+
+```csharp
+ bool writeIndented = true,
+ BindingFlags whichProperties = BindingFlags.Instance | BindingFlags.Public,
+ int maxDepth = 3,
+ int maxEnumerableLength = 9,
+ string dateTimeFormat = "O",
+ string dateOnlyFormat = "O",
+ string timeOnlyFormat = "HH:mm:ss",
+ string timeSpanFormat = "c"
+```
+`maxEnumerableLength=0` means show zero elements. To show unlimited elements, use `int.MaxValue`
+
+Options for `ToSTJson()` are the framework provided `JsonSerializerOptions`:
+
+```csharp
+bool writeIndented = false,
+ JsonNamingPolicy? propertyNamingPolicy = null,
+ JsonIgnoreCondition defaultIgnoreCondition = JsonIgnoreCondition.Never,
+ JsonNumberHandling numberHandling = JsonNumberHandling.Strict,
+ ReferenceHandler? referenceHandler = null,
+ bool propertyNameCaseInsensitive = false,
+ bool includeFields = false,
+ int maxDepth = 0,
+ bool allowTrailingCommas = false,
+ JsonCommentHandling readCommentHandling = JsonCommentHandling.Disallow,
+ System.Text.Encodings.Web.JavaScriptEncoder? encoder = null
+```
+
+## More Examples
 
 ```csharp
 // Reflection-based JSON
@@ -95,7 +125,7 @@ value.TooString(TooStringOptions.ForJson with { MaxEnumerationLength = 9 })
 ```
 
 
-### Gotchas
+## Gotchas
 
 Example: Json-serializing value tuples is something of a surprise because (unlike anonymous objects or records or structs) they have no public properties and their public fields are not named as per your code. Takeaway: don't choose value tuples for public apis that must be jsonned.
 
@@ -108,7 +138,7 @@ System.Text.Json.JsonSerializer.Serialize(  (one:1, two:"2")  )
 // The value tuple is detected as an ITuple, and we use reflection instead
 ```
 
-### ChangeLog
+## ChangeLog
 <pre>
 ChangeLog
 ---------
