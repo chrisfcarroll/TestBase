@@ -41,3 +41,5 @@ Then check in TooString with the next version bump, but still preview
 
 Then check in as 'change' with a short scope and explanation
 Then check in TestBase with the next version bump, but still preview.
+
+4. The write a short report.md and list anything that is inconsistent or confusing or wrong in the developer experience of (1) TooString and then (2) TestBase. Especially look if anythign can be clearer more helpful in the output of TestBase assertions.
