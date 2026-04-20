@@ -25,20 +25,21 @@ _TooString is not a serializer._
 
 ## Default behaviour
 
-- ToCSharpString() returns reflection-based C# anonymous-object notation.
-- ToJson() returns reflection-based JSON stringification (not System.Text.Json).
+- ToCSharpString() returns C# code creating anonymous objects, with Type names in comments.
+- ToJson() returns JSON.
 - ToSTJson() is a convenience method for System.Text.Json.JsonSerializer.Serialize(...).
-- TooString() defaults to CSharp style; pass a StringifyAs to choose the style.
+- TooString() defaults to CSharp style; pass StringifyAs to choose an alternative output.
 - ToArgumentExpression() returns the literal code expression.
 
-All reflection-based methods default to MaxDepth = 3, MaxEnumerationLength = 9.
+Object output defaults to MaxDepth = 3, MaxEnumerationLength = 9, except for ToSTJson() which behaves identically to calling System.Text.Json.JsonSerializer.Serialize directly.
 
 ### What's the different between ToJson() and ToSTJson()?
 
+- System.Text.Json throws given unserializable types or values anywhere in the obkjecor if there are errors during serialization. ToJson() will catch errors and return what it's got.
 - System.Text.Json will return "{}" by default for any ValueTuple. ToJson() will return the tuple items as an array.
 - ToJson() can abbreviate output with both maxDepth and maxEnumerableLength options, System.Text.Json has no maxEnumerableLength option.
-- System.Text.Json throws given values in System.Reflection, delegates, Types, or other non-serializable types. ToJson() will tell you more than you want to know.
 - System.Text.Json will return property values for classes in System.Numerics, ToJson() will represent multi-dimensional numbers as arrays.
+- ToJson() has a whichProperties (default is BindingFlags.Instance | BindingFlags.Public) property to choose which members to stringify. STJ has an includeFields and IgnoreReadOnly... properties, and then offers TypeInfoResolvers.
 
 Example:
 ```
@@ -142,8 +143,8 @@ System.Text.Json.JsonSerializer.Serialize(  (one:1, two:"2")  )
 <pre>
 ChangeLog
 ---------
-0.8.0  5 extension method groups: ToCSharpString, ToJson, ToSTJson, TooString, ToArgumentExpression.
-       ToJson and ToCSharpString take individual parameters, no TooStringOptions overload.
+0.8.x  Simplify to: ToCSharpString(), ToJson(), ToSTJson(), TooString(), ToArgumentExpression().
+       Offer individual parameters in preference to a TooStringOptions object.
 0.7.0  Easier to build new TooStringOptions(){...}. Sanitize overloads.
 0.6.0  TooString() defaults to CSharp.
 0.5.0  ReflectionOptions.With(...), TooStringOptions.With(...). Fixes. 
