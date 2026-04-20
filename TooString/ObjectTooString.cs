@@ -42,6 +42,19 @@ public static partial class ObjectTooString
                                                  string expression="") => expression;
 
 
+    ///<summary>Undocumented duplicate of <see cref="ToArgumentExpression{T}"/></summary>
+    /// <param name="value"></param>
+    /// <param name="expression"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns>
+    /// Returns the <see cref="CallerArgumentExpressionAttribute"/> string
+    /// for <paramref name="value"/>.
+    /// </returns>
+    public static string ToCallerArgumentString<T>(this T? value,
+                                                   [CallerArgumentExpression("value")]
+                                                   string expression="") => expression;
+
+
     /// <summary>
     /// Stringifies a value using the specified style.
     /// </summary>
