@@ -191,25 +191,19 @@ public static partial class ObjectTooString
             var outdent =
                 (options.StringifyAs, options.WriteIndented) switch
                 {
-                    (StringifyAs.JsonStringifier,true) => NewLineSpaces400.AsSpan().Slice(0, 1 + (options.Depth) * 2),
+                    (_,true) => NewLineSpaces400.AsSpan().Slice(0, 1 + (options.Depth) * 2),
                     (StringifyAs.JsonStringifier,false) => "".AsSpan(),
-                    (StringifyAs.STJsonSerialization,true) => NewLineSpaces400.AsSpan().Slice(0, 1 + (options.Depth) * 2),
                     (StringifyAs.STJsonSerialization,false) => "".AsSpan(),
-                    (StringifyAs.CSharp,true) => NewLineSpaces400.AsSpan().Slice(0, options.Depth * 2),
                     (StringifyAs.CSharp,false) => " ".AsSpan(),
-                    (StringifyAs.DebugView,true) => NewLineSpaces400.AsSpan().Slice(0, options.Depth * 2),
                     (StringifyAs.DebugView,false) => " ".AsSpan(),
                     (_,_) => "".AsSpan()
                 };
             var delimiter = (options.StringifyAs, options.WriteIndented) switch
                 {
-                    (StringifyAs.JsonStringifier,true) => CommaCrLfSpaces400.AsSpan().Slice(0,2 + (options.Depth + 1) *2),
+                    (_,true) => CommaCrLfSpaces400.AsSpan().Slice(0,2 + (options.Depth + 1) *2),
                     (StringifyAs.JsonStringifier, false) =>",",
-                    (StringifyAs.STJsonSerialization,true) => CommaCrLfSpaces400.AsSpan().Slice(0,2 + (options.Depth + 1) *2),
                     (StringifyAs.STJsonSerialization, false) =>",",
-                    (StringifyAs.CSharp,true) => CommaCrLfSpaces400.AsSpan().Slice(0,5 + options.Depth*2),
                     (StringifyAs.CSharp, false) => ", ",
-                    (StringifyAs.DebugView,true) => CommaCrLfSpaces400.AsSpan().Slice(0,5 + options.Depth*2),
                     (StringifyAs.DebugView, false) => ", ",
                     (_,_) => ", "
                 };

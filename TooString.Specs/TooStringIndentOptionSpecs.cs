@@ -69,6 +69,75 @@ public class TooStringIndentOptionSpecs
     }
 
     [Test]
+    public void IndentedCSharpString_HasCorrectIndentation()
+    {
+        var actual = depth4.ToCSharpString(writeIndented: true);
+        TestContext.Out.WriteLine(actual);
+
+        var expected = string.Join(Environment.NewLine,
+            "/*Circular*/ new {",
+            "  A = \"1\",",
+            "  B = /*Circular*/ new {",
+            "    A = \"2\",",
+            "    B = /*Circular*/ new {",
+            "      A = \"3\",",
+            "      B = null,",
+            "      C = \"3\"",
+            "    },",
+            "    C = \"2\"",
+            "  },",
+            "  C = \"1\"",
+            "}");
+        Assert.That(actual, Is.EqualTo(expected));
+    }
+
+    [Test]
+    public void IndentedDebugView_HasCorrectIndentation()
+    {
+        var actual = depth4.TooString(TooStringOptions.Default with { StringifyAs = StringifyAs.DebugView });
+        TestContext.Out.WriteLine(actual);
+
+        var expected = string.Join(Environment.NewLine,
+            "{",
+            "  A = 1,",
+            "  B = {",
+            "    A = 2,",
+            "    B = {",
+            "      A = 3,",
+            "      B = null,",
+            "      C = 3",
+            "    },",
+            "    C = 2",
+            "  },",
+            "  C = 1",
+            "}");
+        Assert.That(actual, Is.EqualTo(expected));
+    }
+
+    [Test]
+    public void IndentedJsonStringifier_HasCorrectIndentation()
+    {
+        var actual = depth4.ToJson(writeIndented: true);
+        TestContext.Out.WriteLine(actual);
+
+        var expected = string.Join(Environment.NewLine,
+            "{",
+            "  \"A\": \"1\",",
+            "  \"B\": {",
+            "    \"A\": \"2\",",
+            "    \"B\": {",
+            "      \"A\": \"3\",",
+            "      \"B\": null,",
+            "      \"C\": \"3\"",
+            "    },",
+            "    \"C\": \"2\"",
+            "  },",
+            "  \"C\": \"1\"",
+            "}");
+        Assert.That(actual, Is.EqualTo(expected));
+    }
+
+    [Test]
     public void IndentOutputIsMultiLineForReflectedJsonOutput()
     {
         var expected1 = System.Text.Json.JsonSerializer.Serialize(depth4,stjOptionsForIndentedNoCycles);
