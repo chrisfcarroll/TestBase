@@ -86,6 +86,7 @@ Serilog.Logger slogger= new LoggerConfiguration().WriteTo.StringList(log).Create
       ChangeLog
       ---------
       5.1.x&#x2008;&#x2007; Use CallerArgumentExpression on ShouldNotBeNull/Empty()/True()/False() tests on net6.0 and up.
+      &#x2007;&#x2008;&#x2007;&#x2008;&#x2007;&#x2008;&#x2007; Reduce clutter on Assertion output.
       5.0.x&#x2008;&#x2007; Use TestBase.Differ for neater String and Collection assertions on net6.0 and up.
       &#x2007;&#x2008;&#x2007;&#x2008;&#x2007;&#x2008;&#x2007; Assertion output messages are changed from version 4.*
       4.4.4&#x2008;&#x2007; TooString version
