@@ -146,7 +146,7 @@ public static partial class ObjectTooString
     }
 
     /// <summary>
-    /// Try System.Text.Json serialization first; fall back to JsonStringifier
+    /// Try System.Text.Json serialization first; fall back to Json Stringifier
     /// for types STJ can't handle (Reflection types, ITuples without IncludeFields).
     /// </summary>
     static string ToSTJsonWithFallback<T>(T? value, TooStringOptions options)

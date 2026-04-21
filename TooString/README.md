@@ -120,11 +120,11 @@ value.ToSTJson(writeIndented: true, propertyNamingPolicy: JsonNamingPolicy.Camel
 
 // TooString with style selection
 value.TooString()
-value.TooString(StringifyAs.JsonStringifier)
+value.TooString(StringifyAs.Json)
 value.TooString(maxDepth: 4, maxEnumerableLength: 9, style: StringifyAs.CSharp)
-value.TooString(TooStringOptions.ForJson with { MaxEnumerationLength = 9 })
+value.TooString(TooStringOptions.ForCSharp with { MaxEnumerationLength = 1 })
+value.TooString(TooStringOptions.ForJson with { MaxEnumerationLength = 2 })
 ```
-
 
 ## Gotchas
 
