@@ -241,6 +241,10 @@ public static partial class ObjectTooString
             {
                 return DelimitTuple(valueTuple, options);
             }
+            else if (value is IDictionary dictionary)
+            {
+                return DelimitDictionary(dictionary, options);
+            }
             else if (value is IEnumerable enumerable)
             {
                 return DelimitEnumerable(enumerable, options);
@@ -388,6 +392,61 @@ public static partial class ObjectTooString
 
         if(i == 0) return ScalarishToShortReflectedString(value,options);
 
+        return b.ToString();
+    }
+
+    static string DelimitDictionary(IDictionary dict, OptionsWithState options)
+    {
+        if (options.Depth >= options.MaxDepth)
+            return ScalarishToShortReflectedString(dict, options);
+
+        var maxLen = options.MaxEnumerationLength;
+        if (maxLen < 0) maxLen = -maxLen - options.Depth;
+        if (maxLen == 0) return ScalarishToShortReflectedString(dict, options);
+
+        var isJson = options.StringifyAs is StringifyAs.Json or StringifyAs.STJson;
+        var isCSharp = options.StringifyAs == StringifyAs.CSharp;
+
+        var indent =
+            options.WriteIndented
+                ? NewLineSpaces400.AsSpan().Slice(0, 1 + (options.Depth + 1) * 2)
+                : (isJson ? ReadOnlySpan<char>.Empty : " ".AsSpan());
+        var outdent =
+            options.WriteIndented
+                ? NewLineSpaces400.AsSpan().Slice(0, 1 + options.Depth * 2)
+                : (isJson ? ReadOnlySpan<char>.Empty : " ".AsSpan());
+        var delimiter =
+            options.WriteIndented
+                ? CommaCrLfSpaces400.AsSpan().Slice(0, 2 + (options.Depth + 1) * 2)
+                : (isJson ? ",".AsSpan() : ", ".AsSpan());
+
+        Func<object?, string> fmtKey;
+        if (isJson)
+            fmtKey = k => $"\"{ToJsonEscapedString(k?.ToString() ?? "")}\"";
+        else if (isCSharp)
+            fmtKey = k => k is string s ? $"[\"{ToJsonEscapedString(s)}\"]" : $"[{k}]";
+        else
+            fmtKey = k => $"[{k}]";
+
+        var separator = isJson
+            ? (options.WriteIndented ? ": " : ":")
+            : " = ";
+
+        var b = new StringBuilder();
+        b.Append('{');
+        int i = 0;
+        foreach (DictionaryEntry entry in dict)
+        {
+            b.Append(i == 0 ? indent : delimiter);
+            b.Append(fmtKey(entry.Key));
+            b.Append(separator);
+            b.Append(BuildReflectedString(entry.Value, options with { Depth = options.Depth + 1 }));
+            i++;
+            if (i >= maxLen) break;
+        }
+        if (i > 0) b.Append(outdent);
+        else if (!isJson) b.Append(' ');
+        b.Append('}');
         return b.ToString();
     }
 
