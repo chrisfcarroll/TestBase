@@ -266,7 +266,7 @@ public static partial class ObjectTooString
                         var typeName = value.GetType().Name;
                         var backtick = typeName.IndexOf('`');
                         if (backtick > 0) typeName = typeName.Substring(0, backtick);
-                        sb.Append("/*").Append(typeName).Append("*/ new {").Append(indent);
+                        sb.Append("new ").Append("/*").Append(typeName).Append("*/ {").Append(indent);
                     }
                     else
                     {

@@ -74,11 +74,11 @@ public class TooStringIndentOptionSpecs
         TestContext.Out.WriteLine(actual);
 
         var expected = string.Join(Environment.NewLine,
-            "/*Circular*/ new {",
+            "new /*Circular*/ {",
             "  A = \"1\",",
-            "  B = /*Circular*/ new {",
+            "  B = new /*Circular*/ {",
             "    A = \"2\",",
-            "    B = /*Circular*/ new {",
+            "    B = new /*Circular*/ {",
             "      A = \"3\",",
             "      B = null,",
             "      C = \"3\"",

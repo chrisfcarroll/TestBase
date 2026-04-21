@@ -16,7 +16,7 @@ public class TooStringifiedCSharpReturnsCSharp
         var result = person.TooString(StringifyAs.CSharp);
         TestContext.Out.WriteLine(result);
 
-        Assert.That(result, Does.StartWith("/*Person*/ new {"));
+        Assert.That(result, Does.StartWith("new /*Person*/ {"));
         Assert.That(result, Does.Contain("Id = 1"));
         Assert.That(result, Does.Contain("Name = \"John\""));
         Assert.That(result, Does.Contain("Active = true"));
@@ -30,8 +30,8 @@ public class TooStringifiedCSharpReturnsCSharp
         var result = person.TooString(StringifyAs.CSharp);
         TestContext.Out.WriteLine(result);
 
-        Assert.That(result, Does.StartWith("/*PersonWithAddress*/ new {"));
-        Assert.That(result, Does.Contain("/*Address*/ new {"));
+        Assert.That(result, Does.StartWith("new /*PersonWithAddress*/ {"));
+        Assert.That(result, Does.Contain("new /*Address*/ {"));
         Assert.That(result, Does.Contain("Street = \"123 Main St\""));
     }
 
@@ -59,7 +59,7 @@ public class TooStringifiedCSharpReturnsCSharp
         TestContext.Out.WriteLine(result);
 
         Assert.That(result, Does.StartWith("new[] {"));
-        Assert.That(result, Does.Contain("/*Person*/ new {"));
+        Assert.That(result, Does.Contain("new /*Person*/ {"));
     }
 
     [Test]
@@ -133,7 +133,7 @@ public class TooStringifiedCSharpReturnsCSharp
 
         // The output should be parseable as an anonymous object literal
         // (after removing the type comment)
-        Assert.That(result, Does.Match(@"(?s)/\*\w+\*/ new \{.*\}"));
+        Assert.That(result, Does.Match(@"(?s)new /\*\w+\*/ \{.*\}"));
     }
 
     [Test]

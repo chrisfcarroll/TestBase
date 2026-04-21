@@ -134,9 +134,11 @@ Example: Json-serializing value tuples is something of a surprise because (unlik
 System.Text.Json.JsonSerializer.Serialize(  (one:1, two:"2")  )
 // Output is "{}" because there are no public fields
 
+(one:1, two:"2").ToSTJson()
+// Output is "{}"
+
 (one:1, two:"2").ToJson()
-// Output is [1,"2"]. 
-// The value tuple is detected as an ITuple, and we use reflection instead
+// Output is [1,"2"].
 ```
 
 ## ChangeLog
@@ -146,6 +148,7 @@ ChangeLog
 0.8.x  Simplify to: ToCSharpString(), ToJson(), ToSTJson(), TooString(), ToArgumentExpression().
        Offer individual parameters in preference to a TooStringOptions object.
        Rename StringifyAs.___ members
+       CSharp output includes Type in comments, e.g. : new /*TypeName*/ { ... }
 0.7.0  Easier to build new TooStringOptions(){...}. Sanitize overloads.
 0.6.0  TooString() defaults to CSharp.
 0.5.0  ReflectionOptions.With(...), TooStringOptions.With(...). Fixes. 
