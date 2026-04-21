@@ -13,14 +13,14 @@ public enum StringifyAs
 
     /// <summary>Use
     /// <see cref="System.Text.Json.JsonSerializer.Serialize(object?,System.Type,System.Text.Json.JsonSerializerOptions?)"/>
-    /// to serialize, unless that throws an exception, in which case fall back to <see cref="JsonStringifier"/>.
+    /// to serialize.
     /// </summary>
-    STJsonSerialization,
+    STJson,
 
     /// <summary>
     /// Stringify to JSON-style output: <c>{"A":"B"}</c>
     /// </summary>
-    JsonStringifier,
+    Json,
 
     /// <summary>
     /// Stringify to ‘Debug View’ style: <c>{ A = B }</c>

@@ -106,7 +106,7 @@ public class TooStringJsonReturnsJson
             "\"Timeout\":\"00:01:40\",\"MaxResponseContentBufferSize\":2147483647}";
         
         Assert.That(
-            value.TooString(StringifyAs.STJsonSerialization), 
+            value.TooString(StringifyAs.STJson), 
             Is.EqualTo(expected) 
         );
     }
@@ -116,7 +116,7 @@ public class TooStringJsonReturnsJson
     public void AndTestMethodsToRedactFilePathsDontBreakTheseTests()
     {
         var anAssembly = Assembly.GetExecutingAssembly();
-        var actual = anAssembly.ManifestModule.FullyQualifiedName.TooString(StringifyAs.STJsonSerialization);
+        var actual = anAssembly.ManifestModule.FullyQualifiedName.TooString(StringifyAs.STJson);
         var expected = "\"" +
                        /* expect Json to escape backslashes with backslashes */
                        Path.Combine(Directory.GetCurrentDirectory(), "TooString.Specs.dll").Replace("\\","\\\\") +

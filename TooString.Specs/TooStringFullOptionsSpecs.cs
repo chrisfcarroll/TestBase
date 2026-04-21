@@ -49,7 +49,7 @@ public class TooStringFullOptionsSpecs
         var value = new { A = 1 };
 
         var csharp = value.TooString(maxDepth: 3, style: StringifyAs.CSharp, writeIndented: false);
-        var json = value.TooString(maxDepth: 3, style: StringifyAs.JsonStringifier, writeIndented: false);
+        var json = value.TooString(maxDepth: 3, style: StringifyAs.Json, writeIndented: false);
         var debug = value.TooString(maxDepth: 3, style: StringifyAs.DebugView, writeIndented: false);
 
         Assert.That(csharp, Does.Contain("A = 1"));
@@ -106,7 +106,7 @@ public class TooStringFullOptionsSpecs
         var result = value.TooString(
             maxDepth: 5,
             maxEnumerableLength: 20,
-            style: StringifyAs.JsonStringifier,
+            style: StringifyAs.Json,
             writeIndented: true,
             dateTimeFormat: "yyyy-MM-dd");
 

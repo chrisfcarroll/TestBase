@@ -6,7 +6,7 @@ public static partial class ObjectTooString
 {
     /// <summary>
     /// Stringify <paramref name="value"/> as JSON using our reflection-based
-    /// <see cref="StringifyAs.JsonStringifier"/>.
+    /// <see cref="StringifyAs.Json"/>.
     /// For pure System.Text.Json serialization, use <see cref="ToSTJson{T}(T?, System.Text.Json.JsonSerializerOptions)"/>.
     /// </summary>
     /// <param name="value">The value to stringify as JSON</param>
@@ -34,7 +34,7 @@ public static partial class ObjectTooString
                                    string timeSpanFormat = "c")
         => BuildReflectedString(value, OptionsWithState.From(0, new TooStringOptions
         {
-            StringifyAs = StringifyAs.JsonStringifier,
+            StringifyAs = StringifyAs.Json,
             WriteIndented = writeIndented,
             WhichProperties = whichProperties,
             MaxDepth = maxDepth,

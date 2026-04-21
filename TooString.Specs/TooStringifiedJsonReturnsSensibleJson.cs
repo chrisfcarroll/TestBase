@@ -29,9 +29,9 @@ public class TooStringifiedJsonReturnsSensibleJson
         var b = new BigInteger(123);
         var q = new Quaternion(1,2,3,4);
 
-        Assert.That(c.TooString(StringifyAs.JsonStringifier), Is.EqualTo("[3,4]"));
-        Assert.That(b.TooString(StringifyAs.JsonStringifier), Is.EqualTo("123"));
-        Assert.That(q.TooString(StringifyAs.JsonStringifier), Is.EqualTo("{X:1,Y:2,Z:3,W:4}"));
+        Assert.That(c.TooString(StringifyAs.Json), Is.EqualTo("[3,4]"));
+        Assert.That(b.TooString(StringifyAs.Json), Is.EqualTo("123"));
+        Assert.That(q.TooString(StringifyAs.Json), Is.EqualTo("{X:1,Y:2,Z:3,W:4}"));
     }
 
 
@@ -46,22 +46,22 @@ public class TooStringifiedJsonReturnsSensibleJson
             now = now.AddTicks(ticksPerTenthOfMicroSecond * 111);
         }
 
-        var nowActual = now.TooString(StringifyAs.JsonStringifier);
+        var nowActual = now.TooString(StringifyAs.Json);
         Assert.That(nowActual,Is.EqualTo("\"" + now.ToString("O") + "\""));
         TestContext.Out.WriteLine("DateTime: " + nowActual);
 
         var dateOnly = DateOnly.FromDateTime(now);
-        var dateOnlyActual = dateOnly.TooString(StringifyAs.JsonStringifier);
+        var dateOnlyActual = dateOnly.TooString(StringifyAs.Json);
         Assert.That(dateOnlyActual,Is.EqualTo("\"" + dateOnly.ToString("O") + "\""));
         TestContext.Out.WriteLine("DateOnly: " + dateOnlyActual);
 
         var timeOnly = TimeOnly.FromDateTime(now);
-        var timeOnlyActual = timeOnly.TooString(StringifyAs.JsonStringifier);
+        var timeOnlyActual = timeOnly.TooString(StringifyAs.Json);
         Assert.That(timeOnlyActual,Is.EqualTo("\"" + timeOnly.ToString("HH:mm:ss") + "\""));
         TestContext.Out.WriteLine("TimeOnly: " + timeOnlyActual);
 
         var timeSpan = timeOnly.ToTimeSpan();
-        var timeSpanActual = timeSpan.TooString(StringifyAs.JsonStringifier);
+        var timeSpanActual = timeSpan.TooString(StringifyAs.Json);
         Assert.That(timeSpanActual,Is.EqualTo("\"" + timeSpan.ToString("c") + "\""));
         TestContext.Out.WriteLine("TimeSpan: " + timeSpanActual);
     }
@@ -131,7 +131,7 @@ public class TooStringifiedJsonReturnsSensibleJson
                                     {
                                         IncludeFields = true
                                     },
-                                    StringifyAs = StringifyAs.STJsonSerialization,
+                                    StringifyAs = StringifyAs.STJson,
                                 });
         
         TestContext.Progress.WriteLine("jsonnedIncludeFields  :" + jsonnedIncludeFields);

@@ -26,12 +26,12 @@ public class TooStringOptionsWithSpecs
     {
         var options = new TooStringOptions
         {
-            StringifyAs = StringifyAs.STJsonSerialization,
+            StringifyAs = StringifyAs.STJson,
             WriteIndented = true,
             MaxDepth = 5,
         };
 
-        Assert.That(options.StringifyAs, Is.EqualTo(StringifyAs.STJsonSerialization));
+        Assert.That(options.StringifyAs, Is.EqualTo(StringifyAs.STJson));
         Assert.That(options.WriteIndented, Is.True);
         Assert.That(options.MaxDepth, Is.EqualTo(5));
     }
@@ -41,7 +41,7 @@ public class TooStringOptionsWithSpecs
     {
         var options = TooStringOptions.ForJson;
 
-        Assert.That(options.StringifyAs, Is.EqualTo(StringifyAs.STJsonSerialization));
+        Assert.That(options.StringifyAs, Is.EqualTo(StringifyAs.STJson));
         Assert.That(options.MaxDepth, Is.EqualTo(3));
     }
 
@@ -59,7 +59,7 @@ public class TooStringOptionsWithSpecs
     {
         var options = TooStringOptions.ForJson with { WriteIndented = false };
 
-        Assert.That(options.StringifyAs, Is.EqualTo(StringifyAs.STJsonSerialization));
+        Assert.That(options.StringifyAs, Is.EqualTo(StringifyAs.STJson));
         Assert.That(options.WriteIndented, Is.False);
     }
 
@@ -163,7 +163,7 @@ public class TooStringOptionsWithSpecs
         var modified = baseOptions.With(maxDepth: 1);
 
         Assert.That(modified.WriteIndented, Is.True, "WriteIndented from base should be preserved");
-        Assert.That(modified.StringifyAs, Is.EqualTo(StringifyAs.STJsonSerialization));
+        Assert.That(modified.StringifyAs, Is.EqualTo(StringifyAs.STJson));
         Assert.That(modified.MaxDepth, Is.EqualTo(1));
         Assert.That(modified.MaxEnumerationLength, Is.EqualTo(9),
                     "Unspecified MaxEnumerationLength should be preserved from base");
@@ -191,7 +191,7 @@ public class TooStringOptionsWithSpecs
             .With(writeIndented: true)
             .With(maxEnumerableLength: 20);
 
-        Assert.That(options.StringifyAs, Is.EqualTo(StringifyAs.STJsonSerialization));
+        Assert.That(options.StringifyAs, Is.EqualTo(StringifyAs.STJson));
         Assert.That(options.MaxDepth, Is.EqualTo(5));
         Assert.That(options.WriteIndented, Is.True);
         Assert.That(options.MaxEnumerationLength, Is.EqualTo(20));

@@ -73,8 +73,8 @@ public static partial class ObjectTooString
             TooString(value,style switch
             {
                 StringifyAs.CSharp => TooStringOptions.Default,
-                StringifyAs.STJsonSerialization => TooStringOptions.ForJson,
-                StringifyAs.JsonStringifier => TooStringOptions.ForJson with { StringifyAs = StringifyAs.JsonStringifier },
+                StringifyAs.STJson => TooStringOptions.ForJson,
+                StringifyAs.Json => TooStringOptions.ForJson with { StringifyAs = StringifyAs.Json },
                 StringifyAs.DebugView => TooStringOptions.Default with { StringifyAs = StringifyAs.DebugView },
                 _ => throw new ArgumentOutOfRangeException(nameof(style),style,null)
             });
@@ -140,7 +140,7 @@ public static partial class ObjectTooString
     /// </returns>
     public static string TooString<T>(this T value, TooStringOptions options)
     {
-        return options.StringifyAs is StringifyAs.STJsonSerialization
+        return options.StringifyAs is StringifyAs.STJson
             ? ToSTJsonWithFallback(value, options)
             : BuildReflectedString(value,OptionsWithState.From(0,options));
     }
@@ -159,7 +159,7 @@ public static partial class ObjectTooString
            )
         {
             return BuildReflectedString(value,
-                OptionsWithState.From(0, options with { StringifyAs = StringifyAs.JsonStringifier }));
+                OptionsWithState.From(0, options with { StringifyAs = StringifyAs.Json }));
         }
         else try
             {
@@ -172,7 +172,7 @@ public static partial class ObjectTooString
             catch
             {
                 return BuildReflectedString(value,
-                    OptionsWithState.From(0, options with { StringifyAs = StringifyAs.JsonStringifier }));
+                    OptionsWithState.From(0, options with { StringifyAs = StringifyAs.Json }));
             }
     }
 
@@ -184,7 +184,7 @@ public static partial class ObjectTooString
         }
 
         Func<string,string> qname =
-            options.StringifyAs is StringifyAs.JsonStringifier or StringifyAs.STJsonSerialization
+            options.StringifyAs is StringifyAs.Json or StringifyAs.STJson
                 ? s => $"\"{s?.Replace("`","\\u0060").Replace("\"","\\\"")}\""
                 : s => s;
 
@@ -195,8 +195,8 @@ public static partial class ObjectTooString
                 (options.StringifyAs, options.WriteIndented) switch
                 {
                     (_,true) => NewLineSpaces400.AsSpan().Slice(0, 1 + (options.Depth + 1) * 2),
-                    (StringifyAs.JsonStringifier,false) => "".AsSpan(),
-                    (StringifyAs.STJsonSerialization,false) => "".AsSpan(),
+                    (StringifyAs.Json,false) => "".AsSpan(),
+                    (StringifyAs.STJson,false) => "".AsSpan(),
                     (StringifyAs.DebugView,false) => " ".AsSpan(),
                     (StringifyAs.CSharp,false) => " ".AsSpan(),
                     (_,_) => " ".AsSpan()
@@ -205,8 +205,8 @@ public static partial class ObjectTooString
                 (options.StringifyAs, options.WriteIndented) switch
                 {
                     (_,true) => NewLineSpaces400.AsSpan().Slice(0, 1 + (options.Depth) * 2),
-                    (StringifyAs.JsonStringifier,false) => "".AsSpan(),
-                    (StringifyAs.STJsonSerialization,false) => "".AsSpan(),
+                    (StringifyAs.Json,false) => "".AsSpan(),
+                    (StringifyAs.STJson,false) => "".AsSpan(),
                     (StringifyAs.CSharp,false) => " ".AsSpan(),
                     (StringifyAs.DebugView,false) => " ".AsSpan(),
                     (_,_) => "".AsSpan()
@@ -214,18 +214,18 @@ public static partial class ObjectTooString
             var delimiter = (options.StringifyAs, options.WriteIndented) switch
                 {
                     (_,true) => CommaCrLfSpaces400.AsSpan().Slice(0,2 + (options.Depth + 1) *2),
-                    (StringifyAs.JsonStringifier, false) =>",",
-                    (StringifyAs.STJsonSerialization, false) =>",",
+                    (StringifyAs.Json, false) =>",",
+                    (StringifyAs.STJson, false) =>",",
                     (StringifyAs.CSharp, false) => ", ",
                     (StringifyAs.DebugView, false) => ", ",
                     (_,_) => ", "
                 };
             var separator = (options.StringifyAs, options.WriteIndented) switch
             {
-                (StringifyAs.JsonStringifier,true) => ": ",
-                (StringifyAs.JsonStringifier, false) =>":",
-                (StringifyAs.STJsonSerialization,true) => ": ",
-                (StringifyAs.STJsonSerialization, false) =>":",
+                (StringifyAs.Json,true) => ": ",
+                (StringifyAs.Json, false) =>":",
+                (StringifyAs.STJson,true) => ": ",
+                (StringifyAs.STJson, false) =>":",
                 (StringifyAs.DebugView, _) => " = ",
                 (StringifyAs.CSharp, _) => " = ",
                 (_,_) => " = "
@@ -333,7 +333,7 @@ public static partial class ObjectTooString
 
     static string DelimitTuple<T>(T value, OptionsWithState options) where T : ITuple
     {
-        var (start, delimiter,end) = options.StringifyAs is StringifyAs.JsonStringifier or StringifyAs.STJsonSerialization
+        var (start, delimiter,end) = options.StringifyAs is StringifyAs.Json or StringifyAs.STJson
             ? ("[", "," , "]")
             : ("(", ", ", ")");
         var b = new StringBuilder(start);
@@ -372,7 +372,7 @@ public static partial class ObjectTooString
         int i = 0;
         var (start, delimiter, end) = options.StringifyAs switch
         {
-            StringifyAs.JsonStringifier or StringifyAs.STJsonSerialization=> ("[", ",", "]"),
+            StringifyAs.Json or StringifyAs.STJson=> ("[", ",", "]"),
             StringifyAs.CSharp => ("new[] { ", ", ", " }"),
             _ => ("[ ", ", ", " ]")
         };
@@ -406,7 +406,7 @@ public static partial class ObjectTooString
     static string ScalarishToShortReflectedString(object? value, OptionsWithState options)
     {
         var style = options.StringifyAs;
-        var isJson = style is StringifyAs.JsonStringifier or StringifyAs.STJsonSerialization;
+        var isJson = style is StringifyAs.Json or StringifyAs.STJson;
         var isCSharp = style == StringifyAs.CSharp;
 
         Func<string, string> qstr =

@@ -64,7 +64,7 @@ public record TooStringOptions
     public static readonly TooStringOptions ForJson
         = Default with
         {
-            StringifyAs = StringifyAs.STJsonSerialization,
+            StringifyAs = StringifyAs.STJson,
         };
 
     // ──────────────────────────────────────────────
@@ -84,7 +84,7 @@ public record TooStringOptions
 
     /// <summary>
     /// Options for System.Text.Json serialization.
-    /// Only used when <see cref="StringifyAs"/> is <see cref="TooString.StringifyAs.STJsonSerialization"/>.
+    /// Only used when <see cref="StringifyAs"/> is <see cref="TooString.StringifyAs.STJson"/>.
     /// For pure System.Text.Json calls, use <see cref="ObjectTooString.ToSTJson{T}(T?, JsonSerializerOptions)"/> directly.
     /// </summary>
     public JsonSerializerOptions JsonOptions { get; init; }
