@@ -145,6 +145,7 @@ ChangeLog
 ---------
 0.8.x  Simplify to: ToCSharpString(), ToJson(), ToSTJson(), TooString(), ToArgumentExpression().
        Offer individual parameters in preference to a TooStringOptions object.
+       Rename StringifyAs.___ members
 0.7.0  Easier to build new TooStringOptions(){...}. Sanitize overloads.
 0.6.0  TooString() defaults to CSharp.
 0.5.0  ReflectionOptions.With(...), TooStringOptions.With(...). Fixes. 

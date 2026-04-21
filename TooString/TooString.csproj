@@ -72,6 +72,7 @@ type.ToJson() // Outputs the type object, truncated to default MaxDepth = 3, Max
             ---------
             0.8.x  Simplify to: ToCSharpString(), ToJson(), ToSTJson(), TooString(), ToArgumentExpression().
             &#x2007;&#x2008;&#x2007;&#x2008;&#x2007;&#x2008; Offer individual parameters in preference to a TooStringOptions object.
+            &#x2007;&#x2008;&#x2007;&#x2008;&#x2007;&#x2008; Rename StringifyAs.___ members
             0.7.0  Easier to build new TooStringOptions(){...}. Sanitize overloads.
             0.6.0  TooString() defaults to CSharp.
             &#x2007;&#x2008;&#x2007;&#x2008;&#x2007;&#x2008; Add TooStringOptions.WriteIndented property.
