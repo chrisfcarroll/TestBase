@@ -62,7 +62,6 @@ public class TooStringIndentOptionSpecs
         var expected1 = System.Text.Json.JsonSerializer.Serialize(depth4,stjOptionsForIndentedNoCycles);
         Assert.That(actual1, Is.EqualTo(expected1));
 
-        // ToJson uses JsonStringifier, so its indented output differs from STJ
         var actual2 = depth4.ToJson(writeIndented: true);
         Assert.That(actual2, Does.Contain("\n"));
         Assert.That(actual2, Does.Contain("\"A\""));

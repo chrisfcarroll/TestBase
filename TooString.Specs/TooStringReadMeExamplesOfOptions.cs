@@ -11,7 +11,6 @@ public class TooStringReadMeExamplesOfOptions
     [Test]
     public void ToJsonExamples()
     {
-        // ToJson() uses JsonStringifier (reflection-based), now indented by default
         var toJson = circular.ToJson();
         Assert.That(toJson, Does.Contain("\"A\": \"1\""));
 

@@ -20,7 +20,6 @@ public class TooStringReadMeExamples
     {
         var anonObject = new { A = "boo", B = new Complex(3,4) };
 
-        // ToJson() uses JsonStringifier (reflection-based), default is now indented
         var actualJsonCompact = anonObject.ToJson(writeIndented: false);
         Assert.That(actualJsonCompact, Is.EqualTo(
                 """{"A":"boo","B":[3,4]}"""));
@@ -67,7 +66,7 @@ public class TooStringReadMeExamples
         Assert.That(actual3, Is.EqualTo("(1, \"2\", (3, 4))"));
         #endif
 
-        var options = TooStringOptions.ForJson with
+        var options = TooStringOptions.ForSTJson with
         {
             WriteIndented = false,
             JsonOptions = new JsonSerializerOptions { IncludeFields = true }

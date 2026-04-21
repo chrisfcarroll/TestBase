@@ -39,7 +39,7 @@ public class TooStringOptionsWithSpecs
     [Test]
     public void ForJson_ReturnsJsonSerializerStyle()
     {
-        var options = TooStringOptions.ForJson;
+        var options = TooStringOptions.ForSTJson;
 
         Assert.That(options.StringifyAs, Is.EqualTo(StringifyAs.STJson));
         Assert.That(options.MaxDepth, Is.EqualTo(3));
@@ -57,7 +57,7 @@ public class TooStringOptionsWithSpecs
     [Test]
     public void ForJson_CanBeCustomisedWithRecordWith()
     {
-        var options = TooStringOptions.ForJson with { WriteIndented = false };
+        var options = TooStringOptions.ForSTJson with { WriteIndented = false };
 
         Assert.That(options.StringifyAs, Is.EqualTo(StringifyAs.STJson));
         Assert.That(options.WriteIndented, Is.False);
@@ -163,7 +163,7 @@ public class TooStringOptionsWithSpecs
         var modified = baseOptions.With(maxDepth: 1);
 
         Assert.That(modified.WriteIndented, Is.True, "WriteIndented from base should be preserved");
-        Assert.That(modified.StringifyAs, Is.EqualTo(StringifyAs.STJson));
+        Assert.That(modified.StringifyAs, Is.EqualTo(StringifyAs.Json));
         Assert.That(modified.MaxDepth, Is.EqualTo(1));
         Assert.That(modified.MaxEnumerationLength, Is.EqualTo(9),
                     "Unspecified MaxEnumerationLength should be preserved from base");
@@ -191,7 +191,7 @@ public class TooStringOptionsWithSpecs
             .With(writeIndented: true)
             .With(maxEnumerableLength: 20);
 
-        Assert.That(options.StringifyAs, Is.EqualTo(StringifyAs.STJson));
+        Assert.That(options.StringifyAs, Is.EqualTo(StringifyAs.Json));
         Assert.That(options.MaxDepth, Is.EqualTo(5));
         Assert.That(options.WriteIndented, Is.True);
         Assert.That(options.MaxEnumerationLength, Is.EqualTo(20));

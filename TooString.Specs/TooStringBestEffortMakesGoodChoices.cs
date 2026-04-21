@@ -23,7 +23,7 @@ public class TooStringBestEffortMakesGoodChoices
     public void GivenACompositeObject__ReturnsJson()
     {
         var value = new CompositeA { A = "boo", B = new Complex(3,4) };
-        // ToJson() now uses JsonStringifier, which stringifies Complex as an array
+        // ToJson() uses Json Stringifier, which stringifies Complex as an array
         var expected = """{"A":"boo","B":[3,4]}""";
 
         Assert.That(
@@ -37,7 +37,7 @@ public class TooStringBestEffortMakesGoodChoices
     public void GivenACompositeObjectAndDefaultOptions__ReturnsJson()
     {
         var value = new CompositeA { A = "boo", B = new Complex(3,4) };
-        // ToJson() now uses JsonStringifier, which stringifies Complex as an array
+        // ToJson() uses Json Stringifier, which stringifies Complex as an array
         var expected = """{"A":"boo","B":[3,4]}""";
 
         var actual = value.ToJson(writeIndented: false);
@@ -53,7 +53,7 @@ public class TooStringBestEffortMakesGoodChoices
         var value = new Circular{ A = "boo"};
         value.B = value;
 
-        // ToJson() uses JsonStringifier which recurses to MaxDepth (3)
+        // ToJson() uses Json Stringifier which recurses to default MaxDepth (3)
         var actual = value.ToJson(writeIndented: false);
         Assert.That(actual, Does.StartWith("{\"A\":\"boo\",\"B\":{\"A\":\"boo\""));
         TestContext.Progress.WriteLine(actual);
@@ -84,11 +84,11 @@ public class TooStringBestEffortMakesGoodChoices
         //A
         var value = TooStringJsonReturnsJson.httpClient;
 
-        //A — ToJson() now uses JsonStringifier (reflection-based)
+        //A — ToJson() uses Json Stringifier
         var actual = value.ToJson(writeIndented: false);
         //D
         TestContext.Progress.WriteLine(actual);
-        // A — JsonStringifier reflects into properties instead of calling ToString()
+        // A — Json Stringifier reflects into properties instead of calling ToString()
         Assert.That(actual, Does.Contain("\"DefaultRequestHeaders\":[]"));
         Assert.That(actual, Does.Contain("\"Timeout\":\"00:01:40\""));
         Assert.That(actual, Does.Contain("\"MaxResponseContentBufferSize\":2147483647"));

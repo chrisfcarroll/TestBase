@@ -47,21 +47,31 @@ public record TooStringOptions
         };
 
     /// <summary>
-    /// Preset for CSharp-style output via reflection.
-    /// Customise further with <c>with { ... }</c>.
+    /// Preset for CSharp-style output.
+    /// Customize further with <c>with { ... }</c>.
     /// </summary>
     public static readonly TooStringOptions ForCSharp = new() ;
 
     /// <summary>
-    /// Default options: CSharp style, default JsonSerializerOptions, MaxDepth 3, MaxEnumerationLength 9.
+    /// Default options: CSharp style.
     /// </summary>
     public static readonly TooStringOptions Default = ForCSharp;
 
     /// <summary>
-    /// Preset for JSON serialization via <see cref="System.Text.Json.JsonSerializer"/>.
+    /// Preset for JSON output.
     /// Customize further with <c>with { ... }</c>.
     /// </summary>
     public static readonly TooStringOptions ForJson
+        = Default with
+        {
+            StringifyAs = StringifyAs.Json,
+        };
+
+    /// <summary>
+    /// Preset for JSON serialization using a <see cref="System.Text.Json.JsonSerializer"/>.
+    /// Customize further with <c>with { ... }</c>.
+    /// </summary>
+    public static readonly TooStringOptions ForSTJson
         = Default with
         {
             StringifyAs = StringifyAs.STJson,

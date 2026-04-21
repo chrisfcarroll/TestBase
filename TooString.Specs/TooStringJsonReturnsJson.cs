@@ -141,7 +141,7 @@ public class TooStringJsonReturnsJson
 
         var defaultJsonned = JsonSerializer.Serialize(value);
 
-        var options = TooStringOptions.ForJson with
+        var options = TooStringOptions.ForSTJson with
         {
             WriteIndented = false,
             JsonOptions = new JsonSerializerOptions { IncludeFields = true }
