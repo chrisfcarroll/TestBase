@@ -396,34 +396,58 @@ namespace TestBase
         /// <returns>A description of the assertion.</returns>
         public string ToStringEvenIfPassed()
         {
-            var          resultHeader   = DidPass ? "Passed." : "Failed.";
-            const string assertedHeader = "Asserted : ";
-            const string divider        = "----------------------------";
-            var assertedRow =
-                (string.IsNullOrWhiteSpace(AssertedDetail) || AssertedDetail.HasTheSameWordsAs(Asserted))
-                    ? assertedHeader + Asserted
-                    : assertedHeader + Asserted + nl + AssertedDetail;
+            var parts = new System.Collections.Generic.List<string>();
+            if (DidPass) parts.Add("Passed.");
 
-            bool actualIsUninformative = string.IsNullOrEmpty(Actual)
-                || Actual is "<null>" or "null" or "True" or "False" or "true" or "false";
-            string actualDisplay = actualIsUninformative && !string.IsNullOrWhiteSpace(ActualExpression)
-                ? ActualExpression
-                : Actual;
+            var (formattedDetail, needsSeparateActual) = FormatDetail();
+            if (formattedDetail != null) parts.Add(formattedDetail);
 
-            string output = string.Join(nl,
-                                        resultHeader,
-                                        assertedRow,
-                                        divider,
-                                        "Actual : " + actualDisplay);
+            if (needsSeparateActual && !string.IsNullOrEmpty(Actual))
+            {
+                bool actualIsUninformative = string.IsNullOrEmpty(Actual)
+                    || Actual is "<null>" or "null" or "True" or "False" or "true" or "false";
+                string actualDisplay = actualIsUninformative && !string.IsNullOrWhiteSpace(ActualExpression)
+                    ? ActualExpression
+                    : Actual;
+                parts.Add("Actual:   " + actualDisplay);
+            }
+
+            if (!string.IsNullOrWhiteSpace(Asserted))
+                parts.Add("Asserted: " + Asserted);
+
             if (!string.IsNullOrEmpty(Comment))
+                parts.Add(Comment);
+            if (!Result.HasValue && ExceptionThrownByEvaluation != null)
+                parts.Add(ExceptionThrownByEvaluation.ToString());
+
+            return string.Join(nl, parts);
+        }
+
+        (string detail, bool needsSeparateActual) FormatDetail()
+        {
+            if (string.IsNullOrWhiteSpace(AssertedDetail))
+                return (null, true);
+
+            const string separator = ", Actual: ";
+            var separatorIdx = AssertedDetail.IndexOf(separator);
+            if (separatorIdx > 0 && AssertedDetail.StartsWith("Expected:"))
             {
-                output += nl + divider + nl + Comment;
+                var expectedLine = AssertedDetail.Substring(0, separatorIdx);
+                var actualValue = AssertedDetail.Substring(separatorIdx + separator.Length);
+
+                bool actualIsUninformative = string.IsNullOrEmpty(actualValue)
+                    || actualValue is "null" or "True" or "False" or "true" or "false" or "\"\"";
+                string actualDisplay = actualIsUninformative && !string.IsNullOrWhiteSpace(ActualExpression)
+                    ? ActualExpression
+                    : actualValue;
+
+                return (expectedLine + nl + "Actual:   " + actualDisplay, false);
             }
-            if (!Result.HasValue)
-            {
-                output += nl + divider + nl + ExceptionThrownByEvaluation;
-            }
-            return output;
+
+            if (AssertedDetail.Contains(nl + "Actual:") || AssertedDetail.Contains("\nActual:"))
+                return (AssertedDetail, false);
+
+            return (AssertedDetail, true);
         }
         
         #pragma warning disable CS0414 // Field is assigned but its value is never used
