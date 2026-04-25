@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 
@@ -147,6 +148,20 @@ namespace TestBase
             if (actual == null || !actual.Equals(expected))
                 ThrowAssertion(actual, $"{nameof(ShouldBe)} {expected}",
                     $"Expected: {expected ?? (object)"null"}, Actual: {actual ?? (object)"null"}", message, args);
+            return actual;
+        }
+
+        /// <summary>Asserts DateTime equality using ISO 8601 formatting in failure messages.</summary>
+        public static DateTime ShouldBe(this DateTime actual, DateTime expected, string message = null, params object[] args)
+        {
+            if (!actual.Equals(expected))
+            {
+                var fmt = actual.TimeOfDay == TimeSpan.Zero && expected.TimeOfDay == TimeSpan.Zero
+                    ? "yyyy-MM-dd" : "yyyy-MM-dd HH:mm:ss.FFFFFFF";
+                ThrowAssertion(actual, nameof(ShouldBe),
+                    $"Expected: {expected.ToString(fmt, CultureInfo.InvariantCulture)}, Actual: {actual.ToString(fmt, CultureInfo.InvariantCulture)}",
+                    message, args);
+            }
             return actual;
         }
 
