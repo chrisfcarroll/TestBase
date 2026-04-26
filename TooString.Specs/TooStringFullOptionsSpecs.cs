@@ -14,8 +14,8 @@ public class TooStringFullOptionsSpecs
             B = new Circular { A = "2", B = new Circular { A = "3" } }
         };
 
-        var shallow = value.TooString(maxDepth: 1, style: StringifyAs.CSharp);
-        var deep = value.TooString(maxDepth: 5, style: StringifyAs.CSharp);
+        var shallow = value.TooString(maxDepth: 1, stringifyAs: StringifyAs.CSharp);
+        var deep = value.TooString(maxDepth: 5, stringifyAs: StringifyAs.CSharp);
 
         Assert.That(shallow.Length, Is.LessThan(deep.Length));
     }
@@ -25,8 +25,8 @@ public class TooStringFullOptionsSpecs
     {
         var value = Enumerable.Range(1, 20).ToArray();
 
-        var limited = value.TooString(maxDepth: 2, maxEnumerableLength: 3, style: StringifyAs.CSharp);
-        var full = value.TooString(maxDepth: 2, maxEnumerableLength: 20, style: StringifyAs.CSharp);
+        var limited = value.TooString(maxDepth: 2, maxEnumerableLength: 3, stringifyAs: StringifyAs.CSharp);
+        var full = value.TooString(maxDepth: 2, maxEnumerableLength: 20, stringifyAs: StringifyAs.CSharp);
 
         Assert.That(limited.Length, Is.LessThan(full.Length));
     }
@@ -48,9 +48,9 @@ public class TooStringFullOptionsSpecs
     {
         var value = new { A = 1 };
 
-        var csharp = value.TooString(maxDepth: 3, style: StringifyAs.CSharp, writeIndented: false);
-        var json = value.TooString(maxDepth: 3, style: StringifyAs.Json, writeIndented: false);
-        var debug = value.TooString(maxDepth: 3, style: StringifyAs.DebugView, writeIndented: false);
+        var csharp = value.TooString(maxDepth: 3, stringifyAs: StringifyAs.CSharp, writeIndented: false);
+        var json = value.TooString(maxDepth: 3, stringifyAs: StringifyAs.Json, writeIndented: false);
+        var debug = value.TooString(maxDepth: 3, stringifyAs: StringifyAs.DebugView, writeIndented: false);
 
         Assert.That(csharp, Does.Contain("A = 1"));
         Assert.That(json, Does.Contain("\"A\":1"));
@@ -106,7 +106,7 @@ public class TooStringFullOptionsSpecs
         var result = value.TooString(
             maxDepth: 5,
             maxEnumerableLength: 20,
-            style: StringifyAs.Json,
+            stringifyAs: StringifyAs.Json,
             writeIndented: true,
             dateTimeFormat: "yyyy-MM-dd");
 

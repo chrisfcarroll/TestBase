@@ -60,24 +60,23 @@ public static partial class ObjectTooString
     /// Stringifies a value using the specified style.
     /// </summary>
     /// <param name="value">The value to stringify</param>
-    /// <param name="style">The <em>style</em> by which the value is
+    /// <param name="stringifyAs">The <em>style</em> by which the value is
     /// stringified.
     /// </param>
     /// <typeparam name="T"></typeparam>
     /// <returns>
     /// A string representation of <paramref name="value"/> according to the
-    /// <paramref name="style"/> chosen.
+    /// <paramref name="stringifyAs"/> chosen.
     /// </returns>
-    public static string TooString<T>(this T value,
-                                      StringifyAs style = StringifyAs.CSharp)
+    public static string TooString<T>(this T value, StringifyAs stringifyAs)
         =>
-            TooString(value,style switch
+            TooString(value,stringifyAs switch
             {
                 StringifyAs.CSharp => TooStringOptions.Default,
                 StringifyAs.STJson => TooStringOptions.ForJson,
                 StringifyAs.Json => TooStringOptions.ForJson with { StringifyAs = StringifyAs.Json },
                 StringifyAs.DebugView => TooStringOptions.Default with { StringifyAs = StringifyAs.DebugView },
-                _ => throw new ArgumentOutOfRangeException(nameof(style),style,null)
+                _ => throw new ArgumentOutOfRangeException(nameof(stringifyAs),stringifyAs,null)
             });
 
     /// <summary>
@@ -86,7 +85,7 @@ public static partial class ObjectTooString
     /// <param name="value">The value to stringify</param>
     /// <param name="maxDepth">Maximum depth for nested objects. Defaults to 3.</param>
     /// <param name="maxEnumerableLength">Maximum number of enumerable elements to include. Defaults to 9.</param>
-    /// <param name="style">The output style. Defaults to <see cref="StringifyAs.CSharp"/>.</param>
+    /// <param name="stringifyAs">The output style. Defaults to <see cref="StringifyAs.CSharp"/>.</param>
     /// <param name="writeIndented">Whether to format with indentation and newlines.</param>
     /// <param name="whichProperties">
     /// <see cref="BindingFlags"/> to select properties. Defaults to Instance | Public.
@@ -100,9 +99,9 @@ public static partial class ObjectTooString
     /// A string representation of <paramref name="value"/> according to the options chosen.
     /// </returns>
     public static string TooString<T>(this T value,
-                                      int maxDepth,
+                                      int maxDepth = 3,
                                       int maxEnumerableLength = 9,
-                                      StringifyAs style = StringifyAs.CSharp,
+                                      StringifyAs stringifyAs = StringifyAs.CSharp,
                                       bool writeIndented = true,
                                       BindingFlags whichProperties =
                                           BindingFlags.Instance | BindingFlags.Public,
@@ -113,7 +112,7 @@ public static partial class ObjectTooString
         =>
         TooString(value, new TooStringOptions
                         {
-                            StringifyAs = style,
+                            StringifyAs = stringifyAs,
                             MaxDepth = maxDepth,
                             MaxEnumerationLength = maxEnumerableLength,
                             WriteIndented = writeIndented,

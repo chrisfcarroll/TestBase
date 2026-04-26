@@ -31,11 +31,11 @@ value.ToArgumentExpression();
 ```
 _TooString is not a serializer._
 
-- A serializer should be fail-fast, but TooString is best-effort.
-- A Serializer should throw if it cannot deterministically serialize the input, but TooString
-  will attempt to return a partial or alternative representation of the input if the input
-  cannot be reliably serialized.
-- TooString offers both MaxDepth and MaxEnumerationLength options for abbreviated output.
+- TooString offers both maxDepth and maxEnumerableLength options for abbreviated output.
+- TooString defaults to maxDepth = 3, maxEnumerableLength = 9.
+- A serializer should be fail-fast: a Serializer should throw if it cannot deterministically
+  serialize the input, but TooString will attempt to return a partial representation of the
+  input if the input cannot be reliably serialized.
 
 Example:
 ```
@@ -70,6 +70,7 @@ type.ToJson() // Outputs the type object, truncated to default MaxDepth = 3, Max
         <PackageReleaseNotes>
             ChangeLog
             ---------
+            0.8.7  TooString() overload change. default maxDepth = 3.
             0.8.5  TooString() better output for IDctionaries | ToCSharp() changed spacing of 'new []{}'
             0.8.x  Simplify to: ToCSharpString(), ToJson(), ToSTJson(), TooString(), ToArgumentExpression().
             &#x2007;&#x2008;&#x2007;&#x2008;&#x2007;&#x2008; Offer individual parameters in preference to a TooStringOptions object.

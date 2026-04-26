@@ -16,12 +16,11 @@ value.ToArgumentExpression();
 ```
 _TooString is not a serializer._ 
 
-- A serializer should be fail-fast, but TooString is best-effort. 
-- A Serializer should throw if it cannot deterministically serialize the input, but TooString 
-  will attempt to return a partial or alternative representation of the input if the input 
-  cannot be reliably serialized.
-- TooString offers both MaxDepth and MaxEnumerationLength options for abbreviated output.
-
+- TooString offers both maxDepth and maxEnumerableLength options for abbreviated output.
+- TooString defaults to maxDepth = 3, maxEnumerableLength = 9.
+- A serializer should be fail-fast: a Serializer should throw if it cannot deterministically
+  serialize the input, but TooString will attempt to return a partial representation of the 
+  input if the input cannot be reliably serialized.
 
 ## Default behaviour
 
@@ -31,7 +30,7 @@ _TooString is not a serializer._
 - TooString() defaults to CSharp style; pass StringifyAs to choose an alternative output.
 - ToArgumentExpression() returns the literal code expression.
 
-Object output defaults to MaxDepth = 3, MaxEnumerationLength = 9, except for ToSTJson() which behaves identically to calling System.Text.Json.JsonSerializer.Serialize directly.
+Object output defaults to MaxDepth = 3, MaxEnumerableLength = 9, except for ToSTJson() which behaves identically to calling System.Text.Json.JsonSerializer.Serialize directly.
 
 ### What's the different between ToJson() and ToSTJson()?
 
@@ -68,7 +67,7 @@ tuple.ToCSharpString()
 
 var type = value.GetType();
 System.Text.Json.JsonSerializer.Serialize(type) // Throws NotSupportedException
-type.ToJson() // Outputs the type object, truncated to default MaxDepth = 3, MaxEnumerationLength = 9
+type.ToJson() // Outputs the type object, truncated to default MaxDepth = 3, MaxEnumerableLength = 9
 ```
 
 ## Options
@@ -122,8 +121,8 @@ value.ToSTJson(writeIndented: true, propertyNamingPolicy: JsonNamingPolicy.Camel
 value.TooString()
 value.TooString(StringifyAs.Json)
 value.TooString(maxDepth: 4, maxEnumerableLength: 9, style: StringifyAs.CSharp)
-value.TooString(TooStringOptions.ForCSharp with { MaxEnumerationLength = 1 })
-value.TooString(TooStringOptions.ForJson with { MaxEnumerationLength = 2 })
+value.TooString(TooStringOptions.ForCSharp with { MaxEnumerableLength = 1 })
+value.TooString(TooStringOptions.ForJson with { MaxEnumerableLength = 2 })
 ```
 
 ## Gotchas
