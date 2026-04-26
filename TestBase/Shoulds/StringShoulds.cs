@@ -42,7 +42,7 @@ namespace TestBase
 
             int diffIndex = FindFirstDifference(expected, actual);
 
-            bool isMultiLine = expected.Contains('\n') || actual.Contains('\n');
+            bool isMultiLine = expected.IndexOf('\n')>=0 || actual.IndexOf('\n')>=0;
             if (isMultiLine)
                 return FormatMultiLineDiff(expected, actual, diffIndex);
 
