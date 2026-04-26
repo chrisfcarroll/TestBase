@@ -234,7 +234,7 @@ public static partial class ObjectTooString
 
             if (value is null) return Null;
 
-            if (IsScalarish(value.GetType()))
+            if (IsScalarishType(value.GetType()))
             {
                 return ScalarishToShortReflectedString(value, options);
             }
@@ -303,7 +303,7 @@ public static partial class ObjectTooString
         {
             try
             {
-                if (IsScalarish(p.PropertyType)
+                if (IsScalarishType(p.PropertyType)
                     || options.Depth > options.MaxDepth)
                     return ScalarishToShortReflectedString(p.GetValue(value), options);
                 else if(p.GetIndexParameters().Any())
@@ -318,8 +318,6 @@ public static partial class ObjectTooString
                 return qname(p.PropertyType.Name);
             }
         }
-
-        bool IsScalarish(Type type) => IsScalarishType(type);
     }
 
     static bool IsScalarishType(Type type) =>
