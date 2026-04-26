@@ -249,6 +249,10 @@ public static partial class ObjectTooString
             {
                 return DelimitEnumerable(enumerable, options, indent, outdent, delimiter);
             }
+            else if (TryFormatKeyValuePair(value, options, indent, outdent, separator) is { } kvpResult)
+            {
+                return kvpResult;
+            }
             else
             {
                 var props = value.GetType()
@@ -426,6 +430,44 @@ public static partial class ObjectTooString
             if(i == 0) return ScalarishToShortReflectedString(value,options);
             return b.ToString();
         }
+    }
+
+    static string? TryFormatKeyValuePair<T>(T value, OptionsWithState options,
+        ReadOnlySpan<char> indent, ReadOnlySpan<char> outdent, string separator)
+    {
+        var type = value!.GetType();
+        if (!type.IsGenericType || type.GetGenericTypeDefinition() != typeof(KeyValuePair<,>))
+            return null;
+
+        var keyType = type.GetGenericArguments()[0];
+        if (!IsScalarishType(keyType))
+            return null;
+
+        var key = type.GetProperty("Key")!.GetValue(value);
+        var val = type.GetProperty("Value")!.GetValue(value);
+
+        var isJson = options.StringifyAs is StringifyAs.Json or StringifyAs.STJson;
+        var isCSharp = options.StringifyAs == StringifyAs.CSharp;
+
+        string fmtKey;
+        if (isJson)
+            fmtKey = $"\"{ToJsonEscapedString(key?.ToString() ?? "")}\"";
+        else if (isCSharp)
+            fmtKey = key is string s ? $"[\"{ToJsonEscapedString(s)}\"]" : $"[{key}]";
+        else
+            fmtKey = $"[{key}]";
+
+        var valStr = BuildReflectedString(val, options with { Depth = options.Depth + 1 });
+
+        var b = new StringBuilder();
+        b.Append('{');
+        b.Append(indent);
+        b.Append(fmtKey);
+        b.Append(separator);
+        b.Append(valStr);
+        b.Append(outdent);
+        b.Append('}');
+        return b.ToString();
     }
 
     static string DelimitDictionary(IDictionary dict,
