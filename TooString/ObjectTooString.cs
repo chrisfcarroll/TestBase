@@ -395,7 +395,7 @@ public static partial class ObjectTooString
             var (start, end) = options.StringifyAs switch
             {
                 StringifyAs.Json or StringifyAs.STJson => ("[", "]"),
-                StringifyAs.CSharp => ("new [] {", "}"),
+                StringifyAs.CSharp => ("new []{", "}"),
                 _ => ("[", "]")
             };
             var b = new StringBuilder(start);
@@ -415,7 +415,7 @@ public static partial class ObjectTooString
             var (start, flatDelimiter, end) = options.StringifyAs switch
             {
                 StringifyAs.Json or StringifyAs.STJson=> ("[", ",", "]"),
-                StringifyAs.CSharp => ("new[] { ", ", ", " }"),
+                StringifyAs.CSharp => ("new []{ ", ", ", " }"),
                 _ => ("[ ", ", ", " ]")
             };
             var b = new StringBuilder(start);
