@@ -15,12 +15,12 @@ public class TooStringKeyValuePairSpecs
     }
 
     [Test]
-    public void ScalarKey_CSharp_OutputsIndexerNotation()
+    public void ScalarKey_CSharp_OutputsPropertyStyle()
     {
         var kvp = new KeyValuePair<string, int>("age", 30);
         var result = kvp.ToCSharpString(writeIndented: false);
         TestContext.Out.WriteLine(result);
-        Assert.That(result, Is.EqualTo("""{ ["age"] = 30 }"""));
+        Assert.That(result, Is.EqualTo("""new /*KeyValuePair*/ { Key = "age", Value = 30 }"""));
     }
 
     [Test]
@@ -43,12 +43,12 @@ public class TooStringKeyValuePairSpecs
     }
 
     [Test]
-    public void IntKey_CSharp_OutputsIndexerNotation()
+    public void IntKey_CSharp_OutputsPropertyStyle()
     {
         var kvp = new KeyValuePair<int, string>(42, "answer");
         var result = kvp.ToCSharpString(writeIndented: false);
         TestContext.Out.WriteLine(result);
-        Assert.That(result, Is.EqualTo("""{ [42] = "answer" }"""));
+        Assert.That(result, Is.EqualTo("""new /*KeyValuePair*/ { Key = 42, Value = "answer" }"""));
     }
 
     [Test]
@@ -66,7 +66,17 @@ public class TooStringKeyValuePairSpecs
         var kvp = new KeyValuePair<string, Address>("home", new Address("123 Main", "Springfield"));
         var result = kvp.ToCSharpString(writeIndented: false);
         TestContext.Out.WriteLine(result);
-        Assert.That(result, Is.EqualTo("""{ ["home"] = new /*Address*/ { Street = "123 Main", City = "Springfield" } }"""));
+        Assert.That(result, Is.EqualTo("""new /*KeyValuePair*/ { Key = "home", Value = new /*Address*/ { Street = "123 Main", City = "Springfield" } }"""));
+    }
+
+    [Test]
+    public void ScalarKey_CSharp_StaysOneLineEvenWhenIndented()
+    {
+        var kvp = new KeyValuePair<string, Address>("home", new Address("123 Main", "Springfield"));
+        var result = kvp.ToCSharpString(writeIndented: true);
+        TestContext.Out.WriteLine(result);
+        Assert.That(result, Does.Not.Contain(Environment.NewLine));
+        Assert.That(result, Is.EqualTo("""new /*KeyValuePair*/ { Key = "home", Value = new /*Address*/ { Street = "123 Main", City = "Springfield" } }"""));
     }
 
     [Test]

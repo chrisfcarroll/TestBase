@@ -451,22 +451,27 @@ public static partial class ObjectTooString
         var isJson = options.StringifyAs is StringifyAs.Json or StringifyAs.STJson;
         var isCSharp = options.StringifyAs == StringifyAs.CSharp;
 
+        if (isCSharp)
+        {
+            var keyStr = ScalarishToShortReflectedString(key, options);
+            var valStr = BuildReflectedString(val, options with { Depth = options.Depth + 1, WriteIndented = false });
+            return $"new /*KeyValuePair*/ {{ Key = {keyStr}, Value = {valStr} }}";
+        }
+
         string fmtKey;
         if (isJson)
             fmtKey = $"\"{ToJsonEscapedString(key?.ToString() ?? "")}\"";
-        else if (isCSharp)
-            fmtKey = key is string s ? $"[\"{ToJsonEscapedString(s)}\"]" : $"[{key}]";
         else
             fmtKey = $"[{key}]";
 
-        var valStr = BuildReflectedString(val, options with { Depth = options.Depth + 1 });
+        var fmtVal = BuildReflectedString(val, options with { Depth = options.Depth + 1 });
 
         var b = new StringBuilder();
         b.Append('{');
         b.Append(indent);
         b.Append(fmtKey);
         b.Append(separator);
-        b.Append(valStr);
+        b.Append(fmtVal);
         b.Append(outdent);
         b.Append('}');
         return b.ToString();
