@@ -42,7 +42,7 @@ public class TooStringifiedCSharpReturnsCSharp
         var result = items.TooString(StringifyAs.CSharp);
         TestContext.Out.WriteLine(result);
 
-        Assert.That(result, Does.StartWith("new[] {"));
+        Assert.That(result, Does.StartWith("new []{"));
         Assert.That(result, Does.Contain("1, 2, 3"));
         Assert.That(result, Does.EndWith("}"));
     }
@@ -58,7 +58,7 @@ public class TooStringifiedCSharpReturnsCSharp
         var result = people.TooString(StringifyAs.CSharp);
         TestContext.Out.WriteLine(result);
 
-        Assert.That(result, Does.StartWith("new[] {"));
+        Assert.That(result, Does.StartWith("new []{"));
         Assert.That(result, Does.Contain("new /*Person*/ {"));
     }
 
@@ -143,7 +143,7 @@ public class TooStringifiedCSharpReturnsCSharp
         var result = items.TooString(StringifyAs.CSharp);
         TestContext.Out.WriteLine(result);
 
-        Assert.That(result, Does.StartWith("new[] {"));
+        Assert.That(result, Does.StartWith("new []{"));
     }
 
     [Test]
