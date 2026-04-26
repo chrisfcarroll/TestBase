@@ -12,7 +12,7 @@ public class TooStringIndentedEnumerableSpecs
         var result = items.TooString(StringifyAs.CSharp);
         TestContext.Out.WriteLine(result);
 
-        Assert.That(result, Is.EqualTo("new[] { 1, 2, 3 }"));
+        Assert.That(result, Is.EqualTo("new []{ 1, 2, 3 }"));
     }
 
     [Test]
@@ -27,7 +27,7 @@ public class TooStringIndentedEnumerableSpecs
         TestContext.Out.WriteLine(result);
 
         var expected = string.Join(Environment.NewLine,
-            "new[] {",
+            "new []{",
             "  new /*Person*/ {",
             "    Id = 1,",
             "    Name = \"Alice\",",
