@@ -322,6 +322,7 @@ public static partial class ObjectTooString
         bool IsScalarish(Type type) => IsScalarishType(type);
     }
 
+<<<<<<< HEAD
     static bool IsScalarishType(Type type) =>
         type.IsPrimitive
         || type.Namespace=="System.Numerics"
@@ -337,7 +338,7 @@ public static partial class ObjectTooString
             && type.GetGenericTypeDefinition() == typeof(Nullable<>)
             && IsScalarishType(type.GenericTypeArguments[0]))
         ;
-
+=======
     static string TypeShortName<T>([DisallowNull] T value)
     {
         var typeName = value.GetType().Name;
@@ -345,6 +346,7 @@ public static partial class ObjectTooString
         if (backtick > 0) typeName = typeName.Substring(0, backtick);
         return typeName;
     }
+>>>>>>> agentf
 
     static string DelimitTuple<T>(T value, OptionsWithState options) where T : ITuple
     {
@@ -392,10 +394,11 @@ public static partial class ObjectTooString
         int i = 0;
         if (useIndented)
         {
+<<<<<<< HEAD
             var (start, end) = options.StringifyAs switch
             {
                 StringifyAs.Json or StringifyAs.STJson => ("[", "]"),
-                StringifyAs.CSharp => ("new [] {", "}"),
+                StringifyAs.CSharp => ("new[] {", "}"),
                 _ => ("[", "]")
             };
             var b = new StringBuilder(start);
@@ -428,6 +431,19 @@ public static partial class ObjectTooString
             b.Append(end);
             if(i == 0) return ScalarishToShortReflectedString(value,options);
             return b.ToString();
+=======
+            StringifyAs.Json or StringifyAs.STJson=> ("[", ",", "]"),
+            StringifyAs.CSharp => ("new []{ ", ", ", " }"),
+            _ => ("[ ", ", ", " ]")
+        };
+        var b = new StringBuilder(start);
+        foreach(var item in value)
+        {
+            if(i > 0){ b.Append(delimiter); }
+            b.Append(BuildReflectedString(item, options with { Depth = options.Depth + 1 }));
+
+            if (++i >= maxEnumerableLength) break;
+>>>>>>> agentf
         }
     }
 

@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -244,7 +243,7 @@ public static partial class ObjectTooString
             }
             else if (value is IDictionary dictionary)
             {
-                return DelimitDictionary(dictionary, options, indent, outdent, delimiter, separator);
+                return DelimitDictionary(dictionary, options);
             }
             else if (value is IEnumerable enumerable)
             {
@@ -268,10 +267,10 @@ public static partial class ObjectTooString
                 {
                     if (isCSharp && !value.GetType().Name.StartsWith("<>"))
                     {
-                        sb.Append("new ")
-                          .Append("/*")
-                          .Append(TypeShortName(value))
-                          .Append("*/ {").Append(indent);
+                        var typeName = value.GetType().Name;
+                        var backtick = typeName.IndexOf('`');
+                        if (backtick > 0) typeName = typeName.Substring(0, backtick);
+                        sb.Append("new ").Append("/*").Append(typeName).Append("*/ {").Append(indent);
                     }
                     else
                     {
@@ -338,14 +337,6 @@ public static partial class ObjectTooString
             && IsScalarishType(type.GenericTypeArguments[0]))
         ;
 
-    static string TypeShortName<T>([DisallowNull] T value)
-    {
-        var typeName = value.GetType().Name;
-        var backtick = typeName.IndexOf('`');
-        if (backtick > 0) typeName = typeName.Substring(0, backtick);
-        return typeName;
-    }
-
     static string DelimitTuple<T>(T value, OptionsWithState options) where T : ITuple
     {
         var (start, delimiter,end) = options.StringifyAs is StringifyAs.Json or StringifyAs.STJson
@@ -366,6 +357,10 @@ public static partial class ObjectTooString
     static string DelimitEnumerable<T>(T value, OptionsWithState options,
         ReadOnlySpan<char> indent, ReadOnlySpan<char> outdent, ReadOnlySpan<char> delimiter) where T : IEnumerable
     {
+        if (options.Depth >= options.MaxDepth)
+        {
+            return ScalarishToShortReflectedString(value,options);
+        }
         if (options.Depth + 1 == options.MaxDepth
             &&
             options.StringifyAs is StringifyAs.DebugView or StringifyAs.CSharp
@@ -395,7 +390,7 @@ public static partial class ObjectTooString
             var (start, end) = options.StringifyAs switch
             {
                 StringifyAs.Json or StringifyAs.STJson => ("[", "]"),
-                StringifyAs.CSharp => ("new [] {", "}"),
+                StringifyAs.CSharp => ("new[] {", "}"),
                 _ => ("[", "]")
             };
             var b = new StringBuilder(start);
@@ -431,19 +426,30 @@ public static partial class ObjectTooString
         }
     }
 
-    static string DelimitDictionary(IDictionary dict,
-                                    OptionsWithState options,
-                                    ReadOnlySpan<char> indent,
-                                    ReadOnlySpan<char> outdent,
-                                    ReadOnlySpan<char> delimiter,
-                                    string separator)
+    static string DelimitDictionary(IDictionary dict, OptionsWithState options)
     {
+        if (options.Depth >= options.MaxDepth)
+            return ScalarishToShortReflectedString(dict, options);
+
         var maxLen = options.MaxEnumerationLength;
         if (maxLen < 0) maxLen = -maxLen - options.Depth;
         if (maxLen == 0) return ScalarishToShortReflectedString(dict, options);
 
         var isJson = options.StringifyAs is StringifyAs.Json or StringifyAs.STJson;
         var isCSharp = options.StringifyAs == StringifyAs.CSharp;
+
+        var indent =
+            options.WriteIndented
+                ? NewLineSpaces400.AsSpan().Slice(0, 1 + (options.Depth + 1) * 2)
+                : (isJson ? ReadOnlySpan<char>.Empty : " ".AsSpan());
+        var outdent =
+            options.WriteIndented
+                ? NewLineSpaces400.AsSpan().Slice(0, 1 + options.Depth * 2)
+                : (isJson ? ReadOnlySpan<char>.Empty : " ".AsSpan());
+        var delimiter =
+            options.WriteIndented
+                ? CommaCrLfSpaces400.AsSpan().Slice(0, 2 + (options.Depth + 1) * 2)
+                : (isJson ? ",".AsSpan() : ", ".AsSpan());
 
         Func<object?, string> fmtKey;
         if (isJson)
@@ -453,6 +459,9 @@ public static partial class ObjectTooString
         else
             fmtKey = k => $"[{k}]";
 
+        var separator = isJson
+            ? (options.WriteIndented ? ": " : ":")
+            : " = ";
 
         var b = new StringBuilder();
         b.Append('{');
