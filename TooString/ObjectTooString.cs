@@ -247,7 +247,7 @@ public static partial class ObjectTooString
             }
             else if (value is IEnumerable enumerable)
             {
-                return DelimitEnumerable(enumerable, options);
+                return DelimitEnumerable(enumerable, options, indent, outdent, delimiter);
             }
             else
             {
@@ -354,7 +354,8 @@ public static partial class ObjectTooString
         b.Append(end);
         return b.ToString();
     }
-    static string DelimitEnumerable<T>(T value, OptionsWithState options) where T : IEnumerable
+    static string DelimitEnumerable<T>(T value, OptionsWithState options,
+        ReadOnlySpan<char> indent, ReadOnlySpan<char> outdent, ReadOnlySpan<char> delimiter) where T : IEnumerable
     {
         if (options.Depth >= options.MaxDepth)
         {
@@ -386,11 +387,6 @@ public static partial class ObjectTooString
         int i = 0;
         if (useIndented)
         {
-            var isJson = options.StringifyAs is StringifyAs.Json or StringifyAs.STJson;
-            var indent = NewLineSpaces400.AsSpan().Slice(0, 1 + (options.Depth + 1) * 2);
-            var outdent = NewLineSpaces400.AsSpan().Slice(0, 1 + options.Depth * 2);
-            var delimiter = CommaCrLfSpaces400.AsSpan().Slice(0, 2 + (options.Depth + 1) * 2);
-
             var (start, end) = options.StringifyAs switch
             {
                 StringifyAs.Json or StringifyAs.STJson => ("[", "]"),
@@ -411,7 +407,7 @@ public static partial class ObjectTooString
         }
         else
         {
-            var (start, delimiter, end) = options.StringifyAs switch
+            var (start, flatDelimiter, end) = options.StringifyAs switch
             {
                 StringifyAs.Json or StringifyAs.STJson=> ("[", ",", "]"),
                 StringifyAs.CSharp => ("new[] { ", ", ", " }"),
@@ -420,7 +416,7 @@ public static partial class ObjectTooString
             var b = new StringBuilder(start);
             foreach(var item in value)
             {
-                if(i > 0){ b.Append(delimiter); }
+                if(i > 0){ b.Append(flatDelimiter); }
                 b.Append(BuildReflectedString(item, options with { Depth = options.Depth + 1 }));
                 if (++i >= maxEnumerableLength) break;
             }
