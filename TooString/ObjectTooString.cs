@@ -183,12 +183,14 @@ public static partial class ObjectTooString
             return ScalarishToShortReflectedString(value,options);
         }
 
+        var isCSharp = options.StringifyAs == StringifyAs.CSharp;
+        var isJson = options.StringifyAs is StringifyAs.Json or StringifyAs.STJson;
+
         Func<string,string> qname =
-            options.StringifyAs is StringifyAs.Json or StringifyAs.STJson
+            isJson
                 ? s => $"\"{s?.Replace("`","\\u0060").Replace("\"","\\\"")}\""
                 : s => s;
 
-        var isCSharp = options.StringifyAs == StringifyAs.CSharp;
         try
         {
             var indent=

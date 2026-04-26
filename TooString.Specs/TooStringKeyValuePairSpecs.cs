@@ -70,10 +70,20 @@ public class TooStringKeyValuePairSpecs
     }
 
     [Test]
-    public void ComplexKey_FallsBackToPropertyStyle()
+    public void ComplexKey_FallsBackToPropertyStyleForCSharp()
     {
         var kvp = new KeyValuePair<Address, int>(new Address("123 Main", "Springfield"), 1);
         var result = kvp.ToCSharpString(writeIndented: false);
+        TestContext.Out.WriteLine(result);
+        Assert.That(result, Does.Contain("Key"));
+        Assert.That(result, Does.Contain("Value"));
+        Assert.That(result, Is.EqualTo("new /*KeyValuePair*/ { Key = new /*Address*/ { Street = \"123 Main\", City = \"Springfield\" }, Value = 1 }"));
+    }
+    [Test]
+    public void ComplexKey_FallsBackToPropertyStyleForJson()
+    {
+        var kvp = new KeyValuePair<Address, int>(new Address("123 Main", "Springfield"), 1);
+        var result = kvp.ToJson(writeIndented: false);
         TestContext.Out.WriteLine(result);
         Assert.That(result, Does.Contain("Key"));
         Assert.That(result, Does.Contain("Value"));
