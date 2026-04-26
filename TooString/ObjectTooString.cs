@@ -318,22 +318,24 @@ public static partial class ObjectTooString
             }
         }
 
-        bool IsScalarish(Type type) =>
-            type.IsPrimitive
-            || type.Namespace=="System.Numerics"
-            || type.IsEnum
-            || type == typeof(string)
-            || type == typeof(Type)
-            || type == typeof(DateTime)
-            || type == typeof(DateOnly)
-            || type == typeof(TimeOnly)
-            || type == typeof(TimeSpan)
-            || (
-                type.IsGenericType
-                && type.GetGenericTypeDefinition() == typeof(Nullable<>)
-                && IsScalarish(type.GenericTypeArguments[0]))
-            ;
+        bool IsScalarish(Type type) => IsScalarishType(type);
     }
+
+    static bool IsScalarishType(Type type) =>
+        type.IsPrimitive
+        || type.Namespace=="System.Numerics"
+        || type.IsEnum
+        || type == typeof(string)
+        || type == typeof(Type)
+        || type == typeof(DateTime)
+        || type == typeof(DateOnly)
+        || type == typeof(TimeOnly)
+        || type == typeof(TimeSpan)
+        || (
+            type.IsGenericType
+            && type.GetGenericTypeDefinition() == typeof(Nullable<>)
+            && IsScalarishType(type.GenericTypeArguments[0]))
+        ;
 
     static string DelimitTuple<T>(T value, OptionsWithState options) where T : ITuple
     {
@@ -373,26 +375,59 @@ public static partial class ObjectTooString
 
         if(maxEnumerableLength == 0) return ScalarishToShortReflectedString(value,options);
 
+        var runtimeType = value.GetType();
+        var elementType = runtimeType.IsArray
+            ? runtimeType.GetElementType()
+            : runtimeType.GetGenericArguments().FirstOrDefault();
+        bool useIndented = options.WriteIndented
+                           && elementType != null
+                           && !IsScalarishType(elementType);
+
         int i = 0;
-        var (start, delimiter, end) = options.StringifyAs switch
+        if (useIndented)
         {
-            StringifyAs.Json or StringifyAs.STJson=> ("[", ",", "]"),
-            StringifyAs.CSharp => ("new[] { ", ", ", " }"),
-            _ => ("[ ", ", ", " ]")
-        };
-        var b = new StringBuilder(start);
-        foreach(var item in value)
-        {
-            if(i > 0){ b.Append(delimiter); }
-            b.Append(BuildReflectedString(item, options with { Depth = options.Depth + 1 }));
+            var isJson = options.StringifyAs is StringifyAs.Json or StringifyAs.STJson;
+            var indent = NewLineSpaces400.AsSpan().Slice(0, 1 + (options.Depth + 1) * 2);
+            var outdent = NewLineSpaces400.AsSpan().Slice(0, 1 + options.Depth * 2);
+            var delimiter = CommaCrLfSpaces400.AsSpan().Slice(0, 2 + (options.Depth + 1) * 2);
 
-            if (++i >= maxEnumerableLength) break;
+            var (start, end) = options.StringifyAs switch
+            {
+                StringifyAs.Json or StringifyAs.STJson => ("[", "]"),
+                StringifyAs.CSharp => ("new[] {", "}"),
+                _ => ("[", "]")
+            };
+            var b = new StringBuilder(start);
+            foreach (var item in value)
+            {
+                b.Append(i == 0 ? indent : delimiter);
+                b.Append(BuildReflectedString(item, options with { Depth = options.Depth + 1 }));
+                if (++i >= maxEnumerableLength) break;
+            }
+            if (i > 0) b.Append(outdent);
+            b.Append(end);
+            if (i == 0) return ScalarishToShortReflectedString(value, options);
+            return b.ToString();
         }
-        b.Append(end);
-
-        if(i == 0) return ScalarishToShortReflectedString(value,options);
-
-        return b.ToString();
+        else
+        {
+            var (start, delimiter, end) = options.StringifyAs switch
+            {
+                StringifyAs.Json or StringifyAs.STJson=> ("[", ",", "]"),
+                StringifyAs.CSharp => ("new[] { ", ", ", " }"),
+                _ => ("[ ", ", ", " ]")
+            };
+            var b = new StringBuilder(start);
+            foreach(var item in value)
+            {
+                if(i > 0){ b.Append(delimiter); }
+                b.Append(BuildReflectedString(item, options with { Depth = options.Depth + 1 }));
+                if (++i >= maxEnumerableLength) break;
+            }
+            b.Append(end);
+            if(i == 0) return ScalarishToShortReflectedString(value,options);
+            return b.ToString();
+        }
     }
 
     static string DelimitDictionary(IDictionary dict, OptionsWithState options)
