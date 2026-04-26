@@ -8,9 +8,9 @@
     </PropertyGroup>
     
     <PropertyGroup>
-        <AssemblyVersion>0.8.4</AssemblyVersion>
-        <AssemblyFileVersion>0.8.4</AssemblyFileVersion>
-        <PackageVersion>0.8.4-preview</PackageVersion>
+        <AssemblyVersion>0.8.5</AssemblyVersion>
+        <AssemblyFileVersion>0.8.5</AssemblyFileVersion>
+        <PackageVersion>0.8.5-preview</PackageVersion>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <Title>value.TooString() — The stringifier for CSharp and Json output, going places that serializers don't.</Title>
         <PackageDescription><![CDATA[TooString is a Stringifier that goes places serializers don't.
@@ -70,6 +70,7 @@ type.ToJson() // Outputs the type object, truncated to default MaxDepth = 3, Max
         <PackageReleaseNotes>
             ChangeLog
             ---------
+            0.8.5  Too.String() better output for IDctionaries
             0.8.x  Simplify to: ToCSharpString(), ToJson(), ToSTJson(), TooString(), ToArgumentExpression().
             &#x2007;&#x2008;&#x2007;&#x2008;&#x2007;&#x2008; Offer individual parameters in preference to a TooStringOptions object.
             &#x2007;&#x2008;&#x2007;&#x2008;&#x2007;&#x2008; Rename StringifyAs.___ members
