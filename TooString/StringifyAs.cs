@@ -7,13 +7,14 @@ namespace TooString;
 public enum StringifyAs
 {
     /// <summary>
-    /// Stringify to C# anonymous object style: <c>/*Type*/ new { A = "B" }</c>
+    /// Stringify to C# anonymous object style: <c>new /*Type*/ { A = "B" }</c>
+    /// Type information is included in inline comments.
     /// </summary>
     CSharp,
 
     /// <summary>Use
     /// <see cref="System.Text.Json.JsonSerializer.Serialize(object?,System.Type,System.Text.Json.JsonSerializerOptions?)"/>
-    /// to serialize.
+    /// to serialize. If that fails, use <see cref="Json"/>.
     /// </summary>
     STJson,
 

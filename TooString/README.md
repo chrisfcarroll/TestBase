@@ -28,7 +28,8 @@ _TooString is not a serializer._
 - ToCSharpString() returns C# code creating anonymous objects, with Type names in comments.
 - ToJson() returns JSON.
 - ToSTJson() is a convenience method for System.Text.Json.JsonSerializer.Serialize(...).
-- TooString() defaults to CSharp style; pass StringifyAs to choose an alternative output.
+- ToDebugViewString() returns a string in the style of the Visual Studio debugger. 
+- TooString(options) defaults to CSharp style; pass StringifyAs to choose an alternative output.
 - ToCallerArgumentExpression() returns the literal code expression.
 
 Object output defaults to MaxDepth = 3, MaxEnumerableLength = 9, except for ToSTJson() which behaves identically to calling System.Text.Json.JsonSerializer.Serialize directly.
