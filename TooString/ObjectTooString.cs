@@ -26,7 +26,7 @@ public static partial class ObjectTooString
     public const string RegexCSharpIdentifier =
         @"@?[_\p{L}\p{Nl}][\p{L}\p{Nl}\p{Mn}\p{Mc}\p{Nd}\p{Pc}\p{Cf}\.]*";
 
-    /// <summary>A Regex for recognising a valid C# Identifier</summary>
+    /// <summary>A Regex matching a string composed entirely of C# identifier or type-name characters</summary>
     public const string RegexTypeNameOrIdentifierWithCharsOnly =
         @"^[_\p{L}\p{Nl}\p{Mn}\p{Mc}\p{Nd}\p{Pc}\p{Cf}\.\`]+$";
 
@@ -35,8 +35,8 @@ public static partial class ObjectTooString
     /// Use the C# <see cref="CallerArgumentExpressionAttribute"/> to return
     /// the literal code of <paramref name="value"/>.
     /// </summary>
-    /// <param name="value"></param>
-    /// <param name="expression"></param>
+    /// <param name="value">The value whose source expression is captured</param>
+    /// <param name="expression">Compiler-provided: the literal source text of <paramref name="value"/></param>
     /// <typeparam name="T"></typeparam>
     /// <returns>
     /// Returns the <see cref="CallerArgumentExpressionAttribute"/> string
