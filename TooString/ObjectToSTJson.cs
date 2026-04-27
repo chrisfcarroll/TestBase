@@ -6,22 +6,21 @@ namespace TooString;
 public static partial class ObjectTooString
 {
     /// <summary>
-    /// Serialize <paramref name="value"/> using <see cref="JsonSerializer"/>.
-    /// This is a pure System.Text.Json call with no TooString fallback.
+    /// Convenience method for
+    /// <see cref="JsonSerializer.Serialize{TValue}(TValue, JsonSerializerOptions?)"/>.
     /// </summary>
     /// <param name="value">The value to serialize</param>
     /// <param name="jsonSerializerOptions">
     /// Options to pass to <see cref="JsonSerializer.Serialize{TValue}(TValue, JsonSerializerOptions?)"/>.
     /// </param>
     /// <typeparam name="T"></typeparam>
-    /// <returns>The JSON string produced by System.Text.Json</returns>
+    /// <returns>The JSON string produced by System.Text.Json.JsonSerializer.Serialize()</returns>
     public static string ToSTJson<T>(this T? value, JsonSerializerOptions jsonSerializerOptions)
         => JsonSerializer.Serialize(value, jsonSerializerOptions);
 
     /// <summary>
-    /// Serialize <paramref name="value"/> using <see cref="JsonSerializer"/>
-    /// with individually specified options.
-    /// This is a pure System.Text.Json call with no TooString fallback.
+    /// Convenience method for
+    /// <see cref="JsonSerializer.Serialize{TValue}(TValue, JsonSerializerOptions?)"/>.
     /// </summary>
     /// <param name="value">The value to serialize</param>
     /// <param name="writeIndented">Whether to pretty-print the JSON output</param>
@@ -51,7 +50,7 @@ public static partial class ObjectTooString
     /// <param name="readCommentHandling">How JSON comments are handled during deserialization</param>
     /// <param name="encoder">The encoder to use for escaping strings</param>
     /// <typeparam name="T"></typeparam>
-    /// <returns>The JSON string produced by System.Text.Json</returns>
+    /// <returns>The JSON string produced by System.Text.Json.JsonSerializer.Serialize()</returns>
     public static string ToSTJson<T>(this T? value,
                                      bool writeIndented = false,
                                      JsonNamingPolicy? propertyNamingPolicy = null,

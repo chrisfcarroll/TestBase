@@ -42,7 +42,7 @@ Example:
 var value = new { A = "boo", B = new Complex(3,4) };
 
 value.ToCSharpString()  // Output is { A = "boo", B = <3; 4> } depending on .Net version.
-value.ToJson();         // Output is reflection-based JSON: {"A":"boo","B":[3,4]}
+value.ToJson();         // Output is JSON: {"A":"boo","B":[3,4]}
 value.ToSTJson();       // Output is System.Text.Json: {"A":"boo","B":{"Real":3,...}}
 
 ( Math.Sqrt(4 * Math.PI / 3)  ).ToCallerArgumentExpression()

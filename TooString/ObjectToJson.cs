@@ -5,9 +5,7 @@ namespace TooString;
 public static partial class ObjectTooString
 {
     /// <summary>
-    /// Stringify <paramref name="value"/> as JSON using our reflection-based
-    /// <see cref="StringifyAs.Json"/>.
-    /// For pure System.Text.Json serialization, use <see cref="ToSTJson{T}(T?, System.Text.Json.JsonSerializerOptions)"/>.
+    /// Stringify <paramref name="value"/> as JSON.
     /// </summary>
     /// <param name="value">The value to stringify as JSON</param>
     /// <param name="writeIndented">Whether to format with indentation and newlines</param>
