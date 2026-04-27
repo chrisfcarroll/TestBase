@@ -6,12 +6,13 @@ TooString can
   empty output, such as ValueTuples.
 - Output as Json or C# object notation, or 'debug view' style, or [CallerArgumentExpression]
 
-TooString offers 5 extension method groups on Object:
+TooString offers 6 extension method groups on Object:
 ```csharp
 value.ToCSharpString()
 value.ToJson();
 value.ToSTJson()
 value.TooString();
+value.ToDebugViewString();
 value.ToCallerArgumentExpression();
 ```
 _TooString is not a serializer._ 
