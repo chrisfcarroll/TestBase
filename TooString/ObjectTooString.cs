@@ -449,6 +449,13 @@ public static partial class ObjectTooString
             return $"new /*KeyValuePair*/ {{ Key = {keyStr}, Value = {valStr} }}";
         }
 
+        if (options.StringifyAs == StringifyAs.DebugView)
+        {
+            var keyStr = key?.ToString() ?? Null;
+            var valStr = BuildReflectedString(val, options with { Depth = options.Depth + 1, WriteIndented = false });
+            return $"[{keyStr}] = {valStr}";
+        }
+
         string fmtKey;
         if (isJson)
             fmtKey = $"\"{ToJsonEscapedString(key?.ToString() ?? "")}\"";

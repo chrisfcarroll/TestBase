@@ -30,7 +30,7 @@ public class TooStringKeyValuePairSpecs
         var result = kvp.TooString(TooStringOptions.Default with
             { WriteIndented = false, StringifyAs = StringifyAs.DebugView });
         TestContext.Out.WriteLine(result);
-        Assert.That(result, Is.EqualTo("{ [age] = 30 }"));
+        Assert.That(result, Is.EqualTo("[age] = 30"));
     }
 
     [Test]
