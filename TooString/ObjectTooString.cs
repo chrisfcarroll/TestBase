@@ -31,6 +31,10 @@ public static partial class ObjectTooString
         @"^[_\p{L}\p{Nl}\p{Mn}\p{Mc}\p{Nd}\p{Pc}\p{Cf}\.\`]+$";
 
 
+    ///<summary>
+    /// Use the C# <see cref="CallerArgumentExpressionAttribute"/> to return
+    /// the literal code of <paramref name="value"/>.
+    /// </summary>
     /// <param name="value"></param>
     /// <param name="expression"></param>
     /// <typeparam name="T"></typeparam>
@@ -38,20 +42,7 @@ public static partial class ObjectTooString
     /// Returns the <see cref="CallerArgumentExpressionAttribute"/> string
     /// for <paramref name="value"/>.
     /// </returns>
-    public static string ToArgumentExpression<T>(this T? value,
-                                                 [CallerArgumentExpression("value")]
-                                                 string expression="") => expression;
-
-
-    ///<summary>Undocumented duplicate of <see cref="ToArgumentExpression{T}"/></summary>
-    /// <param name="value"></param>
-    /// <param name="expression"></param>
-    /// <typeparam name="T"></typeparam>
-    /// <returns>
-    /// Returns the <see cref="CallerArgumentExpressionAttribute"/> string
-    /// for <paramref name="value"/>.
-    /// </returns>
-    public static string ToCallerArgumentString<T>(this T? value,
+    public static string ToCallerArgumentExpression<T>(this T? value,
                                                    [CallerArgumentExpression("value")]
                                                    string expression="") => expression;
 

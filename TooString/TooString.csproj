@@ -27,7 +27,7 @@ value.ToCSharpString()
 value.ToJson();
 value.ToSTJson()
 value.TooString();
-value.ToArgumentExpression();
+value.ToCallerArgumentExpression();
 ```
 _TooString is not a serializer._
 
@@ -45,7 +45,7 @@ value.ToCSharpString()  // Output is { A = "boo", B = <3; 4> } depending on .Net
 value.ToJson();         // Output is reflection-based JSON: {"A":"boo","B":[3,4]}
 value.ToSTJson();       // Output is System.Text.Json: {"A":"boo","B":{"Real":3,...}}
 
-( Math.Sqrt(4 * Math.PI / 3)  ).ToArgumentExpression()
+( Math.Sqrt(4 * Math.PI / 3)  ).ToCallerArgumentExpression()
 // Output is the literal code: "Math.Sqrt(4 * Math.PI / 3)"
 
 var tuple = (one: 1, two: "2", three: new Complex(3,4));
@@ -73,7 +73,7 @@ type.ToJson() // Outputs the type object, truncated to default MaxDepth = 3, Max
             0.8.8  TooString() Slicker output for KeyValuePair&lt;,&gt;
             0.8.7  TooString() overload change. default maxDepth = 3.
             0.8.5  TooString() better output for IDictionaries | ToCSharp() changed spacing of 'new []{}'
-            0.8.x  Simplify to: ToCSharpString(), ToJson(), ToSTJson(), TooString(), ToArgumentExpression().
+            0.8.x  Simplify to: ToCSharpString(), ToJson(), ToSTJson(), TooString(), ToCallerArgumentExpression().
             &#x2007;&#x2008;&#x2007;&#x2008;&#x2007;&#x2008; Offer individual parameters in preference to a TooStringOptions object.
             &#x2007;&#x2008;&#x2007;&#x2008;&#x2007;&#x2008; Rename StringifyAs.___ members
             &#x2007;&#x2008;&#x2007;&#x2008;&#x2007;&#x2008; CSharp output includes TypeName in comments, e.g. : new /*TypeName*/ { ... }

@@ -12,7 +12,7 @@ value.ToCSharpString()
 value.ToJson();
 value.ToSTJson()
 value.TooString();
-value.ToArgumentExpression();
+value.ToCallerArgumentExpression();
 ```
 _TooString is not a serializer._ 
 
@@ -28,7 +28,7 @@ _TooString is not a serializer._
 - ToJson() returns JSON.
 - ToSTJson() is a convenience method for System.Text.Json.JsonSerializer.Serialize(...).
 - TooString() defaults to CSharp style; pass StringifyAs to choose an alternative output.
-- ToArgumentExpression() returns the literal code expression.
+- ToCallerArgumentExpression() returns the literal code expression.
 
 Object output defaults to MaxDepth = 3, MaxEnumerableLength = 9, except for ToSTJson() which behaves identically to calling System.Text.Json.JsonSerializer.Serialize directly.
 
@@ -48,7 +48,7 @@ value.ToCSharpString()  // Output is { A = "boo", B = <3; 4> } depending on .Net
 value.ToJson();         // Output is reflection-based JSON: {"A":"boo","B":[3,4]}
 value.ToSTJson();       // Output is System.Text.Json: {"A":"boo","B":{"Real":3,...}}
 
-( Math.Sqrt(4 * Math.PI / 3)  ).ToArgumentExpression() 
+( Math.Sqrt(4 * Math.PI / 3)  ).ToCallerArgumentExpression() 
 // Output is the literal code: "Math.Sqrt(4 * Math.PI / 3)"
 
 var tuple = (one: 1, two: "2", three: new Complex(3,4));
@@ -144,7 +144,7 @@ System.Text.Json.JsonSerializer.Serialize(  (one:1, two:"2")  )
 <pre>
 ChangeLog
 ---------
-0.8.x  Simplify to: ToCSharpString(), ToJson(), ToSTJson(), TooString(), ToArgumentExpression().
+0.8.x  Simplify to: ToCSharpString(), ToJson(), ToSTJson(), TooString(), ToCallerArgumentExpression().
        Offer individual parameters in preference to a TooStringOptions object.
        Rename StringifyAs.___ members
        CSharp output includes Type in comments, e.g. : new /*TypeName*/ { ... }
