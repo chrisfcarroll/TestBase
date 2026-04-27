@@ -1,10 +1,16 @@
-PROMPT.md 2026-04-19
+PROMPT.md 2026-04-27
 =========================
 
-### TooString
+1. Review the xml documentation of public methods in TooString. If there are errors or omissions, correct them. Do not make it more verbose, keep it terse. If there are missing or incorrect parameter comments, correct them.
 
-1. The indentation for writeIndented = true is wrong for CSharpString and DebugView. It is correct for Json. Fix the indentation in all cases, and make sure that the tests confirm it is correct.
+commit as type 'docs:...'
 
-2. **`ToArgumentExpression()` still exists alongside `ToCallerArgumentString()`** — both do the same thing. Let's go back to ToArgumentExpression(). Remove or correct any references to ToCallerArgumentString() in the code or the docs.
+2. Make the DebugView output for KeyValuePair<,>, where the Key is Scalarish, more compact, like the C# output is.
 
-3. **`TooStringOptions.Default` has `WriteIndented = false`** but `TooString()`, `ToJson()`, and `ToCSharpString()` now default to `writeIndented = true`. This means `value.TooString()` produces different output from `value.TooString(TooStringOptions.Default)`. This is surprising and could confuse users. Correct the default to be WriteIndented = true. Make sure that the tests still pass.
+commit as type 'change:...'
+
+After committing these 2, let's do:
+
+3. The C# output is not valid C# for some of the ScalarishToShortReflectedString output. Let's change the output to be valid, using either anonymous objects or Tuples to keep it compact. For Complex number output, use new {Real=, Complex=}. For Vectors, output Tuples. For Matrices, output nested Tuples.
+
+commit as type 'change:...'
