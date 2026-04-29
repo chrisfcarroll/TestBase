@@ -9,13 +9,23 @@
   <PropertyGroup>
     <NoWarn>1701;1702;1705;NU1701</NoWarn>
   </PropertyGroup>
-  <ItemGroup Condition=" $([System.Text.RegularExpressions.Regex]::IsMatch( '$(TargetFramework)', 'net[^4].+' )) ">
+  <ItemGroup Condition=" $([System.Text.RegularExpressions.Regex]::IsMatch( '$(TargetFramework)', 'net[^45].+' )) ">
     <PackageReference Include="AutoFixture" Version="4.18.1" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="2.1.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="1.1.18" />
     <PackageReference Include="MSTest.TestFramework" Version="1.1.18" />
     <PackageReference Include="NUnit" Version="4.5.1" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.6.0" />
+    <PackageReference Include="Moq" Version="4.8.4" />
+  </ItemGroup>
+  <ItemGroup Condition="$(TargetFramework.StartsWith('net5'))" >
+    <PackageReference Include="AutoFixture" Version="4.18.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="2.1.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
+    <PackageReference Include="MSTest.TestAdapter" Version="1.1.18" />
+    <PackageReference Include="MSTest.TestFramework" Version="1.1.18" />
+    <PackageReference Include="NUnit" Version="3.14.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.6.0" />
     <PackageReference Include="Moq" Version="4.8.4" />
   </ItemGroup>
