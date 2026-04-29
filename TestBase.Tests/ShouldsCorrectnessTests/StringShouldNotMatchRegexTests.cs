@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System;
+using NUnit.Framework;
 
 namespace TestBase.Tests.ShouldsCorrectnessTests;
 
@@ -15,7 +16,7 @@ public class StringShouldNotMatchRegexTests
     [TestCase("input pattern", "p[a-z]t")]
     public void ShouldFail(string testInput, string testPattern)
     {
-            try { testInput.ShouldNotMatch(testPattern); } catch (Assertion) { return; }
+            try { testInput.ShouldNotMatch(testPattern); } catch (Exception e) when (e is Assertion || e.InnerException is Assertion) { return; }
 
             throw new Assertion($"input {testInput} should not have matched {testPattern}");
         }
@@ -24,7 +25,7 @@ public class StringShouldNotMatchRegexTests
     [TestCase("input pattern", "P[A-Z]T")]
     public void ShouldFailIgnoringCase(string testInput, string testPattern)
     {
-            try { testInput.ShouldNotMatchIgnoringCase(testPattern); } catch (Assertion) { return; }
+            try { testInput.ShouldNotMatchIgnoringCase(testPattern); } catch (Exception e) when (e is Assertion || e.InnerException is Assertion) { return; }
 
             throw new Assertion($"input {testInput} should have failed-to-not-match {testPattern} ignoring case");
         }

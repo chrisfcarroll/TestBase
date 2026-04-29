@@ -10,13 +10,13 @@ namespace TestBase
             [CallerArgumentExpression("actual")] string actualExpression = null)
         {
             var comment = message != null && args?.Length > 0 ? string.Format(message, args) : message;
-            throw new Assertion<T>(
+            throw Assertion.CreateFrameworkException(new Assertion<T>(
                 actual?.ToString() ?? "null",
                 actualExpression,
                 assertionName,
                 assertedDetail,
                 comment,
-                false);
+                false));
         }
 
         /// <summary>Accepts 2 <see cref="double" />s as equal if they are within <paramref name="tolerance" /> of each other.</summary>

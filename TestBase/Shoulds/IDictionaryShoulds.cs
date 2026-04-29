@@ -11,13 +11,13 @@ namespace TestBase
             [CallerArgumentExpression("actual")] string actualExpression = null)
         {
             var comment = message != null && args?.Length > 0 ? string.Format(message, args) : message;
-            throw new Assertion<IDictionary<TKey, TValue>>(
+            throw Assertion.CreateFrameworkException(new Assertion<IDictionary<TKey, TValue>>(
                 actual?.ToString() ?? "null",
                 actualExpression,
                 assertionName,
                 assertedDetail,
                 comment,
-                false);
+                false));
         }
 
         /// <summary>

@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.Text.RegularExpressions;
 using NUnit.Framework;
 
 namespace TestBase.Tests.ShouldsCorrectnessTests;
@@ -14,7 +15,7 @@ public class StringShouldMatchRegexTests
     [TestCase("input pattern", "p[A-Z]t")]
     public void ShouldFail(string testInput, string testPattern)
     {
-            try { testInput.ShouldMatch(testPattern); } catch (Assertion) { return; }
+            try { testInput.ShouldMatch(testPattern); } catch (Exception e) when (e is Assertion || e.InnerException is Assertion) { return; }
 
             throw new Assertion($"input {testInput} should not have matched {testPattern}");
         }

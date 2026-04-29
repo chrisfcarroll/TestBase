@@ -9,8 +9,9 @@ public class IEnumerableShouldAllXXX_VerboseMessageOnFailure_Tests
     [TestCase(new[] {1, 2, 999})]
     public void IEnumerable_ShouldAllBeSuchThat_ShouldNameTheFailingElement(int[] value)
     {
-            try { value.ShouldAllBeSuchThat(i => i < 3); } catch (Assertion e)
+            try { value.ShouldAllBeSuchThat(i => i < 3); } catch (Exception ex) when (ex is Assertion || ex.InnerException is Assertion)
             {
+                var e = ex as Assertion ?? (Assertion)ex.InnerException;
                 Console.WriteLine(e);
                 e.Message.ShouldContain("999").ShouldNotContain("1");
             }
@@ -19,8 +20,9 @@ public class IEnumerableShouldAllXXX_VerboseMessageOnFailure_Tests
     [TestCase(new[] {1, 2, 999})]
     public void IEnumerable_ShouldAllBeSuchThat_ShouldDisplayCustomMessage(int[] value)
     {
-            try { value.ShouldAllBeSuchThat(i => i < 3, "Custom Message {0}", "And Params"); } catch (Assertion e)
+            try { value.ShouldAllBeSuchThat(i => i < 3, "Custom Message {0}", "And Params"); } catch (Exception ex) when (ex is Assertion || ex.InnerException is Assertion)
             {
+                var e = ex as Assertion ?? (Assertion)ex.InnerException;
                 Console.WriteLine(e);
                 e.Message.ShouldContain("999").ShouldNotContain("1");
                 e.Message.ShouldContain("Custom Message And Params");
@@ -30,8 +32,9 @@ public class IEnumerableShouldAllXXX_VerboseMessageOnFailure_Tests
     [TestCase(new[] {1, 2, 999})]
     public void IEnumerable_ShouldAllSatisfy_ShouldNameTheFailingElement(int[] value)
     {
-            try { value.ShouldAllSatisfy(i => i * 2, Is.LessThanOrEqualTo(5)); } catch (Assertion e)
+            try { value.ShouldAllSatisfy(i => i * 2, Is.LessThanOrEqualTo(5)); } catch (Exception ex) when (ex is Assertion || ex.InnerException is Assertion)
             {
+                var e = ex as Assertion ?? (Assertion)ex.InnerException;
                 Console.WriteLine(e);
                 e.Message.ShouldContain("999").ShouldNotContain("2");
             }
@@ -43,8 +46,9 @@ public class IEnumerableShouldAllXXX_VerboseMessageOnFailure_Tests
             try
             {
                 value.ShouldAllSatisfy(i => i * 2, Is.LessThanOrEqualTo(5), "Custom Message {0}", "And Params");
-            } catch (Assertion e)
+            } catch (Exception ex) when (ex is Assertion || ex.InnerException is Assertion)
             {
+                var e = ex as Assertion ?? (Assertion)ex.InnerException;
                 Console.WriteLine(e);
                 e.Message.ShouldContain("999").ShouldNotContain("2");
                 e.Message.ShouldContain("Custom Message And Params");

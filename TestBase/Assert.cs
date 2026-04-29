@@ -30,7 +30,7 @@ namespace TestBase
                                 [CallerArgumentExpression("predicate")]string predicateExpression=null)
         {
             var result = new Assertion<T>(actual, predicate, actualExpression, predicateExpression, comment);
-            return result ? actual : throw result;
+            return result ? actual : throw Assertion.CreateFrameworkException(result);
         }
         
         
@@ -53,7 +53,7 @@ namespace TestBase
             params object[]                     commentArgs)
         {
             var result = new Assertion<T>(actual, predicate, comment, commentArgs);
-            return result ? actual : throw result;
+            return result ? actual : throw Assertion.CreateFrameworkException(result);
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace TestBase
             params object[]           commentArgs)
         {
             var result = new Assertion<T>(actual, predicate, comment, commentArgs);
-            return result ? actual : throw result;
+            return result ? actual : throw Assertion.CreateFrameworkException(result);
         }
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace TestBase
             params object[]                        commentArgs)
         {
             var result = new Assertion<T>(actual, comparedTo, predicate.Chain(x => x.AsBool), comment, commentArgs);
-            return result ? actual : throw result;
+            return result ? actual : throw Assertion.CreateFrameworkException(result);
         }
 
         /// <summary>
@@ -121,7 +121,7 @@ namespace TestBase
             params object[]           commentArgs)
         {
             var result = new Precondition<T>(actual, predicate, comment, commentArgs);
-            return result ? actual : throw result;
+            return result ? actual : throw Assertion.CreateFrameworkException(result);
         }
 
         /// <summary>
@@ -141,7 +141,7 @@ namespace TestBase
             params object[] commentArgs)
         {
             var result = new Assertion<BoolWithString>(actual, a => a, comment, commentArgs);
-            return result ? result : throw result;
+            return result ? result : throw Assertion.CreateFrameworkException(result);
         }
 
         /// <summary>
@@ -161,7 +161,7 @@ namespace TestBase
             params object[] commentArgs)
         {
             var result = new Precondition<BoolWithString>(actual, a => a, comment, commentArgs);
-            return result ? result : throw result;
+            return result ? result : throw Assertion.CreateFrameworkException(result);
         }
 
         /// <summary>
@@ -187,6 +187,7 @@ namespace TestBase
         {
             try { action(); } catch (TE ex) { return ex; } catch (Exception ex)
             {
+                if (ex.InnerException is TE inner) return inner;
                 throw That(ex, e => e is TE, $"Expected to throw a {typeof(TE)} but threw {ex}");
             }
 
@@ -216,6 +217,7 @@ namespace TestBase
         {
             Assertion<T> a;
             try { a = new Assertion<T>(actual, predicate, comment, commentArgs); } catch (TE) { return actual; } catch (
+                Exception ex) when (ex.InnerException is TE) { return actual; } catch (
                 Exception ex) { throw That(ex, e => e is TE, $"Expected to throw a {typeof(TE)} but threw {ex}"); }
 
             throw new ShouldHaveThrownException(a.Message);
@@ -251,7 +253,7 @@ namespace TestBase
         /// <exception cref="Assertion"></exception>
         public static void Fail(string format, params object[] args)
         {
-            throw new Assertion(string.Format(format, args));
+            throw Assertion.CreateFrameworkException(new Assertion(string.Format(format, args)));
         }
     }
 

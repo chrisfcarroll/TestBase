@@ -40,10 +40,10 @@ namespace TestBase.AdoNet.RecordingDb
                       ? "Expected to invoke a SQL command matching " + ExpressionToCode.ToCode((Expression) predicate)
                       : string.Format(message, args);
 
-            throw new Assertion<List<FakeDbCommand>>(invocations,
+            throw Assertion.CreateFrameworkException(new Assertion<List<FakeDbCommand>>(invocations,
                                                      x => false,
                                                      message
-                                                    );
+                                                    ));
         }
 
         /// <summary>

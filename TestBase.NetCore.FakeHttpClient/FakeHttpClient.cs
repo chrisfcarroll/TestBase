@@ -89,9 +89,9 @@ public class FakeHttpClient : HttpClient
     {
         var match = _handler.Requests.FirstOrDefault(predicate);
         if (match is null)
-            throw new AssertionException(
+            throw AssertionException.CreateFrameworkException(new AssertionException(
                 message ?? "Expected a matching request, but none was found."
-                + FormatInvocations());
+                + FormatInvocations()));
         return match;
     }
 
@@ -101,9 +101,9 @@ public class FakeHttpClient : HttpClient
     {
         var match = _handler.Requests.FirstOrDefault(predicate);
         if (match is not null)
-            throw new AssertionException(
+            throw AssertionException.CreateFrameworkException(new AssertionException(
                 message ?? $"Expected no matching request, but found: {match.Method} {match.RequestUri}"
-                + FormatInvocations());
+                + FormatInvocations()));
         return this;
     }
 
@@ -139,10 +139,10 @@ public class FakeHttpClient : HttpClient
             .Select(e => e.Description ?? "(no description)")
             .ToList();
         if (unmatched.Any())
-            throw new AssertionException(
+            throw AssertionException.CreateFrameworkException(new AssertionException(
                 $"{unmatched.Count} expected request(s) were never received:\n"
                 + string.Join("\n", unmatched.Select(u => $"  - {u}"))
-                + FormatInvocations());
+                + FormatInvocations()));
         return this;
     }
 
@@ -150,9 +150,9 @@ public class FakeHttpClient : HttpClient
     public FakeHttpClient ShouldHaveReceivedCount(int expected, string? message = null)
     {
         if (_handler.Requests.Count != expected)
-            throw new AssertionException(
+            throw AssertionException.CreateFrameworkException(new AssertionException(
                 message ?? $"Expected {expected} request(s) but received {_handler.Requests.Count}."
-                + FormatInvocations());
+                + FormatInvocations()));
         return this;
     }
 

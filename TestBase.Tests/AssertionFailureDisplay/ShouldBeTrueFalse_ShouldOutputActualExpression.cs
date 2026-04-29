@@ -16,8 +16,9 @@ public class ShouldBeTrueFalse_ShouldOutputActualExpression
             someCondition.ShouldBeTrue();
             NUnit.Framework.Assert.Fail("Should have thrown");
         }
-        catch (Assertion e)
+        catch (Exception ex) when (ex is Assertion || ex.InnerException is Assertion)
         {
+            var e = ex as Assertion ?? (Assertion)ex.InnerException;
             Console.WriteLine(e.Message);
             NUnit.Framework.Assert.That(e.Message, Does.Contain(nameof(someCondition)));
         }
@@ -32,8 +33,9 @@ public class ShouldBeTrueFalse_ShouldOutputActualExpression
             someCondition.ShouldBeFalse();
             NUnit.Framework.Assert.Fail("Should have thrown");
         }
-        catch (Assertion e)
+        catch (Exception ex) when (ex is Assertion || ex.InnerException is Assertion)
         {
+            var e = ex as Assertion ?? (Assertion)ex.InnerException;
             Console.WriteLine(e.Message);
             NUnit.Framework.Assert.That(e.Message, Does.Contain(nameof(someCondition)));
         }

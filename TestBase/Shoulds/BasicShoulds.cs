@@ -17,13 +17,13 @@ namespace TestBase
             [CallerArgumentExpression("actual")] string actualExpression = null)
         {
             var comment = message != null && args?.Length > 0 ? string.Format(message, args) : message;
-            throw new Assertion<T>(
+            throw Assertion.CreateFrameworkException(new Assertion<T>(
                 actual?.ToString() ?? "null",
                 actualExpression,
                 assertionName,
                 assertedDetail,
                 comment,
-                false);
+                false));
         }
 
         /// <summary>Asserts that <code>actual!=null</code></summary>

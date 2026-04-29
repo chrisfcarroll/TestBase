@@ -22,13 +22,13 @@ namespace TestBase
             string actualStr;
             try { actualStr = actual?.TooString(maxDepth: 1, maxEnumerableLength: 3) ?? "null"; }
             catch { actualStr = actual?.ToString() ?? "null"; }
-            throw new Assertion<object>(
+            throw Assertion.CreateFrameworkException(new Assertion<object>(
                 actualStr,
                 actualExpression,
                 assertionName,
                 diff.ToString(),
                 comment,
-                false);
+                false));
         }
 
         /// <summary>

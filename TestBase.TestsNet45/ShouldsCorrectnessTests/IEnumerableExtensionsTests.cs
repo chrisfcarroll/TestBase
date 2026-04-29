@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 
 namespace TestBase.TestsNet45.ShouldsCorrectnessTests
@@ -15,7 +16,7 @@ namespace TestBase.TestsNet45.ShouldsCorrectnessTests
         [TestCase(new[] {1, 2, 3})]
         public void SingleOrAssertFail_Should_Assert(IEnumerable<int> testCase)
         {
-            try { testCase.SingleOrAssertFail(); } catch (Assertion) { return; }
+            try { testCase.SingleOrAssertFail(); } catch (Exception e) when (e is Assertion || e.InnerException is Assertion) { return; }
 
             throw new Assertion("Should have thrown");
         }

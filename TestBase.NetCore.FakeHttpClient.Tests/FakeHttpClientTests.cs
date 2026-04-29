@@ -260,8 +260,8 @@ public class VerificationTests
     {
         var http = new FakeHttpClient();
 
-        Assert.Throws<AssertionException>(
-            () => http.ShouldHaveReceived(r => r.Method == HttpMethod.Get));
+        var ex = Assert.Catch(() => http.ShouldHaveReceived(r => r.Method == HttpMethod.Get));
+        Assert.That(ex is AssertionException || ex!.InnerException is AssertionException);
     }
 
     [Test]
@@ -283,8 +283,8 @@ public class VerificationTests
 
         await http.GetStringAsync("https://host/");
 
-        Assert.Throws<AssertionException>(
-            () => http.ShouldNotHaveReceived(r => r.Method == HttpMethod.Get));
+        var ex = Assert.Catch(() => http.ShouldNotHaveReceived(r => r.Method == HttpMethod.Get));
+        Assert.That(ex is AssertionException || ex!.InnerException is AssertionException);
     }
 
     [Test]
@@ -303,7 +303,8 @@ public class VerificationTests
     {
         var http = new FakeHttpClient();
 
-        Assert.Throws<AssertionException>(() => http.ShouldHaveReceivedGet("/anything"));
+        var ex = Assert.Catch(() => http.ShouldHaveReceivedGet("/anything"));
+        Assert.That(ex is AssertionException || ex!.InnerException is AssertionException);
     }
 
     [Test]
@@ -362,8 +363,10 @@ public class VerificationTests
         await http.GetStringAsync("https://host/a");
         // never POST /b
 
-        var ex = Assert.Throws<AssertionException>(() => http.ShouldHaveReceivedAll());
-        Assert.That(ex!.Message, Does.Contain("POST /b"));
+        var ex = Assert.Catch(() => http.ShouldHaveReceivedAll());
+        var inner = ex as AssertionException ?? ex!.InnerException as AssertionException;
+        Assert.That(inner, Is.Not.Null);
+        Assert.That(inner!.Message, Does.Contain("POST /b"));
     }
 
     [Test]
@@ -384,7 +387,8 @@ public class VerificationTests
     {
         var http = new FakeHttpClient();
 
-        Assert.Throws<AssertionException>(() => http.ShouldHaveReceivedCount(1));
+        var ex = Assert.Catch(() => http.ShouldHaveReceivedCount(1));
+        Assert.That(ex is AssertionException || ex!.InnerException is AssertionException);
     }
 
     [Test]
@@ -402,7 +406,8 @@ public class VerificationTests
 
         await http.GetStringAsync("https://host/");
 
-        Assert.Throws<AssertionException>(() => http.ShouldHaveReceivedNothing());
+        var ex = Assert.Catch(() => http.ShouldHaveReceivedNothing());
+        Assert.That(ex is AssertionException || ex!.InnerException is AssertionException);
     }
 }
 

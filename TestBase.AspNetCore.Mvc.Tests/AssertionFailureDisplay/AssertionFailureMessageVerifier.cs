@@ -9,8 +9,9 @@ public static class AssertionFailureMessageVerifier
         string      name,
         string      expectedErrorMessage)
     {
-            try { assertion(); } catch (Assertion e)
+            try { assertion(); } catch (Exception ex) when (ex is Assertion || ex.InnerException is Assertion)
             {
+                var e = ex as Assertion ?? (Assertion)ex.InnerException;
                 Console.WriteLine(e.Message);
                 Console.WriteLine(@"
 ----------------");
