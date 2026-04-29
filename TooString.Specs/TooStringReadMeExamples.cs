@@ -38,7 +38,7 @@ public class TooStringReadMeExamples
     {
         var anonObject = new { A = "boo", B = new Complex(3,4) };
         var actual = anonObject.ToCSharpString(writeIndented: false);
-        var expected = $"{{ A = \"boo\", B = {new Complex(3,4)} }}";
+        var expected = "{ A = \"boo\", B = new { Real = 3, Imaginary = 4 } }";
         Assert.That(actual, Is.EqualTo(expected));
     }
 
@@ -60,11 +60,7 @@ public class TooStringReadMeExamples
         var valueTuple = (one: 1, two: "2", three: new Complex(3,4));
 
         var actual3 = valueTuple.ToCSharpString(writeIndented: false);
-        #if NET8_0_OR_GREATER
-        Assert.That(actual3, Is.EqualTo("(1, \"2\", <3; 4>)"));
-        #else
-        Assert.That(actual3, Is.EqualTo("(1, \"2\", (3, 4))"));
-        #endif
+        Assert.That(actual3, Is.EqualTo("(1, \"2\", new { Real = 3, Imaginary = 4 })"));
 
         var options = TooStringOptions.ForSTJson with
         {

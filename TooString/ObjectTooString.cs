@@ -26,7 +26,7 @@ public static partial class ObjectTooString
     public const string RegexCSharpIdentifier =
         @"@?[_\p{L}\p{Nl}][\p{L}\p{Nl}\p{Mn}\p{Mc}\p{Nd}\p{Pc}\p{Cf}\.]*";
 
-    /// <summary>A Regex for recognising a valid C# Identifier</summary>
+    /// <summary>A Regex matching a string composed entirely of C# identifier or type-name characters</summary>
     public const string RegexTypeNameOrIdentifierWithCharsOnly =
         @"^[_\p{L}\p{Nl}\p{Mn}\p{Mc}\p{Nd}\p{Pc}\p{Cf}\.\`]+$";
 
@@ -35,8 +35,8 @@ public static partial class ObjectTooString
     /// Use the C# <see cref="CallerArgumentExpressionAttribute"/> to return
     /// the literal code of <paramref name="value"/>.
     /// </summary>
-    /// <param name="value"></param>
-    /// <param name="expression"></param>
+    /// <param name="value">The value whose source expression is captured</param>
+    /// <param name="expression">Compiler-provided: the literal source text of <paramref name="value"/></param>
     /// <typeparam name="T"></typeparam>
     /// <returns>
     /// Returns the <see cref="CallerArgumentExpressionAttribute"/> string
@@ -449,6 +449,13 @@ public static partial class ObjectTooString
             return $"new /*KeyValuePair*/ {{ Key = {keyStr}, Value = {valStr} }}";
         }
 
+        if (options.StringifyAs == StringifyAs.DebugView)
+        {
+            var keyStr = key?.ToString() ?? Null;
+            var valStr = BuildReflectedString(val, options with { Depth = options.Depth + 1, WriteIndented = false });
+            return $"[{keyStr}] = {valStr}";
+        }
+
         string fmtKey;
         if (isJson)
             fmtKey = $"\"{ToJsonEscapedString(key?.ToString() ?? "")}\"";
@@ -563,11 +570,16 @@ public static partial class ObjectTooString
             if (false.Equals(value)) return isJson || isCSharp ? "false" : "False";
             if (value.GetType().IsPrimitive) return value.ToString()!;
             if (value is System.Numerics.BigInteger b) return b.ToString();
-            if (value is System.Numerics.Quaternion q) return isJson
-                    ? q.ToString().Replace(' ',',')
-                    : q.ToString();
+            if (value is System.Numerics.Quaternion q)
+                return isCSharp
+                    ? $"new {{ X = {q.X}, Y = {q.Y}, Z = {q.Z}, W = {q.W} }}"
+                    : isJson
+                        ? q.ToString().Replace(' ',',')
+                        : q.ToString();
             if (value is ValueType val && IsMultiDimensionalNumeric(val.GetType()))
-                return numericToArrayIfJson(val);
+                return isCSharp
+                    ? MultiDimensionalNumericToCSharp(val)
+                    : numericToArrayIfJson(val);
             if (value is DateTime dateTime)
                 return qstr(dateTime.ToString(options.DateTimeFormat));
             if (value is DateOnly date)
@@ -610,4 +622,20 @@ public static partial class ObjectTooString
        type.Namespace == "System.Numerics"
         &&
         new[]{"Complex","Vector","Vector2","Vector3","Vector4","Matrix3x2","Matrix4x4","Plane"}.Contains(type.Name);
+
+    static string MultiDimensionalNumericToCSharp(ValueType value) => value switch
+    {
+        System.Numerics.Complex c =>
+            $"new {{ Real = {c.Real}, Imaginary = {c.Imaginary} }}",
+        System.Numerics.Vector2 v => $"({v.X}, {v.Y})",
+        System.Numerics.Vector3 v => $"({v.X}, {v.Y}, {v.Z})",
+        System.Numerics.Vector4 v => $"({v.X}, {v.Y}, {v.Z}, {v.W})",
+        System.Numerics.Matrix3x2 m =>
+            $"(({m.M11}, {m.M12}), ({m.M21}, {m.M22}), ({m.M31}, {m.M32}))",
+        System.Numerics.Matrix4x4 m =>
+            $"(({m.M11}, {m.M12}, {m.M13}, {m.M14}), ({m.M21}, {m.M22}, {m.M23}, {m.M24}), ({m.M31}, {m.M32}, {m.M33}, {m.M34}), ({m.M41}, {m.M42}, {m.M43}, {m.M44}))",
+        System.Numerics.Plane p =>
+            $"new {{ Normal = ({p.Normal.X}, {p.Normal.Y}, {p.Normal.Z}), D = {p.D} }}",
+        _ => value.ToString()!
+    };
 }

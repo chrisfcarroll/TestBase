@@ -1,7 +1,7 @@
 namespace TooString;
 
 /// <summary>
-/// How <see cref="ObjectTooString.TooString{T}(T,StringifyAs,TooStringOptions?)"/>
+/// How <see cref="ObjectTooString.TooString{T}(T,StringifyAs)"/>
 /// will stringify a value.
 /// </summary>
 public enum StringifyAs

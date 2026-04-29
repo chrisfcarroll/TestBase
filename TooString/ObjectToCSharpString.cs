@@ -62,6 +62,9 @@ public static partial class ObjectTooString
     /// <param name="dateOnlyFormat">DateOnly format string. Defaults to "O".</param>
     /// <param name="timeOnlyFormat">TimeOnly format string. Defaults to "HH:mm:ss".</param>
     /// <param name="timeSpanFormat">TimeSpan format string. Defaults to "c".</param>
+    /// <returns>
+    /// A string representation of <paramref name="value"/> in Visual Studio debugger style.
+    /// </returns>
     public static string ToDebugViewString<T>(this T value,
                                               bool writeIndented = true,
                                               BindingFlags whichProperties =
