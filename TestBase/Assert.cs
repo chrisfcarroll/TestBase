@@ -193,7 +193,7 @@ namespace TestBase
         [Obsolete("Renamed to Should.Throw")]
         public static Exception Throws(Expression<Action> action, string comment = null, params object[] commentArgs)
         {
-            return Throw<Exception>(action.CompileFast(), comment, commentArgs);
+            return Should.Throw<Exception>(action.CompileFast(), comment, commentArgs);
         }
 
         /// <summary>
@@ -208,7 +208,7 @@ namespace TestBase
         public static TE Throws<TE>(Action action, string comment = null, params object[] commentArgs)
         where TE : Exception
         {
-            return Throw<TE>(action, comment, commentArgs);
+            return Should.Throw<TE>(action, comment, commentArgs);
         }
 
         /// <summary>
@@ -227,40 +227,7 @@ namespace TestBase
             string                    comment               = null,
             params object[]           commentArgs) where TE : Exception
         {
-            return Throw<T, TE>(actual, predicate, comment, commentArgs);
-        }
-
-        #if NET6_0_OR_GREATER
-        [StackTraceHidden]
-        #else
-        [DebuggerHidden]
-        #endif
-        internal static TE Throw<TE>(Action action, string comment = null, params object[] commentArgs)
-        where TE : Exception
-        {
-            try { action(); } catch (TE ex) { return ex; } catch (Exception ex)
-            {
-                if (ex.InnerException is TE inner) return inner;
-                throw That(ex, e => e is TE, $"Expected to throw a {typeof(TE)} but threw {ex}");
-            }
-
-            throw new ShouldHaveThrownException(action.ToString()).ForActiveTestRunner();
-        }
-
-        #if NET6_0_OR_GREATER
-        [StackTraceHidden]
-        #else
-        [DebuggerHidden]
-        #endif
-        internal static T Throw<T, TE>(T actual, Expression<Func<T, bool>> predicate, string comment, object[] commentArgs)
-        where TE : Exception
-        {
-            Assertion<T> a;
-            try { a = new Assertion<T>(actual, predicate, comment, commentArgs); } catch (TE) { return actual; } catch (
-                Exception ex) when (ex.InnerException is TE) { return actual; } catch (
-                Exception ex) { throw That(ex, e => e is TE, $"Expected to throw a {typeof(TE)} but threw {ex}"); }
-
-            throw new ShouldHaveThrownException(a.Message).ForActiveTestRunner();
+            return Should.Throw<T, TE>(actual, predicate, comment, commentArgs);
         }
 
         /// <summary>
