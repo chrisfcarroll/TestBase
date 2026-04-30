@@ -13,6 +13,12 @@ namespace TestBase
         /// <param name="message"></param>
         public ShouldNotThrowException(string message) : base(message) { }
 
+        /// <summary>
+        ///     Returns this exception wrapped in the active test runner's assertion exception
+        ///     so that test runners recognise it as an assertion failure.
+        /// </summary>
+        public Exception ForActiveTestRunner() => KnownTestRunnerAssertions.Create(this);
+
 
         /// <summary>
         ///     Creates a new <see cref="ShouldNotThrowException" /> with message taken from <paramref name="exception" />
