@@ -187,7 +187,7 @@ public static partial class ObjectTooString
             var indent=
                 (options.StringifyAs, options.WriteIndented) switch
                 {
-                    (_,true) => NewLineSpaces400.AsSpan().Slice(0, 1 + (options.Depth + 1) * 2),
+                    (_,true) => NewLineSpaces400.AsSpan().Slice(0, NewLineLength + (options.Depth + 1) * 2),
                     (StringifyAs.Json,false) => "".AsSpan(),
                     (StringifyAs.STJson,false) => "".AsSpan(),
                     (StringifyAs.DebugView,false) => " ".AsSpan(),
@@ -197,7 +197,7 @@ public static partial class ObjectTooString
             var outdent =
                 (options.StringifyAs, options.WriteIndented) switch
                 {
-                    (_,true) => NewLineSpaces400.AsSpan().Slice(0, 1 + (options.Depth) * 2),
+                    (_,true) => NewLineSpaces400.AsSpan().Slice(0, NewLineLength + (options.Depth) * 2),
                     (StringifyAs.Json,false) => "".AsSpan(),
                     (StringifyAs.STJson,false) => "".AsSpan(),
                     (StringifyAs.CSharp,false) => " ".AsSpan(),
@@ -206,7 +206,7 @@ public static partial class ObjectTooString
                 };
             var delimiter = (options.StringifyAs, options.WriteIndented) switch
                 {
-                    (_,true) => CommaCrLfSpaces400.AsSpan().Slice(0,2 + (options.Depth + 1) *2),
+                    (_,true) => CommaCrLfSpaces400.AsSpan().Slice(0,1 + NewLineLength + (options.Depth + 1) *2),
                     (StringifyAs.Json, false) =>",",
                     (StringifyAs.STJson, false) =>",",
                     (StringifyAs.CSharp, false) => ", ",
@@ -315,6 +315,8 @@ public static partial class ObjectTooString
             }
         }
     }
+    
+    static readonly int NewLineLength = Environment.NewLine.Length;
 
     static bool IsScalarishType(Type type) =>
         type.IsPrimitive

@@ -1,6 +1,5 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using NUnit.Framework.Interfaces;
 
 namespace TooString.Specs;
 
@@ -9,7 +8,9 @@ public class TooStringIndentOptionSpecs
 {
     static Circular depth1;
     static Circular depth4;
-    static readonly JsonSerializerOptions stjOptionsForIndentedNoCycles = new JsonSerializerOptions(){WriteIndented = true, ReferenceHandler = ReferenceHandler.IgnoreCycles};
+
+    static readonly JsonSerializerOptions stjOptionsForIndentedNoCycles = 
+        new() { WriteIndented = true, ReferenceHandler = ReferenceHandler.IgnoreCycles };
 
     static TooStringIndentOptionSpecs()
     {
@@ -141,14 +142,7 @@ public class TooStringIndentOptionSpecs
     {
         var expected1 = System.Text.Json.JsonSerializer.Serialize(depth4,stjOptionsForIndentedNoCycles);
 
-        var actual = depth4.TooString(options: TooStringOptions.ForJson with
-        {
-            WriteIndented = true,
-            JsonOptions = TooStringOptions.DefaultJsonSerializerOptions.With(js =>
-            {
-                js.MaxDepth = 99;
-            }),
-        });
+        var actual = depth4.TooString(StringifyAs.Json);
 
         //D
         TestContext.Out.WriteLine(expected1);
