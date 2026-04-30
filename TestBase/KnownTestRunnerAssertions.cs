@@ -50,12 +50,16 @@ namespace TestBase
 
         static Type DetectFrameworkExceptionType()
         {
-            var assemblies = GetLoadedAssemblies();
-            if (assemblies.Length == 0) return null;
+            try
+            {
+                var assemblies = GetLoadedAssemblies();
+                if (assemblies.Length == 0) return null;
 
-            return FindTypeInAssemblies("NUnit.Framework.AssertionException", assemblies)
-                ?? FindTypeInAssemblies("Xunit.Sdk.XunitException", assemblies)
-                ?? FindTypeInAssemblies("Microsoft.VisualStudio.TestTools.UnitTesting.AssertFailedException", assemblies);
+                return FindTypeInAssemblies("NUnit.Framework.AssertionException", assemblies)
+                    ?? FindTypeInAssemblies("Xunit.Sdk.XunitException", assemblies)
+                    ?? FindTypeInAssemblies("Microsoft.VisualStudio.TestTools.UnitTesting.AssertFailedException", assemblies);
+            }
+            catch { return null; }
         }
 
         static Type FindTypeInAssemblies(string fullTypeName, Assembly[] assemblies)
@@ -74,18 +78,18 @@ namespace TestBase
 
         static Assembly[] GetLoadedAssemblies()
         {
-            try
-            {
-                var appDomainType = Type.GetType("System.AppDomain");
-                if (appDomainType == null) return new Assembly[0];
-                var currentDomainProp = appDomainType.GetProperty("CurrentDomain", BindingFlags.Public | BindingFlags.Static);
-                if (currentDomainProp == null) return new Assembly[0];
-                var domain = currentDomainProp.GetValue(null);
-                var getAssembliesMethod = appDomainType.GetMethod("GetAssemblies", Type.EmptyTypes);
-                if (getAssembliesMethod == null) return new Assembly[0];
-                return (Assembly[])getAssembliesMethod.Invoke(domain, null);
-            }
-            catch { return new Assembly[0]; }
+#if NETSTANDARD1_0 || NETSTANDARD1_1 || NETSTANDARD1_2 || NETSTANDARD1_3 || NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6
+            var appDomainType = Type.GetType("System.AppDomain");
+            if (appDomainType == null) return new Assembly[0];
+            var currentDomainProp = appDomainType.GetProperty("CurrentDomain", BindingFlags.Public | BindingFlags.Static);
+            if (currentDomainProp == null) return new Assembly[0];
+            var domain = currentDomainProp.GetValue(null);
+            var getAssembliesMethod = appDomainType.GetMethod("GetAssemblies", Type.EmptyTypes);
+            if (getAssembliesMethod == null) return new Assembly[0];
+            return (Assembly[])getAssembliesMethod.Invoke(domain, null);
+#else
+            return System.Threading.Thread.GetDomain().GetAssemblies();
+#endif
         }
     }
 }
