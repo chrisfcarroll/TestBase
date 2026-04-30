@@ -10,7 +10,7 @@ namespace TestBase.Tests.AspNetCoreMVC
         [Test]
         public void Should_correctly_guess_contentRoot_from_Startup_AssemblyName()
         {
-            Assert.DoesNotThrow(
+            Should.NotThrow(
                                 () =>
                                 TestServerBuilder
                                .RunningServerUsingStartupAndContentRoot<GuineaPig.AspNetCore2.Startup>(

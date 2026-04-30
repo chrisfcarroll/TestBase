@@ -125,19 +125,14 @@ namespace TestBase
         /// <param name="commentArgs"></param>
         /// <returns><paramref name="actual" />, if the assertion succeeds</returns>
         /// <exception cref="Precondition{T}">thrown if the assertion fails.</exception>
-        #if NET6_0_OR_GREATER
-        [StackTraceHidden]
-        #else
-        [DebuggerHidden]
-        #endif
+        [Obsolete("Renamed to Skip.IfPreconditionFails")]
         public static T Precondition<T>(
             T                         actual,
             Expression<Func<T, bool>> predicate,
             string                    comment = null,
             params object[]           commentArgs)
         {
-            var result = new Precondition<T>(actual, predicate, comment, commentArgs);
-            return result ? actual : throw result.ForActiveTestRunner();
+            return Skip.IfPreconditionFails(actual, predicate, comment, commentArgs);
         }
 
         /// <summary>
@@ -171,18 +166,13 @@ namespace TestBase
         /// <param name="commentArgs"></param>
         /// <returns>An <see cref="Precondition{T}" /> for <paramref name="actual" /></returns>
         /// <exception cref="Precondition{T}">thrown if the precondition fails.</exception>
-        #if NET6_0_OR_GREATER
-        [StackTraceHidden]
-        #else
-        [DebuggerHidden]
-        #endif
+        [Obsolete("Renamed to Skip.IfPreconditionFails")]
         public static Precondition<BoolWithString> Precondition(
             BoolWithString  actual,
             string          comment = null,
             params object[] commentArgs)
         {
-            var result = new Precondition<BoolWithString>(actual, a => a, comment, commentArgs);
-            return result ? result : throw result.ForActiveTestRunner();
+            return Skip.IfPreconditionFails(actual, comment, commentArgs);
         }
 
         /// <summary>
@@ -238,22 +228,13 @@ namespace TestBase
         ///     <paramref name="action" />
         /// </returns>
         /// <exception cref="ShouldNotThrowException">is thrown if <paramref name="action" /> throws.</exception>
-        #if NET6_0_OR_GREATER
-        [StackTraceHidden]
-        #else
-        [DebuggerHidden]
-        #endif
+        [Obsolete("Renamed to Should.NotThrow")]
         public static Expression<Action> DoesNotThrow(
             Expression<Action> action,
             string             comment = null,
             params object[]    commentArgs)
         {
-            try { action.Compile(); } catch (Exception ex)
-            {
-                throw ShouldNotThrowException.For(action, $"Threw {ex} but expected not to throw.", commentArgs).ForActiveTestRunner();
-            }
-
-            return action;
+            return Should.NotThrow(action, comment, commentArgs);
         }
 
         /// <summary>

@@ -50,8 +50,45 @@ namespace TestBase
         #endif
         public static void Throw(Exception assertion) => throw Create(assertion);
 
+        /// <summary>
+        ///     Creates the active test runner's inconclusive/skip exception with the given
+        ///     <paramref name="message"/>. Returns null when no supported framework is detected.
+        /// </summary>
+        public static Exception CreateSkip(string message)
+        {
+            var type = knownSkipExceptionType.Value;
+            if (type == null) return null;
+
+            try
+            {
+                var ctor = type.GetConstructor(new[] { typeof(string) });
+                if (ctor != null)
+                    return (Exception)ctor.Invoke(new object[] { message });
+            }
+            catch { /* fall through */ }
+
+            return null;
+        }
+
+        /// <summary>
+        ///     Throws the active test runner's inconclusive/skip exception.
+        ///     Falls back to throwing an <see cref="Assertion"/> if no framework is detected.
+        /// </summary>
+        #if NET6_0_OR_GREATER
+        [StackTraceHidden]
+        #else
+        [DebuggerHidden]
+        #endif
+        public static void ThrowSkip(string message)
+        {
+            throw CreateSkip(message) ?? new Assertion(message).ForActiveTestRunner();
+        }
+
         static readonly Lazy<Type> knownExceptionType = new Lazy<Type>(DetectFrameworkExceptionType,
                                                                        LazyThreadSafetyMode.PublicationOnly);
+
+        static readonly Lazy<Type> knownSkipExceptionType = new Lazy<Type>(DetectSkipExceptionType,
+                                                                           LazyThreadSafetyMode.PublicationOnly);
 
         static Type DetectFrameworkExceptionType()
         {
@@ -63,6 +100,20 @@ namespace TestBase
                 return FindTypeInAssemblies("NUnit.Framework.AssertionException", assemblies)
                     ?? FindTypeInAssemblies("Xunit.Sdk.XunitException", assemblies)
                     ?? FindTypeInAssemblies("Microsoft.VisualStudio.TestTools.UnitTesting.AssertFailedException", assemblies);
+            }
+            catch { return null; }
+        }
+
+        static Type DetectSkipExceptionType()
+        {
+            try
+            {
+                var assemblies = GetLoadedAssemblies();
+                if (assemblies.Length == 0) return null;
+
+                return FindTypeInAssemblies("NUnit.Framework.InconclusiveException", assemblies)
+                    ?? FindTypeInAssemblies("Xunit.SkipException", assemblies)
+                    ?? FindTypeInAssemblies("Microsoft.VisualStudio.TestTools.UnitTesting.AssertInconclusiveException", assemblies);
             }
             catch { return null; }
         }

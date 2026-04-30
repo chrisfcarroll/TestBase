@@ -87,5 +87,29 @@ namespace TestBase
 
             throw new ShouldHaveThrownException(a.Message).ForActiveTestRunner();
         }
+
+        /// <summary>
+        ///     Executes <code><paramref name="action" />.Compile()()</code>. If the execution throws,
+        ///     the thrown exception is wrapped in a <see cref="ShouldNotThrowException" /> and thrown.
+        /// </summary>
+        /// <returns><paramref name="action" /></returns>
+        /// <exception cref="ShouldNotThrowException">is thrown if <paramref name="action" /> throws.</exception>
+        #if NET6_0_OR_GREATER
+        [StackTraceHidden]
+        #else
+        [DebuggerHidden]
+        #endif
+        public static Expression<Action> NotThrow(
+            Expression<Action> action,
+            string             comment = null,
+            params object[]    commentArgs)
+        {
+            try { action.Compile(); } catch (Exception ex)
+            {
+                throw ShouldNotThrowException.For(action, $"Threw {ex} but expected not to throw.", commentArgs).ForActiveTestRunner();
+            }
+
+            return action;
+        }
     }
 }
