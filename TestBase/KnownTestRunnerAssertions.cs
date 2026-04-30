@@ -43,7 +43,7 @@ namespace TestBase
         ///     exception and throws it. Throws <paramref name="assertion"/> unchanged when
         ///     no framework is detected.
         /// </summary>
-        #if NET6_OR_GREATER
+        #if NET6_0_OR_GREATER
         [StackTraceHidden]
         #else
         [DebuggerHidden]

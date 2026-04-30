@@ -14,7 +14,7 @@ namespace TestBase
 {
     public static class IEnumerableShoulds
     {
-        #if NET6_OR_GREATER
+        #if NET6_0_OR_GREATER
         [StackTraceHidden]
         #else
         [DebuggerHidden]

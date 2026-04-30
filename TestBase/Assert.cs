@@ -24,7 +24,7 @@ namespace TestBase
         /// <param name="predicateExpression"></param>
         /// <returns><paramref name="actual" />, if the precondition succeeds</returns>
         /// <exception cref="Assertion{T}">thrown if the precondition fails.</exception>
-        #if NET6_OR_GREATER
+        #if NET6_0_OR_GREATER
         [StackTraceHidden]
         #else
         [DebuggerHidden]
@@ -97,7 +97,7 @@ namespace TestBase
         /// <param name="commentArgs"></param>
         /// <returns><paramref name="actual" />, if the precondition succeeds</returns>
         /// <exception cref="Assertion{T}">thrown if the precondition fails.</exception>
-        #if NET6_OR_GREATER
+        #if NET6_0_OR_GREATER
         [StackTraceHidden]
         #else
         [DebuggerHidden]
@@ -125,7 +125,7 @@ namespace TestBase
         /// <param name="commentArgs"></param>
         /// <returns><paramref name="actual" />, if the assertion succeeds</returns>
         /// <exception cref="Precondition{T}">thrown if the assertion fails.</exception>
-        #if NET6_OR_GREATER
+        #if NET6_0_OR_GREATER
         [StackTraceHidden]
         #else
         [DebuggerHidden]
@@ -171,7 +171,7 @@ namespace TestBase
         /// <param name="commentArgs"></param>
         /// <returns>An <see cref="Precondition{T}" /> for <paramref name="actual" /></returns>
         /// <exception cref="Precondition{T}">thrown if the precondition fails.</exception>
-        #if NET6_OR_GREATER
+        #if NET6_0_OR_GREATER
         [StackTraceHidden]
         #else
         [DebuggerHidden]
@@ -203,7 +203,7 @@ namespace TestBase
         /// <typeparam name="TE"></typeparam>
         /// <returns>The caught exception</returns>
         /// <exception cref="ShouldHaveThrownException">is thrown if <paramref name="action" /> does not throw.</exception>
-        #if NET6_OR_GREATER
+        #if NET6_0_OR_GREATER
         [StackTraceHidden]
         #else
         [DebuggerHidden]
@@ -238,7 +238,7 @@ namespace TestBase
             return Throws<T, TE>(actual, predicate, comment, commentArgs);
         }
 
-        #if NET6_OR_GREATER
+        #if NET6_0_OR_GREATER
         [StackTraceHidden]
         #else
         [DebuggerHidden]
@@ -262,7 +262,7 @@ namespace TestBase
         ///     <paramref name="action" />
         /// </returns>
         /// <exception cref="ShouldNotThrowException">is thrown if <paramref name="action" /> throws.</exception>
-        #if NET6_OR_GREATER
+        #if NET6_0_OR_GREATER
         [StackTraceHidden]
         #else
         [DebuggerHidden]
@@ -287,7 +287,7 @@ namespace TestBase
         /// <param name="format"></param>
         /// <param name="args"></param>
         /// <exception cref="Assertion"></exception>
-        #if NET6_OR_GREATER
+        #if NET6_0_OR_GREATER
         [StackTraceHidden]
         #else
         [DebuggerHidden]
@@ -315,7 +315,7 @@ namespace TestBase
         /// <param name="assertion"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        #if NET6_OR_GREATER
+        #if NET6_0_OR_GREATER
         [StackTraceHidden]
         #else
         [DebuggerHidden]
@@ -335,7 +335,7 @@ namespace TestBase
         /// <param name="args"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        #if NET6_OR_GREATER
+        #if NET6_0_OR_GREATER
         [StackTraceHidden]
         #else
         [DebuggerHidden]
