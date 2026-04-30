@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 // ReSharper disable InconsistentNaming
@@ -7,8 +8,13 @@ namespace TestBase
 {
     public static class IDictionaryShoulds
     {
+        #if NET6_OR_GREATER
+        [StackTraceHidden]
+        #else
+        [DebuggerHidden]
+        #endif
         static void ThrowDictionaryAssertion<TKey, TValue>(IDictionary<TKey, TValue> actual, string assertionName, string assertedDetail, string message, object[] args,
-            [CallerArgumentExpression("actual")] string actualExpression = null)
+                                                           [CallerArgumentExpression("actual")] string actualExpression = null)
         {
             var comment = message != null && args?.Length > 0 ? string.Format(message, args) : message;
             throw new Assertion<IDictionary<TKey, TValue>>(

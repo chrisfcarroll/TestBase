@@ -1,24 +1,26 @@
 using System;
+using System.Diagnostics;
 using System.Reflection;
 using System.Threading;
 
 namespace TestBase
 {
     /// <summary>
-    ///     Detects the active test framework (NUnit, xUnit, or MSTest) by searching loaded
-    ///     assemblies, and creates or throws the framework-specific assertion exception so
-    ///     that test runners recognise it as an assertion failure.
+    ///     Detects the active test runner by searching loaded
+    ///     assemblies, and creates or throws the test-runner specific assertion
+    ///     exception so that the runners recognises it as an assertion failure.
+    /// <p>Current known test runners are NUnit, xUnit, MSTest</p>
     /// </summary>
     public static class KnownTestRunnerAssertions
     {
         /// <summary>
-        ///     Wraps <paramref name="assertion"/> in the active test framework's assertion
+        ///     Wraps <paramref name="assertion"/> in the active test runner's assertion
         ///     exception, preserving it as <see cref="Exception.InnerException"/>.
         ///     Returns <paramref name="assertion"/> unchanged when no framework is detected.
         /// </summary>
         public static Exception Create(Exception assertion)
         {
-            var type = _frameworkExceptionType.Value;
+            var type = knownExceptionType.Value;
             if (type == null) return assertion;
 
             try
@@ -37,16 +39,19 @@ namespace TestBase
         }
 
         /// <summary>
-        ///     Wraps <paramref name="assertion"/> in the active test framework's assertion
+        ///     Wraps <paramref name="assertion"/> in the active test runner's assertion
         ///     exception and throws it. Throws <paramref name="assertion"/> unchanged when
         ///     no framework is detected.
         /// </summary>
-        public static void Throw(Exception assertion)
-        {
-            throw Create(assertion);
-        }
+        #if NET6_OR_GREATER
+        [StackTraceHidden]
+        #else
+        [DebuggerHidden]
+        #endif
+        public static void Throw(Exception assertion) => throw Create(assertion);
 
-        static readonly Lazy<Type> _frameworkExceptionType = new Lazy<Type>(DetectFrameworkExceptionType, LazyThreadSafetyMode.PublicationOnly);
+        static readonly Lazy<Type> knownExceptionType = new Lazy<Type>(DetectFrameworkExceptionType,
+                                                                       LazyThreadSafetyMode.PublicationOnly);
 
         static Type DetectFrameworkExceptionType()
         {

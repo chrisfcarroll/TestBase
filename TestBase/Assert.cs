@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using FastExpressionCompiler;
@@ -23,6 +24,11 @@ namespace TestBase
         /// <param name="predicateExpression"></param>
         /// <returns><paramref name="actual" />, if the precondition succeeds</returns>
         /// <exception cref="Assertion{T}">thrown if the precondition fails.</exception>
+        #if NET6_OR_GREATER
+        [StackTraceHidden]
+        #else
+        [DebuggerHidden]
+        #endif
         public static T That<T>(T actual,
                                 Expression<Func<T, bool>> predicate,
                                 (string, object[]) comment = default,
@@ -91,6 +97,11 @@ namespace TestBase
         /// <param name="commentArgs"></param>
         /// <returns><paramref name="actual" />, if the precondition succeeds</returns>
         /// <exception cref="Assertion{T}">thrown if the precondition fails.</exception>
+        #if NET6_OR_GREATER
+        [StackTraceHidden]
+        #else
+        [DebuggerHidden]
+        #endif
         public static T That<T>(
             T                                      actual,
             T                                      comparedTo,
@@ -114,6 +125,11 @@ namespace TestBase
         /// <param name="commentArgs"></param>
         /// <returns><paramref name="actual" />, if the assertion succeeds</returns>
         /// <exception cref="Precondition{T}">thrown if the assertion fails.</exception>
+        #if NET6_OR_GREATER
+        [StackTraceHidden]
+        #else
+        [DebuggerHidden]
+        #endif
         public static T Precondition<T>(
             T                         actual,
             Expression<Func<T, bool>> predicate,
@@ -155,6 +171,11 @@ namespace TestBase
         /// <param name="commentArgs"></param>
         /// <returns>An <see cref="Precondition{T}" /> for <paramref name="actual" /></returns>
         /// <exception cref="Precondition{T}">thrown if the precondition fails.</exception>
+        #if NET6_OR_GREATER
+        [StackTraceHidden]
+        #else
+        [DebuggerHidden]
+        #endif
         public static Precondition<BoolWithString> Precondition(
             BoolWithString  actual,
             string          comment = null,
@@ -182,6 +203,11 @@ namespace TestBase
         /// <typeparam name="TE"></typeparam>
         /// <returns>The caught exception</returns>
         /// <exception cref="ShouldHaveThrownException">is thrown if <paramref name="action" /> does not throw.</exception>
+        #if NET6_OR_GREATER
+        [StackTraceHidden]
+        #else
+        [DebuggerHidden]
+        #endif
         public static TE Throws<TE>(Action action, string comment = null, params object[] commentArgs)
         where TE : Exception
         {
@@ -212,6 +238,11 @@ namespace TestBase
             return Throws<T, TE>(actual, predicate, comment, commentArgs);
         }
 
+        #if NET6_OR_GREATER
+        [StackTraceHidden]
+        #else
+        [DebuggerHidden]
+        #endif
         static T Throws<T, TE>(T actual, Expression<Func<T, bool>> predicate, string comment, object[] commentArgs)
         where TE : Exception
         {
@@ -231,6 +262,11 @@ namespace TestBase
         ///     <paramref name="action" />
         /// </returns>
         /// <exception cref="ShouldNotThrowException">is thrown if <paramref name="action" /> throws.</exception>
+        #if NET6_OR_GREATER
+        [StackTraceHidden]
+        #else
+        [DebuggerHidden]
+        #endif
         public static Expression<Action> DoesNotThrow(
             Expression<Action> action,
             string             comment = null,
@@ -251,6 +287,11 @@ namespace TestBase
         /// <param name="format"></param>
         /// <param name="args"></param>
         /// <exception cref="Assertion"></exception>
+        #if NET6_OR_GREATER
+        [StackTraceHidden]
+        #else
+        [DebuggerHidden]
+        #endif
         public static void Fail(string format, params object[] args)
         {
             throw new Assertion(string.Format(format, args)).ForActiveTestRunner();
@@ -274,6 +315,11 @@ namespace TestBase
         /// <param name="assertion"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
+        #if NET6_OR_GREATER
+        [StackTraceHidden]
+        #else
+        [DebuggerHidden]
+        #endif
         public static ShouldHaveThrownException For<T>(Assertion<T> assertion)
         {
             return new ShouldHaveThrownException(assertion.Message);
@@ -289,6 +335,11 @@ namespace TestBase
         /// <param name="args"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
+        #if NET6_OR_GREATER
+        [StackTraceHidden]
+        #else
+        [DebuggerHidden]
+        #endif
         public static ShouldHaveThrownException For<T>(
             T                         actual,
             Expression<Func<T, bool>> predicate,

@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq.Expressions;
@@ -13,8 +14,13 @@ namespace TestBase
     /// </summary>
     public static class BasicShoulds
     {
+        #if NET6_OR_GREATER
+        [StackTraceHidden]
+        #else
+        [DebuggerHidden]
+        #endif
         static void ThrowAssertion<T>(T actual, string assertionName, string assertedDetail, string message, object[] args,
-            [CallerArgumentExpression("actual")] string actualExpression = null)
+                                      [CallerArgumentExpression("actual")] string actualExpression = null)
         {
             var comment = message != null && args?.Length > 0 ? string.Format(message, args) : message;
             throw new Assertion<T>(

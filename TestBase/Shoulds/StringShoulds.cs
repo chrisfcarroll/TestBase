@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -10,8 +11,13 @@ namespace TestBase
     {
         static readonly string nl = Environment.NewLine;
 
+        #if NET6_OR_GREATER
+        [StackTraceHidden]
+        #else
+        [DebuggerHidden]
+        #endif
         static void ThrowStringAssertion(string actual, string assertionName, string assertedDetail, string message, object[] args,
-            [CallerArgumentExpression("actual")] string actualExpression = null)
+                                         [CallerArgumentExpression("actual")] string actualExpression = null)
         {
             var comment = message != null && args?.Length > 0 ? string.Format(message, args) : message;
             throw new Assertion<string>(

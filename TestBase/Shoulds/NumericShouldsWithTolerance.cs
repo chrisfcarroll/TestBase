@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -6,8 +7,13 @@ namespace TestBase
 {
     public static class NumericShouldsWithTolerance
     {
+        #if NET6_OR_GREATER
+        [StackTraceHidden]
+        #else
+        [DebuggerHidden]
+        #endif
         static void ThrowToleranceAssertion<T>(T actual, string assertionName, string assertedDetail, string message, object[] args,
-            [CallerArgumentExpression("actual")] string actualExpression = null)
+                                               [CallerArgumentExpression("actual")] string actualExpression = null)
         {
             var comment = message != null && args?.Length > 0 ? string.Format(message, args) : message;
             throw new Assertion<T>(
