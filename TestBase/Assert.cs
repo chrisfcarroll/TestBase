@@ -30,7 +30,7 @@ namespace TestBase
                                 [CallerArgumentExpression("predicate")]string predicateExpression=null)
         {
             var result = new Assertion<T>(actual, predicate, actualExpression, predicateExpression, comment);
-            return result ? actual : throw Assertion.CreateFrameworkException(result);
+            return result ? actual : throw result.ForActiveTestRunner();
         }
         
         
@@ -53,7 +53,7 @@ namespace TestBase
             params object[]                     commentArgs)
         {
             var result = new Assertion<T>(actual, predicate, comment, commentArgs);
-            return result ? actual : throw Assertion.CreateFrameworkException(result);
+            return result ? actual : throw result.ForActiveTestRunner();
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace TestBase
             params object[]           commentArgs)
         {
             var result = new Assertion<T>(actual, predicate, comment, commentArgs);
-            return result ? actual : throw Assertion.CreateFrameworkException(result);
+            return result ? actual : throw result.ForActiveTestRunner();
         }
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace TestBase
             params object[]                        commentArgs)
         {
             var result = new Assertion<T>(actual, comparedTo, predicate.Chain(x => x.AsBool), comment, commentArgs);
-            return result ? actual : throw Assertion.CreateFrameworkException(result);
+            return result ? actual : throw result.ForActiveTestRunner();
         }
 
         /// <summary>
@@ -121,7 +121,7 @@ namespace TestBase
             params object[]           commentArgs)
         {
             var result = new Precondition<T>(actual, predicate, comment, commentArgs);
-            return result ? actual : throw Assertion.CreateFrameworkException(result);
+            return result ? actual : throw result.ForActiveTestRunner();
         }
 
         /// <summary>
@@ -141,7 +141,7 @@ namespace TestBase
             params object[] commentArgs)
         {
             var result = new Assertion<BoolWithString>(actual, a => a, comment, commentArgs);
-            return result ? result : throw Assertion.CreateFrameworkException(result);
+            return result ? result : throw result.ForActiveTestRunner();
         }
 
         /// <summary>
@@ -161,7 +161,7 @@ namespace TestBase
             params object[] commentArgs)
         {
             var result = new Precondition<BoolWithString>(actual, a => a, comment, commentArgs);
-            return result ? result : throw Assertion.CreateFrameworkException(result);
+            return result ? result : throw result.ForActiveTestRunner();
         }
 
         /// <summary>
@@ -253,7 +253,7 @@ namespace TestBase
         /// <exception cref="Assertion"></exception>
         public static void Fail(string format, params object[] args)
         {
-            throw Assertion.CreateFrameworkException(new Assertion(string.Format(format, args)));
+            throw new Assertion(string.Format(format, args)).ForActiveTestRunner();
         }
     }
 

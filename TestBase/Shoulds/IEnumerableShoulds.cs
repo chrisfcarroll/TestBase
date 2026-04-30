@@ -20,26 +20,26 @@ namespace TestBase
             string actualStr;
             try { actualStr = actual != null ? $"[{string.Join(", ", actual)}]" : "null"; }
             catch { actualStr = actual?.ToString() ?? "null"; }
-            throw Assertion.CreateFrameworkException(new Assertion<IEnumerable<T>>(
+            throw new Assertion<IEnumerable<T>>(
                 actualStr,
                 actualExpression,
                 assertionName,
                 assertedDetail,
                 comment,
-                false));
+                false).ForActiveTestRunner();
         }
 
         static void ThrowEnumerableAssertion(IEnumerable actual, string assertionName, string assertedDetail, string message, object[] args,
             [CallerArgumentExpression("actual")] string actualExpression = null)
         {
             var comment = message != null && args?.Length > 0 ? string.Format(message, args) : message;
-            throw Assertion.CreateFrameworkException(new Assertion<IEnumerable>(
+            throw new Assertion<IEnumerable>(
                 actual?.ToString() ?? "null",
                 actualExpression,
                 assertionName,
                 assertedDetail,
                 comment,
-                false));
+                false).ForActiveTestRunner();
         }
 
         /// <summary>Asserts that <paramref name="actual" /> contains an element satisfying <paramref name="predicate" /></summary>
@@ -325,13 +325,13 @@ namespace TestBase
             if (!actual.ContainsKey(key))
             {
                 var comment = message != null && args?.Length > 0 ? string.Format(message, args) : message;
-                throw Assertion.CreateFrameworkException(new Assertion<IDictionary<TKey, TValue>>(
+                throw new Assertion<IDictionary<TKey, TValue>>(
                     actual?.ToString() ?? "null",
                     null,
                     nameof(ShouldContainKey),
                     $"Expected: dictionary containing key \"{key}\"",
                     comment ?? $"Expected IDictionary to contain key {key}",
-                    false));
+                    false).ForActiveTestRunner();
             }
             return actual;
         }
@@ -349,13 +349,13 @@ namespace TestBase
             if (actual.ContainsKey(key))
             {
                 var comment = message != null && args?.Length > 0 ? string.Format(message, args) : message;
-                throw Assertion.CreateFrameworkException(new Assertion<IDictionary<TKey, TValue>>(
+                throw new Assertion<IDictionary<TKey, TValue>>(
                     actual?.ToString() ?? "null",
                     null,
                     nameof(ShouldNotContainKey),
                     $"Expected: dictionary not containing key \"{key}\"",
                     comment ?? $"Expected IDictionary to not contain key {key}",
-                    false));
+                    false).ForActiveTestRunner();
             }
             return actual;
         }

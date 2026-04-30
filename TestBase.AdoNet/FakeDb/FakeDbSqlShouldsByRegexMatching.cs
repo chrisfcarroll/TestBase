@@ -44,7 +44,7 @@ namespace TestBase.AdoNet
                       ? "Expected to invoke a SQL command matching " + ExpressionToCode.ToCode((Expression) predicate)
                       : string.Format(message, args);
 
-            throw Assertion.CreateFrameworkException(new Assertion<List<FakeDbCommand>>(invocations, i => i.Any(predicate.Compile()), message));
+            throw new Assertion<List<FakeDbCommand>>(invocations, i => i.Any(predicate.Compile()), message).ForActiveTestRunner();
         }
 
         /// <summary>
@@ -394,7 +394,7 @@ namespace TestBase.AdoNet
                     }
 
                     matches++;
-                } catch (Assertion)
+                } catch (Exception ex) when (ex is Assertion || ex.InnerException is Assertion)
                 {
                     //swallow because at this point we are just counting. Throw below.
                 }

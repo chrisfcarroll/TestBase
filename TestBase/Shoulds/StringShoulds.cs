@@ -14,13 +14,13 @@ namespace TestBase
             [CallerArgumentExpression("actual")] string actualExpression = null)
         {
             var comment = message != null && args?.Length > 0 ? string.Format(message, args) : message;
-            throw Assertion.CreateFrameworkException(new Assertion<string>(
+            throw new Assertion<string>(
                 actual ?? "null",
                 actualExpression,
                 assertionName,
                 assertedDetail,
                 comment,
-                false));
+                false).ForActiveTestRunner();
         }
 
         /// <summary>Asserts string equality with detailed diff output showing the point of difference.</summary>
