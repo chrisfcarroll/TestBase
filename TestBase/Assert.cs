@@ -302,17 +302,11 @@ namespace TestBase
     /// <summary>
     ///     An Exception indicating that an Exception was expected but was not thrown.
     /// </summary>
-    public class ShouldHaveThrownException : Exception
+    public class ShouldHaveThrownException : Assertion
     {
         /// <summary>Creates a new <see cref="ShouldHaveThrownException" /> with message <paramref name="message" /></summary>
         /// <param name="message"></param>
         public ShouldHaveThrownException(string message) : base(message) { }
-
-        /// <summary>
-        ///     Returns this exception wrapped in the active test runner's assertion exception
-        ///     so that test runners recognise it as an assertion failure.
-        /// </summary>
-        public Exception ForActiveTestRunner() => KnownTestRunnerAssertions.Create(this);
 
 
         /// <summary>
