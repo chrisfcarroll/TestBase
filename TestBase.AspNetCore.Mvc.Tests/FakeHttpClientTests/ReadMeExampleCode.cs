@@ -62,7 +62,7 @@ namespace TestBase.AspNetCore.Mvc.Tests.FakeHttpClientTests
                               "Expected Post a=1&b=2");
 
 
-            Assert.Throws<Exception>(
+            Should.Throw<Exception>(
                                      () => httpClient.VerifyAll() // ==> "Exception : 4 unmatched expectations")
                                     );
         }

@@ -57,7 +57,7 @@ public class ForQueryUsingEmptyObjectArrayFakeData
     public void Should_throw_helpfully__Given__not_enough_metadata()
     {
             //A
-            Assert.Throws<InvalidOperationException>(
+            Should.Throw<InvalidOperationException>(
                                                      () => new FakeDbConnection().SetUpForQuery(new object[][] { })
                                                     )
                   .Message.ShouldMatch("[Cc]an't .* metadata");

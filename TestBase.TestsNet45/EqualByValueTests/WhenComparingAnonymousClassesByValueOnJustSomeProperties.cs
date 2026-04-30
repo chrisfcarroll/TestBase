@@ -28,7 +28,7 @@ namespace TestBase.TestsNet45.EqualByValueTests
 
             //A&A
             objectL.EqualsByValuesJustOnMembersNamed(objectR, mismatchedMembers).ShouldBeFalse();
-            Assert.Throws<Assertion>(
+            Should.Throw<Assertion>(
                                      () => objectL.ShouldEqualByValueOnMembers(objectR, mismatchedMembers)
                                     );
         }

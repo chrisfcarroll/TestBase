@@ -67,7 +67,7 @@ public class WhenVerifyingFakeDbStoredProcedure
             {
                 ExecuteNonQuery(conn, NoquerySproc);
 
-                Assert.Throws<Assertion>(() =>
+                Should.Throw<Assertion>(() =>
                 {
                     conn.ShouldHaveExecutedStoredProcedureWithParameter(
                         NoquerySproc,
@@ -82,7 +82,7 @@ public class WhenVerifyingFakeDbStoredProcedure
             using (var conn = new FakeDbConnection())
             {
                 ExecuteNonQuery(conn, NoquerySproc);
-                Assert.Throws<Assertion>(() =>
+                Should.Throw<Assertion>(() =>
                 {
                     conn.ShouldHaveExecutedStoredProcedure(
                         NoquerySproc,
@@ -97,13 +97,13 @@ public class WhenVerifyingFakeDbStoredProcedure
             using (var conn = new FakeDbConnection())
             {
                 ExecuteNonQuery(conn, NoquerySproc);
-                Assert.Throws<Assertion>(() =>
+                Should.Throw<Assertion>(() =>
                 {
                     conn.ShouldHaveExecutedStoredProcedure("Oops");
                 });
 
                 ExecuteReader(conn, "QuerySproc");
-                Assert.Throws<Assertion>(() =>
+                Should.Throw<Assertion>(() =>
                 {
                     conn.ShouldHaveExecutedStoredProcedure("oops");
                 });

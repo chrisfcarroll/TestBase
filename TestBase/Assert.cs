@@ -190,9 +190,10 @@ namespace TestBase
         /// </summary>
         /// <returns>The caught exception.</returns>
         /// <exception cref="ShouldHaveThrownException">is thrown if <paramref name="action" /> does not throw.</exception>
+        [Obsolete("Renamed to Should.Throw")]
         public static Exception Throws(Expression<Action> action, string comment = null, params object[] commentArgs)
         {
-            return Throws<Exception>(action.CompileFast(), comment, commentArgs);
+            return Throw<Exception>(action.CompileFast(), comment, commentArgs);
         }
 
         /// <summary>
@@ -203,12 +204,38 @@ namespace TestBase
         /// <typeparam name="TE"></typeparam>
         /// <returns>The caught exception</returns>
         /// <exception cref="ShouldHaveThrownException">is thrown if <paramref name="action" /> does not throw.</exception>
+        [Obsolete("Renamed to Should.Throw")]
+        public static TE Throws<TE>(Action action, string comment = null, params object[] commentArgs)
+        where TE : Exception
+        {
+            return Throw<TE>(action, comment, commentArgs);
+        }
+
+        /// <summary>
+        ///     Asserts that <code><paramref name="predicate" />( <paramref name="actual" /> )</code> throws a
+        ///     <typeparamref name="TE" />, catching the exception and returning it.
+        /// </summary>
+        /// <typeparam name="TE"></typeparam>
+        /// <typeparam name="T"></typeparam>
+        /// <returns>The caught exception</returns>
+        /// <exception cref="ShouldHaveThrownException">is thrown if <paramref name="predicate" /> does not throw.</exception>
+        [Obsolete("Renamed to Should.Throw")]
+        public static T Throws<T, TE>(
+            T                         actual,
+            Expression<Func<T, bool>> predicate,
+            TE                        dummyForTypeInference = null,
+            string                    comment               = null,
+            params object[]           commentArgs) where TE : Exception
+        {
+            return Throw<T, TE>(actual, predicate, comment, commentArgs);
+        }
+
         #if NET6_0_OR_GREATER
         [StackTraceHidden]
         #else
         [DebuggerHidden]
         #endif
-        public static TE Throws<TE>(Action action, string comment = null, params object[] commentArgs)
+        internal static TE Throw<TE>(Action action, string comment = null, params object[] commentArgs)
         where TE : Exception
         {
             try { action(); } catch (TE ex) { return ex; } catch (Exception ex)
@@ -220,30 +247,12 @@ namespace TestBase
             throw new ShouldHaveThrownException(action.ToString()).ForActiveTestRunner();
         }
 
-        /// <summary>
-        ///     Asserts that <code><paramref name="predicate" />( <paramref name="actual" /> )</code> throws a
-        ///     <typeparamref name="TE" />, catching the exception and returning it.
-        /// </summary>
-        /// <typeparam name="TE"></typeparam>
-        /// <typeparam name="T"></typeparam>
-        /// <returns>The caught exception</returns>
-        /// <exception cref="ShouldHaveThrownException">is thrown if <paramref name="predicate" /> does not throw.</exception>
-        public static T Throws<T, TE>(
-            T                         actual,
-            Expression<Func<T, bool>> predicate,
-            TE                        dummyForTypeInference = null,
-            string                    comment               = null,
-            params object[]           commentArgs) where TE : Exception
-        {
-            return Throws<T, TE>(actual, predicate, comment, commentArgs);
-        }
-
         #if NET6_0_OR_GREATER
         [StackTraceHidden]
         #else
         [DebuggerHidden]
         #endif
-        static T Throws<T, TE>(T actual, Expression<Func<T, bool>> predicate, string comment, object[] commentArgs)
+        internal static T Throw<T, TE>(T actual, Expression<Func<T, bool>> predicate, string comment, object[] commentArgs)
         where TE : Exception
         {
             Assertion<T> a;

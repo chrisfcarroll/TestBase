@@ -8,7 +8,7 @@ public class ShouldDisplayActualAndAssertionNameAndComparator
     [Test]
     public void GivenLiteralValues()
     {
-        var ass= Assert.Throws<Assertion>(
+        var ass= Should.Throw<Assertion>(
             () => 1.ShouldBe(2)
         );
 
@@ -25,7 +25,7 @@ public class ShouldDisplayActualAndAssertionNameAndComparator
         var namedActual=1;
         var namedExpected = 2;
 
-        var ass= Assert.Throws<Assertion>(
+        var ass= Should.Throw<Assertion>(
             () => namedActual.ShouldBe(namedExpected)
         );
 
@@ -39,7 +39,7 @@ public class ShouldDisplayActualAndAssertionNameAndComparator
     [Test]
     public void GivenExpressions()
     {
-        var ass= Assert.Throws<Assertion>(
+        var ass= Should.Throw<Assertion>(
             () => (1 + 1).ShouldBe(2+2)
         );
 

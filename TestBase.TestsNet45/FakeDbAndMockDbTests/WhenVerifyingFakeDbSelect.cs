@@ -25,10 +25,10 @@ namespace TestBase.TestsNet45.FakeDbAndMockDbTests
                 }
 
                 conn.ShouldHaveSelected("ATableName");
-                Assert.Throws<Assertion>(() => { conn.ShouldHaveSelected("WrongTableName"); });
-                Assert.Throws<Assertion>(() => { conn.ShouldHaveUpdated("ATableName", "", ""); });
-                Assert.Throws<Assertion>(() => { conn.ShouldHaveDeleted("ATableName"); });
-                Assert.Throws<Assertion>(() => { conn.ShouldHaveInserted("ATableName", ""); });
+                Should.Throw<Assertion>(() => { conn.ShouldHaveSelected("WrongTableName"); });
+                Should.Throw<Assertion>(() => { conn.ShouldHaveUpdated("ATableName", "", ""); });
+                Should.Throw<Assertion>(() => { conn.ShouldHaveDeleted("ATableName"); });
+                Should.Throw<Assertion>(() => { conn.ShouldHaveInserted("ATableName", ""); });
             }
         }
     }

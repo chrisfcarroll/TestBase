@@ -12,7 +12,7 @@ public class ShouldDisplayActualAndAssertionNameAndComparator
     [Test]
     public void GivenAValue()
     {
-        var ass= Assert.Throws<Assertion>(
+        var ass= Should.Throw<Assertion>(
             () => 1.ShouldBe(2)
         );
         
@@ -28,7 +28,7 @@ public class ShouldDisplayActualAndAssertionNameAndComparator
     [Test, Ignore("TODO")]
     public void GivenLiteralValues()
     {
-        var ass= Assert.Throws<Assertion>(
+        var ass= Should.Throw<Assertion>(
             () => 1.ShouldBe(2)
         );
 
@@ -57,7 +57,7 @@ public class ShouldDisplayActualAndAssertionNameAndComparator
         var namedActual=1;
         var namedExpected = 2;
         
-        var ass= Assert.Throws<Assertion>(
+        var ass= Should.Throw<Assertion>(
             () => namedActual.ShouldBe(namedExpected)
         );
 
@@ -84,7 +84,7 @@ public class ShouldDisplayActualAndAssertionNameAndComparator
     [Test, Ignore("TODO")]
     public void GivenExpressions()
     {
-        var ass= Assert.Throws<Assertion>(
+        var ass= Should.Throw<Assertion>(
             () => (1 + 1).ShouldBe(2+2)
         );
 
@@ -111,7 +111,7 @@ public class ShouldDisplayActualAndAssertionNameAndComparator
     [Test, Ignore("TODO")]
     public void GivenObjectExpression()
     {
-        var ass= Assert.Throws<Assertion>(
+        var ass= Should.Throw<Assertion>(
             () => (new {A=1,B=2}).ShouldBe(new {A=2, B=3})
         );
 
@@ -142,7 +142,7 @@ public class ShouldDisplayActualAndAssertionNameAndComparator
     [Test, Ignore("TODO")]
     public void GivenEnumerableExpression()
     {
-        var ass= Assert.Throws<Assertion>(
+        var ass= Should.Throw<Assertion>(
             () => (new System.Collections.Generic.List<AClass>
                 {
                     new AClass(){Name = "Name",Id=1},
@@ -184,7 +184,7 @@ public class ShouldDisplayActualAndAssertionNameAndComparator
     [Test, Ignore("TODO")]
     public void GivenUnserializableExpression()
     {
-        var ass= Assert.Throws<Assertion>(
+        var ass= Should.Throw<Assertion>(
             () => (Assembly.GetExecutingAssembly().Modules.FirstOrDefault())
                 .ShouldBe(
                     Assembly.GetExecutingAssembly().Modules.Skip(1).FirstOrDefault()

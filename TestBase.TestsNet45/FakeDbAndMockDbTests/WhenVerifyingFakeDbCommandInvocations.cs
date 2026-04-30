@@ -41,13 +41,13 @@ namespace TestBase.TestsNet45.FakeDbAndMockDbTests
                              .SetUpForExecuteNonQuery(0))
             {
                 ExecuteNonQuery(conn, "Delete ATableName Id=@Id ");
-                Assert.Throws<Assertion>(() => { conn.ShouldHaveDeleted("ATableName", "Id", 111); });
+                Should.Throw<Assertion>(() => { conn.ShouldHaveDeleted("ATableName", "Id", 111); });
 
                 ExecuteReader(conn, "Select ATableName Id=@Id ");
-                Assert.Throws<Assertion>(() => { conn.ShouldHaveSelected("ATableName", whereClauseField: "Id"); });
+                Should.Throw<Assertion>(() => { conn.ShouldHaveSelected("ATableName", whereClauseField: "Id"); });
 
                 ExecuteNonQuery(conn, "Insert Int ATableName Id=@Id ");
-                Assert.Throws<Assertion>(() => { conn.ShouldHaveInserted("ATableName", new {Id = 111}); });
+                Should.Throw<Assertion>(() => { conn.ShouldHaveInserted("ATableName", new {Id = 111}); });
             }
         }
     }

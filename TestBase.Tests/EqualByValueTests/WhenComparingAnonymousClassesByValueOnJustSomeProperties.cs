@@ -28,7 +28,7 @@ public class WhenComparingAnonymousClassesByValueOnJustSomeMembers
 
             //A&A
             objectL.EqualsByValuesJustOnMembersNamed(objectR, mismatchedMembers).ShouldBeFalse();
-            Assert.Throws<Assertion>(
+            Should.Throw<Assertion>(
                                      () => objectL.ShouldEqualByValueOnMembers(objectR, mismatchedMembers)
                                     );
         }

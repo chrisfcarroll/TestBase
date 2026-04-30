@@ -43,7 +43,7 @@ public class ShouldEqualByValueExceptForValueTests
             var expected   = testcase.Skip(2 + leftCount).Take(rightCount);
             var exceptions = testcase.Skip(2 + leftCount + rightCount);
 
-            Assert.Throws<Assertion>(
+            Should.Throw<Assertion>(
                                      () => actual.ShouldEqualByValueExceptForValues(expected, exceptions)
                                     );
         }

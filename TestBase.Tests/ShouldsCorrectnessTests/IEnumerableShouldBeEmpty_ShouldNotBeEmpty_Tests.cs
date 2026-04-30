@@ -22,7 +22,7 @@ public class IEnumerableShouldBeEmpty_ShouldNotBeEmpty_Tests
     [TestCase(new int[0])]
     public void IEnumerableGeneric_ShouldNotBeEmpty_ShouldFail(int[] value)
     {
-            Assert.Throws<Assertion>(
+            Should.Throw<Assertion>(
                                      () => value.ShouldBeAssignableTo<IEnumerable<int>>().ShouldNotBeEmpty()
                                     );
         }
@@ -30,7 +30,7 @@ public class IEnumerableShouldBeEmpty_ShouldNotBeEmpty_Tests
     [TestCase(new int[0])]
     public void IEnumerableNonGeneric_ShouldNotBeEmpty_ShouldFail(int[] value)
     {
-            Assert.Throws<Assertion>(
+            Should.Throw<Assertion>(
                                      () => value.ShouldBeAssignableTo<IEnumerable>().ShouldNotBeEmpty()
                                     );
         }
@@ -50,7 +50,7 @@ public class IEnumerableShouldBeEmpty_ShouldNotBeEmpty_Tests
     [TestCase(new[] {1, 2, 3})]
     public void IEnumerableGeneric_ShouldBeEmpty_ShouldFail(int[] value)
     {
-            Assert.Throws<Assertion>(
+            Should.Throw<Assertion>(
                                      () => value.ShouldBeAssignableTo<IEnumerable<int>>().ShouldBeEmpty()
                                     );
         }
@@ -58,7 +58,7 @@ public class IEnumerableShouldBeEmpty_ShouldNotBeEmpty_Tests
     [TestCase(new[] {1, 2, 3})]
     public void IEnumerableNonGeneric_ShouldBeEmpty_ShouldFail(int[] value)
     {
-            Assert.Throws<Assertion>(
+            Should.Throw<Assertion>(
                                      () => value.ShouldBeAssignableTo<IEnumerable>().ShouldBeEmpty()
                                     );
         }
@@ -69,7 +69,7 @@ public class IEnumerableShouldBeEmpty_ShouldNotBeEmpty_Tests
     [TestCase(new[] {1, 2, 3})]
     public void IEnumerableGeneric_ShouldNotHaveAny_ShouldFail(int[] value)
     {
-            Assert.Throws<Assertion>(() => value.ShouldNotHaveAny(x => x > 1));
+            Should.Throw<Assertion>(() => value.ShouldNotHaveAny(x => x > 1));
         }
 
     [TestCase(new[] {1, 2, 3})]
@@ -78,7 +78,7 @@ public class IEnumerableShouldBeEmpty_ShouldNotBeEmpty_Tests
     [Test]
     public void IEnumerableGeneric_ShouldNotBeNullEmpty_ShouldFail()
     {
-            Assert.Throws<Assertion>(() => (null as IEnumerable<object>).ShouldNotBeNullOrEmpty());
-            Assert.Throws<Assertion>(() => new string[0].ShouldNotBeNullOrEmpty());
+            Should.Throw<Assertion>(() => (null as IEnumerable<object>).ShouldNotBeNullOrEmpty());
+            Should.Throw<Assertion>(() => new string[0].ShouldNotBeNullOrEmpty());
         }
 }

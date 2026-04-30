@@ -38,15 +38,15 @@ namespace TestBase.TestsNet45.FakeDbAndMockDbTests
 
                 foreach (var otherVerb in verbsNotExecuted)
                 {
-                    Assert.Throws<Assertion>(() =>
+                    Should.Throw<Assertion>(() =>
                                              {
                                                  conn.ShouldHaveExecutedNTimes(otherVerb, "", new {Field = 111}, 3);
                                              });
-                    Assert.Throws<Assertion>(() =>
+                    Should.Throw<Assertion>(() =>
                                              {
                                                  conn.ShouldHaveExecutedNTimes(otherVerb, "", "Field".Split(), 3);
                                              });
-                    Assert.Throws<Assertion>(() =>
+                    Should.Throw<Assertion>(() =>
                                              {
                                                  conn.ShouldHaveExecutedNTimes(otherVerb,
                                                                                "ATableName",

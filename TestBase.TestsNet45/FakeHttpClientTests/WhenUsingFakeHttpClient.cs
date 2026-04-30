@@ -70,7 +70,7 @@ namespace TestBase.TestsNet45.FakeHttpClientTests
 
             uut.Verify(x => x.RequestUri.ToString() == "http://localhost/that");
 
-            Assert.Throws<Exception>(
+            Should.Throw<Exception>(
                                      () => uut.Verify(x => x.Method == HttpMethod.Delete)
                                     );
         }

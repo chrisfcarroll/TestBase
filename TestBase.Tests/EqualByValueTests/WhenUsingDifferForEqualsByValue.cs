@@ -45,7 +45,7 @@ public class WhenUsingDifferForEqualsByValue
         var left = new AClass() { Id = 1, Name = "Alice" };
         var right = new { Id = 1, Name = "Alice", SomethingElse = "unexpected" };
 
-        Assert.Throws<Assertion>(() => left.ShouldEqualByValue(right));
+        Should.Throw<Assertion>(() => left.ShouldEqualByValue(right));
     }
 
 #if NET6_0_OR_GREATER
@@ -55,7 +55,7 @@ public class WhenUsingDifferForEqualsByValue
     {
         var left = new { Id = 1, Name = "Alice" };
         var right = new { Id = 1, Name = "Bob" };
-        var ex = Assert.Throws<Assertion>(() => left.ShouldEqualByValue(right));
+        var ex = Should.Throw<Assertion>(() => left.ShouldEqualByValue(right));
 
         // D
         TestContext.WriteLine(ex.Message);
@@ -71,7 +71,7 @@ public class WhenUsingDifferForEqualsByValue
     [Test]
     public void ShouldEqualByValue_fails_with_clean_diff_for_strings()
     {
-        var ex = Assert.Throws<Assertion>(() => "hello world".ShouldEqualByValue("hello World"));
+        var ex = Should.Throw<Assertion>(() => "hello world".ShouldEqualByValue("hello World"));
 
         TestContext.WriteLine(ex.Message);
 
@@ -83,7 +83,7 @@ public class WhenUsingDifferForEqualsByValue
     [Test]
     public void ShouldEqualByValue_fails_with_clean_diff_for_collections()
     {
-        var ex = Assert.Throws<Assertion>(() =>
+        var ex = Should.Throw<Assertion>(() =>
             new[] { 1, 2, 3 }.ShouldEqualByValue(new[] { 1, 2, 4 }));
 
         TestContext.WriteLine(ex.Message);
@@ -107,7 +107,7 @@ public class WhenUsingDifferForEqualsByValue
     {
         var left = new { Id = 1, Name = "Alice" };
         var right = new { Id = 2, Name = "Bob" };
-        var ex = Assert.Throws<Assertion>(() =>
+        var ex = Should.Throw<Assertion>(() =>
             left.ShouldEqualByValueExceptFor(right, "Id"));
 
         TestContext.WriteLine(ex.Message);
@@ -129,7 +129,7 @@ public class WhenUsingDifferForEqualsByValue
     {
         var left = new { Id = 1, Name = "Alice" };
         var right = new { Id = 1, Name = "Bob" };
-        var ex = Assert.Throws<Assertion>(() =>
+        var ex = Should.Throw<Assertion>(() =>
             left.ShouldEqualByValueOnMembers(right, new[] { "Name" }));
 
         TestContext.WriteLine(ex.Message);
@@ -141,7 +141,7 @@ public class WhenUsingDifferForEqualsByValue
     [Test]
     public void ShouldEqualByValue_fails_with_custom_message()
     {
-        var ex = Assert.Throws<Assertion>(() =>
+        var ex = Should.Throw<Assertion>(() =>
             1.ShouldEqualByValue(2, "Expected {0} to equal {1}", 1, 2));
 
         TestContext.WriteLine(ex.Message);
@@ -172,7 +172,7 @@ public class WhenUsingDifferForEqualsByValue
 
         var options = DiffOptions.Default;
 
-        var ex = Assert.Throws<Assertion>(() => left.ShouldEqualByValue(right, options));
+        var ex = Should.Throw<Assertion>(() => left.ShouldEqualByValue(right, options));
 
         TestContext.WriteLine(ex.Message);
         ex.Message.ShouldContain("Name");
@@ -185,7 +185,7 @@ public class WhenUsingDifferForEqualsByValue
         var right = new { Id = 2 };
         var options = DiffOptions.Default;
 
-        var ex = Assert.Throws<Assertion>(() =>
+        var ex = Should.Throw<Assertion>(() =>
             left.ShouldEqualByValue(right, options, "Custom message {0}", "here"));
 
         TestContext.WriteLine(ex.Message);
@@ -197,7 +197,7 @@ public class WhenUsingDifferForEqualsByValue
     [Test]
     public void Diff_output_does_not_contain_expression_tree_noise()
     {
-        var ex = Assert.Throws<Assertion>(() =>
+        var ex = Should.Throw<Assertion>(() =>
             new { A = 1, B = "hello" }.ShouldEqualByValue(new { A = 1, B = "world" }));
 
         TestContext.WriteLine("-----exception message-----");

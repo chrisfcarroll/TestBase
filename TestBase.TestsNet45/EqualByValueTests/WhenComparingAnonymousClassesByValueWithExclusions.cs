@@ -15,7 +15,7 @@ namespace TestBase.TestsNet45.EqualByValueTests
 
             //A&A
             objectL.EqualsByValueOrDiffersExceptFor(objectR, exclusionList).ShouldBeFalse();
-            Assert.Throws<Assertion>(
+            Should.Throw<Assertion>(
                                      () => objectL.ShouldEqualByValueExceptFor(objectR, exclusionList)
                                     );
             objectL.EqualsByValueExceptFor(objectR, exclusionList).ShouldBeFalse();

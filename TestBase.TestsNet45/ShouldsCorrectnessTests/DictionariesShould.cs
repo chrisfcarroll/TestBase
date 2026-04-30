@@ -17,14 +17,14 @@ namespace TestBase.TestsNet45.ShouldsCorrectnessTests
         public void ShouldContainKey_Should_Fail_when_not_true(int key1, string v1, int key2, string v2, int fail)
         {
             var uut = new Dictionary<int, string> {{key1, v1}, {key2, v2}};
-            Assert.Throws<Assertion>(() => uut.ShouldContainKey(fail), "Expected ShouldContainKey to fail");
+            Should.Throw<Assertion>(() => uut.ShouldContainKey(fail), "Expected ShouldContainKey to fail");
         }
 
         [TestCase(1, "1", 2, "2")]
         public void ShouldNotContainKey_Should_Fail_when_false(int key1, string v1, int key2, string v2)
         {
             var uut = new Dictionary<int, string> {{key1, v1}, {key2, v2}};
-            Assert.Throws<Assertion>(() => uut.ShouldNotContainKey(key1));
+            Should.Throw<Assertion>(() => uut.ShouldNotContainKey(key1));
         }
 
         [TestCase(1, "1", 2, "2", 3)]

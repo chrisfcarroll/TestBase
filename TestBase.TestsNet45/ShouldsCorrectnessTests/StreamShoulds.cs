@@ -15,8 +15,8 @@ namespace TestBase.TestsNet45.ShouldsCorrectnessTests
             using (var left = new MemoryStream(Encoding.UTF8.GetBytes("Hello there")))
             using (var right = new MemoryStream(Encoding.UTF8.GetBytes("Hello and Goodbye")))
             {
-                Assert.Throws<Assertion>(() => left.ShouldEqualByStreamContent(right));
-                Assert.Throws<Assertion>(() => left.ShouldHaveSameStreamContentAs(right));
+                Should.Throw<Assertion>(() => left.ShouldEqualByStreamContent(right));
+                Should.Throw<Assertion>(() => left.ShouldHaveSameStreamContentAs(right));
             }
         }
 
@@ -28,13 +28,13 @@ namespace TestBase.TestsNet45.ShouldsCorrectnessTests
             {
                 const int expectedMismatchPosition = 6;
 
-                var e = Assert.Throws<Assertion>(() => left.ShouldEqualByStreamContent(right));
+                var e = Should.Throw<Assertion>(() => left.ShouldEqualByStreamContent(right));
                 e.Message
                  .ShouldMatchIgnoringCase("(mismatch|differ)")
                  .ShouldMatchIgnoringCase($@"\b{expectedMismatchPosition}\b")
                  .ShouldMatchIgnoringCase("stream");
 
-                e = Assert.Throws<Assertion>(() => left.ShouldHaveSameStreamContentAs(right));
+                e = Should.Throw<Assertion>(() => left.ShouldHaveSameStreamContentAs(right));
                 e.Message
                  .ShouldMatchIgnoringCase("mismatch|differ")
                  .ShouldMatchIgnoringCase($@"\b{expectedMismatchPosition}\b")
@@ -51,13 +51,13 @@ namespace TestBase.TestsNet45.ShouldsCorrectnessTests
             using (var left = new MemoryStream(Encoding.UTF8.GetBytes(longtext + "Hello there")))
             using (var right = new MemoryStream(Encoding.UTF8.GetBytes(longtext + "Hello and Goodbye")))
             {
-                var e = Assert.Throws<Assertion>(() => left.ShouldEqualByStreamContent(right));
+                var e = Should.Throw<Assertion>(() => left.ShouldEqualByStreamContent(right));
                 e.Message
                  .ShouldMatchIgnoringCase("(mismatch|differ)")
                  .ShouldMatchIgnoringCase(@"\b2\d\d\d\b")
                  .ShouldMatchIgnoringCase("stream");
 
-                e = Assert.Throws<Assertion>(() => left.ShouldHaveSameStreamContentAs(right));
+                e = Should.Throw<Assertion>(() => left.ShouldHaveSameStreamContentAs(right));
                 e.Message
                  .ShouldMatchIgnoringCase("mismatch|differ")
                  .ShouldMatchIgnoringCase(@"\b2\d\d\d\b")

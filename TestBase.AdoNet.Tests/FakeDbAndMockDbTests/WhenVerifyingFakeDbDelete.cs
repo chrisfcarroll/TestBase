@@ -24,11 +24,11 @@ public class WhenVerifyingFakeDbDelete
 
                 conn.ShouldHaveDeleted("ATableName");
                 conn.ShouldHaveDeleted("ATableName", "Id", 111);
-                Assert.Throws<Assertion>(() => { conn.ShouldHaveDeleted("ATableName",     "Id",  222222); });
-                Assert.Throws<Assertion>(() => { conn.ShouldHaveDeleted("ATableName",     "Id2", 111); });
-                Assert.Throws<Assertion>(() => { conn.ShouldHaveDeleted("WrongTableName", "Id",  111); });
-                Assert.Throws<Assertion>(() => { conn.ShouldHaveInserted("ATableName", ""); });
-                Assert.Throws<Assertion>(() => { conn.ShouldHaveSelected("ATableName"); });
+                Should.Throw<Assertion>(() => { conn.ShouldHaveDeleted("ATableName",     "Id",  222222); });
+                Should.Throw<Assertion>(() => { conn.ShouldHaveDeleted("ATableName",     "Id2", 111); });
+                Should.Throw<Assertion>(() => { conn.ShouldHaveDeleted("WrongTableName", "Id",  111); });
+                Should.Throw<Assertion>(() => { conn.ShouldHaveInserted("ATableName", ""); });
+                Should.Throw<Assertion>(() => { conn.ShouldHaveSelected("ATableName"); });
             }
         }
 
@@ -52,11 +52,11 @@ public class WhenVerifyingFakeDbDelete
 
                 conn.ShouldHaveDeleted("ATableName");
                 conn.ShouldHaveDeleted("ATableName", "Id", 111);
-                Assert.Throws<Assertion>(() => { conn.ShouldHaveDeleted("ATableName",     "Id",  222222); });
-                Assert.Throws<Assertion>(() => { conn.ShouldHaveDeleted("ATableName",     "Id2", 111); });
-                Assert.Throws<Assertion>(() => { conn.ShouldHaveDeleted("WrongTableName", "Id",  111); });
-                Assert.Throws<Assertion>(() => { conn.ShouldHaveInserted("ATableName", ""); });
-                Assert.Throws<Assertion>(() => { conn.ShouldHaveSelected("ATableName"); });
+                Should.Throw<Assertion>(() => { conn.ShouldHaveDeleted("ATableName",     "Id",  222222); });
+                Should.Throw<Assertion>(() => { conn.ShouldHaveDeleted("ATableName",     "Id2", 111); });
+                Should.Throw<Assertion>(() => { conn.ShouldHaveDeleted("WrongTableName", "Id",  111); });
+                Should.Throw<Assertion>(() => { conn.ShouldHaveInserted("ATableName", ""); });
+                Should.Throw<Assertion>(() => { conn.ShouldHaveSelected("ATableName"); });
             }
         }
 }

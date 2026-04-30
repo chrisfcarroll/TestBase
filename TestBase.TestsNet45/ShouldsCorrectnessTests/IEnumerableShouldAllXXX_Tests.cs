@@ -68,7 +68,7 @@ namespace TestBase.TestsNet45.ShouldsCorrectnessTests
         [TestCase(new[] {1, 2, 3})]
         public void IEnumerable_ShouldAll_ShouldFail(int[] value)
         {
-            Assert.Throws<Assertion>(
+            Should.Throw<Assertion>(
                                      () => value.ShouldAll(i => { i.ShouldBeGreaterThan(2); })
                                     );
         }
@@ -79,7 +79,7 @@ namespace TestBase.TestsNet45.ShouldsCorrectnessTests
         [TestCase(new[] {1, 2, 3})]
         public void IEnumerable_ShouldAllBeSuchThat_ShouldFail(int[] value)
         {
-            Assert.Throws<Assertion>(
+            Should.Throw<Assertion>(
                                      () => value.ShouldAllBeSuchThat(i => i > 2)
                                     );
         }
@@ -93,7 +93,7 @@ namespace TestBase.TestsNet45.ShouldsCorrectnessTests
         [TestCase(new[] {1, 2, 3})]
         public void IEnumerable_ShouldAllSatisfy_ShouldFail(int[] value)
         {
-            Assert.Throws<Assertion>(
+            Should.Throw<Assertion>(
                                      () => value.ShouldAllSatisfy(i => i * 2, Is.GreaterThan(4))
                                     );
         }

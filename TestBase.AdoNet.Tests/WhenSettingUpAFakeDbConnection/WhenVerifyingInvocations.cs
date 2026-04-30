@@ -26,7 +26,7 @@ public class WhenVerifyingInvocations
                           .ShouldEqualByValue(fakeData);
 
             //A & A
-            var assertion = Assert.Throws<Assertion>(
+            var assertion = Should.Throw<Assertion>(
                                                      () => fakeConnection.Verify(x => x.Parameters["id"]
                                                                                        .Value.Equals(999),
                                                                                  1,
@@ -60,12 +60,12 @@ public class WhenVerifyingInvocations
             fakeConnection.Verify(x => x.Parameters["pname"].Value.ToString().StartsWith("pvalue"), 2, true);
             fakeConnection.Verify(x => x.CommandText == "FakeCommandText");
 
-            Assert.Throws<Assertion>(() => fakeConnection.Verify(x => x.Parameters["pname"].Value.Equals("pvalue"),
+            Should.Throw<Assertion>(() => fakeConnection.Verify(x => x.Parameters["pname"].Value.Equals("pvalue"),
                                                                  999,
                                                                  true))
                   .Message.ShouldMatch("called .* times.*");
 
-            Assert.Throws<Assertion>(() => fakeConnection.Verify(x => x.Parameters["pname"]
+            Should.Throw<Assertion>(() => fakeConnection.Verify(x => x.Parameters["pname"]
                                                                        .Value.ToString()
                                                                        .StartsWith("pvalue"),
                                                                  1,
@@ -73,12 +73,12 @@ public class WhenVerifyingInvocations
                   .Message.ShouldMatch("called .* times.*");
 
             var assertion =
-            Assert.Throws<Assertion>(() => fakeConnection.Verify(x => x.Parameters["pname"]
+            Should.Throw<Assertion>(() => fakeConnection.Verify(x => x.Parameters["pname"]
                                                                        .Value.Equals("wrongValue")));
             Console.WriteLine(assertion);
             assertion.Message.ShouldMatch("called .* times.*");
 
-            assertion = Assert.Throws<Assertion>(() => fakeConnection.Verify(x => x.CommandText == "WrongCommandText"));
+            assertion = Should.Throw<Assertion>(() => fakeConnection.Verify(x => x.CommandText == "WrongCommandText"));
             Console.WriteLine(assertion);
             assertion.Message.ShouldMatch("called .* times.*");
         }
@@ -102,11 +102,11 @@ public class WhenVerifyingInvocations
             fakeConnection.Verify(x => x.CommandText == "Query @id, @name");
 
             var assertion =
-            Assert.Throws<Assertion>(() => fakeConnection.Verify(x => x.Parameters["id"].Value.Equals(999)));
+            Should.Throw<Assertion>(() => fakeConnection.Verify(x => x.Parameters["id"].Value.Equals(999)));
             Console.WriteLine(assertion);
             assertion.Message.ShouldMatch("called .* times.*");
 
-            assertion = Assert.Throws<Assertion>(() => fakeConnection.Verify(x => x.CommandText == "WrongCommandText"));
+            assertion = Should.Throw<Assertion>(() => fakeConnection.Verify(x => x.CommandText == "WrongCommandText"));
             Console.WriteLine(assertion);
             assertion.Message.ShouldMatch("called .* times.*");
         }

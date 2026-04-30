@@ -22,11 +22,11 @@ public class BasicShould
     {
             var uut = new {a = 1, b = "two"};
 
-            Assert.Throws<Assertion>(() => uut.Should(u => u.a == 2));
-            Assert.Throws<Assertion>(() => uut.Should(u => u.b == "1"));
-            Assert.Throws<Assertion>(() => uut.Should(u => u.a.ShouldBe(2)));
-            Assert.Throws<Assertion>(() => uut.Should(u => u.a.ShouldBeGreaterThan(2)));
-            Assert.Throws<Assertion>(() =>
+            Should.Throw<Assertion>(() => uut.Should(u => u.a == 2));
+            Should.Throw<Assertion>(() => uut.Should(u => u.b == "1"));
+            Should.Throw<Assertion>(() => uut.Should(u => u.a.ShouldBe(2)));
+            Should.Throw<Assertion>(() => uut.Should(u => u.a.ShouldBeGreaterThan(2)));
+            Should.Throw<Assertion>(() =>
                                      new Dictionary<string, int>
                                      {
                                      {"a", 1},

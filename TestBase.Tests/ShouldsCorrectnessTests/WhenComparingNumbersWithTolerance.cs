@@ -23,8 +23,8 @@ class WhenComparingNumbersWithTolerance
     {
             var right1 = left + tolerance * 1.001d;
             var right2 = left - tolerance * 1.001d;
-            Assert.Throws<Assertion>(() => { left.ShouldEqualWithTolerance(right1, tolerance); });
-            Assert.Throws<Assertion>(() => { left.ShouldEqualWithTolerance(right2, tolerance); });
+            Should.Throw<Assertion>(() => { left.ShouldEqualWithTolerance(right1, tolerance); });
+            Should.Throw<Assertion>(() => { left.ShouldEqualWithTolerance(right2, tolerance); });
         }
 
     [TestCase(1d,      1e-13d)]
@@ -47,8 +47,8 @@ class WhenComparingNumbersWithTolerance
     {
             var right1 = left + tolerance * 0.999999999999d;
             var right2 = left - tolerance * 0.999999999999d;
-            Assert.Throws<Assertion>(() => { left.ShouldNotEqualWithMargin(right1, tolerance); });
-            Assert.Throws<Assertion>(() => { left.ShouldNotEqualWithMargin(right2, tolerance); });
+            Should.Throw<Assertion>(() => { left.ShouldNotEqualWithMargin(right1, tolerance); });
+            Should.Throw<Assertion>(() => { left.ShouldNotEqualWithMargin(right2, tolerance); });
         }
 
     [TestCase(1d,      1e-14d)]
@@ -75,8 +75,8 @@ class WhenComparingNumbersWithTolerance
             var right = actual - tolerance * 1.001d;
             var left  = actual + tolerance * 1.001d;
 
-            Assert.Throws<Assertion>(() => right.ShouldBeGreaterThanOrEqualToWithTolerance(actual, tolerance));
-            Assert.Throws<Assertion>(() => actual.ShouldBeGreaterThanOrEqualToWithTolerance(left, tolerance));
+            Should.Throw<Assertion>(() => right.ShouldBeGreaterThanOrEqualToWithTolerance(actual, tolerance));
+            Should.Throw<Assertion>(() => actual.ShouldBeGreaterThanOrEqualToWithTolerance(left, tolerance));
         }
 
     [TestCase(1d,      1e-14d)]
@@ -103,7 +103,7 @@ class WhenComparingNumbersWithTolerance
             var right = actual - tolerance * 1.001d;
             var left  = actual + tolerance * 1.001d;
 
-            Assert.Throws<Assertion>(() => actual.ShouldBeLessThanOrEqualToWithTolerance(right, tolerance));
-            Assert.Throws<Assertion>(() => left.ShouldBeLessThanOrEqualToWithTolerance(actual, tolerance));
+            Should.Throw<Assertion>(() => actual.ShouldBeLessThanOrEqualToWithTolerance(right, tolerance));
+            Should.Throw<Assertion>(() => left.ShouldBeLessThanOrEqualToWithTolerance(actual, tolerance));
         }
 }

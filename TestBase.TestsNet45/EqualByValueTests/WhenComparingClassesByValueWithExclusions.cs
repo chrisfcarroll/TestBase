@@ -37,7 +37,7 @@ namespace TestBase.TestsNet45.EqualByValueTests
         {
             var result = Comparer.MemberCompare(A11Evenmore1, A11Evenmore2, new List<string> {"IrrelevantExclusion"});
             ((bool) result).ShouldEqual(false);
-            Assert.Throws<Assertion>(() => A11Evenmore1.ShouldEqualByValueExceptFor(A11Evenmore2,
+            Should.Throw<Assertion>(() => A11Evenmore1.ShouldEqualByValueExceptFor(A11Evenmore2,
                                                                                     new List<string>
                                                                                     {"IrrelevantExclusion"}));
         }
@@ -57,7 +57,7 @@ namespace TestBase.TestsNet45.EqualByValueTests
         {
             var result = Comparer.MemberCompare(A11Evenmore1, A11Evenmore2, new List<string> {"IrrelevantExclusion"});
             ((bool) result).ShouldEqual(false);
-            Assert.Throws<Assertion>(() => A11Evenmore1.ShouldEqualByValueExceptFor(A11Evenmore2,
+            Should.Throw<Assertion>(() => A11Evenmore1.ShouldEqualByValueExceptFor(A11Evenmore2,
                                                                                     new List<string>
                                                                                     {"IrrelevantExclusion"}));
         }

@@ -34,7 +34,7 @@ public class KnownTestRunnerAssertionsTests
     {
         var assertion = new Assertion("thrown message");
 
-        var ex = Assert.Throws<NUnit.Framework.AssertionException>(
+        var ex = NUnit.Framework.Assert.Throws<NUnit.Framework.AssertionException>(
             () => KnownTestRunnerAssertions.Throw(assertion));
 
         ex.Message.ShouldContain("thrown message");

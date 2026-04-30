@@ -33,37 +33,37 @@ namespace TestBase.TestsNet45.FakeDbAndMockDbTests
                 conn.ShouldHaveUpdated("ATableName", source,                               "Id");
                 conn.ShouldHaveUpdated("ATableName", new AClass {Name = "Boo1", Id = 111}, "Id");
                 conn.ShouldHaveUpdated("ATableName", new[] {"Name"},                       "Id", 111);
-                Assert.Throws<Assertion>(() =>
+                Should.Throw<Assertion>(() =>
                                          {
                                              conn.ShouldHaveUpdated("ATableName",
                                                                     new BClass {More = 111, EvenMore = ""},
                                                                     "Id");
                                          });
-                Assert.Throws<Assertion>(() =>
+                Should.Throw<Assertion>(() =>
                                          {
                                              conn.ShouldHaveUpdated("ATableName",
                                                                     new AClass {Name = "Boo1", Id = 222},
                                                                     "Id");
                                          });
-                Assert.Throws<Assertion>(() =>
+                Should.Throw<Assertion>(() =>
                                          {
                                              conn.ShouldHaveUpdated("ATableName", new[] {"Col1", "Id"}, "Id", 22222);
                                          });
-                Assert.Throws<Assertion>(() =>
+                Should.Throw<Assertion>(() =>
                                          {
                                              conn.ShouldHaveUpdated("ATableName",
                                                                     new {Col1 = "WrongValue", Col2 = "Boo2"},
                                                                     "Id");
                                          });
-                Assert.Throws<Assertion>(() =>
+                Should.Throw<Assertion>(() =>
                                          {
                                              conn.ShouldHaveUpdated("WrongTableName",
                                                                     new {Col1 = "Boo1", Id = 111},
                                                                     "Id");
                                          });
-                Assert.Throws<Assertion>(() => { conn.ShouldHaveInserted("ATableName", ""); });
-                Assert.Throws<Assertion>(() => { conn.ShouldHaveSelected("ATableName"); });
-                Assert.Throws<Assertion>(() => { conn.ShouldHaveDeleted("ATableName"); });
+                Should.Throw<Assertion>(() => { conn.ShouldHaveInserted("ATableName", ""); });
+                Should.Throw<Assertion>(() => { conn.ShouldHaveSelected("ATableName"); });
+                Should.Throw<Assertion>(() => { conn.ShouldHaveDeleted("ATableName"); });
             }
         }
 
@@ -94,37 +94,37 @@ namespace TestBase.TestsNet45.FakeDbAndMockDbTests
                 conn.ShouldHaveUpdated("ATableName", source,                               "Id");
                 conn.ShouldHaveUpdated("ATableName", new AClass {Name = "Boo1", Id = 111}, "Id");
                 conn.ShouldHaveUpdated("ATableName", new[] {"Name"},                       "Id", 111);
-                Assert.Throws<Assertion>(() =>
+                Should.Throw<Assertion>(() =>
                                          {
                                              conn.ShouldHaveUpdated("ATableName",
                                                                     new BClass {More = 111, EvenMore = ""},
                                                                     "Id");
                                          });
-                Assert.Throws<Assertion>(() =>
+                Should.Throw<Assertion>(() =>
                                          {
                                              conn.ShouldHaveUpdated("ATableName",
                                                                     new AClass {Name = "Boo1", Id = 222},
                                                                     "Id");
                                          });
-                Assert.Throws<Assertion>(() =>
+                Should.Throw<Assertion>(() =>
                                          {
                                              conn.ShouldHaveUpdated("ATableName", new[] {"Col1", "Id"}, "Id", 22222);
                                          });
-                Assert.Throws<Assertion>(() =>
+                Should.Throw<Assertion>(() =>
                                          {
                                              conn.ShouldHaveUpdated("ATableName",
                                                                     new {Col1 = "WrongValue", Col2 = "Boo2"},
                                                                     "Id");
                                          });
-                Assert.Throws<Assertion>(() =>
+                Should.Throw<Assertion>(() =>
                                          {
                                              conn.ShouldHaveUpdated("WrongTableName",
                                                                     new {Col1 = "Boo1", Id = 111},
                                                                     "Id");
                                          });
-                Assert.Throws<Assertion>(() => { conn.ShouldHaveInserted("ATableName", ""); });
-                Assert.Throws<Assertion>(() => { conn.ShouldHaveSelected("ATableName"); });
-                Assert.Throws<Assertion>(() => { conn.ShouldHaveDeleted("ATableName"); });
+                Should.Throw<Assertion>(() => { conn.ShouldHaveInserted("ATableName", ""); });
+                Should.Throw<Assertion>(() => { conn.ShouldHaveSelected("ATableName"); });
+                Should.Throw<Assertion>(() => { conn.ShouldHaveDeleted("ATableName"); });
             }
         }
     }

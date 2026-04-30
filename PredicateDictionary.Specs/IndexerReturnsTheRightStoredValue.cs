@@ -60,7 +60,7 @@ namespace PredicateDictionary.Specs
             pdict[42].ShouldBe("bingo");
             pdict[0].ShouldBe("No points");
             pdict[-1234].ShouldBe("Don't go there");
-            Assert.Throws<KeyNotFoundException>(() => pdict[101] = pdict[101]);
+            Should.Throw<KeyNotFoundException>(() => pdict[101] = pdict[101]);
         }
     }
 }
