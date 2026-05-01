@@ -1,7 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard1.6;net45</TargetFrameworks>
+    <TargetFrameworks>netstandard1.6;netstandard2.0;netstandard2.1;net45</TargetFrameworks>
+    <NoWarn Label="netstandard1.x is no longer recommended">NETSDK1215</NoWarn>
     <AssemblyVersion>4.2.0</AssemblyVersion>
     <AssemblyFileVersion>4.2.0</AssemblyFileVersion>
     <PackageVersion>4.2.0</PackageVersion>
@@ -138,7 +139,7 @@ See also
     <DefineConstants>NETSTANDARD</DefineConstants>
   </PropertyGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.6' ">
+  <ItemGroup Condition=" $([System.Text.RegularExpressions.Regex]::IsMatch( '$(TargetFramework)', 'netstandard.+' )) ">
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
