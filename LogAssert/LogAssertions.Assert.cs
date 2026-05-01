@@ -24,6 +24,42 @@ public static partial class LogAssertions
                      StateNameIfHelpful(action, stateName),
                      loggableState ?? string.Empty);
     }
+    
+    /// <summary>
+    /// If <paramref name="precondition"/> is false, log at <see cref="LogLevel.Error"/>.
+    /// </summary>
+    public static void PreCondition(this ILogger log,
+                                    bool precondition,
+                                    object? loggableState = null,
+                                    [CallerMemberName] string action = "",
+                                    [CallerArgumentExpression("precondition")] string? assertionExpression = "",
+                                    [CallerArgumentExpression("loggableState")] string? stateName = "")
+    {
+        if (precondition) return;
+        log.LogError("{Action}:PreConditionFailed:{Assertion}:{StateName}{LoggableState}",
+                     action,
+                     assertionExpression,
+                     StateNameIfHelpful(action, stateName),
+                     loggableState ?? string.Empty);
+    }    
+    /// <summary>
+    /// If <paramref name="postcondition"/> is false, log at <see cref="LogLevel.Error"/>.
+    /// </summary>
+    public static void PostCondition(this ILogger log,
+                                    bool postcondition,
+                                    object? loggableState = null,
+                                    [CallerMemberName] string action = "",
+                                    [CallerArgumentExpression("postcondition")] string? assertionExpression = "",
+                                    [CallerArgumentExpression("loggableState")] string? stateName = "")
+    {
+        if (postcondition) return;
+        log.LogError("{Action}:PostConditionFailed:{Assertion}:{StateName}{LoggableState}",
+                     action,
+                     assertionExpression,
+                     StateNameIfHelpful(action, stateName),
+                     loggableState ?? string.Empty);
+    }    
+    
 
     /// <summary>
     /// Log an error if <paramref name="it"/> is null.
@@ -37,9 +73,9 @@ public static partial class LogAssertions
                                         [CallerArgumentExpression("it")] string? expr = null)
     {
         log.LogErrorIf(it is null, loggableState.ToLoggableState()?.ToString() ?? ($"{expr} is null"));
-#pragma warning disable CS8777
+        #pragma warning disable CS8777
         return it is not null;
-#pragma warning restore CS8777
+        #pragma warning restore CS8777
     }
 
     // ── LogAndThrowIfNot ────────────────────────────────────────────────

@@ -1,5 +1,4 @@
 using System.Diagnostics.CodeAnalysis;
-using System.Runtime.CompilerServices;
 using Microsoft.Extensions.Logging;
 
 namespace LogAssert;
@@ -38,7 +37,7 @@ public static partial class LogAssertions
     /// </summary>
     [DoesNotReturn]
     public static void LogExceptionThenThrow(this ILogger log,
-                                             Exception exception,
+                                             Exception? exception,
                                              params object[] args)
     {
         exception ??= new Exception(message: "Tried to log a null exception");
@@ -52,7 +51,7 @@ public static partial class LogAssertions
     /// </summary>
     [DoesNotReturn]
     public static void LogExceptionThenThrow(this ILogger log,
-                                             Exception exception,
+                                             Exception? exception,
                                              string? msg = null,
                                              params object[] args)
     {
@@ -64,7 +63,7 @@ public static partial class LogAssertions
     /// <summary>Log <paramref name="exception" /> and then <see cref="Environment.Exit" /> the current Process.</summary>
     [DoesNotReturn]
     public static void LogExceptionThenSystemExitProcessWithCode(this ILogger log,
-                                                                 Exception exception,
+                                                                 Exception? exception,
                                                                  int exitCode,
                                                                  params object[] args)
     {
@@ -97,7 +96,7 @@ public static partial class LogAssertions
 
     internal static string PoorFormat(string message, object?[] args)
     {
-        return args == null
+        return args == null || args.Length==0
             ? message ?? ""
             : $"{message} args={string.Join(separator: ",", values: args.Select(a => a?.ToString()))}";
     }
