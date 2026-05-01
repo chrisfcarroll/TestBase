@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard1.3;net45</TargetFrameworks>
+    <NoWarn Label="netstandard1.x is no longer recommended">NETSDK1215</NoWarn>
     <RootNamespace>Serilog.Sinks.ListOfString</RootNamespace>
     <AssemblyVersion>4.1.4.3</AssemblyVersion>
     <AssemblyFileVersion>4.1.4.3</AssemblyFileVersion>
