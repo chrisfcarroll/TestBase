@@ -217,7 +217,7 @@ namespace TestBase
                 throw That(ex, e => e is TE, $"Expected to throw a {typeof(TE)} but threw {ex}");
             }
 
-            throw new ShouldHaveThrownException(action.ToString());
+            throw new ShouldHaveThrownException(action.ToString()).ForActiveTestRunner();
         }
 
         /// <summary>
@@ -251,7 +251,7 @@ namespace TestBase
                 Exception ex) when (ex.InnerException is TE) { return actual; } catch (
                 Exception ex) { throw That(ex, e => e is TE, $"Expected to throw a {typeof(TE)} but threw {ex}"); }
 
-            throw new ShouldHaveThrownException(a.Message);
+            throw new ShouldHaveThrownException(a.Message).ForActiveTestRunner();
         }
 
         /// <summary>
@@ -274,7 +274,7 @@ namespace TestBase
         {
             try { action.Compile(); } catch (Exception ex)
             {
-                throw ShouldNotThrowException.For(action, $"Threw {ex} but expected not to throw.", commentArgs);
+                throw ShouldNotThrowException.For(action, $"Threw {ex} but expected not to throw.", commentArgs).ForActiveTestRunner();
             }
 
             return action;
@@ -302,7 +302,7 @@ namespace TestBase
     /// <summary>
     ///     An Exception indicating that an Exception was expected but was not thrown.
     /// </summary>
-    public class ShouldHaveThrownException : Exception
+    public class ShouldHaveThrownException : Assertion
     {
         /// <summary>Creates a new <see cref="ShouldHaveThrownException" /> with message <paramref name="message" /></summary>
         /// <param name="message"></param>

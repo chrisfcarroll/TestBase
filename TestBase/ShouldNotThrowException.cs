@@ -7,7 +7,7 @@ namespace TestBase
     /// <summary>
     ///     A type of Exception thrown when <see cref="Assert.DoesNotThrow" /> finds that an Assertion <em>was</em> thrown.
     /// </summary>
-    public class ShouldNotThrowException : Exception
+    public class ShouldNotThrowException : Assertion
     {
         /// <summary>Creates a new <see cref="ShouldNotThrowException" /> with message <paramref name="message" /></summary>
         /// <param name="message"></param>
