@@ -5,6 +5,9 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
+#if NET6_0_OR_GREATER
+using TooString;
+#endif
 
 namespace TestBase
 {
@@ -23,8 +26,20 @@ namespace TestBase
                                       [CallerArgumentExpression("actual")] string actualExpression = null)
         {
             var comment = message != null && args?.Length > 0 ? string.Format(message, args) : message;
+            string actualStr;
+#if NET6_0_OR_GREATER
+            if (actual is IEnumerable && actual is not string)
+            {
+                try { actualStr = actual.TooString(maxDepth: 2, maxEnumerableLength: 3, writeIndented: false); }
+                catch { actualStr = actual?.ToString() ?? "null"; }
+            }
+            else
+#endif
+            {
+                actualStr = actual?.ToString() ?? "null";
+            }
             throw new Assertion<T>(
-                actual?.ToString() ?? "null",
+                actualStr,
                 actualExpression,
                 assertionName,
                 assertedDetail,

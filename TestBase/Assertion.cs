@@ -72,7 +72,7 @@ namespace TestBase
                     },
                     { StringifyMethod.InheritedToString, o => o.ToString() },
 #if NET6_0_OR_GREATER                    
-                    { StringifyMethod.TooString, o => o.TooString(maxDepth: 1, maxEnumerableLength: 3) },
+                    { StringifyMethod.TooString, o => o.TooString(maxDepth: 2, maxEnumerableLength: 3) },
 #else
                     { StringifyMethod.TooString, o => o.TooString() },
 #endif

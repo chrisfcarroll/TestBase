@@ -7,6 +7,9 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using ExpressionToCodeLib;
+#if NET6_0_OR_GREATER
+using TooString;
+#endif
 
 // ReSharper disable InconsistentNaming
 
@@ -23,9 +26,7 @@ namespace TestBase
                                                 [CallerArgumentExpression("actual")] string actualExpression = null)
         {
             var comment = message != null && args?.Length > 0 ? string.Format(message, args) : message;
-            string actualStr;
-            try { actualStr = actual != null ? $"[{string.Join(", ", actual)}]" : "null"; }
-            catch { actualStr = actual?.ToString() ?? "null"; }
+            var actualStr = EnumerableToString(actual);
             throw new Assertion<IEnumerable<T>>(
                 actualStr,
                 actualExpression,
@@ -40,12 +41,31 @@ namespace TestBase
         {
             var comment = message != null && args?.Length > 0 ? string.Format(message, args) : message;
             throw new Assertion<IEnumerable>(
-                actual?.ToString() ?? "null",
+                EnumerableToString(actual),
                 actualExpression,
                 assertionName,
                 assertedDetail,
                 comment,
                 false).ForActiveTestRunner();
+        }
+
+        static string EnumerableToString(object value)
+        {
+            if (value == null) return "null";
+#if NET6_0_OR_GREATER
+            try { return value.TooString(maxDepth: 2, maxEnumerableLength: 3, writeIndented: false); }
+            catch { return value.ToString(); }
+#else
+            return value.ToString();
+#endif
+        }
+
+        static string ItemToString<T>(T value)
+        {
+            if (value == null) return "null";
+            if (value is IEnumerable && !(value is string))
+                return EnumerableToString(value);
+            return value.ToString();
         }
 
         /// <summary>Asserts that <paramref name="actual" /> contains an element satisfying <paramref name="predicate" /></summary>
@@ -97,7 +117,7 @@ namespace TestBase
         {
             if (!actual.Any(i => i.Equals(expectedItem)))
                 ThrowCollectionAssertion(actual, nameof(ShouldContain),
-                    $"Expected: collection containing {expectedItem}", comment, args);
+                    $"Expected: collection containing {ItemToString(expectedItem)}", comment, args);
             return actual;
         }
 
@@ -116,7 +136,7 @@ namespace TestBase
         {
             if (actual.Any(i => i.Equals(unexpectedItem)))
                 ThrowCollectionAssertion(actual, nameof(ShouldNotContain),
-                    $"Expected: collection not containing {unexpectedItem}", comment, args);
+                    $"Expected: collection not containing {ItemToString(unexpectedItem)}", comment, args);
             return actual;
         }
 
@@ -332,7 +352,7 @@ namespace TestBase
             {
                 var comment = message != null && args?.Length > 0 ? string.Format(message, args) : message;
                 throw new Assertion<IDictionary<TKey, TValue>>(
-                    actual?.ToString() ?? "null",
+                    EnumerableToString(actual),
                     null,
                     nameof(ShouldContainKey),
                     $"Expected: dictionary containing key \"{key}\"",
@@ -356,7 +376,7 @@ namespace TestBase
             {
                 var comment = message != null && args?.Length > 0 ? string.Format(message, args) : message;
                 throw new Assertion<IDictionary<TKey, TValue>>(
-                    actual?.ToString() ?? "null",
+                    EnumerableToString(actual),
                     null,
                     nameof(ShouldNotContainKey),
                     $"Expected: dictionary not containing key \"{key}\"",
@@ -386,7 +406,7 @@ namespace TestBase
             foreach (var item in subset)
                 if (!actual.Contains(item))
                     ThrowCollectionAssertion(actual, nameof(ShouldContainEachItemOf),
-                        $"Expected: collection containing {item}", message, args);
+                        $"Expected: collection containing {ItemToString(item)}", message, args);
             return actual;
         }
 
@@ -403,7 +423,7 @@ namespace TestBase
             foreach (var item in subset)
                 if (!actual.Contains(item))
                     ThrowCollectionAssertion(actual, nameof(ShouldContainEachOf),
-                        $"Expected: collection containing {item}", message, args);
+                        $"Expected: collection containing {ItemToString(item)}", message, args);
             return actual;
         }
 

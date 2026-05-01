@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+#if NET6_0_OR_GREATER
+using TooString;
+#endif
 
 // ReSharper disable InconsistentNaming
 
@@ -17,8 +20,15 @@ namespace TestBase
                                                            [CallerArgumentExpression("actual")] string actualExpression = null)
         {
             var comment = message != null && args?.Length > 0 ? string.Format(message, args) : message;
+            string actualStr;
+#if NET6_0_OR_GREATER
+            try { actualStr = actual != null ? actual.TooString(maxDepth: 2, maxEnumerableLength: 3, writeIndented: false) : "null"; }
+            catch { actualStr = actual?.ToString() ?? "null"; }
+#else
+            actualStr = actual?.ToString() ?? "null";
+#endif
             throw new Assertion<IDictionary<TKey, TValue>>(
-                actual?.ToString() ?? "null",
+                actualStr,
                 actualExpression,
                 assertionName,
                 assertedDetail,
