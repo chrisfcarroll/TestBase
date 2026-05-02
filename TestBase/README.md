@@ -60,6 +60,13 @@ value
 .ShouldNotBe()
 .ShouldBeOfType()
 .ShouldBeAssignableTo() ...
+
+Should.Throw();
+Should.NotThrow();
+
+Inconclusive.Because()
+Inconclusive.IfPreConditionFails()
+Inconclusive.If()
 ```
 
 TestBase.HttpClient.Fake

@@ -63,7 +63,7 @@ public class KnownTestRunnerAssertionsTests
     public void SkipBecause_ShouldThrowNUnitInconclusiveException()
     {
         var ex = NUnit.Framework.Assert.Throws<NUnit.Framework.InconclusiveException>(
-            () => Skip.Because("not ready yet"));
+            () => Inconclusive.Because("not ready yet"));
 
         ex.Message.ShouldContain("not ready yet");
     }
@@ -72,7 +72,7 @@ public class KnownTestRunnerAssertionsTests
     public void SkipBecause_ShouldFormatMessageArgs()
     {
         var ex = NUnit.Framework.Assert.Throws<NUnit.Framework.InconclusiveException>(
-            () => Skip.Because("missing {0}", "dependency"));
+            () => Inconclusive.Because("missing {0}", "dependency"));
 
         ex.Message.ShouldContain("missing dependency");
     }
@@ -80,7 +80,7 @@ public class KnownTestRunnerAssertionsTests
     [Test]
     public void SkipIfPreconditionFails_ShouldReturnActual_WhenPreconditionHolds()
     {
-        var result = Skip.IfPreconditionFails(42, x => x > 0);
+        var result = Inconclusive.IfPreconditionFails(42, x => x > 0);
 
         result.ShouldBe(42);
     }
@@ -89,13 +89,13 @@ public class KnownTestRunnerAssertionsTests
     public void SkipIfPreconditionFails_ShouldThrowInconclusive_WhenPreconditionFails()
     {
         NUnit.Framework.Assert.Throws<NUnit.Framework.InconclusiveException>(
-            () => Skip.IfPreconditionFails(0, x => x > 0));
+            () => Inconclusive.IfPreconditionFails(0, x => x > 0));
     }
 
     [Test]
     public void SkipIf_ShouldReturnActual_WhenPreconditionHolds()
     {
-        var result = Skip.If(42, x => x > 0);
+        var result = Inconclusive.If(42, x => x > 0);
 
         result.ShouldBe(42);
     }
@@ -104,6 +104,6 @@ public class KnownTestRunnerAssertionsTests
     public void SkipIf_ShouldThrowInconclusive_WhenPreconditionFails()
     {
         NUnit.Framework.Assert.Throws<NUnit.Framework.InconclusiveException>(
-            () => Skip.If(0, x => x > 0));
+            () => Inconclusive.If(0, x => x > 0));
     }
 }

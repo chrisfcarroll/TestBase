@@ -9,10 +9,10 @@ namespace TestBase
     ///     inconclusive/skip exception (NUnit InconclusiveException, xUnit SkipException,
     ///     MSTest AssertInconclusiveException).
     /// </summary>
-    public static class Skip
+    public static class Inconclusive
     {
         /// <summary>
-        ///     Throws the active test runner's skip/inconclusive exception with the given message.
+        ///     Throws the active test runner's Inconclusive or Skip Exception with the given message.
         /// </summary>
         #if NET6_0_OR_GREATER
         [StackTraceHidden]
@@ -27,7 +27,7 @@ namespace TestBase
 
         /// <summary>
         ///     If <paramref name="predicate"/>(<paramref name="actual"/>) evaluates to false,
-        ///     the test is skipped (inconclusive) instead of failed.
+        ///     the test is inconclusive (or skipped) instead of failed.
         ///     Returns <paramref name="actual"/> if the precondition holds.
         /// </summary>
         #if NET6_0_OR_GREATER
@@ -49,7 +49,7 @@ namespace TestBase
 
         /// <summary>
         ///     If <paramref name="predicate"/>(<paramref name="actual"/>) evaluates to false,
-        ///     the test is skipped (inconclusive) instead of failed.
+        ///     the test is inconclusive (or skipped) instead of failed.
         ///     Returns <paramref name="actual"/> if the precondition holds.
         /// </summary>
         #if NET6_0_OR_GREATER
@@ -67,7 +67,7 @@ namespace TestBase
         }
 
         /// <summary>
-        ///     If <paramref name="actual"/> evaluates to false, the test is skipped (inconclusive).
+        ///     If <paramref name="actual"/> evaluates to false, the test is inconclusive (or skipped).
         ///     Returns the <see cref="Precondition{T}"/> if it holds.
         /// </summary>
         #if NET6_0_OR_GREATER
@@ -87,7 +87,7 @@ namespace TestBase
         }
 
         /// <summary>
-        ///     If <paramref name="actual"/> evaluates to false, the test is skipped (inconclusive).
+        ///     If <paramref name="actual"/> evaluates to false, the test is inconclusive (or skipped).
         ///     Returns the <see cref="Precondition{T}"/> if it holds.
         /// </summary>
         #if NET6_0_OR_GREATER
