@@ -136,7 +136,7 @@ namespace TestBase
             string                    comment = null,
             params object[]           commentArgs)
         {
-            return Skip.IfPreconditionFails(actual, predicate, comment, commentArgs);
+            return Inconclusive.IfPreconditionFails(actual, predicate, comment, commentArgs);
         }
 
         /// <summary>
@@ -180,7 +180,7 @@ namespace TestBase
             string          comment = null,
             params object[] commentArgs)
         {
-            return Skip.IfPreconditionFails(actual, comment, commentArgs);
+            return Inconclusive.IfPreconditionFails(actual, comment, commentArgs);
         }
 
         /// <summary>

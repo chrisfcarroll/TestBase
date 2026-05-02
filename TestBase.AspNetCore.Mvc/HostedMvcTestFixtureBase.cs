@@ -150,7 +150,7 @@ namespace TestBase
             string          headerName,
             params string[] headerValues)
         {
-            Skip.IfPreconditionFails(headerValues, x => x != null && x.Length > 0);
+            Inconclusive.IfPreconditionFails(headerValues, x => x != null && x.Length > 0);
 
             foreach (var headerValue in headerValues) httpClient.DefaultRequestHeaders.Add(headerName, headerValue);
 

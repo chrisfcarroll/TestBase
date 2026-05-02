@@ -71,6 +71,13 @@ value
 .ShouldNotBe()
 .ShouldBeOfType()
 .ShouldBeAssignableTo() ...
+
+Should.Throw();
+Should.NotThrow();
+
+Inconclusive.Because()
+Inconclusive.IfPreConditionFails()
+Inconclusive.If()
 ```
 
 Testable Logging is in packages Extensions.Logging.ListOfString and Serilog.Sinks.ListOfString
@@ -87,6 +94,8 @@ Serilog.Logger slogger= new LoggerConfiguration().WriteTo.StringList(log).Create
     <PackageReleaseNotes>
       ChangeLog
       ---------
+      5.3.x&#x2008;&#x2007; Add Should.__() instead of Assert.__().
+      &#x2007;&#x2008;&#x2007;&#x2008;&#x2007;&#x2008;&#x2007; Add Inconclusive.__() methods which throw an Inconclusive (or Skip) Exception.
       5.2.x&#x2008;&#x2007; Recognise NUnit, MSTest, xUnit and throw framework-specific exceptions.
       &#x2007;&#x2008;&#x2007;&#x2008;&#x2007;&#x2008;&#x2007; Use StackTraceHidden on methods that throw.
       5.1.x&#x2008;&#x2007; TooString updates.
