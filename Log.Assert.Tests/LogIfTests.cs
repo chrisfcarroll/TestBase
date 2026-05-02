@@ -94,14 +94,23 @@ public class LogIfTests
         NUnit.Framework.Assert.That(log.Entries, Is.Empty);
     }
 
-    // ── Information (via If) ────────────────────────────────────────────
+    // ── InformationIf ─────────────────────────────────────────────────
 
     [Test]
-    public void If_WhenTrue_LogsAtInformation()
+    public void InformationIf_WhenTrue_LogsAtInformation()
     {
-        log.If(true, "info state");
+        var result = log.InformationIf(true, "info state");
 
+        NUnit.Framework.Assert.That(result, Is.True);
         NUnit.Framework.Assert.That(log.Last.Level, Is.EqualTo(LogLevel.Information));
+        NUnit.Framework.Assert.That(log.Last.Message, Does.Contain("info state"));
+    }
+
+    [Test]
+    public void InformationIf_WhenFalse_DoesNotLog()
+    {
+        NUnit.Framework.Assert.That(log.InformationIf(false, "x"), Is.False);
+        NUnit.Framework.Assert.That(log.Entries, Is.Empty);
     }
 
     // ── DebugIf ─────────────────────────────────────────────────────────
