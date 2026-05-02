@@ -3,9 +3,9 @@
     <TargetFrameworks>net10.0;net8.0;net6.0;net5.0;net45;netstandard2.1;netstandard2.0;netstandard1.6</TargetFrameworks>
     <NoWarn Label="netstandard1.x is no longer recommended">NETSDK1215</NoWarn>
     <NoWarn>1591;1701;1702;1705;NU1701</NoWarn>
-    <AssemblyVersion>5.2</AssemblyVersion>
-    <AssemblyFileVersion>5.2</AssemblyFileVersion>
-    <PackageVersion>5.2-preview2</PackageVersion>
+    <AssemblyVersion>5.3</AssemblyVersion>
+    <AssemblyFileVersion>5.3</AssemblyFileVersion>
+    <PackageVersion>5.3-preview</PackageVersion>
     <LangVersion Condition=" $([System.Text.RegularExpressions.Regex]::IsMatch( '$(TargetFramework)', 'net[45].+|netstandard.+' )) ">10</LangVersion>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Title>TestBase – Rich, fluent assertions and tools for testing with heavyweight dependencies: AspNetCore, AdoNet, HttpClient, AspNet.Mvc, Streams, Logging</Title>
