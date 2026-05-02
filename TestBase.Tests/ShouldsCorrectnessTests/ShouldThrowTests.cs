@@ -99,6 +99,60 @@ public class ShouldThrowAsyncTests
             () => Should.Throw(Task.FromResult(0)));
     }
 
+    // -- NotThrow(Func<Task>) blocking --
+
+    [Test]
+    public void NotThrow_FuncTask_PassesWhenNoException()
+    {
+        Should.NotThrow(async () => await Task.FromResult(0));
+    }
+
+    [Test]
+    public void NotThrow_FuncTask_ThrowsShouldNotThrowOnException()
+    {
+        try
+        {
+            Should.NotThrow(() => throw new Exception("sync lambda"));
+            NUnit.Framework.Assert.Fail("Expected ShouldNotThrowException");
+        }
+        catch (Exception ex)
+        {
+            var inner = ex is ShouldNotThrowException ? ex : ex.InnerException;
+            inner.ShouldBeAssignableTo<ShouldNotThrowException>();
+            inner.Message.ShouldContain("sync lambda");
+        }
+    }
+
+    // -- NotThrow(Task) blocking --
+
+    [Test]
+    public void NotThrow_Task_PassesWhenNoException()
+    {
+        Should.NotThrow(Task.FromResult(0));
+    }
+
+    [Test]
+    public void NotThrow_Task_ThrowsShouldNotThrowOnException()
+    {
+        static async Task Faulted()
+        {
+            await Task.Yield();
+            throw new InvalidOperationException("blocking task notthrow");
+        }
+
+        try
+        {
+            Should.NotThrow(Faulted());
+            NUnit.Framework.Assert.Fail("Expected ShouldNotThrowException");
+        }
+        catch (Exception ex)
+        {
+            var inner = ex is ShouldNotThrowException ? ex : ex.InnerException;
+            inner.ShouldBeAssignableTo<ShouldNotThrowException>();
+            inner.Message.ShouldContain("blocking task notthrow");
+        }
+    }
+
     // -- NotThrowAsync(Func<Task>) --
 
     [Test]
