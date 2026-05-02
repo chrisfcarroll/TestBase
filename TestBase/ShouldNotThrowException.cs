@@ -31,11 +31,10 @@ namespace TestBase
         /// <param name="args"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static ShouldNotThrowException For<T>(
-            T                         actual,
-            Expression<Func<T, bool>> predicate,
-            string                    comment = null,
-            params object[]           args)
+        public static ShouldNotThrowException For<T>(T                         actual,
+                                                     Expression<Func<T, bool>> predicate,
+                                                     string                    comment = null,
+                                                     params object[]           args)
         {
             return new ShouldNotThrowException(new Assertion<T>(actual, predicate, comment, args).Message);
         }
