@@ -32,7 +32,7 @@ public static class LogConditionally
     ///     Optional: a label to describe <paramref name="helpfulInformation"/>. Will be logged
     ///     under the property name "Label".
     /// </param>
-    public static bool LogIf(this ILogger log,
+    public static bool If(this ILogger log,
                              bool condition,
                              object? helpfulInformation = null,
                              LogLevel logLevel = LogLevel.Information,
@@ -73,7 +73,7 @@ public static class LogConditionally
     /// Optional: a label to describe <paramref name="helpfulInformation"/>. Will be logged
     /// under the property name "Label".
     /// </param>
-    public static bool LogWarnIf(this ILogger log,
+    public static bool WarnIf(this ILogger log,
                                  bool condition,
                                  object? helpfulInformation = null,
                                  [CallerMemberName] string action = "",
@@ -81,10 +81,10 @@ public static class LogConditionally
                                  string? conditionExpression = "",
                                  [CallerArgumentExpression("helpfulInformation")]
                                  string? helpfulLabel = "")
-        => LogIf(log,
-                 condition,
-                 helpfulInformation,
-                 LogLevel.Warning,
+        => If(log,
+              condition,
+              helpfulInformation,
+              LogLevel.Warning,
                  action,
                  conditionExpression,
                  helpfulLabel);
@@ -109,7 +109,7 @@ public static class LogConditionally
     /// Optional: a label to describe <paramref name="helpfulInformation"/>. Will be logged
     /// under the property name "Label".
     /// </param>
-    public static bool LogErrorIf(this ILogger log,
+    public static bool ErrorIf(this ILogger log,
                                   bool condition,
                                   object? helpfulInformation = null,
                                   [CallerMemberName] string action = "",
@@ -117,10 +117,10 @@ public static class LogConditionally
                                   string? conditionExpression = "",
                                   [CallerArgumentExpression("helpfulInformation")]
                                   string? helpfulLabel = "")
-        => LogIf(log,
-                 condition,
-                 helpfulInformation,
-                 LogLevel.Error,
+        => If(log,
+              condition,
+              helpfulInformation,
+              LogLevel.Error,
                  action,
                  conditionExpression,
                  helpfulLabel);
@@ -145,7 +145,7 @@ public static class LogConditionally
     /// Optional: a label to describe <paramref name="helpfulInformation"/>. Will be logged
     /// under the property name "Label".
     /// </param>
-    public static bool LogDebugIf(this ILogger log,
+    public static bool DebugIf(this ILogger log,
                                   bool condition,
                                   object? helpfulInformation = null,
                                   [CallerMemberName] string action = "",
@@ -153,10 +153,10 @@ public static class LogConditionally
                                   string? conditionExpression = "",
                                   [CallerArgumentExpression("helpfulInformation")]
                                   string? helpfulLabel = "")
-        => LogIf(log,
-                 condition,
-                 helpfulInformation,
-                 LogLevel.Debug,
+        => If(log,
+              condition,
+              helpfulInformation,
+              LogLevel.Debug,
                  action,
                  conditionExpression,
                  helpfulLabel);
@@ -181,7 +181,7 @@ public static class LogConditionally
     /// Optional: a label to describe <paramref name="helpfulInformation"/>. Will be logged
     /// under the property name "Label".
     /// </param>
-    public static bool LogTraceIf(this ILogger log,
+    public static bool TraceIf(this ILogger log,
                                   bool condition,
                                   object? helpfulInformation = null,
                                   [CallerMemberName] string action = "",
@@ -189,10 +189,10 @@ public static class LogConditionally
                                   string? conditionExpression = "",
                                   [CallerArgumentExpression("helpfulInformation")]
                                   string? helpfulLabel = "")
-        => LogIf(log,
-                 condition,
-                 helpfulInformation,
-                 LogLevel.Trace,
+        => If(log,
+              condition,
+              helpfulInformation,
+              LogLevel.Trace,
                  action,
                  conditionExpression,
                  helpfulLabel);
@@ -218,7 +218,7 @@ public static class LogConditionally
     /// Optional: a label to describe <paramref name="helpfulInformation"/>. Will be logged
     /// under the property name "Label".
     /// </param>
-    public static bool LogCriticalIf(this ILogger log,
+    public static bool CriticalIf(this ILogger log,
                                      bool condition,
                                      object? helpfulInformation = null,
                                      [CallerMemberName] string action = "",
@@ -226,10 +226,10 @@ public static class LogConditionally
                                      string? conditionExpression = "",
                                      [CallerArgumentExpression("helpfulInformation")]
                                      string? helpfulLabel = "")
-        => LogIf(log,
-                 condition,
-                 helpfulInformation,
-                 LogLevel.Critical,
+        => If(log,
+              condition,
+              helpfulInformation,
+              LogLevel.Critical,
                  action,
                  conditionExpression,
                  helpfulLabel);

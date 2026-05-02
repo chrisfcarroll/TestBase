@@ -10,12 +10,12 @@ public class LogIfTests
     [SetUp]
     public void SetUp() => log = new TestLogger();
 
-    // ── LogIf base ──────────────────────────────────────────────────────
+    // ── If base ─────────────────────────────────────────────────────────
 
     [Test]
-    public void LogIf_WhenTrue_Logs()
+    public void If_WhenTrue_Logs()
     {
-        var result = log.LogIf(true, "some state");
+        var result = log.If(true, "some state");
 
         NUnit.Framework.Assert.That(result, Is.True);
         NUnit.Framework.Assert.That(log.Entries, Has.Count.EqualTo(1));
@@ -24,45 +24,45 @@ public class LogIfTests
     }
 
     [Test]
-    public void LogIf_WhenFalse_DoesNotLog()
+    public void If_WhenFalse_DoesNotLog()
     {
-        var result = log.LogIf(false, "some state");
+        var result = log.If(false, "some state");
 
         NUnit.Framework.Assert.That(result, Is.False);
         NUnit.Framework.Assert.That(log.Entries, Is.Empty);
     }
 
     [Test]
-    public void LogIf_NullState_LogsEmpty()
+    public void If_NullState_LogsEmpty()
     {
-        log.LogIf(true);
+        log.If(true);
 
         NUnit.Framework.Assert.That(log.Entries, Has.Count.EqualTo(1));
     }
 
     [Test]
-    public void LogIf_RespectsLogLevel()
+    public void If_RespectsLogLevel()
     {
-        log.LogIf(true, "state", logLevel:LogLevel.Critical);
+        log.If(true, "state", logLevel:LogLevel.Critical);
 
         NUnit.Framework.Assert.That(log.Last.Level, Is.EqualTo(LogLevel.Critical));
     }
 
     [Test]
-    public void LogIf_IncludesStateName_WhenDistinctFromAction()
+    public void If_IncludesStateName_WhenDistinctFromAction()
     {
-        log.LogIf(true, "myValue", helpfulLabel: "myLabel");
+        log.If(true, "myValue", helpfulLabel: "myLabel");
 
         NUnit.Framework.Assert.That(log.Last.Message, Does.Contain("myLabel:"));
         NUnit.Framework.Assert.That(log.Last.Message, Does.Contain("myValue"));
     }
 
-    // ── LogWarnIf ───────────────────────────────────────────────────────
+    // ── WarnIf ──────────────────────────────────────────────────────────
 
     [Test]
-    public void LogWarnIf_WhenTrue_LogsAtWarning()
+    public void WarnIf_WhenTrue_LogsAtWarning()
     {
-        var result = log.LogWarnIf(true, "warning state");
+        var result = log.WarnIf(true, "warning state");
 
         NUnit.Framework.Assert.That(result, Is.True);
         NUnit.Framework.Assert.That(log.Last.Level, Is.EqualTo(LogLevel.Warning));
@@ -70,67 +70,67 @@ public class LogIfTests
     }
 
     [Test]
-    public void LogWarnIf_WhenFalse_DoesNotLog()
+    public void WarnIf_WhenFalse_DoesNotLog()
     {
-        NUnit.Framework.Assert.That(log.LogWarnIf(false, "x"), Is.False);
+        NUnit.Framework.Assert.That(log.WarnIf(false, "x"), Is.False);
         NUnit.Framework.Assert.That(log.Entries, Is.Empty);
     }
 
-    // ── LogErrorIf ──────────────────────────────────────────────────────
+    // ── ErrorIf ─────────────────────────────────────────────────────────
 
     [Test]
-    public void LogErrorIf_WhenTrue_LogsAtError()
+    public void ErrorIf_WhenTrue_LogsAtError()
     {
-        var result = log.LogErrorIf(true, "err state");
+        var result = log.ErrorIf(true, "err state");
 
         NUnit.Framework.Assert.That(result, Is.True);
         NUnit.Framework.Assert.That(log.Last.Level, Is.EqualTo(LogLevel.Error));
     }
 
     [Test]
-    public void LogErrorIf_WhenFalse_DoesNotLog()
+    public void ErrorIf_WhenFalse_DoesNotLog()
     {
-        NUnit.Framework.Assert.That(log.LogErrorIf(false, "x"), Is.False);
+        NUnit.Framework.Assert.That(log.ErrorIf(false, "x"), Is.False);
         NUnit.Framework.Assert.That(log.Entries, Is.Empty);
     }
 
-    // ── LogInformationIf ────────────────────────────────────────────────
+    // ── Information (via If) ────────────────────────────────────────────
 
     [Test]
-    public void LogInformationIf_WhenTrue_LogsAtInformation()
+    public void If_WhenTrue_LogsAtInformation()
     {
-        log.LogIf(true, "info state");
+        log.If(true, "info state");
 
         NUnit.Framework.Assert.That(log.Last.Level, Is.EqualTo(LogLevel.Information));
     }
 
-    // ── LogDebugIf ──────────────────────────────────────────────────────
+    // ── DebugIf ─────────────────────────────────────────────────────────
 
     [Test]
-    public void LogDebugIf_WhenTrue_LogsAtDebug()
+    public void DebugIf_WhenTrue_LogsAtDebug()
     {
-        log.LogDebugIf(true, "debug state");
+        log.DebugIf(true, "debug state");
 
         NUnit.Framework.Assert.That(log.Last.Level, Is.EqualTo(LogLevel.Debug));
     }
 
-    // ── LogTraceIf ──────────────────────────────────────────────────────
+    // ── TraceIf ─────────────────────────────────────────────────────────
 
     [Test]
-    public void LogTraceIf_WhenTrue_LogsAtTrace()
+    public void TraceIf_WhenTrue_LogsAtTrace()
     {
-        log.LogTraceIf(true, "trace state");
+        log.TraceIf(true, "trace state");
 
         NUnit.Framework.Assert.That(log.Last.Level, Is.EqualTo(LogLevel.Trace));
     }
 
-    // ── LogExceptionIf ──────────────────────────────────────────────────
+    // ── ExceptionIf ─────────────────────────────────────────────────────
 
     [Test]
-    public void LogExceptionIf_WhenTrue_LogsExceptionAtError()
+    public void ExceptionIf_WhenTrue_LogsExceptionAtError()
     {
         var ex = new InvalidOperationException("boom");
-        var result = log.LogExceptionIf(true, ex, "ctx");
+        var result = log.ExceptionIf(true, ex, "ctx");
 
         NUnit.Framework.Assert.That(result, Is.True);
         NUnit.Framework.Assert.That(log.Last.Level, Is.EqualTo(LogLevel.Error));
@@ -138,28 +138,28 @@ public class LogIfTests
     }
 
     [Test]
-    public void LogExceptionIf_WhenFalse_DoesNotLog()
+    public void ExceptionIf_WhenFalse_DoesNotLog()
     {
-        log.LogExceptionIf(false, new Exception("x"), "ctx");
+        log.ExceptionIf(false, new Exception("x"), "ctx");
 
         NUnit.Framework.Assert.That(log.Entries, Is.Empty);
     }
 
-    // ── LogExceptionThenThrowIf ─────────────────────────────────────────
+    // ── ExceptionAndThrowIf ─────────────────────────────────────────────
 
     [Test]
-    public void LogExceptionThenThrowIf_WhenTrue_ThrowsAndLogs()
+    public void ExceptionAndThrowIf_WhenTrue_ThrowsAndLogs()
     {
         var ex = new InvalidOperationException("boom");
         NUnit.Framework.Assert.Throws<InvalidOperationException>(() =>
-                                                                     log.LogExceptionAndThrowIf(true, ex, "ctx"));
+                                                                     log.ExceptionAndThrowIf(true, ex, "ctx"));
         NUnit.Framework.Assert.That(log.Entries, Has.Count.GreaterThanOrEqualTo(1));
     }
 
     [Test]
-    public void LogExceptionThenThrowIf_WhenFalse_DoesNothing()
+    public void ExceptionAndThrowIf_WhenFalse_DoesNothing()
     {
-        log.LogExceptionAndThrowIf(false, new Exception("x"));
+        log.ExceptionAndThrowIf(false, new Exception("x"));
 
         NUnit.Framework.Assert.That(log.Entries, Is.Empty);
     }
@@ -167,24 +167,24 @@ public class LogIfTests
     // ── Return value semantics ──────────────────────────────────────────
 
     [Test]
-    public void LogIf_ReturnsTrueWhenConditionTrue()
+    public void If_ReturnsTrueWhenConditionTrue()
     {
-        NUnit.Framework.Assert.That(log.LogIf(true), Is.True);
+        NUnit.Framework.Assert.That(log.If(true), Is.True);
     }
 
     [Test]
-    public void LogIf_ReturnsFalseWhenConditionFalse()
+    public void If_ReturnsFalseWhenConditionFalse()
     {
-        NUnit.Framework.Assert.That(log.LogIf(false), Is.False);
+        NUnit.Framework.Assert.That(log.If(false), Is.False);
     }
 
     // ── ILoggable / ToLoggableState integration ─────────────────────────
 
     [Test]
-    public void LogIf_UsesToLoggableState()
+    public void If_UsesToLoggableState()
     {
         var loggableValue = new HasToLoggableState();
-        log.LogIf(true, loggableValue);
+        log.If(true, loggableValue);
 
         NUnit.Framework.Assert.That(log.Last.Message, Does.Contain("custom-loggable"));
     }

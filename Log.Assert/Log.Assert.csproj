@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <InternalsVisibleTo Include="LogAssert.Tests" />
+    <InternalsVisibleTo Include="Log.Assert.Tests" />
   </ItemGroup>
 
   <ItemGroup Condition=" $([System.Text.RegularExpressions.Regex]::IsMatch( '$(TargetFramework)', 'net[891].+' )) ">
