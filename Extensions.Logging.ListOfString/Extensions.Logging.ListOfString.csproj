@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard1.1</TargetFramework>
+    <NoWarn Label="netstandard1.x is no longer recommended">NETSDK1215</NoWarn>
     <RootNamespace>Extensions.Logging.ListOfString</RootNamespace>
     <AssemblyVersion>4.2.0</AssemblyVersion>
     <AssemblyFileVersion>4.2.0</AssemblyFileVersion>

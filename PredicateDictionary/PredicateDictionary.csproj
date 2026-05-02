@@ -1,9 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netstandard1.0</TargetFramework>
+    <TargetFrameworks>netstandard1.0;netstandard2.0;netstandard2.1</TargetFrameworks>
     <AssemblyVersion>0.1.0.0</AssemblyVersion>
     <AssemblyFileVersion>0.1.0.0</AssemblyFileVersion>
     <PackageVersion>0.1.0.0</PackageVersion>
+    <NoWarn Label="netstandard1.x is no longer recommended">NETSDK1215</NoWarn>
     <Title>PredicateDictionary: A kind of dictionary using tests, not constant values, for keys.</Title>
     <PackageDescription><![CDATA[PredicateDictionary: A kind of dictionary using predicates, not constant values, for its keys.
     ```
@@ -22,7 +23,8 @@
     <PackageReleaseNotes>
       ChangeLog
       ---------
-      0.1.0.0
+      0.2.0  target netstandards 2.x
+      0.1.0  
     </PackageReleaseNotes>
     <Copyright>(c) Chris F. Carroll, 2018</Copyright>
     <PackageLicenseExpression>LGPL-2.1-or-later</PackageLicenseExpression>

@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net7.0;net6.0;net5.0;netstandard2.0;netstandard1.6;net45</TargetFrameworks>
+    <TargetFrameworks>net10.0;net8.0;net7.0;net6.0;net5.0;netstandard2.0;netstandard1.6;net45</TargetFrameworks>
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
@@ -16,9 +16,9 @@
   
   
   <PropertyGroup>
-    <AssemblyVersion>4.2.2</AssemblyVersion>
-    <AssemblyFileVersion>4.2.2</AssemblyFileVersion>
-    <PackageVersion>4.2.2</PackageVersion>
+    <AssemblyVersion>4.2.3</AssemblyVersion>
+    <AssemblyFileVersion>4.2.3</AssemblyFileVersion>
+    <PackageVersion>4.2.3</PackageVersion>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Title>RecordingStopwatch - A Stopwatch which records a List&lt;(Event,Elapsed)&gt; of added events</Title>
     <PackageDescription><![CDATA[
@@ -34,6 +34,7 @@ timer.ClearAndStart();
     <PackageReleaseNotes>
       ChangeLog
       ---------
+      4.2.3   Add platforms net10.0;net8.0
       4.2.2   Add platforms net5.0;netstandard2.0;netstandard1.6;net45
       4.2.1   First release
     </PackageReleaseNotes>
