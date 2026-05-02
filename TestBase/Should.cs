@@ -95,103 +95,131 @@ namespace TestBase
         }
 
         /// <summary>
-        /// <p>⚠️ Unless this method is awaited, it cannot fail. ⚠️ </p>
-        /// Assert that <paramref name="action" />() throws, catching the exception and returning it.
+        /// Asserts that <paramref name="action"/> throws when awaited, catching and returning the exception.
+        /// </summary>
+        /// <remarks>
+        /// ⚠️ Consider using <see cref="Throw(Func{Task}, string, object[])"/> instead.
+        /// If this method is not awaited, it will silently pass regardless of whether the action throws.
+        /// </remarks>
+        /// <returns>The caught exception.</returns>
+        /// <exception cref="ShouldHaveThrownException">thrown if <paramref name="action" /> does not throw.</exception>
+        #if NET6_0_OR_GREATER
+        [StackTraceHidden]
+        #else
+        [DebuggerHidden]
+        #endif
+        public static async Task<Exception> ThrowAsync(Func<Task> action,
+                                                       string comment = null,
+                                                       params object[] commentArgs)
+        {
+            try { await action(); }
+            catch (Exception ex) { return ex; }
+
+            throw new ShouldHaveThrownException(
+                comment ?? "Expected action to throw but it did not.").ForActiveTestRunner();
+        }
+
+        /// <summary>
+        /// Asserts that <paramref name="task"/> throws when awaited, catching and returning the exception.
+        /// </summary>
+        /// <remarks>
+        /// ⚠️ Consider using <see cref="Throw(Task, string, object[])"/> instead.
+        /// If this method is not awaited, it will silently pass regardless of whether the task throws.
+        /// </remarks>
+        /// <returns>The caught exception.</returns>
+        /// <exception cref="ShouldHaveThrownException">thrown if <paramref name="task" /> does not throw.</exception>
+        #if NET6_0_OR_GREATER
+        [StackTraceHidden]
+        #else
+        [DebuggerHidden]
+        #endif
+        public static async Task<Exception> ThrowAsync(Task task,
+                                                       string comment = null,
+                                                       params object[] commentArgs)
+        {
+            try { await task; }
+            catch (Exception ex) { return ex; }
+
+            throw new ShouldHaveThrownException(
+                comment ?? "Expected task to throw but it did not.").ForActiveTestRunner();
+        }
+
+        /// <summary>
+        /// Asserts that <paramref name="action"/> throws when invoked and awaited, catching and returning the exception.
+        /// Blocks the calling thread until the task completes.
         /// </summary>
         /// <returns>The caught exception.</returns>
-        /// <exception cref="ShouldHaveThrownException">
-        /// is thrown if <paramref name="action" /> does not throw.
-        /// </exception>
-        /// <exception cref="Assertion">thrown if the wrong Exception is thrown.</exception>
+        /// <exception cref="ShouldHaveThrownException">thrown if <paramref name="action" /> does not throw.</exception>
         #if NET6_0_OR_GREATER
         [StackTraceHidden]
         #else
         [DebuggerHidden]
         #endif
-        public static async Task<TE> ThrowAsync<TE>(Task<Action> action,
-                                               string comment = null,
-                                               params object[] commentArgs) where TE : Exception
+        public static Exception Throw(Func<Task> action,
+                                      string comment = null,
+                                      params object[] commentArgs)
         {
-            try { (await action)(); } catch (TE ex) { return ex; } catch (Exception ex)
-            {
-                if (ex.InnerException is TE inner) return inner;
-                throw Assert.That(ex, e => e is TE, $"Expected to throw a {typeof(TE)} but threw {ex}");
-            }
+            try { action().GetAwaiter().GetResult(); }
+            catch (Exception ex) { return ex; }
 
-            throw new ShouldHaveThrownException(action.ToString()).ForActiveTestRunner();
+            throw new ShouldHaveThrownException(
+                comment ?? "Expected action to throw but it did not.").ForActiveTestRunner();
         }
 
         /// <summary>
-        /// <p>⚠️ Unless this method is awaited, it cannot fail. ⚠️ </p>
-        ///
-        /// Assert that evaluating <paramref name="predicate" />( <paramref name="actual" /> )
-        /// throws an Exception of type <typeparamref name="TE"/>.
+        /// Asserts that <paramref name="task"/> throws when awaited, catching and returning the exception.
+        /// Blocks the calling thread until the task completes.
         /// </summary>
-        /// <param name="actual"></param>
-        /// <param name="predicate"></param>
-        /// <param name="comment"></param>
-        /// <param name="commentArgs"></param>
-        /// <typeparam name="T"></typeparam>
-        /// <typeparam name="TE"></typeparam>
-        /// <returns>
-        /// <paramref name="actual"/>, if the expected assertion is thrown
-        /// during evaluation. Otherwise throws.
-        /// </returns>
-        /// <exception cref="Assertion">thrown if the wrong Exception is thrown.</exception>
-        /// <exception cref="ShouldHaveThrownException">thrown if no assertion is thrown</exception>
+        /// <returns>The caught exception.</returns>
+        /// <exception cref="ShouldHaveThrownException">thrown if <paramref name="task" /> does not throw.</exception>
         #if NET6_0_OR_GREATER
         [StackTraceHidden]
         #else
         [DebuggerHidden]
         #endif
-        public static async Task<T> ThrowAsync<T,TE>(T actual,
-                                                Task<Expression<Func<T,bool>>> predicate,
-                                                string comment,
-                                                object[] commentArgs) where TE : Exception
+        public static Exception Throw(Task task,
+                                      string comment = null,
+                                      params object[] commentArgs)
         {
-            Assertion<T> a = new Assertion<T>(actual, (await predicate), comment, commentArgs);
-            if (a.ExceptionThrownByEvaluation is TE) return actual;
-            if (a.ExceptionThrownByEvaluation != null)
-                throw Assert.That(a.ExceptionThrownByEvaluation,
-                                  e => e is TE,
-                                  $"Expected to throw a {typeof(TE)} but threw {a.ExceptionThrownByEvaluation}");
+            try { task.GetAwaiter().GetResult(); }
+            catch (Exception ex) { return ex; }
 
-            throw new ShouldHaveThrownException(a.Message).ForActiveTestRunner();
+            throw new ShouldHaveThrownException(
+                comment ?? "Expected task to throw but it did not.").ForActiveTestRunner();
         }
 
         /// <summary>
-        /// <p>⚠️ Unless this method is awaited, it cannot fail. ⚠️ </p>
-        /// Awaits <paramref name="task" />().
-        /// If <paramref name="task"/> throws, the thrown exception is wrapped in a
-        /// <see cref="ShouldNotThrowException" /> and thrown.
+        /// Awaits <paramref name="action"/>() and asserts that it does not throw.
         /// </summary>
-        /// <returns>A completed Task.</returns>
-        /// <exception cref="ShouldNotThrowException">is thrown if <paramref name="task" /> throws.</exception>
+        /// <remarks>
+        /// ⚠️ If this method is not awaited, it will silently pass regardless of whether the action throws.
+        /// </remarks>
+        /// <exception cref="ShouldNotThrowException">thrown if <paramref name="action" /> throws.</exception>
         #if NET6_0_OR_GREATER
         [StackTraceHidden]
         #else
         [DebuggerHidden]
         #endif
-        public static async Task NotThrowAsync(Func<Task> task,
+        public static async Task NotThrowAsync(Func<Task> action,
                                                string comment = null,
                                                params object[] commentArgs)
         {
-            try { await task(); }
+            try { await action(); }
             catch (Exception ex)
             {
                 throw new ShouldNotThrowException(
-                        (comment?? $"Expected not to throw but did throw: {ex}").Formatz(commentArgs))
+                        (comment ?? $"Expected not to throw but did throw: {ex}").Formatz(commentArgs))
                     .ForActiveTestRunner();
             }
         }
 
         /// <summary>
-        /// <p>⚠️ Unless this method is awaited, it cannot fail. ⚠️ </p>
-        /// Awaits <paramref name="task"/>. If the task throws, the thrown exception is wrapped
-        /// in a <see cref="ShouldNotThrowException" /> and thrown.
+        /// Awaits <paramref name="task"/> and asserts that it does not throw.
         /// </summary>
-        /// <returns>A completed task.</returns>
-        /// <exception cref="ShouldNotThrowException">is thrown if <paramref name="task" /> throws.</exception>
+        /// <remarks>
+        /// ⚠️ If this method is not awaited, it will silently pass regardless of whether the task throws.
+        /// </remarks>
+        /// <exception cref="ShouldNotThrowException">thrown if <paramref name="task" /> throws.</exception>
         #if NET6_0_OR_GREATER
         [StackTraceHidden]
         #else
@@ -203,27 +231,109 @@ namespace TestBase
             catch (Exception ex)
             {
                 throw new ShouldNotThrowException(
-                        (comment?? $"Expected not to throw but did throw: {ex}").Formatz(commentArgs))
+                        (comment ?? $"Expected not to throw but did throw: {ex}").Formatz(commentArgs))
                     .ForActiveTestRunner();
             }
         }
 
         /// <summary>
-        /// <p>⚠️ Unless this method is awaited, it cannot fail. ⚠️ </p>
-        ///     Awaits <paramref name="task"/>. If the task throws,
-        ///     the thrown exception is wrapped in a <see cref="ShouldNotThrowException" /> and thrown.
+        /// Awaits <paramref name="action"/>() and asserts that it does not throw.
+        /// Returns the result of the task.
         /// </summary>
-        /// <returns>
-        /// The result of the task.
-        /// </returns>
-        /// <exception cref="ShouldNotThrowException">is thrown if <paramref name="task" /> throws.</exception>
-        public static async Task<T> NotThrowAsync<T>(Task<T> task, string comment = null, params object[] commentArgs)
+        /// <remarks>
+        /// ⚠️ If this method is not awaited, it will silently pass regardless of whether the action throws.
+        /// </remarks>
+        /// <returns>The result of the task.</returns>
+        /// <exception cref="ShouldNotThrowException">thrown if <paramref name="action" /> throws.</exception>
+        #if NET6_0_OR_GREATER
+        [StackTraceHidden]
+        #else
+        [DebuggerHidden]
+        #endif
+        public static async Task<T> NotThrowAsync<T>(Func<Task<T>> action,
+                                                     string comment = null,
+                                                     params object[] commentArgs)
+        {
+            try { return await action(); }
+            catch (Exception ex)
+            {
+                throw new ShouldNotThrowException(
+                        (comment ?? $"Expected not to throw but did throw: {ex}").Formatz(commentArgs))
+                    .ForActiveTestRunner();
+            }
+        }
+
+        /// <summary>
+        /// Awaits <paramref name="task"/> and asserts that it does not throw.
+        /// Returns the result of the task.
+        /// </summary>
+        /// <remarks>
+        /// ⚠️ If this method is not awaited, it will silently pass regardless of whether the task throws.
+        /// </remarks>
+        /// <returns>The result of the task.</returns>
+        /// <exception cref="ShouldNotThrowException">thrown if <paramref name="task" /> throws.</exception>
+        #if NET6_0_OR_GREATER
+        [StackTraceHidden]
+        #else
+        [DebuggerHidden]
+        #endif
+        public static async Task<T> NotThrowAsync<T>(Task<T> task,
+                                                     string comment = null,
+                                                     params object[] commentArgs)
         {
             try { return await task; }
             catch (Exception ex)
             {
                 throw new ShouldNotThrowException(
-                        (comment?? $"Expected not to throw but did throw: {ex}").Formatz(commentArgs))
+                        (comment ?? $"Expected not to throw but did throw: {ex}").Formatz(commentArgs))
+                    .ForActiveTestRunner();
+            }
+        }
+
+        /// <summary>
+        /// Invokes <paramref name="action"/>(), waits for the task, and asserts that it does not throw.
+        /// Returns the result. Blocks the calling thread.
+        /// </summary>
+        /// <returns>The result of the task.</returns>
+        /// <exception cref="ShouldNotThrowException">thrown if <paramref name="action" /> throws.</exception>
+        #if NET6_0_OR_GREATER
+        [StackTraceHidden]
+        #else
+        [DebuggerHidden]
+        #endif
+        public static T NotThrow<T>(Func<Task<T>> action,
+                                    string comment = null,
+                                    params object[] commentArgs)
+        {
+            try { return action().GetAwaiter().GetResult(); }
+            catch (Exception ex)
+            {
+                throw new ShouldNotThrowException(
+                        (comment ?? $"Expected not to throw but did throw: {ex}").Formatz(commentArgs))
+                    .ForActiveTestRunner();
+            }
+        }
+
+        /// <summary>
+        /// Waits for <paramref name="task"/> and asserts that it does not throw.
+        /// Returns the result. Blocks the calling thread.
+        /// </summary>
+        /// <returns>The result of the task.</returns>
+        /// <exception cref="ShouldNotThrowException">thrown if <paramref name="task" /> throws.</exception>
+        #if NET6_0_OR_GREATER
+        [StackTraceHidden]
+        #else
+        [DebuggerHidden]
+        #endif
+        public static T NotThrow<T>(Task<T> task,
+                                    string comment = null,
+                                    params object[] commentArgs)
+        {
+            try { return task.GetAwaiter().GetResult(); }
+            catch (Exception ex)
+            {
+                throw new ShouldNotThrowException(
+                        (comment ?? $"Expected not to throw but did throw: {ex}").Formatz(commentArgs))
                     .ForActiveTestRunner();
             }
         }
