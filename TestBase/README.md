@@ -62,6 +62,7 @@ value
 .ShouldBeAssignableTo() ...
 
 Should.Throw();
+Should.ThrowAsync();
 Should.NotThrow();
 
 Inconclusive.Because()
