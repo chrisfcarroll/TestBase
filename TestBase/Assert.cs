@@ -125,7 +125,11 @@ namespace TestBase
         /// <param name="commentArgs"></param>
         /// <returns><paramref name="actual" />, if the assertion succeeds</returns>
         /// <exception cref="Precondition{T}">thrown if the assertion fails.</exception>
-        [Obsolete("Renamed to Skip.IfPreconditionFails")]
+        #if NET6_0_OR_GREATER
+        [StackTraceHidden]
+        #else
+        [DebuggerHidden]
+        #endif
         public static T Precondition<T>(
             T                         actual,
             Expression<Func<T, bool>> predicate,
@@ -166,7 +170,11 @@ namespace TestBase
         /// <param name="commentArgs"></param>
         /// <returns>An <see cref="Precondition{T}" /> for <paramref name="actual" /></returns>
         /// <exception cref="Precondition{T}">thrown if the precondition fails.</exception>
-        [Obsolete("Renamed to Skip.IfPreconditionFails")]
+        #if NET6_0_OR_GREATER
+        [StackTraceHidden]
+        #else
+        [DebuggerHidden]
+        #endif
         public static Precondition<BoolWithString> Precondition(
             BoolWithString  actual,
             string          comment = null,

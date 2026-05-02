@@ -22,7 +22,7 @@ namespace TestBase
         public static void Because(string message, params object[] args)
         {
             var formatted = args?.Length > 0 ? string.Format(message, args) : message;
-            KnownTestRunnerAssertions.ThrowSkip(formatted);
+            KnownTestRunnerAssertions.ThrowInconclusive(formatted);
         }
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace TestBase
         {
             var result = new Precondition<T>(actual, predicate, comment, commentArgs);
             if (result) return actual;
-            KnownTestRunnerAssertions.ThrowSkip(result.Message);
+            KnownTestRunnerAssertions.ThrowInconclusive(result.Message);
             return actual;
         }
 
@@ -82,7 +82,7 @@ namespace TestBase
         {
             var result = new Precondition<BoolWithString>(actual, a => a, comment, commentArgs);
             if (result) return result;
-            KnownTestRunnerAssertions.ThrowSkip(result.Message);
+            KnownTestRunnerAssertions.ThrowInconclusive(result.Message);
             return result;
         }
 

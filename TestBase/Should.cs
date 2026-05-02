@@ -5,7 +5,7 @@ using FastExpressionCompiler;
 
 namespace TestBase
 {
-    /// <summary>Static convenience methods for fluent-style assertions.</summary>
+    /// <summary>fluent-style assertions for when the subject of the assertion is an Action</summary>
     public static class Should
     {
         /// <summary>

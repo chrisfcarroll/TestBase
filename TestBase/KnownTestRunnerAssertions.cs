@@ -11,14 +11,14 @@ namespace TestBase
     ///     exception so that the runners recognises it as an assertion failure.
     /// <p>Current known test runners are NUnit, xUnit, MSTest</p>
     /// </summary>
-    public static class KnownTestRunnerAssertions
+    static class KnownTestRunnerAssertions
     {
         /// <summary>
         ///     Wraps <paramref name="assertion"/> in the active test runner's assertion
         ///     exception, preserving it as <see cref="Exception.InnerException"/>.
         ///     Returns <paramref name="assertion"/> unchanged when no framework is detected.
         /// </summary>
-        public static Exception Create(Exception assertion)
+        public static Exception From(Exception assertion)
         {
             var type = knownExceptionType.Value;
             if (type == null) return assertion;
@@ -48,15 +48,15 @@ namespace TestBase
         #else
         [DebuggerHidden]
         #endif
-        public static void Throw(Exception assertion) => throw Create(assertion);
+        public static void Throw(Exception assertion) => throw From(assertion);
 
         /// <summary>
         ///     Creates the active test runner's inconclusive/skip exception with the given
         ///     <paramref name="message"/>. Returns null when no supported framework is detected.
         /// </summary>
-        public static Exception CreateSkip(string message)
+        public static Exception CreateInconclusive(string message)
         {
-            var type = knownSkipExceptionType.Value;
+            var type = knownInconclusiveExceptionType.Value;
             if (type == null) return null;
 
             try
@@ -79,15 +79,15 @@ namespace TestBase
         #else
         [DebuggerHidden]
         #endif
-        public static void ThrowSkip(string message)
+        public static void ThrowInconclusive(string message)
         {
-            throw CreateSkip(message) ?? new Assertion(message).ForActiveTestRunner();
+            throw CreateInconclusive(message) ?? new Assertion(message).ForActiveTestRunner();
         }
 
         static readonly Lazy<Type> knownExceptionType = new Lazy<Type>(DetectFrameworkExceptionType,
                                                                        LazyThreadSafetyMode.PublicationOnly);
 
-        static readonly Lazy<Type> knownSkipExceptionType = new Lazy<Type>(DetectSkipExceptionType,
+        static readonly Lazy<Type> knownInconclusiveExceptionType = new Lazy<Type>(DetectInconclusiveExceptionType,
                                                                            LazyThreadSafetyMode.PublicationOnly);
 
         static Type DetectFrameworkExceptionType()
@@ -104,7 +104,7 @@ namespace TestBase
             catch { return null; }
         }
 
-        static Type DetectSkipExceptionType()
+        static Type DetectInconclusiveExceptionType()
         {
             try
             {

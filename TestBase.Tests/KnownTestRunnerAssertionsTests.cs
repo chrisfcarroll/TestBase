@@ -10,7 +10,7 @@ public class KnownTestRunnerAssertionsTests
     {
         var assertion = new Assertion("test message");
 
-        var result = KnownTestRunnerAssertions.Create(assertion);
+        var result = KnownTestRunnerAssertions.From(assertion);
 
         result.ShouldBeOfType<NUnit.Framework.AssertionException>();
         result.Message.ShouldContain("test message");
@@ -44,7 +44,7 @@ public class KnownTestRunnerAssertionsTests
     [Test]
     public void CreateSkip_ShouldReturnNUnitInconclusiveException()
     {
-        var result = KnownTestRunnerAssertions.CreateSkip("skip reason");
+        var result = KnownTestRunnerAssertions.CreateInconclusive("skip reason");
 
         result.ShouldBeOfType<NUnit.Framework.InconclusiveException>();
         result.Message.ShouldContain("skip reason");
@@ -54,7 +54,7 @@ public class KnownTestRunnerAssertionsTests
     public void ThrowSkip_ShouldThrowNUnitInconclusiveException()
     {
         var ex = NUnit.Framework.Assert.Throws<NUnit.Framework.InconclusiveException>(
-            () => KnownTestRunnerAssertions.ThrowSkip("skip this"));
+            () => KnownTestRunnerAssertions.ThrowInconclusive("skip this"));
 
         ex.Message.ShouldContain("skip this");
     }
