@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -116,9 +117,10 @@ namespace TestBase
         /// <param name="format">The string containing format names</param>
         /// <param name="source">The object with named properties</param>
         /// <returns></returns>
-        public static string Formatz(this string format, object source)
+        [return:NotNullIfNotNull("format")]
+        public static string? Formatz(this string format, object source)
         {
-            if (format == null) throw new ArgumentNullException("format");
+            if (format == null) return null;
 
             var result = new StringBuilder(format.Length * 2);
 
@@ -156,7 +158,8 @@ namespace TestBase
                             switch (@char)
                             {
                                 case -1:
-                                    throw new FormatException();
+                                    state=State.End;
+                                    break;
                                 case '{':
                                     result.Append('{');
                                     state = State.OutsideExpression;
@@ -173,7 +176,8 @@ namespace TestBase
                             switch (@char)
                             {
                                 case -1:
-                                    throw new FormatException();
+                                    state = State.End;
+                                    break;
                                 case '}':
                                     result.Append(OutExpression(source, expression.ToString()));
                                     expression.Length = 0;
@@ -194,16 +198,16 @@ namespace TestBase
                                     state = State.OutsideExpression;
                                     break;
                                 default:
-                                    throw new FormatException();
+                                    state = State.OutsideExpression;
+                                    break;
                             }
-
                             break;
                         default:
-                            throw new InvalidOperationException("Invalid state.");
+                            state=State.End;
+                            break;
                     }
                 } while (state != State.End);
             }
-
             return result.ToString();
         }
 
