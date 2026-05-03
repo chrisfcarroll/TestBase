@@ -5,7 +5,7 @@
     <NoWarn>1591;1701;1702;1705;NU1701</NoWarn>
     <AssemblyVersion>5.4</AssemblyVersion>
     <AssemblyFileVersion>5.4</AssemblyFileVersion>
-    <PackageVersion>5.4-preview</PackageVersion>
+    <PackageVersion>5.4-preview2</PackageVersion>
     <LangVersion Condition=" $([System.Text.RegularExpressions.Regex]::IsMatch( '$(TargetFramework)', 'net[45].+|netstandard.+' )) ">10</LangVersion>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Title>TestBase – Rich, fluent assertions and tools for testing with heavyweight dependencies: AspNetCore, AdoNet, HttpClient, AspNet.Mvc, Streams, Logging</Title>
@@ -153,7 +153,7 @@ Serilog.Logger slogger= new LoggerConfiguration().WriteTo.StringList(log).Create
     <RepositoryUrl>https://github.com/chrisfcarroll/TestBase</RepositoryUrl>
     <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
     <IncludeSymbols>true</IncludeSymbols>
-    <PackageTags>test;unittest;tdd;fluent assertions;nunit;mstest;xunit;mock;ado.net;mvc;aspnetmvc;aspnetcoremvc</PackageTags>
+    <PackageTags>assertions;fluent assertions;test;unittest;unit test;tdd;nunit;mstest;xunit;mock</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
