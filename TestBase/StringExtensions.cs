@@ -80,34 +80,32 @@ namespace TestBase
                 expression = expression.Substring(0, colonIndex);
             }
 
-            if (string.IsNullOrEmpty(format))
-                return source.ToJQueryable().SelectToken(expression).ToString();
+            if (string.IsNullOrEmpty(format)) { }
             else if (format.Length > 1 && format[1] == '%')
                 switch (format[0])
                 {
                     case 'i':
                         return source.ToJQueryable()
                                      .SelectToken(expression)
-                                     .ToObject<int>()
+                                     ?.ToObject<int>()
                                      .ToString(format.Substring(2));
                     case 'd':
                         return source.ToJQueryable()
                                      .SelectToken(expression)
-                                     .ToObject<decimal>()
+                                     ?.ToObject<decimal>()
                                      .ToString(format.Substring(2));
                     case 'n':
                         return source.ToJQueryable()
                                      .SelectToken(expression)
-                                     .ToObject<double>()
+                                     ?.ToObject<double>()
                                      .ToString(format.Substring(2));
                     case 't':
                         return source.ToJQueryable()
                                      .SelectToken(expression)
-                                     .ToObject<DateTime>()
+                                     ?.ToObject<DateTime>()
                                      .ToString(format.Substring(2));
                 }
-            return source.ToJQueryable().SelectToken(expression).ToString();
-            //return DataBinder.Eval(source, expression, "{0:" + format + "}") ?? "";
+            return source.ToJQueryable().SelectToken(expression)?.ToString();
         }
 
         /// <summary>
@@ -118,7 +116,7 @@ namespace TestBase
         /// <param name="source">The object with named properties</param>
         /// <returns></returns>
         [return:NotNullIfNotNull("format")]
-        public static string? Formatz(this string format, object source)
+        public static string Formatz(this string format, object source)
         {
             if (format == null) return null;
 
