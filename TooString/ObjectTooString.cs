@@ -590,12 +590,15 @@ public static partial class ObjectTooString
                 return qstr(time.ToString(options.TimeOnlyFormat));
             if (value is TimeSpan span)
                 return qstr(span.ToString(options.TimeSpanFormat));
-            if(value is Type type) return qstr( type.FullName??$"{type.Namespace}.{type.Name}" );
+            if(value is Type type) return qstr( type.ShortTypeName() );
 
             if (value.GetType().IsAssignableTo(typeof(IEnumerable)))
             {
                 if (isJson ) return "[]";
-                if (value is Array arr) return $"{arr.GetType().GetElementType()}[{arr.Length}]";
+                if (value is Array arr)
+                {
+                    return $"{arr.GetType().GetElementType()?.ShortTypeName()}[{arr.Length}]";
+                }
                 if (value is IList list && list.GetType().GetGenericArguments().Any())
                 {
                     var collectionType = list.GetType().GetTypeInfo().Name;
@@ -616,12 +619,16 @@ public static partial class ObjectTooString
         }
     }
 
-   static readonly string NewLineSpaces400 = Environment.NewLine + new string(' ',400);
-   static readonly string CommaCrLfSpaces400 = "," + NewLineSpaces400;
-   static readonly StringBuilder sb = new StringBuilder();
-   static readonly SemaphoreSlim sbLock = new(1);
-   static bool IsMultiDimensionalNumeric(Type type)=>
-       type.Namespace == "System.Numerics"
+    static string ShortTypeName(this Type type)
+        => type.FullName?.StartsWith("System.") is true
+            ? type.FullName[7..]
+            : type.FullName ?? $"{type.Namespace}.{type.Name}";
+    static readonly string NewLineSpaces400 = Environment.NewLine + new string(' ',400);
+    static readonly string CommaCrLfSpaces400 = "," + NewLineSpaces400;
+    static readonly StringBuilder sb = new StringBuilder();
+    static readonly SemaphoreSlim sbLock = new(1);
+    static bool IsMultiDimensionalNumeric(Type type) =>
+        type.Namespace == "System.Numerics"
         &&
         new[]{"Complex","Vector","Vector2","Vector3","Vector4","Matrix3x2","Matrix4x4","Plane"}.Contains(type.Name);
 
