@@ -45,7 +45,7 @@ public static class LogConditionally
         if (!condition) return false;
         if (!log.IsEnabled(logLevel)) return true;
         log.Log(logLevel,
-                "{Action}:{Condition}:{Label}{State}",
+                LogLine.Conditional,
                 action,
                 conditionExpression,
                 LogAssert.StateLabelIfHelpful(action,label),
@@ -192,14 +192,20 @@ public static class LogConditionally
                                string? label = "",
                                [CallerMemberName] string action = "",
                                [CallerArgumentExpression("condition")]
-                               string? conditionExpression = "")
-        => If(log,
-              condition,
-              helpfulInformation,
-              label,
-              LogLevel.Debug,
-              action,
-              conditionExpression);
+                               string? conditionExpression = "",
+                               [CallerLineNumber] int line = 0)
+    {
+        if (!condition) return false;
+        if (!log.IsEnabled(LogLevel.Debug)) return true;
+        log.Log(LogLevel.Debug,
+                LogLine.ConditionalWithLine,
+                action,
+                line,
+                conditionExpression,
+                LogAssert.StateLabelIfHelpful(action,label),
+                helpfulInformation.ForLogging() ?? string.Empty);
+        return true;
+    }
 
     /// <summary>
     /// If <paramref name="condition"/> is true, log at <see cref="LogLevel.Trace"/>.
@@ -229,14 +235,20 @@ public static class LogConditionally
                                string? label = "",
                                [CallerMemberName] string action = "",
                                [CallerArgumentExpression("condition")]
-                               string? conditionExpression = "")
-        => If(log,
-              condition,
-              helpfulInformation,
-              label,
-              LogLevel.Trace,
-              action,
-              conditionExpression);
+                               string? conditionExpression = "",
+                               [CallerLineNumber] int line = 0)
+    {
+        if (!condition) return false;
+        if (!log.IsEnabled(LogLevel.Trace)) return true;
+        log.Log(LogLevel.Trace,
+                LogLine.ConditionalWithLine,
+                action,
+                line,
+                conditionExpression,
+                LogAssert.StateLabelIfHelpful(action,label),
+                helpfulInformation.ForLogging() ?? string.Empty);
+        return true;
+    }
 
 
     /// <summary>

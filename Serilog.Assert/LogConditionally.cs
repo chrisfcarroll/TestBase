@@ -45,7 +45,7 @@ public static class LogConditionally
         if (!condition) return false;
         if (!log.IsEnabled(logLevel)) return true;
         log.Write(logLevel,
-                  "{Action}:{Condition}:{Label}{State}",
+                  LogLine.Conditional,
                   action,
                   conditionExpression,
                   LogAssert.StateLabelIfHelpful(action,label),
@@ -188,14 +188,20 @@ public static class LogConditionally
                                [CallerArgumentExpression("condition")]
                                string? conditionExpression = "",
                                [CallerArgumentExpression("helpfulInformation")]
-                               string? label = "")
-        => If(log,
-              condition,
-              helpfulInformation,
-              LogEventLevel.Debug,
-              action,
-              conditionExpression,
-              label);
+                               string? label = "",
+                               [CallerLineNumber] int line = 0)
+    {
+        if (!condition) return false;
+        if (!log.IsEnabled(LogEventLevel.Debug)) return true;
+        log.Write(LogEventLevel.Debug,
+                  LogLine.ConditionalWithLine,
+                  action,
+                  line,
+                  conditionExpression,
+                  LogAssert.StateLabelIfHelpful(action,label),
+                  helpfulInformation.ForLogging() ?? string.Empty);
+        return true;
+    }
 
     /// <summary>
     /// If <paramref name="condition"/> is true, log at <see cref="LogEventLevel.Verbose"/>.
@@ -224,14 +230,20 @@ public static class LogConditionally
                                  [CallerArgumentExpression("condition")]
                                  string? conditionExpression = "",
                                  [CallerArgumentExpression("helpfulInformation")]
-                                 string? label = "")
-        => If(log,
-              condition,
-              helpfulInformation,
-              LogEventLevel.Verbose,
-              action,
-              conditionExpression,
-              label);
+                                 string? label = "",
+                                 [CallerLineNumber] int line = 0)
+    {
+        if (!condition) return false;
+        if (!log.IsEnabled(LogEventLevel.Verbose)) return true;
+        log.Write(LogEventLevel.Verbose,
+                  LogLine.ConditionalWithLine,
+                  action,
+                  line,
+                  conditionExpression,
+                  LogAssert.StateLabelIfHelpful(action,label),
+                  helpfulInformation.ForLogging() ?? string.Empty);
+        return true;
+    }
 
 
     /// <summary>

@@ -34,7 +34,7 @@ public static class LogMember
     {
         if(!log.IsEnabled(logLevel)) return;
         log.Write(logLevel,
-                  "{Action}({Label}{@State})",
+                  LogLine.Member,
                   action,
                   LogAssert.StateLabelIfHelpful(action,label),
                   (helpfulInformation ?? "").ForLogging());
@@ -58,12 +58,17 @@ public static class LogMember
                                    object? helpfulInformation = null,
                                    [CallerMemberName] string action = "",
                                    [CallerArgumentExpression("helpfulInformation")]
-                                   string? label = null)
-        => Member(log,
-                helpfulInformation,
-                LogEventLevel.Debug,
-                action,
-                label);
+                                   string? label = null,
+                                   [CallerLineNumber] int line = 0)
+    {
+        if(!log.IsEnabled(LogEventLevel.Debug)) return;
+        log.Write(LogEventLevel.Debug,
+                  LogLine.MemberWithLine,
+                  action,
+                  line,
+                  LogAssert.StateLabelIfHelpful(action,label),
+                  (helpfulInformation ?? "").ForLogging());
+    }
 
     /// <summary>
     /// Log the name of the current Method or Member call, optionally with any additional
@@ -83,12 +88,17 @@ public static class LogMember
                                      object? helpfulInformation = null,
                                      [CallerMemberName] string action = "",
                                      [CallerArgumentExpression("helpfulInformation")]
-                                     string? label = null)
-        => Member(log,
-                helpfulInformation,
-                LogEventLevel.Verbose,
-                action,
-                label);
+                                     string? label = null,
+                                     [CallerLineNumber] int line = 0)
+    {
+        if(!log.IsEnabled(LogEventLevel.Verbose)) return;
+        log.Write(LogEventLevel.Verbose,
+                  LogLine.MemberWithLine,
+                  action,
+                  line,
+                  LogAssert.StateLabelIfHelpful(action,label),
+                  (helpfulInformation ?? "").ForLogging());
+    }
 
     /// <summary>
     /// Log the name of the current Method or Member call, optionally with any additional
@@ -169,7 +179,7 @@ public static class LogMember
         ex ??= new ApplicationException(message: $"Exception in {action}");
         if(!log.IsEnabled(LogEventLevel.Error)) return;
         log.Error(ex,
-                  "{Action}({Label}{State})",
+                  LogLine.MemberException,
                   action,
                   LogAssert.StateLabelIfHelpful(action,label),
                   (helpfulInformation ?? "").ForLogging());
@@ -210,7 +220,7 @@ public static class LogMember
     {
         ex ??= new ApplicationException(message: $"Exception in {action}");
         log.Error(ex,
-                  "{Action}({Label}{State})",
+                  LogLine.MemberException,
                   action,
                   LogAssert.StateLabelIfHelpful(action,label),
                   (helpfulInformation ?? "").ForLogging());
@@ -256,7 +266,7 @@ public static class LogMember
         ex ??= new ApplicationException(message: $"Terminating process with exit code {exitCode} " +
                                                  $"because Exception in {action}");
         log.Fatal(ex,
-                  "{Action}({Label}{State})",
+                  LogLine.MemberException,
                   action,
                   LogAssert.StateLabelIfHelpful(action,label),
                   (helpfulInformation ?? "").ForLogging());

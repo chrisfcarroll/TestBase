@@ -35,7 +35,7 @@ public static class LogMember
     {
         if(!log.IsEnabled(logLevel)) return;
         log.Log(logLevel,
-                "{Action}({Label}{@State})",
+                LogLine.Member,
                 action,
                 LogAssert.StateLabelIfHelpful(action,label),
                 (helpfulInformation ?? "").ForLogging());
@@ -60,12 +60,17 @@ public static class LogMember
                                    object? helpfulInformation = null,
                                    [CallerArgumentExpression("helpfulInformation")]
                                    string? label = null,
-                                   [CallerMemberName] string action = "")
-        => Member(log,
-                   helpfulInformation,
-                   label,
-                   LogLevel.Debug,
-                   action);
+                                   [CallerMemberName] string action = "",
+                                   [CallerLineNumber] int line = 0)
+    {
+        if(!log.IsEnabled(LogLevel.Debug)) return;
+        log.Log(LogLevel.Debug,
+                LogLine.MemberWithLine,
+                action,
+                line,
+                LogAssert.StateLabelIfHelpful(action,label),
+                (helpfulInformation ?? "").ForLogging());
+    }
 
     /// <summary>
     /// Log the name of the current Method or Member call, optionally with any additional
@@ -86,12 +91,17 @@ public static class LogMember
                                    object? helpfulInformation = null,
                                    [CallerArgumentExpression("helpfulInformation")]
                                    string? label = null,
-                                   [CallerMemberName] string action = "")
-        => Member(log,
-                   helpfulInformation,
-                   label,
-                   LogLevel.Trace,
-                   action);
+                                   [CallerMemberName] string action = "",
+                                   [CallerLineNumber] int line = 0)
+    {
+        if(!log.IsEnabled(LogLevel.Trace)) return;
+        log.Log(LogLevel.Trace,
+                LogLine.MemberWithLine,
+                action,
+                line,
+                LogAssert.StateLabelIfHelpful(action,label),
+                (helpfulInformation ?? "").ForLogging());
+    }
 
     /// <summary>
     /// Log the name of the current Method or Member call, optionally with any additional
@@ -175,7 +185,7 @@ public static class LogMember
         ex ??= new ApplicationException(message: $"Exception in {action}");
         if(!log.IsEnabled(LogLevel.Error)) return;
         log.LogError(ex,
-                     "{Action}({Label}{State})",
+                     LogLine.MemberException,
                      action,
                      LogAssert.StateLabelIfHelpful(action,label),
                      (helpfulInformation ?? "").ForLogging());
@@ -219,7 +229,7 @@ public static class LogMember
         #pragma warning disable CA1873
         log.LogError(ex,
         #pragma warning restore CA1873
-                     "{Action}({Label}{State})",
+                     LogLine.MemberException,
                      action,
                      LogAssert.StateLabelIfHelpful(action,label),
                      (helpfulInformation ?? "").ForLogging());
@@ -269,7 +279,7 @@ public static class LogMember
         #pragma warning disable CA1873
         log.LogCritical(ex,
         #pragma warning restore CA1873
-                     "{Action}({Label}{State})",
+                     LogLine.MemberException,
                      action,
                      LogAssert.StateLabelIfHelpful(action,label),
                      (helpfulInformation ?? "").ForLogging());

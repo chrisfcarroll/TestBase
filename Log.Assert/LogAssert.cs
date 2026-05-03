@@ -39,7 +39,7 @@ public static partial class LogAssert
                               string? label = "")
     {
         if (assertion) return;
-        log.LogError("{Action}:Assertion Failed:{Assertion}:{Label}{State}",
+        log.LogError(LogLine.AssertionFailed,
                      action,
                      assertionExpression,
                      StateLabelIfHelpful(action, label),
@@ -70,7 +70,7 @@ public static partial class LogAssert
     {
         if (it is null)
         {
-            log.LogError("{Action}:Assertion Not Null Failed:{Subject}:{Label}{State}",
+            log.LogError(LogLine.AssertionNotNullFailed,
                          action,
                          subject,
                          StateLabelIfHelpful(action,label),
@@ -112,7 +112,7 @@ public static partial class LogAssert
                                     string? label = "")
     {
         if (preCondition) return;
-        log.LogError("{Action}:Precondition Failed:{Assertion}:{Label}{State}",
+        log.LogError(LogLine.PreconditionFailed,
                      action,
                      assertionExpression,
                      StateLabelIfHelpful(action, label),
@@ -142,7 +142,7 @@ public static partial class LogAssert
     {
         if (it is null)
         {
-            log.LogError("{Action}:Precondition Not Null Failed:{Subject}:{Label}{State}",
+            log.LogError(LogLine.PreconditionNotNullFailed,
                          action,
                          subject,
                          StateLabelIfHelpful(action,label),
@@ -183,7 +183,7 @@ public static partial class LogAssert
                                      string? label = "")
     {
         if (postCondition) return;
-        log.LogError("{Action}:Postcondition Failed:{Assertion}:{Label}{State}",
+        log.LogError(LogLine.PostconditionFailed,
                      action,
                      assertionExpression,
                      StateLabelIfHelpful(action, label),
@@ -213,7 +213,7 @@ public static partial class LogAssert
     {
         if (it is null)
         {
-            log.LogError("{Action}:Postcondition Not Null Failed:{Subject}:{Label}{State}",
+            log.LogError(LogLine.PostconditionNotNullFailed,
                          action,
                          subject,
                          StateLabelIfHelpful(action,label),

@@ -18,7 +18,7 @@ public static partial class LogAssert
     {
         if (string.IsNullOrEmpty(it))
         {
-            log.Error("{Action}:Assertion Not Null Or Empty Failed:{Subject}:{Label}{State}",
+            log.Error(LogLine.AssertionNotNullOrEmptyFailed,
                       action,
                       subject,
                       StateLabelIfHelpful(action, label),
@@ -41,7 +41,7 @@ public static partial class LogAssert
     {
         if (string.IsNullOrWhiteSpace(it))
         {
-            log.Error("{Action}:Assertion Not Null Or Whitespace Failed:{Subject}:{Label}{State}",
+            log.Error(LogLine.AssertionNotNullOrWhitespaceFailed,
                       action,
                       subject,
                       StateLabelIfHelpful(action, label),
@@ -64,7 +64,7 @@ public static partial class LogAssert
     {
         if (string.IsNullOrEmpty(it))
         {
-            log.Error("{Action}:Precondition Not Null Or Empty Failed:{Subject}:{Label}{State}",
+            log.Error(LogLine.PreconditionNotNullOrEmptyFailed,
                       action,
                       subject,
                       StateLabelIfHelpful(action, label),
@@ -87,7 +87,7 @@ public static partial class LogAssert
     {
         if (string.IsNullOrWhiteSpace(it))
         {
-            log.Error("{Action}:Precondition Not Null Or Whitespace Failed:{Subject}:{Label}{State}",
+            log.Error(LogLine.PreconditionNotNullOrWhitespaceFailed,
                       action,
                       subject,
                       StateLabelIfHelpful(action, label),
@@ -110,7 +110,7 @@ public static partial class LogAssert
     {
         if (string.IsNullOrEmpty(it))
         {
-            log.Error("{Action}:Postcondition Not Null Or Empty Failed:{Subject}:{Label}{State}",
+            log.Error(LogLine.PostconditionNotNullOrEmptyFailed,
                       action,
                       subject,
                       StateLabelIfHelpful(action, label),
@@ -133,7 +133,7 @@ public static partial class LogAssert
     {
         if (string.IsNullOrWhiteSpace(it))
         {
-            log.Error("{Action}:Postcondition Not Null Or Whitespace Failed:{Subject}:{Label}{State}",
+            log.Error(LogLine.PostconditionNotNullOrWhitespaceFailed,
                       action,
                       subject,
                       StateLabelIfHelpful(action, label),

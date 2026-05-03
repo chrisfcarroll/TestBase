@@ -45,7 +45,7 @@ public static class LogException
         ex ??= new ApplicationException(message: $"Exception in {action}");
         log.Write(LogEventLevel.Error,
                   ex,
-                  "{Action}:Condition Failed:{Condition}:{Label}{State}",
+                  LogLine.ExceptionConditional,
                   action,
                   conditionExpression,
                   LogAssert.StateLabelIfHelpful(action,label),
@@ -93,7 +93,7 @@ public static class LogException
         if (log.IsEnabled(LogEventLevel.Error))
             log.Write(LogEventLevel.Error,
                       ex,
-                      "{Action}:Condition Failed:{Condition}:{Label}{State}",
+                      LogLine.ExceptionConditional,
                       action,
                       conditionExpression,
                       LogAssert.StateLabelIfHelpful(action,label),

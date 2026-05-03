@@ -14,4 +14,82 @@
     <PackageReference Include="Serilog" Version="4.3.1" />
   </ItemGroup>
 
+  <PropertyGroup>
+    <AssemblyVersion>0.1</AssemblyVersion>
+    <AssemblyFileVersion>0.1</AssemblyFileVersion>
+    <PackageVersion>0.1</PackageVersion>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <Title>Serilog.Assert( it is "A better style of application logging" ).</Title>
+    <PackageDescription><![CDATA[Serilog.Assert is a better style of application logging.
+```
+log.Member();
+log.PreconditionNotNull(target);
+
+var graphemes = new StringInfo(target??"");
+log.Assert(graphemes.LengthInTextElements > 0);
+
+log.Precondition(0 <= guess && guess <= graphemes.LengthInTextElements);
+
+log.ExceptionAndThrowIf(
+    graphemes.SubstringByTextElements(guess,1) is "💥",
+    new ApplicationException("bang!"));
+
+var remainder = Remove(graphemes,guess);
+log.DebugIf(remainder.Length == 0,helpfulInformation: "TBC:is this permitted?");
+log.If(graphemes.LengthInTextElements > 0,
+          helpfulInformation: (target,guess,graphemes.LengthInTextElements),
+          label: "Remaining after Removal");
+
+log.PreconditionNotNull(target);
+log.Postcondition(remainder.Length < target.Length);
+log.Member(remainder);
+return remainder;
+```
+## What is Logged?
+
+- All methods log the current Method or Member name.
+- All methods can log additional information, either auto-labelled or explicitly labelled.
+- Assertions, Pre-, and Post-Conditions log nothing at all if they pass.
+- Assertions, Pre-, and Post-Conditions log the literal failed expression if they fail.
+- log.If() logs nothing at all if the condition is false
+- log.If() logs the literal condition expression if it is true
+
+```
+Member()
+Assert()
+Precondition()
+Postcondition()
+
+If()
+DebugIf()
+VerboseIf()
+WarningIf()
+ErrorIf()
+ExceptionIf()
+
+Exception()
+ExceptionAndThrow()
+FatalAndExitProcessWithExitCode()
+```
+]]></PackageDescription>
+    <PackageReleaseNotes>
+      ChangeLog
+      ---------
+      0.1.0  First release
+    </PackageReleaseNotes>
+    <Copyright>(c) Chris F. Carroll, 2023-2026</Copyright>
+    <PackageLicenseExpression>LGPL-2.1-or-later</PackageLicenseExpression>
+    <Authors>Chris F Carroll</Authors>
+    <Owners>Chris F Carroll</Owners>
+    <PackageProjectUrl>https://github.com/chrisfcarroll/TestBase</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/chrisfcarroll/TestBase</RepositoryUrl>
+    <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
+    <IncludeSymbols>true</IncludeSymbols>
+    <PackageTags>stringify;serialization;tostring;debug;reflection;CallerArgumentExpression;serilog</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
 </Project>
