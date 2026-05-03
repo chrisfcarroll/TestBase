@@ -24,7 +24,7 @@ public static class LogIfNot
                 LogLine.Conditional,
                 action,
                 conditionExpression,
-                LogAssert.StateLabelIfHelpful(action, label),
+                LogAssert.StateLabelIfHelpful(action, label, helpfulInformation),
                 helpfulInformation.ForLogging() ?? string.Empty);
         return false;
     }
@@ -76,7 +76,7 @@ public static class LogIfNot
                 action,
                 line,
                 conditionExpression,
-                LogAssert.StateLabelIfHelpful(action, label),
+                LogAssert.StateLabelIfHelpful(action, label, helpfulInformation),
                 helpfulInformation.ForLogging() ?? string.Empty);
         return false;
     }
@@ -98,7 +98,7 @@ public static class LogIfNot
                 action,
                 line,
                 conditionExpression,
-                LogAssert.StateLabelIfHelpful(action, label),
+                LogAssert.StateLabelIfHelpful(action, label, helpfulInformation),
                 helpfulInformation.ForLogging() ?? string.Empty);
         return false;
     }

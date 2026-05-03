@@ -21,7 +21,7 @@ public static partial class LogAssert
             log.LogError(LogLine.AssertionNotNullOrEmptyFailed,
                          action,
                          subject,
-                         StateLabelIfHelpful(action, label),
+                         StateLabelIfHelpful(action, label, helpfulInformation),
                          helpfulInformation.ForLogging() ?? string.Empty);
         }
         #pragma warning disable CS8777
@@ -44,7 +44,7 @@ public static partial class LogAssert
             log.LogError(LogLine.AssertionNotNullOrWhitespaceFailed,
                          action,
                          subject,
-                         StateLabelIfHelpful(action, label),
+                         StateLabelIfHelpful(action, label, helpfulInformation),
                          helpfulInformation.ForLogging() ?? string.Empty);
         }
         #pragma warning disable CS8777
@@ -67,7 +67,7 @@ public static partial class LogAssert
             log.LogError(LogLine.PreconditionNotNullOrEmptyFailed,
                          action,
                          subject,
-                         StateLabelIfHelpful(action, label),
+                         StateLabelIfHelpful(action, label, helpfulInformation),
                          helpfulInformation.ForLogging() ?? string.Empty);
         }
         #pragma warning disable CS8777
@@ -90,7 +90,7 @@ public static partial class LogAssert
             log.LogError(LogLine.PreconditionNotNullOrWhitespaceFailed,
                          action,
                          subject,
-                         StateLabelIfHelpful(action, label),
+                         StateLabelIfHelpful(action, label, helpfulInformation),
                          helpfulInformation.ForLogging() ?? string.Empty);
         }
         #pragma warning disable CS8777
@@ -113,7 +113,7 @@ public static partial class LogAssert
             log.LogError(LogLine.PostconditionNotNullOrEmptyFailed,
                          action,
                          subject,
-                         StateLabelIfHelpful(action, label),
+                         StateLabelIfHelpful(action, label, helpfulInformation),
                          helpfulInformation.ForLogging() ?? string.Empty);
         }
         #pragma warning disable CS8777
@@ -136,7 +136,7 @@ public static partial class LogAssert
             log.LogError(LogLine.PostconditionNotNullOrWhitespaceFailed,
                          action,
                          subject,
-                         StateLabelIfHelpful(action, label),
+                         StateLabelIfHelpful(action, label, helpfulInformation),
                          helpfulInformation.ForLogging() ?? string.Empty);
         }
         #pragma warning disable CS8777

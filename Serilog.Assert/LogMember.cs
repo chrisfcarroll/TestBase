@@ -36,7 +36,7 @@ public static class LogMember
         log.Write(logLevel,
                   LogLine.Member,
                   action,
-                  LogAssert.StateLabelIfHelpful(action,label),
+                  LogAssert.StateLabelIfHelpful(action, label, helpfulInformation),
                   (helpfulInformation ?? "").ForLogging());
     }
 
@@ -66,7 +66,7 @@ public static class LogMember
                   LogLine.MemberWithLine,
                   action,
                   line,
-                  LogAssert.StateLabelIfHelpful(action,label),
+                  LogAssert.StateLabelIfHelpful(action, label, helpfulInformation),
                   (helpfulInformation ?? "").ForLogging());
     }
 
@@ -96,7 +96,7 @@ public static class LogMember
                   LogLine.MemberWithLine,
                   action,
                   line,
-                  LogAssert.StateLabelIfHelpful(action,label),
+                  LogAssert.StateLabelIfHelpful(action, label, helpfulInformation),
                   (helpfulInformation ?? "").ForLogging());
     }
 
@@ -181,7 +181,7 @@ public static class LogMember
         log.Error(ex,
                   LogLine.MemberException,
                   action,
-                  LogAssert.StateLabelIfHelpful(action,label),
+                  LogAssert.StateLabelIfHelpful(action, label, helpfulInformation),
                   (helpfulInformation ?? "").ForLogging());
     }
 
@@ -222,7 +222,7 @@ public static class LogMember
         log.Error(ex,
                   LogLine.MemberException,
                   action,
-                  LogAssert.StateLabelIfHelpful(action,label),
+                  LogAssert.StateLabelIfHelpful(action, label, helpfulInformation),
                   (helpfulInformation ?? "").ForLogging());
         throw ex;
     }
@@ -268,7 +268,7 @@ public static class LogMember
         log.Fatal(ex,
                   LogLine.MemberException,
                   action,
-                  LogAssert.StateLabelIfHelpful(action,label),
+                  LogAssert.StateLabelIfHelpful(action, label, helpfulInformation),
                   (helpfulInformation ?? "").ForLogging());
         Environment.Exit(exitCode);
     }

@@ -52,7 +52,7 @@ public static class LogException
                 LogLine.ExceptionConditional,
                 action,
                 conditionExpression,
-                LogAssert.StateLabelIfHelpful(action,label),
+                LogAssert.StateLabelIfHelpful(action, label, helpfulInformation),
                 helpfulInformation.ForLogging() ?? string.Empty);
         return true;
     }
@@ -101,7 +101,7 @@ public static class LogException
                     LogLine.ExceptionConditional,
                     action,
                     conditionExpression,
-                    LogAssert.StateLabelIfHelpful(action,label),
+                    LogAssert.StateLabelIfHelpful(action, label, helpfulInformation),
                     helpfulInformation.ForLogging() ?? string.Empty);
         throw ex;
     }

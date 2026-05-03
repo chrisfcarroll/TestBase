@@ -32,4 +32,16 @@ public class StateLabelIfHelpfulTests
     {
         NUnit.Framework.Assert.That(Serilog.Assert.LogAssert.StateLabelIfHelpful("action", "userId"), Is.EqualTo("userId="));
     }
+
+    [Test]
+    public void ReturnsEmpty_WhenHelpfulInformationIsStringMatchingTrimmedLabel()
+    {
+        NUnit.Framework.Assert.That(Serilog.Assert.LogAssert.StateLabelIfHelpful("action", "\"Comment\"", "Comment"), Is.EqualTo(""));
+    }
+
+    [Test]
+    public void ReturnsLabel_WhenHelpfulInformationIsStringNotMatchingLabel()
+    {
+        NUnit.Framework.Assert.That(Serilog.Assert.LogAssert.StateLabelIfHelpful("action", "\"myLabel\"", "different"), Is.EqualTo("myLabel="));
+    }
 }

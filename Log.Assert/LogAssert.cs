@@ -42,7 +42,7 @@ public static partial class LogAssert
         log.LogError(LogLine.AssertionFailed,
                      action,
                      assertionExpression,
-                     StateLabelIfHelpful(action, label),
+                     StateLabelIfHelpful(action, label, helpfulInformation),
                      helpfulInformation.ForLogging() ?? string.Empty);
     }
 
@@ -73,7 +73,7 @@ public static partial class LogAssert
             log.LogError(LogLine.AssertionNotNullFailed,
                          action,
                          subject,
-                         StateLabelIfHelpful(action,label),
+                         StateLabelIfHelpful(action, label, helpfulInformation),
                          helpfulInformation.ForLogging() ?? string.Empty);
         }
         #pragma warning disable CS8777
@@ -115,7 +115,7 @@ public static partial class LogAssert
         log.LogError(LogLine.PreconditionFailed,
                      action,
                      assertionExpression,
-                     StateLabelIfHelpful(action, label),
+                     StateLabelIfHelpful(action, label, helpfulInformation),
                      helpfulInformation.ForLogging() ?? string.Empty);
     }
 
@@ -145,7 +145,7 @@ public static partial class LogAssert
             log.LogError(LogLine.PreconditionNotNullFailed,
                          action,
                          subject,
-                         StateLabelIfHelpful(action,label),
+                         StateLabelIfHelpful(action, label, helpfulInformation),
                          helpfulInformation.ForLogging() ?? string.Empty);
         }
         #pragma warning disable CS8777
@@ -186,7 +186,7 @@ public static partial class LogAssert
         log.LogError(LogLine.PostconditionFailed,
                      action,
                      assertionExpression,
-                     StateLabelIfHelpful(action, label),
+                     StateLabelIfHelpful(action, label, helpfulInformation),
                      helpfulInformation.ForLogging() ?? string.Empty);
     }
 
@@ -216,7 +216,7 @@ public static partial class LogAssert
             log.LogError(LogLine.PostconditionNotNullFailed,
                          action,
                          subject,
-                         StateLabelIfHelpful(action,label),
+                         StateLabelIfHelpful(action, label, helpfulInformation),
                          helpfulInformation.ForLogging() ?? string.Empty);
         }
         #pragma warning disable CS8777

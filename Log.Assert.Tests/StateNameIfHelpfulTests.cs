@@ -34,4 +34,16 @@ public class StateNameIfHelpfulTests
     {
         NUnit.Framework.Assert.That(LogAssert.StateLabelIfHelpful("action", "userId"), Is.EqualTo("userId="));
     }
+
+    [Test]
+    public void ReturnsEmpty_WhenHelpfulInformationIsStringMatchingTrimmedLabel()
+    {
+        NUnit.Framework.Assert.That(LogAssert.StateLabelIfHelpful("action", "\"Comment\"", "Comment"), Is.EqualTo(""));
+    }
+
+    [Test]
+    public void ReturnsLabel_WhenHelpfulInformationIsStringNotMatchingLabel()
+    {
+        NUnit.Framework.Assert.That(LogAssert.StateLabelIfHelpful("action", "\"myLabel\"", "different"), Is.EqualTo("myLabel="));
+    }
 }

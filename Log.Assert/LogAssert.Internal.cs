@@ -12,10 +12,11 @@ public static partial class LogAssert
     /// <paramref name="label"/> if it is not null, empty, or the same as
     /// <paramref name="action"/>, otherwise empty string.
     /// </returns>
-    internal static string StateLabelIfHelpful(string action, string? label)
+    internal static string StateLabelIfHelpful(string action, string? label, object? helpfulInformation = null)
         => (label is null or ""
             || label.Trim('"') == action
             || label.EndsWith(".ToLoggableState()")
+            || (helpfulInformation is string s && label.Trim('"') == s)
             )
                 ? ""
                 : label.Trim('"') + "=";
