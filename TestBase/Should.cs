@@ -94,6 +94,15 @@ namespace TestBase
             return action;
         }
 
+        /// <summary>
+        /// <p>⚠️ Unless this method is awaited, it cannot fail. ⚠️ </p>
+        /// Assert that <paramref name="action" />() throws, catching the exception and returning it.
+        /// </summary>
+        /// <returns>The caught exception.</returns>
+        /// <exception cref="ShouldHaveThrownException">
+        /// is thrown if <paramref name="action" /> does not throw.
+        /// </exception>
+        /// <exception cref="Assertion">thrown if the wrong Exception is thrown.</exception>
         #if NET6_0_OR_GREATER
         [StackTraceHidden]
         #else
@@ -112,6 +121,24 @@ namespace TestBase
             throw new ShouldHaveThrownException(action.ToString()).ForActiveTestRunner();
         }
 
+        /// <summary>
+        /// <p>⚠️ Unless this method is awaited, it cannot fail. ⚠️ </p>
+        ///
+        /// Assert that evaluating <paramref name="predicate" />( <paramref name="actual" /> )
+        /// throws an Exception of type <typeparamref name="TE"/>.
+        /// </summary>
+        /// <param name="actual"></param>
+        /// <param name="predicate"></param>
+        /// <param name="comment"></param>
+        /// <param name="commentArgs"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TE"></typeparam>
+        /// <returns>
+        /// <paramref name="actual"/>, if the expected assertion is thrown
+        /// during evaluation. Otherwise throws.
+        /// </returns>
+        /// <exception cref="Assertion">thrown if the wrong Exception is thrown.</exception>
+        /// <exception cref="ShouldHaveThrownException">thrown if no assertion is thrown</exception>
         #if NET6_0_OR_GREATER
         [StackTraceHidden]
         #else
@@ -133,9 +160,10 @@ namespace TestBase
         }
 
         /// <summary>
-        ///     Awaits <code><paramref name="task" />()</code>.
-        ///     If <paramref name="task"/> throws,
-        ///     the thrown exception is wrapped in a <see cref="ShouldNotThrowException" /> and thrown.
+        /// <p>⚠️ Unless this method is awaited, it cannot fail. ⚠️ </p>
+        /// Awaits <paramref name="task" />().
+        /// If <paramref name="task"/> throws, the thrown exception is wrapped in a
+        /// <see cref="ShouldNotThrowException" /> and thrown.
         /// </summary>
         /// <returns>A completed Task.</returns>
         /// <exception cref="ShouldNotThrowException">is thrown if <paramref name="task" /> throws.</exception>
@@ -158,8 +186,9 @@ namespace TestBase
         }
 
         /// <summary>
-        ///     Awaits <paramref name="task"/>. If the task throws,
-        ///     the thrown exception is wrapped in a <see cref="ShouldNotThrowException" /> and thrown.
+        /// <p>⚠️ Unless this method is awaited, it cannot fail. ⚠️ </p>
+        /// Awaits <paramref name="task"/>. If the task throws, the thrown exception is wrapped
+        /// in a <see cref="ShouldNotThrowException" /> and thrown.
         /// </summary>
         /// <returns>A completed task.</returns>
         /// <exception cref="ShouldNotThrowException">is thrown if <paramref name="task" /> throws.</exception>
@@ -180,6 +209,7 @@ namespace TestBase
         }
 
         /// <summary>
+        /// <p>⚠️ Unless this method is awaited, it cannot fail. ⚠️ </p>
         ///     Awaits <paramref name="task"/>. If the task throws,
         ///     the thrown exception is wrapped in a <see cref="ShouldNotThrowException" /> and thrown.
         /// </summary>
@@ -196,5 +226,6 @@ namespace TestBase
                         (comment?? $"Expected not to throw but did throw: {ex}").Formatz(commentArgs))
                     .ForActiveTestRunner();
             }
-        }    }
+        }
+    }
 }
