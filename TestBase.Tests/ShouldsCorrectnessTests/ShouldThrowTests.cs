@@ -29,7 +29,10 @@ public class ShouldThrowAsyncTests
         Task<Action> taskAction = Task.FromResult<Action>(() => { });
 
         // Act & Assert
-        NUnit.Framework.Assert.ThrowsAsync<NUnit.Framework.AssertionException>(async () => await Should.ThrowAsync<InvalidOperationException>(taskAction));
+        var thrown = NUnit.Framework.Assert.ThrowsAsync<NUnit.Framework.AssertionException>(async () => await Should.ThrowAsync<InvalidOperationException>(taskAction));
+        thrown
+            .ShouldNotBeNull()
+            .InnerException.ShouldBeAssignableTo<ShouldHaveThrownException>();
     }
 
     [Test]
