@@ -71,41 +71,47 @@ namespace TestBase
     {
         static string OutExpression(object source, string expression)
         {
-            var format = "";
-
-            var colonIndex = expression.IndexOf(':');
-            if (colonIndex > 0)
+            try
             {
-                format     = expression.Substring(colonIndex + 1);
-                expression = expression.Substring(0, colonIndex);
-            }
+                if (source == null || string.IsNullOrEmpty(expression)) return "";
 
-            if (string.IsNullOrEmpty(format)) { }
-            else if (format.Length > 1 && format[1] == '%')
-                switch (format[0])
+                var format = "";
+
+                var colonIndex = expression.IndexOf(':');
+                if (colonIndex > 0)
                 {
-                    case 'i':
-                        return source.ToJQueryable()
-                                     .SelectToken(expression)
-                                     ?.ToObject<int>()
-                                     .ToString(format.Substring(2));
-                    case 'd':
-                        return source.ToJQueryable()
-                                     .SelectToken(expression)
-                                     ?.ToObject<decimal>()
-                                     .ToString(format.Substring(2));
-                    case 'n':
-                        return source.ToJQueryable()
-                                     .SelectToken(expression)
-                                     ?.ToObject<double>()
-                                     .ToString(format.Substring(2));
-                    case 't':
-                        return source.ToJQueryable()
-                                     .SelectToken(expression)
-                                     ?.ToObject<DateTime>()
-                                     .ToString(format.Substring(2));
+                    format     = expression.Substring(colonIndex + 1);
+                    expression = expression.Substring(0, colonIndex);
                 }
-            return source.ToJQueryable().SelectToken(expression)?.ToString();
+
+                if (string.IsNullOrEmpty(format)) { }
+                else if (format.Length > 1 && format[1] == '%')
+                    switch (format[0])
+                    {
+                        case 'i':
+                            return source.ToJQueryable()
+                                         .SelectToken(expression)
+                                         ?.ToObject<int>()
+                                         .ToString(format.Substring(2));
+                        case 'd':
+                            return source.ToJQueryable()
+                                         .SelectToken(expression)
+                                         ?.ToObject<decimal>()
+                                         .ToString(format.Substring(2));
+                        case 'n':
+                            return source.ToJQueryable()
+                                         .SelectToken(expression)
+                                         ?.ToObject<double>()
+                                         .ToString(format.Substring(2));
+                        case 't':
+                            return source.ToJQueryable()
+                                         .SelectToken(expression)
+                                         ?.ToObject<DateTime>()
+                                         .ToString(format.Substring(2));
+                    }
+                return source.ToJQueryable().SelectToken(expression)?.ToString();
+            }
+            catch { return ""; }
         }
 
         /// <summary>
@@ -160,6 +166,11 @@ namespace TestBase
                                     break;
                                 case '{':
                                     result.Append('{');
+                                    state = State.OutsideExpression;
+                                    break;
+                                case '}':
+                                    result.Append(OutExpression(source, expression.ToString()));
+                                    expression.Length = 0;
                                     state = State.OutsideExpression;
                                     break;
                                 default:
