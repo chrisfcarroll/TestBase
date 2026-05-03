@@ -82,27 +82,55 @@ public class ShouldThrowAsyncTests
         NUnit.Framework.Assert.ThrowsAsync<NUnit.Framework.AssertionException>(async () => await Should.ThrowAsync<string, InvalidOperationException>(actual, taskPredicate, null, null));
     }
 
-    // WIP
-    // [Test]
-    // public async Task NotThrowAsync_TaskAction_CatchesExpectedException()
-    // {
-    //     async Task ThrowWhenAwaited()
-    //     {
-    //         await Task.Yield();
-    //         throw new InvalidOperationException("Test");
-    //     }
-    //
-    //     // Act
-    //     try
-    //     {
-    //         await Should.NotThrowAsync(ThrowWhenAwaited);
-    //
-    //         Assert.Fail("Should have thrown a ShouldNotThrowException but didn't");
-    //     }
-    //     catch (ShouldNotThrowException ex)
-    //     {
-    //         ex.Message.ShouldContain("Test","Threw a ShouldNotThrowException, but it should have contained the thrown InvalidOperationException");
-    //     }
-    // }
+    [Test]
+    public async Task NotThrowAsync_FuncTask_CatchesExpectedException()
+    {
+        async Task ThrowWhenAwaited()
+        {
+            await Task.Yield();
+            throw new InvalidOperationException("Test");
+        }
 
+        // Act
+        try
+        {
+            await Should.NotThrowAsync(ThrowWhenAwaited);
+            Assert.Fail("Should have thrown a ShouldNotThrowException but didn't throw anything");
+        }
+        catch (ShouldNotThrowException ex)
+        {
+            ex.Message.ShouldContain("Test",
+                                     "Threw a ShouldNotThrowException, but it should have contained the thrown InvalidOperationException");
+        }
+        catch (Exception ex)
+        {
+            ex.InnerException.ShouldBeAssignableTo<ShouldNotThrowException>();
+        }
+    }
+
+    [Test]
+    public async Task NotThrowAsync_TaskReturning_CatchesExpectedException()
+    {
+        async Task<int> ThrowWhenAwaited()
+        {
+            await Task.Yield();
+            throw new InvalidOperationException("Test");
+        }
+
+        // Act
+        try
+        {
+            await Should.NotThrowAsync(ThrowWhenAwaited );
+
+            Assert.Fail("Should have thrown a ShouldNotThrowException but didn't");
+        }
+        catch (ShouldNotThrowException ex)
+        {
+            ex.Message.ShouldContain("Test","Threw a ShouldNotThrowException, but it should have contained the thrown InvalidOperationException");
+        }
+        catch (Exception ex)
+        {
+            ex.InnerException.ShouldBeAssignableTo<ShouldNotThrowException>();
+        }
+    }
 }
