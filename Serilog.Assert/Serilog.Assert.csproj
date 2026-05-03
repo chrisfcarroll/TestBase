@@ -55,21 +55,24 @@ return remainder;
 - All methods can log additional information, either auto-labelled or explicitly labelled.
 
 ```
-Member()
-Assert()
-Precondition()
-Postcondition()
+Member()          MemberDebug()    MemberVerbose()
+MemberWarning()   MemberError()
 
-If()
-DebugIf()
-VerboseIf()
-WarningIf()
-ErrorIf()
-ExceptionIf()
+Assert()          AssertNotNull()
+AssertNotNullOrEmpty()             AssertNotNullOrWhitespace()
 
-Exception()
-ExceptionAndThrow()
-FatalAndExitProcessWithExitCode()
+Precondition()    PreconditionNotNull()
+PreconditionNotNullOrEmpty()       PreconditionNotNullOrWhitespace()
+
+Postcondition()   PostconditionNotNull()
+PostconditionNotNullOrEmpty()      PostconditionNotNullOrWhitespace()
+
+If()  InformationIf()  DebugIf()  VerboseIf()  WarnIf()  ErrorIf()  FatalIf()
+IfNot()  InformationIfNot()  DebugIfNot()  VerboseIfNot()  WarnIfNot()  ErrorIfNot()  FatalIfNot()
+
+ExceptionIf()     ExceptionAndThrowIf()
+MemberException() MemberExceptionThenThrow()
+MemberFatalExceptionThenExitProcessWithCode()
 ```
 ]]></PackageDescription>
     <PackageReleaseNotes>

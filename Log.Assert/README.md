@@ -53,27 +53,47 @@ All methods accept an optional additonal state parameter, and an optional label 
 
 ```
 log.Member()
+log.MemberDebug()
+log.MemberTrace()
+log.MemberWarning()
+log.MemberError()
+
 log.Assert()
+log.AssertNotNull()
+log.AssertNotNullOrEmpty()
+log.AssertNotNullOrWhitespace()
+
 log.Precondition()
+log.PreconditionNotNull()
+log.PreconditionNotNullOrEmpty()
+log.PreconditionNotNullOrWhitespace()
+
 log.Postcondition()
+log.PostconditionNotNull()
+log.PostconditionNotNullOrEmpty()
+log.PostconditionNotNullOrWhitespace()
 
 log.If()
+log.InformationIf()
 log.DebugIf()
-log.VerboseIf()
-log.WarningIf()
+log.TraceIf()
+log.WarnIf()
 log.ErrorIf()
-log.ExceptionIf()
+log.CriticalIf()
 
 log.IfNot()
+log.InformationIfNot()
 log.DebugIfNot()
-log.VerboseIfNot()
+log.TraceIfNot()
 log.WarnIfNot()
 log.ErrorIfNot()
-log.FatalIfNot()
+log.CriticalIfNot()
 
-log.Exception()
-log.ExceptionAndThrow()
-log.CriticalAndExitProcessWithExitCode()
+log.ExceptionIf()
+log.ExceptionAndThrowIf()
+log.MemberException()
+log.MemberExceptionThenThrow()
+log.MemberCriticalExceptionThenExitProcessWithCode()
 ```
 
 ## Logging additional state
