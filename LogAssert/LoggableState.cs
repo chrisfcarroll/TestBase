@@ -5,7 +5,8 @@ namespace LogAssert;
 
 /// <summary>
 /// An optional interface to remind you to add
-/// a ToLoggableState() method to your class.
+/// a ToLoggableState() method to your class, to summarize useful state and to
+/// mask or omit sensitive information.
 /// </summary>
 public interface ILoggable
 {
@@ -23,7 +24,7 @@ public static class LoggableState
     /// Otherwise, returns ToString().
     ///
     /// "Override" this fallback method by defining public object ToLoggableState()
-    /// on your classes.
+    /// on your classes, and optionally declaring them to implement ILoggable.
     /// </summary>
     public static object? ToLoggableState<T>(this T state)
     {
