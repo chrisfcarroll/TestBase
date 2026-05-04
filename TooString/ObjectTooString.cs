@@ -590,14 +590,14 @@ public static partial class ObjectTooString
                 return qstr(time.ToString(options.TimeOnlyFormat));
             if (value is TimeSpan span)
                 return qstr(span.ToString(options.TimeSpanFormat));
-            if(value is Type type) return qstr( type.ShortTypeName() );
+            if(value is Type type) return qstr( type.TypeName() );
 
             if (value.GetType().IsAssignableTo(typeof(IEnumerable)))
             {
                 if (isJson ) return "[]";
                 if (value is Array arr)
                 {
-                    return $"{arr.GetType().GetElementType()?.ShortTypeName()}[{arr.Length}]";
+                    return $"{arr.GetType().GetElementType()?.TypeName()}[{arr.Length}]";
                 }
                 if (value is IList list && list.GetType().GetGenericArguments().Any())
                 {
@@ -619,10 +619,8 @@ public static partial class ObjectTooString
         }
     }
 
-    static string ShortTypeName(this Type type)
-        => type.FullName?.StartsWith("System.") is true
-            ? type.FullName[7..]
-            : type.FullName ?? $"{type.Namespace}.{type.Name}";
+    static string TypeName(this Type type)
+        => type.FullName ?? $"{type.Namespace}.{type.Name}";
     static readonly string NewLineSpaces400 = Environment.NewLine + new string(' ',400);
     static readonly string CommaCrLfSpaces400 = "," + NewLineSpaces400;
     static readonly StringBuilder sb = new StringBuilder();
