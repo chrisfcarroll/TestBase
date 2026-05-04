@@ -66,7 +66,7 @@ Should.ThrowAsync();
 Should.NotThrow();
 
 Inconclusive.Because()
-Inconclusive.IfPreConditionFails()
+Inconclusive.IfPreconditionFails()
 Inconclusive.If()
 ```
 
