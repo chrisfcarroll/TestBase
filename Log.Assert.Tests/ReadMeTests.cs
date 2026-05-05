@@ -14,7 +14,7 @@ public class ReadMeTests
 
         log.Entries.ForEach(TestContext.WriteLine);
 
-        log.Entries.ShouldHaveCount(2);
+        log.Entries.ShouldHaveCount(3);
 
         log.Entries[0].Level.ShouldBe(LogLevel.Information);
         log.Entries[0].Message
@@ -87,6 +87,7 @@ public class ReadMeExample(ILogger<ReadMeExample> log)
 
         log.PreconditionNotNull(target);
         log.Postcondition(remainder.Length < target.Length);
+        log.Member(remainder);
         return remainder;
     }
 

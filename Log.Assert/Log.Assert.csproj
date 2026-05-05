@@ -19,29 +19,40 @@
     <AssemblyFileVersion>0.1</AssemblyFileVersion>
     <PackageVersion>0.1</PackageVersion>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <Title>Log.Assert( A better style of application logging )</Title>
+    <Title>Log.Assert( it is "A better style of application logging" ).</Title>
     <PackageDescription><![CDATA[Log.Assert is a better style of application logging.
 ```
-log.Member();                     // logs Method name
-log.PreconditionNotNull(target);  // logs nothing if true, or the failure if not.
+log.Member();
+log.PreconditionNotNull(target);
 
 var graphemes = new StringInfo(target??"");
-log.Assert(graphemes.LengthInTextElements > 0); // logs nothing if true, or the failure if not.
+log.Assert(graphemes.LengthInTextElements > 0);
 
 log.Precondition(0 <= guess && guess <= graphemes.LengthInTextElements);
 
-if (graphemes.SubstringByTextElements(guess,1) is "💥")
-    throw new ApplicationException("bang!");
+log.ExceptionAndThrowIf(
+    graphemes.SubstringByTextElements(guess,1) is "💥",
+    new ApplicationException("bang!"));
 
 var remainder = Remove(graphemes,guess);
+log.DebugIf(remainder.Length == 0,helpfulInformation: "TBC:is this permitted?");
+log.If(graphemes.LengthInTextElements > 0,
+          helpfulInformation: (target,guess,graphemes.LengthInTextElements),
+          label: "Remaining after Removal");
 
+log.PreconditionNotNull(target);
 log.Postcondition(remainder.Length < target.Length);
+log.Member(remainder);
+return remainder;
 ```
-All methods log the current Method or Member name.
-Assertions,Pre- and Post-Conditions log nothing at all if they pass
-Assertions,Pre- and Post-Conditions log the failed expression if they fail.
-LogIf() logs nothing if the condition is false
-LogIf() logs the condition expression if it is true
+## What is Logged?
+ 
+- All methods log the current Method or Member name.
+- All methods can log additional information, either auto-labelled or explicitly labelled.
+- Assertions, Pre-, and Post-Conditions log nothing at all if they pass.
+- Assertions, Pre-, and Post-Conditions log the literal failed expression if they fail.
+- log.If() logs nothing at all if the condition is false
+- log.If() logs the literal condition expression if it is true
 
 ```
 Member()
