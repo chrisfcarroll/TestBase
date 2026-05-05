@@ -89,7 +89,7 @@ public class SerilogCallTests
     [Test]
     public void Call_WithStateName_IncludesLabel()
     {
-        log.Log.Member("val", helpfulLabel: "myParam");
+        log.Log.Member("val", label: "myParam");
 
         NUnit.Framework.Assert.That(log.Last.Message, Does.Contain("myParam:"));
     }

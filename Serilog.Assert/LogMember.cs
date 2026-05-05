@@ -21,7 +21,7 @@ public static class LogMember
     /// <param name="logLevel"></param>
     /// <param name="action">Compiler populated: the name of the member (for instance,
     /// the method) being logged. Will be logged under the property name "Action"</param>
-    /// <param name="helpfulLabel">
+    /// <param name="label">
     /// Optional: a label to describe <paramref name="helpfulInformation"/>. Will be logged
     /// under the property name "Label".
     /// </param>
@@ -30,13 +30,13 @@ public static class LogMember
                             LogEventLevel logLevel = LogEventLevel.Information,
                             [CallerMemberName] string action = "",
                             [CallerArgumentExpression("helpfulInformation")]
-                            string? helpfulLabel = "")
+                            string? label = "")
     {
         if(!log.IsEnabled(logLevel)) return;
         log.Write(logLevel,
                   "{Action}({Label}{@State})",
                   action,
-                  LogAssert.StateLabelIfHelpful(action,helpfulLabel),
+                  LogAssert.StateLabelIfHelpful(action,label),
                   (helpfulInformation ?? "").ForLogging());
     }
 
@@ -50,7 +50,7 @@ public static class LogMember
     /// </param>
     /// <param name="action">Compiler populated: the name of the member (for instance,
     /// the method) being logged. Will be logged under the property name "Action"</param>
-    /// <param name="helpfulLabel">
+    /// <param name="label">
     /// Optional: a label to describe <paramref name="helpfulInformation"/>. Will be logged
     /// under the property name "Label".
     /// </param>
@@ -58,12 +58,12 @@ public static class LogMember
                                    object? helpfulInformation = null,
                                    [CallerMemberName] string action = "",
                                    [CallerArgumentExpression("helpfulInformation")]
-                                   string? helpfulLabel = null)
+                                   string? label = null)
         => Member(log,
                 helpfulInformation,
                 LogEventLevel.Debug,
                 action,
-                helpfulLabel);
+                label);
 
     /// <summary>
     /// Log the name of the current Method or Member call, optionally with any additional
@@ -75,7 +75,7 @@ public static class LogMember
     /// </param>
     /// <param name="action">Compiler populated: the name of the member (for instance,
     /// the method) being logged. Will be logged under the property name "Action"</param>
-    /// <param name="helpfulLabel">
+    /// <param name="label">
     /// Optional: a label to describe <paramref name="helpfulInformation"/>. Will be logged
     /// under the property name "Label".
     /// </param>
@@ -83,12 +83,12 @@ public static class LogMember
                                      object? helpfulInformation = null,
                                      [CallerMemberName] string action = "",
                                      [CallerArgumentExpression("helpfulInformation")]
-                                     string? helpfulLabel = null)
+                                     string? label = null)
         => Member(log,
                 helpfulInformation,
                 LogEventLevel.Verbose,
                 action,
-                helpfulLabel);
+                label);
 
     /// <summary>
     /// Log the name of the current Method or Member call, optionally with any additional
@@ -100,7 +100,7 @@ public static class LogMember
     /// </param>
     /// <param name="action">Compiler populated: the name of the member (for instance,
     /// the method) being logged. Will be logged under the property name "Action"</param>
-    /// <param name="helpfulLabel">
+    /// <param name="label">
     /// Optional: a label to describe <paramref name="helpfulInformation"/>. Will be logged
     /// under the property name "Label".
     /// </param>
@@ -108,12 +108,12 @@ public static class LogMember
                                      object? helpfulInformation = null,
                                      [CallerMemberName] string action = "",
                                      [CallerArgumentExpression("helpfulInformation")]
-                                     string? helpfulLabel = null)
+                                     string? label = null)
         => Member(log,
                 helpfulInformation,
                 LogEventLevel.Warning,
                 action,
-                helpfulLabel);
+                label);
 
     /// <summary>
     /// Log the name of the current Method or Member call, optionally with any additional
@@ -125,7 +125,7 @@ public static class LogMember
     /// </param>
     /// <param name="action">Compiler populated: the name of the member (for instance,
     /// the method) being logged. Will be logged under the property name "Action"</param>
-    /// <param name="helpfulLabel">
+    /// <param name="label">
     /// Optional: a label to describe <paramref name="helpfulInformation"/>. Will be logged
     /// under the property name "Label".
     /// </param>
@@ -133,12 +133,12 @@ public static class LogMember
                                    object? helpfulInformation = null,
                                    [CallerMemberName] string action = "",
                                    [CallerArgumentExpression("helpfulInformation")]
-                                   string? helpfulLabel = null)
+                                   string? label = null)
         => Member(log,
                 helpfulInformation,
                 LogEventLevel.Error,
                 action,
-                helpfulLabel);
+                label);
 
     /// <summary>
     /// Log the name of the current Method or Member call, with Exception <paramref name="ex"/>,
@@ -155,7 +155,7 @@ public static class LogMember
     /// </param>
     /// <param name="action">Compiler populated: the name of the member (for instance,
     /// the method) being logged. Will be logged under the property name "Action"</param>
-    /// <param name="helpfulLabel">
+    /// <param name="label">
     /// Optional: a label to describe <paramref name="helpfulInformation"/>. Will be logged
     /// under the property name "Label".
     /// </param>
@@ -164,14 +164,14 @@ public static class LogMember
                                          object? helpfulInformation = null,
                                          [CallerMemberName] string action = "",
                                          [CallerArgumentExpression("helpfulInformation")]
-                                         string? helpfulLabel = null)
+                                         string? label = null)
     {
         ex ??= new ApplicationException(message: $"Exception in {action}");
         if(!log.IsEnabled(LogEventLevel.Error)) return;
         log.Error(ex,
                   "{Action}({Label}{State})",
                   action,
-                  LogAssert.StateLabelIfHelpful(action,helpfulLabel),
+                  LogAssert.StateLabelIfHelpful(action,label),
                   (helpfulInformation ?? "").ForLogging());
     }
 
@@ -192,7 +192,7 @@ public static class LogMember
     /// </param>
     /// <param name="action">Compiler populated: the name of the member (for instance,
     /// the method) being logged. Will be logged under the property name "Action"</param>
-    /// <param name="helpfulLabel">
+    /// <param name="label">
     /// Optional: a label to describe <paramref name="helpfulInformation"/>. Will be logged
     /// under the property name "Label".
     /// </param>
@@ -206,13 +206,13 @@ public static class LogMember
                                                   object? helpfulInformation = null,
                                                   [CallerMemberName] string action = "",
                                                   [CallerArgumentExpression("helpfulInformation")]
-                                                  string? helpfulLabel = null)
+                                                  string? label = null)
     {
         ex ??= new ApplicationException(message: $"Exception in {action}");
         log.Error(ex,
                   "{Action}({Label}{State})",
                   action,
-                  LogAssert.StateLabelIfHelpful(action,helpfulLabel),
+                  LogAssert.StateLabelIfHelpful(action,label),
                   (helpfulInformation ?? "").ForLogging());
         throw ex;
     }
@@ -236,7 +236,7 @@ public static class LogMember
     /// </param>
     /// <param name="action">Compiler populated: the name of the member (for instance,
     /// the method) being logged. Will be logged under the property name "Action"</param>
-    /// <param name="helpfulLabel">
+    /// <param name="label">
     /// Optional: a label to describe <paramref name="helpfulInformation"/>. Will be logged
     /// under the property name "Label".
     /// </param>
@@ -251,14 +251,14 @@ public static class LogMember
                                                    object? helpfulInformation = null,
                                                    [CallerMemberName] string action = "",
                                                    [CallerArgumentExpression("helpfulInformation")]
-                                                   string? helpfulLabel = null)
+                                                   string? label = null)
     {
         ex ??= new ApplicationException(message: $"Terminating process with exit code {exitCode} " +
                                                  $"because Exception in {action}");
         log.Fatal(ex,
                   "{Action}({Label}{State})",
                   action,
-                  LogAssert.StateLabelIfHelpful(action,helpfulLabel),
+                  LogAssert.StateLabelIfHelpful(action,label),
                   (helpfulInformation ?? "").ForLogging());
         Environment.Exit(exitCode);
     }

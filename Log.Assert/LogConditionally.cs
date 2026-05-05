@@ -14,7 +14,7 @@ public static class LogConditionally
     /// </param>.
     /// Either way, return <paramref name="condition"/>.
     /// <p>Optionally also log <paramref name="helpfulInformation"/> under the property
-    /// name "State", and log <paramref name="helpfulLabel"/> under the property name "Label".
+    /// name "State", and log <paramref name="label"/> under the property name "Label".
     /// </summary>
     /// <param name="log"></param>
     /// <param name="condition">the value being asserted as true</param>
@@ -28,7 +28,7 @@ public static class LogConditionally
     /// <param name="conditionExpression">
     ///     Compiler generated: the expression being tested.
     /// </param>
-    /// <param name="helpfulLabel">
+    /// <param name="label">
     ///     Optional: a label to describe <paramref name="helpfulInformation"/>. Will be logged
     ///     under the property name "Label".
     /// </param>
@@ -40,7 +40,7 @@ public static class LogConditionally
                              [CallerArgumentExpression("condition")]
                              string? conditionExpression = "",
                              [CallerArgumentExpression("helpfulInformation")]
-                             string? helpfulLabel = "")
+                             string? label = "")
     {
         if (!condition) return false;
         if (!log.IsEnabled(logLevel)) return true;
@@ -48,7 +48,7 @@ public static class LogConditionally
                 "{Action}:{Condition}:{Label}{State}",
                 action,
                 conditionExpression,
-                LogAssert.StateLabelIfHelpful(action,helpfulLabel),
+                LogAssert.StateLabelIfHelpful(action,label),
                 helpfulInformation.ForLogging() ?? string.Empty);
         return true;
     }
@@ -57,7 +57,7 @@ public static class LogConditionally
     /// If <paramref name="condition"/> is true, log at <see cref="LogLevel.Information"/>.
     /// Either way, return <paramref name="condition"/>.
     /// <p>Optionally also log <paramref name="helpfulInformation"/> under the property
-    /// name "State", and log <paramref name="helpfulLabel"/> under the property name "Label".
+    /// name "State", and log <paramref name="label"/> under the property name "Label".
     /// </summary>
     /// <param name="condition">the value being asserted as true</param>
     /// <param name="conditionExpression">
@@ -69,7 +69,7 @@ public static class LogConditionally
     /// </param>
     /// <param name="action">Compiler populated: the name of the member (for instance,
     /// the method) being logged. Will be logged under the property name "Action"</param>
-    /// <param name="helpfulLabel">
+    /// <param name="label">
     /// Optional: a label to describe <paramref name="helpfulInformation"/>. Will be logged
     /// under the property name "Label".
     /// </param>
@@ -80,20 +80,20 @@ public static class LogConditionally
                                      [CallerArgumentExpression("condition")]
                                      string? conditionExpression = "",
                                      [CallerArgumentExpression("helpfulInformation")]
-                                     string? helpfulLabel = "")
+                                     string? label = "")
         => If(log,
               condition,
               helpfulInformation,
               LogLevel.Information,
               action,
               conditionExpression,
-              helpfulLabel);
+              label);
 
     /// <summary>
     /// If <paramref name="condition"/> is true, log at <see cref="LogLevel.Warning"/>.
     /// Either way, return <paramref name="condition"/>.
     /// <p>Optionally also log <paramref name="helpfulInformation"/> under the property
-    /// name "State", and log <paramref name="helpfulLabel"/> under the property name "Label".
+    /// name "State", and log <paramref name="label"/> under the property name "Label".
     /// </summary>
     /// <param name="condition">the value being asserted as true</param>
     /// <param name="conditionExpression">
@@ -105,7 +105,7 @@ public static class LogConditionally
     /// </param>
     /// <param name="action">Compiler populated: the name of the member (for instance,
     /// the method) being logged. Will be logged under the property name "Action"</param>
-    /// <param name="helpfulLabel">
+    /// <param name="label">
     /// Optional: a label to describe <paramref name="helpfulInformation"/>. Will be logged
     /// under the property name "Label".
     /// </param>
@@ -116,20 +116,20 @@ public static class LogConditionally
                                  [CallerArgumentExpression("condition")]
                                  string? conditionExpression = "",
                                  [CallerArgumentExpression("helpfulInformation")]
-                                 string? helpfulLabel = "")
+                                 string? label = "")
         => If(log,
               condition,
               helpfulInformation,
               LogLevel.Warning,
                  action,
                  conditionExpression,
-                 helpfulLabel);
+                 label);
 
     /// <summary>
     /// If <paramref name="condition"/> is true, log at <see cref="LogLevel.Error"/>.
     /// Either way, return <paramref name="condition"/>.
     /// <p>Optionally also log <paramref name="helpfulInformation"/> under the property
-    /// name "State", and log <paramref name="helpfulLabel"/> under the property name "Label".
+    /// name "State", and log <paramref name="label"/> under the property name "Label".
     /// </summary>
     /// <param name="condition">the value being asserted as true</param>
     /// <param name="conditionExpression">
@@ -141,7 +141,7 @@ public static class LogConditionally
     /// </param>
     /// <param name="action">Compiler populated: the name of the member (for instance,
     /// the method) being logged. Will be logged under the property name "Action"</param>
-    /// <param name="helpfulLabel">
+    /// <param name="label">
     /// Optional: a label to describe <paramref name="helpfulInformation"/>. Will be logged
     /// under the property name "Label".
     /// </param>
@@ -152,20 +152,20 @@ public static class LogConditionally
                                   [CallerArgumentExpression("condition")]
                                   string? conditionExpression = "",
                                   [CallerArgumentExpression("helpfulInformation")]
-                                  string? helpfulLabel = "")
+                                  string? label = "")
         => If(log,
               condition,
               helpfulInformation,
               LogLevel.Error,
                  action,
                  conditionExpression,
-                 helpfulLabel);
+                 label);
 
     /// <summary>
     /// If <paramref name="condition"/> is true, log at <see cref="LogLevel.Debug"/>.
     /// Either way, return <paramref name="condition"/>.
     /// <p>Optionally also log <paramref name="helpfulInformation"/> under the property
-    /// name "State", and log <paramref name="helpfulLabel"/> under the property name "Label".
+    /// name "State", and log <paramref name="label"/> under the property name "Label".
     /// </summary>
     /// <param name="condition">the value being asserted as true</param>
     /// <param name="conditionExpression">
@@ -177,7 +177,7 @@ public static class LogConditionally
     /// </param>
     /// <param name="action">Compiler populated: the name of the member (for instance,
     /// the method) being logged. Will be logged under the property name "Action"</param>
-    /// <param name="helpfulLabel">
+    /// <param name="label">
     /// Optional: a label to describe <paramref name="helpfulInformation"/>. Will be logged
     /// under the property name "Label".
     /// </param>
@@ -188,20 +188,20 @@ public static class LogConditionally
                                   [CallerArgumentExpression("condition")]
                                   string? conditionExpression = "",
                                   [CallerArgumentExpression("helpfulInformation")]
-                                  string? helpfulLabel = "")
+                                  string? label = "")
         => If(log,
               condition,
               helpfulInformation,
               LogLevel.Debug,
                  action,
                  conditionExpression,
-                 helpfulLabel);
+                 label);
 
     /// <summary>
     /// If <paramref name="condition"/> is true, log at <see cref="LogLevel.Trace"/>.
     /// Either way, return <paramref name="condition"/>.
     /// <p>Optionally also log <paramref name="helpfulInformation"/> under the property
-    /// name "State", and log <paramref name="helpfulLabel"/> under the property name "Label".
+    /// name "State", and log <paramref name="label"/> under the property name "Label".
     /// </summary>
     /// <param name="condition">the value being asserted as true</param>
     /// <param name="conditionExpression">
@@ -213,7 +213,7 @@ public static class LogConditionally
     /// </param>
     /// <param name="action">Compiler populated: the name of the member (for instance,
     /// the method) being logged. Will be logged under the property name "Action"</param>
-    /// <param name="helpfulLabel">
+    /// <param name="label">
     /// Optional: a label to describe <paramref name="helpfulInformation"/>. Will be logged
     /// under the property name "Label".
     /// </param>
@@ -224,21 +224,21 @@ public static class LogConditionally
                                   [CallerArgumentExpression("condition")]
                                   string? conditionExpression = "",
                                   [CallerArgumentExpression("helpfulInformation")]
-                                  string? helpfulLabel = "")
+                                  string? label = "")
         => If(log,
               condition,
               helpfulInformation,
               LogLevel.Trace,
                  action,
                  conditionExpression,
-                 helpfulLabel);
+                 label);
 
 
     /// <summary>
     /// If <paramref name="condition"/> is true, log at <see cref="LogLevel.Critical"/>.
     /// Either way, return <paramref name="condition"/>.
     /// <p>Optionally also log <paramref name="helpfulInformation"/> under the property
-    /// name "State", and log <paramref name="helpfulLabel"/> under the property name "Label".
+    /// name "State", and log <paramref name="label"/> under the property name "Label".
     /// </summary>
     /// <param name="condition">the value being asserted as true</param>
     /// <param name="conditionExpression">
@@ -250,7 +250,7 @@ public static class LogConditionally
     /// </param>
     /// <param name="action">Compiler populated: the name of the member (for instance,
     /// the method) being logged. Will be logged under the property name "Action"</param>
-    /// <param name="helpfulLabel">
+    /// <param name="label">
     /// Optional: a label to describe <paramref name="helpfulInformation"/>. Will be logged
     /// under the property name "Label".
     /// </param>
@@ -261,12 +261,12 @@ public static class LogConditionally
                                      [CallerArgumentExpression("condition")]
                                      string? conditionExpression = "",
                                      [CallerArgumentExpression("helpfulInformation")]
-                                     string? helpfulLabel = "")
+                                     string? label = "")
         => If(log,
               condition,
               helpfulInformation,
               LogLevel.Critical,
                  action,
                  conditionExpression,
-                 helpfulLabel);
+                 label);
 }

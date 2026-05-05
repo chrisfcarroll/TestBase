@@ -1,4 +1,4 @@
-# Log.Assert( A better style of application logging ).
+# Log.Assert( it is "A better style of application logging" ).
 ```
 public string GoBang(string target, int guess)
 {
@@ -18,7 +18,7 @@ public string GoBang(string target, int guess)
     log.LogDebugIf(remainder.Length == 0,"TBC:is this permitted?");
     log.LogIf(graphemes.LengthInTextElements == 0,
               (target,guess,graphemes), 
-              helpfulLabel:"Afer Removal");
+              label:"Afer Removal");
 
     log.PreconditionNotNull(target);
     log.Postcondition(remainder.Length < target.Length);
@@ -27,8 +27,8 @@ public string GoBang(string target, int guess)
 ```
 ## What is Logged?
  
-- **All** methods log the current Method or Member name.
-- **All** method optionally log additional information, with auto-labelling or an explicit label.
+- All methods log the current Method or Member name.
+- All methods optionally log additional information, with auto-labelling or an explicit label.
 - Assertions, Pre-, and Post-Conditions log nothing at all if they pass.
 - Assertions, Pre-, and Post-Conditions log the failed expression if they fail.
 - log.If() logs nothing at all if the condition is false

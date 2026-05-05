@@ -83,7 +83,7 @@ public class ReadMeExample(ILogger<ReadMeExample> log)
         log.DebugIf(remainder.Length == 0,"TBC:is this permitted?");
         log.If(graphemes.LengthInTextElements > 0,
                   (target,guess,graphemes.LengthInTextElements),
-                  helpfulLabel:"Remaining after Removal");
+                  label:"Remaining after Removal");
 
         log.PreconditionNotNull(target);
         log.Postcondition(remainder.Length < target.Length);

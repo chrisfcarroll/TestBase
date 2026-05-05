@@ -51,7 +51,7 @@ public class LogIfTests
     [Test]
     public void If_IncludesStateName_WhenDistinctFromAction()
     {
-        log.If(true, "myValue", helpfulLabel: "myLabel");
+        log.If(true, "myValue", label: "myLabel");
 
         NUnit.Framework.Assert.That(log.Last.Message, Does.Contain("myLabel:"));
         NUnit.Framework.Assert.That(log.Last.Message, Does.Contain("myValue"));

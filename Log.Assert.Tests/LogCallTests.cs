@@ -97,7 +97,7 @@ public class LogCallTests
     [Test]
     public void LogAction_WithStateName_IncludesLabel()
     {
-        log.Member("val", helpfulLabel: "myParam");
+        log.Member("val", label: "myParam");
 
         NUnit.Framework.Assert.That(log.Last.Message, Does.Contain("myParam:"));
     }

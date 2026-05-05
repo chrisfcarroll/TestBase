@@ -10,7 +10,7 @@ public static class LogException
     /// at <see cref="LogLevel.Error"/>.
     /// Either way, return <paramref name="condition"/>.
     /// <p>Optionally also log <paramref name="helpfulInformation"/> under the property
-    /// name "State", and log <paramref name="helpfulLabel"/> under the property name "Label".
+    /// name "State", and log <paramref name="label"/> under the property name "Label".
     /// </summary>
     /// <param name="condition">the value being asserted as true</param>
     /// <param name="ex">
@@ -26,7 +26,7 @@ public static class LogException
     /// </param>
     /// <param name="action">Compiler populated: the name of the member (for instance,
     /// the method) being logged. Will be logged under the property name "Action"</param>
-    /// <param name="helpfulLabel">
+    /// <param name="label">
     /// Optional: a label to describe <paramref name="helpfulInformation"/>. Will be logged
     /// under the property name "Label".
     /// </param>
@@ -38,7 +38,7 @@ public static class LogException
                                       [CallerArgumentExpression("condition")]
                                       string? conditionExpression = "",
                                       [CallerArgumentExpression("helpfulInformation")]
-                                      string? helpfulLabel = "")
+                                      string? label = "")
     {
         if (!condition) return false;
         if (!log.IsEnabled(LogLevel.Error)) return true;
@@ -48,7 +48,7 @@ public static class LogException
                 "{Action}:Condition Failed:{Condition}:{Label}{State}",
                 action,
                 conditionExpression,
-                LogAssert.StateLabelIfHelpful(action,helpfulLabel),
+                LogAssert.StateLabelIfHelpful(action,label),
                 helpfulInformation.ForLogging() ?? string.Empty);
         return true;
     }
@@ -58,7 +58,7 @@ public static class LogException
     /// at <see cref="LogLevel.Error"/> then throw it.
     /// Otherwise, return <paramref name="condition"/>.
     /// <p>Optionally also log <paramref name="helpfulInformation"/> under the property
-    /// name "State", and log <paramref name="helpfulLabel"/> under the property name "Label".
+    /// name "State", and log <paramref name="label"/> under the property name "Label".
     /// </summary>
     /// <param name="condition">the value being asserted as true</param>
     /// <param name="ex">
@@ -74,7 +74,7 @@ public static class LogException
     /// </param>
     /// <param name="action">Compiler populated: the name of the member (for instance,
     /// the method) being logged. Will be logged under the property name "Action"</param>
-    /// <param name="helpfulLabel">
+    /// <param name="label">
     /// Optional: a label to describe <paramref name="helpfulInformation"/>. Will be logged
     /// under the property name "Label".
     /// </param>
@@ -86,7 +86,7 @@ public static class LogException
                                               [CallerArgumentExpression("condition")]
                                               string? conditionExpression = "",
                                               [CallerArgumentExpression("helpfulInformation")]
-                                              string? helpfulLabel = "")
+                                              string? label = "")
     {
         if (!condition) return false;
         ex ??= new ApplicationException(message: $"Exception in {action}");
@@ -96,7 +96,7 @@ public static class LogException
                     "{Action}:Condition Failed:{Condition}:{Label}{State}",
                     action,
                     conditionExpression,
-                    LogAssert.StateLabelIfHelpful(action,helpfulLabel),
+                    LogAssert.StateLabelIfHelpful(action,label),
                     helpfulInformation.ForLogging() ?? string.Empty);
         throw ex;
     }

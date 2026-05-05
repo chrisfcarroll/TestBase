@@ -51,7 +51,7 @@ public class SerilogIfTests
     [Test]
     public void If_IncludesStateName_WhenDistinctFromAction()
     {
-        log.Log.If(true, "myValue", helpfulLabel: "myLabel");
+        log.Log.If(true, "myValue", label: "myLabel");
 
         NUnit.Framework.Assert.That(log.Last.Message, Does.Contain("myLabel:"));
         NUnit.Framework.Assert.That(log.Last.Message, Does.Contain("myValue"));

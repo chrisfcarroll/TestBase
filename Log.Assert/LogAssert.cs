@@ -13,7 +13,7 @@ public static partial class LogAssert
     /// If <paramref name="assertion"/> is false, log at <see cref="LogLevel.Error"/>.
     /// Otherwise, do nothing.
     /// <p>Optionally also log <paramref name="helpfulInformation"/> under the property
-    /// name "State", and log <paramref name="helpfulLabel"/> under the property name "Label".
+    /// name "State", and log <paramref name="label"/> under the property name "Label".
     /// </summary>
     /// <param name="assertion">the value being asserted as true</param>
     /// <param name="assertionExpression">
@@ -25,7 +25,7 @@ public static partial class LogAssert
     /// </param>
     /// <param name="action">Compiler populated: the name of the member (for instance,
     /// the method) being logged. Will be logged under the property name "Action"</param>
-    /// <param name="helpfulLabel">
+    /// <param name="label">
     /// Optional: a label to describe <paramref name="helpfulInformation"/>. Will be logged
     /// under the property name "Label".
     /// </param>
@@ -36,13 +36,13 @@ public static partial class LogAssert
                               [CallerArgumentExpression("assertion")]
                               string? assertionExpression = "",
                               [CallerArgumentExpression("helpfulInformation")]
-                              string? helpfulLabel = "")
+                              string? label = "")
     {
         if (assertion) return;
         log.LogError("{Action}:Assertion Failed:{Assertion}:{Label}{State}",
                      action,
                      assertionExpression,
-                     StateLabelIfHelpful(action, helpfulLabel),
+                     StateLabelIfHelpful(action, label),
                      helpfulInformation.ForLogging() ?? string.Empty);
     }
 
@@ -66,14 +66,14 @@ public static partial class LogAssert
                                      [CallerArgumentExpression("it")]
                                      string? subject = null,
                                      [CallerArgumentExpression("helpfulInformation")]
-                                     string? helpfulLabel = "")
+                                     string? label = "")
     {
         if (it is null)
         {
             log.LogError("{Action}:Assertion Not Null Failed:{Subject}:{Label}{State}",
                          action,
                          subject,
-                         StateLabelIfHelpful(action,helpfulLabel),
+                         StateLabelIfHelpful(action,label),
                          helpfulInformation.ForLogging() ?? string.Empty);
         }
         #pragma warning disable CS8777
@@ -86,7 +86,7 @@ public static partial class LogAssert
     /// If <paramref name="preCondition"/> is false, log at <see cref="LogLevel.Error"/>.
     /// Otherwise, do nothing.
     /// <p>Optionally also log <paramref name="helpfulInformation"/> under the property
-    /// name "State", and log <paramref name="helpfulLabel"/> under the property name "Label".
+    /// name "State", and log <paramref name="label"/> under the property name "Label".
     /// </summary>
     /// <param name="preCondition">the value being asserted as true</param>
     /// <param name="assertionExpression">
@@ -98,7 +98,7 @@ public static partial class LogAssert
     /// </param>
     /// <param name="action">Compiler populated: the name of the member (for instance,
     /// the method) being logged. Will be logged under the property name "Action"</param>
-    /// <param name="helpfulLabel">
+    /// <param name="label">
     /// Optional: a label to describe <paramref name="helpfulInformation"/>. Will be logged
     /// under the property name "Label".
     /// </param>
@@ -109,13 +109,13 @@ public static partial class LogAssert
                                     [CallerArgumentExpression("preCondition")]
                                     string? assertionExpression = "",
                                     [CallerArgumentExpression("helpfulInformation")]
-                                    string? helpfulLabel = "")
+                                    string? label = "")
     {
         if (preCondition) return;
         log.LogError("{Action}:Precondition Failed:{Assertion}:{Label}{State}",
                      action,
                      assertionExpression,
-                     StateLabelIfHelpful(action, helpfulLabel),
+                     StateLabelIfHelpful(action, label),
                      helpfulInformation.ForLogging() ?? string.Empty);
     }
 
@@ -138,14 +138,14 @@ public static partial class LogAssert
                                             [CallerArgumentExpression("it")]
                                             string? subject = null,
                                             [CallerArgumentExpression("helpfulInformation")]
-                                            string? helpfulLabel = "")
+                                            string? label = "")
     {
         if (it is null)
         {
             log.LogError("{Action}:Precondition Not Null Failed:{Subject}:{Label}{State}",
                          action,
                          subject,
-                         StateLabelIfHelpful(action,helpfulLabel),
+                         StateLabelIfHelpful(action,label),
                          helpfulInformation.ForLogging() ?? string.Empty);
         }
         #pragma warning disable CS8777
@@ -157,7 +157,7 @@ public static partial class LogAssert
     /// If <paramref name="postCondition"/> is false, log at <see cref="LogLevel.Error"/>.
     /// Otherwise, do nothing.
     /// <p>Optionally also log <paramref name="helpfulInformation"/> under the property
-    /// name "State", and log <paramref name="helpfulLabel"/> under the property name "Label".
+    /// name "State", and log <paramref name="label"/> under the property name "Label".
     /// </summary>
     /// <param name="postCondition">the value being asserted as true</param>
     /// <param name="assertionExpression">
@@ -169,7 +169,7 @@ public static partial class LogAssert
     /// </param>
     /// <param name="action">Compiler populated: the name of the member (for instance,
     /// the method) being logged. Will be logged under the property name "Action"</param>
-    /// <param name="helpfulLabel">
+    /// <param name="label">
     /// Optional: a label to describe <paramref name="helpfulInformation"/>. Will be logged
     /// under the property name "Label".
     /// </param>
@@ -180,13 +180,13 @@ public static partial class LogAssert
                                      [CallerArgumentExpression("postCondition")]
                                      string? assertionExpression = "",
                                      [CallerArgumentExpression("helpfulInformation")]
-                                     string? helpfulLabel = "")
+                                     string? label = "")
     {
         if (postCondition) return;
         log.LogError("{Action}:Postcondition Failed:{Assertion}:{Label}{State}",
                      action,
                      assertionExpression,
-                     StateLabelIfHelpful(action, helpfulLabel),
+                     StateLabelIfHelpful(action, label),
                      helpfulInformation.ForLogging() ?? string.Empty);
     }
 
@@ -209,14 +209,14 @@ public static partial class LogAssert
                                         [CallerArgumentExpression("it")]
                                         string? subject = null,
                                         [CallerArgumentExpression("helpfulInformation")]
-                                        string? helpfulLabel = "")
+                                        string? label = "")
     {
         if (it is null)
         {
             log.LogError("{Action}:Postcondition Not Null Failed:{Subject}:{Label}{State}",
                          action,
                          subject,
-                         StateLabelIfHelpful(action,helpfulLabel),
+                         StateLabelIfHelpful(action,label),
                          helpfulInformation.ForLogging() ?? string.Empty);
         }
         #pragma warning disable CS8777
