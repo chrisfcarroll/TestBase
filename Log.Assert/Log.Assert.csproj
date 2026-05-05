@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <InternalsVisibleTo Include="LogAssert.Tests" />
+    <InternalsVisibleTo Include="Log.Assert.Tests" />
   </ItemGroup>
   <ItemGroup Condition=" $([System.Text.RegularExpressions.Regex]::IsMatch( '$(TargetFramework)', 'net[891].+' )) ">
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.7" />

@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Log.Assert;
 
-public static class LogExceptionIfs
+public static class LogException
 {
     /// <summary>
     /// If <paramref name="condition"/> is true, log <paramref name="ex"/>
@@ -30,7 +30,7 @@ public static class LogExceptionIfs
     /// Optional: a label to describe <paramref name="helpfulInformation"/>. Will be logged
     /// under the property name "Label".
     /// </param>
-    public static bool LogExceptionIf(this ILogger log,
+    public static bool ExceptionIf(this ILogger log,
                                       bool condition,
                                       Exception? ex,
                                       object? helpfulInformation = null,
@@ -78,7 +78,7 @@ public static class LogExceptionIfs
     /// Optional: a label to describe <paramref name="helpfulInformation"/>. Will be logged
     /// under the property name "Label".
     /// </param>
-    public static bool LogExceptionAndThrowIf(this ILogger log,
+    public static bool ExceptionAndThrowIf(this ILogger log,
                                               bool condition,
                                               Exception? ex,
                                               object? helpfulInformation = null,
