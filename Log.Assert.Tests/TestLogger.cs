@@ -15,11 +15,21 @@ public class TestLogger : ILogger
 
     public bool IsEnabled(LogLevel logLevel) => true;
 
-    public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception,
+    public virtual void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception,
                             Func<TState, Exception?, string> formatter)
     {
         Entries.Add(new LogEntry(logLevel, formatter(state, exception), exception));
     }
 
     public record LogEntry(LogLevel Level, string Message, Exception? Exception);
+}
+
+public class TestLogger<T> : TestLogger,ILogger<T>
+{
+    public override void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception,
+                                    Func<TState, Exception?, string> formatter)
+    {
+        Entries.Add(new LogEntry(logLevel, typeof(T).Name + ":"+formatter(state, exception), exception));
+    }
+
 }
