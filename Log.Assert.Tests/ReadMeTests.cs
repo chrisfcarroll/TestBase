@@ -75,13 +75,13 @@ public class ReadMeExample(ILogger<ReadMeExample> log)
         log.Assert(graphemes.LengthInTextElements > 0);
         log.Precondition(0 <= guess && guess <= graphemes.LengthInTextElements);
 
-        log.LogExceptionAndThrowIf(
+        log.ExceptionAndThrowIf(
             graphemes.SubstringByTextElements(guess,1) is "💥",
             new ApplicationException("bang!"));
 
         var remainder = Remove(graphemes,guess);
-        log.LogDebugIf(remainder.Length == 0,"TBC:is this permitted?");
-        log.LogIf(graphemes.LengthInTextElements > 0,
+        log.DebugIf(remainder.Length == 0,"TBC:is this permitted?");
+        log.If(graphemes.LengthInTextElements > 0,
                   (target,guess,graphemes.LengthInTextElements),
                   helpfulLabel:"Remaining after Removal");
 
