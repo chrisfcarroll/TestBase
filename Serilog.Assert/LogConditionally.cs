@@ -49,7 +49,7 @@ public static class LogConditionally
                   action,
                   conditionExpression,
                   LogAssert.StateLabelIfHelpful(action,helpfulLabel),
-                  helpfulInformation.ToLoggableState() ?? string.Empty);
+                  helpfulInformation.ForLogging() ?? string.Empty);
         return true;
     }
 

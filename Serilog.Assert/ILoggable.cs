@@ -1,7 +1,7 @@
 using System.Collections.Concurrent;
 using System.Reflection;
 
-namespace Log.Assert;
+namespace Serilog.Assert;
 
 /// <summary>
 /// An optional interface to remind you to add
@@ -26,7 +26,7 @@ public static class LoggableState
     /// "Override" this fallback method by defining public object ToLoggableState()
     /// on your classes, and optionally declaring them to implement ILoggable.
     /// </summary>
-    public static object? ToLoggableState<T>(this T state)
+    public static object? ForLogging<T>(this T state)
     {
         return state switch
         {

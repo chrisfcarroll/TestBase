@@ -49,7 +49,7 @@ public static class LogException
                   action,
                   conditionExpression,
                   LogAssert.StateLabelIfHelpful(action,helpfulLabel),
-                  helpfulInformation.ToLoggableState() ?? string.Empty);
+                  helpfulInformation.ForLogging() ?? string.Empty);
         return true;
     }
 
@@ -97,7 +97,7 @@ public static class LogException
                       action,
                       conditionExpression,
                       LogAssert.StateLabelIfHelpful(action,helpfulLabel),
-                      helpfulInformation.ToLoggableState() ?? string.Empty);
+                      helpfulInformation.ForLogging() ?? string.Empty);
         throw ex;
     }
 }

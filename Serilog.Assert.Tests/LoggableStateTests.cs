@@ -7,20 +7,20 @@ public class LoggableStateTests
     public void ToLoggableState_Null_ReturnsNull()
     {
         object? x = null;
-        NUnit.Framework.Assert.That(x.ToLoggableState(), Is.Null);
+        NUnit.Framework.Assert.That(x.ForLogging(), Is.Null);
     }
 
     [Test]
     public void ToLoggableState_ValueType_ReturnsSelf()
     {
-        var result = 42.ToLoggableState();
+        var result = 42.ForLogging();
         NUnit.Framework.Assert.That(result, Is.EqualTo(42));
     }
 
     [Test]
     public void ToLoggableState_String_ReturnsToString()
     {
-        var result = "hello".ToLoggableState();
+        var result = "hello".ForLogging();
         NUnit.Framework.Assert.That(result, Is.EqualTo("hello"));
     }
 
@@ -36,7 +36,7 @@ public class LoggableStateTests
     public void ToLoggableState_ObjectWithoutMethod_ReturnsToString()
     {
         var obj = new WithoutToLoggableState();
-        var result = obj.ToLoggableState();
+        var result = obj.ForLogging();
         NUnit.Framework.Assert.That(result, Is.EqualTo("WithoutToLoggableState.ToString"));
     }
 

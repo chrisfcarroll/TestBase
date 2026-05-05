@@ -37,7 +37,7 @@ public static class LogMember
                   "{Action}({Label}{@State})",
                   action,
                   LogAssert.StateLabelIfHelpful(action,helpfulLabel),
-                  (helpfulInformation ?? "").ToLoggableState());
+                  (helpfulInformation ?? "").ForLogging());
     }
 
     /// <summary>
@@ -172,7 +172,7 @@ public static class LogMember
                   "{Action}({Label}{State})",
                   action,
                   LogAssert.StateLabelIfHelpful(action,helpfulLabel),
-                  (helpfulInformation ?? "").ToLoggableState());
+                  (helpfulInformation ?? "").ForLogging());
     }
 
     /// <summary>
@@ -213,7 +213,7 @@ public static class LogMember
                   "{Action}({Label}{State})",
                   action,
                   LogAssert.StateLabelIfHelpful(action,helpfulLabel),
-                  (helpfulInformation ?? "").ToLoggableState());
+                  (helpfulInformation ?? "").ForLogging());
         throw ex;
     }
 
@@ -259,7 +259,7 @@ public static class LogMember
                   "{Action}({Label}{State})",
                   action,
                   LogAssert.StateLabelIfHelpful(action,helpfulLabel),
-                  (helpfulInformation ?? "").ToLoggableState());
+                  (helpfulInformation ?? "").ForLogging());
         Environment.Exit(exitCode);
     }
 }

@@ -20,7 +20,7 @@
   <ItemGroup>
     <Using Include="NUnit.Framework" />
     <Using Include="Serilog" />
-    <Using Include="SerilogAssert" />
+    <Using Include="Serilog.Assert" />
   </ItemGroup>
 
   <ItemGroup>

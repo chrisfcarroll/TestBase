@@ -43,7 +43,7 @@ public static partial class LogAssert
                      action,
                      assertionExpression,
                      StateLabelIfHelpful(action, helpfulLabel),
-                     helpfulInformation.ToLoggableState() ?? string.Empty);
+                     helpfulInformation.ForLogging() ?? string.Empty);
     }
 
 
@@ -74,7 +74,7 @@ public static partial class LogAssert
                          action,
                          subject,
                          StateLabelIfHelpful(action,helpfulLabel),
-                         helpfulInformation.ToLoggableState() ?? string.Empty);
+                         helpfulInformation.ForLogging() ?? string.Empty);
         }
         #pragma warning disable CS8777
         return it!;
@@ -116,7 +116,7 @@ public static partial class LogAssert
                      action,
                      assertionExpression,
                      StateLabelIfHelpful(action, helpfulLabel),
-                     helpfulInformation.ToLoggableState() ?? string.Empty);
+                     helpfulInformation.ForLogging() ?? string.Empty);
     }
 
     /// <summary>
@@ -146,7 +146,7 @@ public static partial class LogAssert
                          action,
                          subject,
                          StateLabelIfHelpful(action,helpfulLabel),
-                         helpfulInformation.ToLoggableState() ?? string.Empty);
+                         helpfulInformation.ForLogging() ?? string.Empty);
         }
         #pragma warning disable CS8777
         return it!;
@@ -187,7 +187,7 @@ public static partial class LogAssert
                      action,
                      assertionExpression,
                      StateLabelIfHelpful(action, helpfulLabel),
-                     helpfulInformation.ToLoggableState() ?? string.Empty);
+                     helpfulInformation.ForLogging() ?? string.Empty);
     }
 
     /// <summary>
@@ -217,7 +217,7 @@ public static partial class LogAssert
                          action,
                          subject,
                          StateLabelIfHelpful(action,helpfulLabel),
-                         helpfulInformation.ToLoggableState() ?? string.Empty);
+                         helpfulInformation.ForLogging() ?? string.Empty);
         }
         #pragma warning disable CS8777
         return it!;
