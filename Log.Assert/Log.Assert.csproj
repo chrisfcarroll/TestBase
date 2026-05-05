@@ -5,16 +5,80 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-
   <ItemGroup>
     <InternalsVisibleTo Include="LogAssert.Tests" />
   </ItemGroup>
-
   <ItemGroup Condition=" $([System.Text.RegularExpressions.Regex]::IsMatch( '$(TargetFramework)', 'net[891].+' )) ">
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.7" />
   </ItemGroup>
   <ItemGroup Condition=" $([System.Text.RegularExpressions.Regex]::IsMatch( '$(TargetFramework)', 'net[67].+' )) ">
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.3" />
   </ItemGroup>
+  <PropertyGroup>
+    <AssemblyVersion>0.1</AssemblyVersion>
+    <AssemblyFileVersion>0.1</AssemblyFileVersion>
+    <PackageVersion>0.1</PackageVersion>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <Title>Log.Assert( A better style of application logging )</Title>
+    <PackageDescription><![CDATA[Log.Assert is a better style of application logging.
+```
+log.Member();                     // logs Method name
+log.PreconditionNotNull(target);  // logs nothing if true, or the failure if not.
 
+var graphemes = new StringInfo(target??"");
+log.Assert(graphemes.LengthInTextElements > 0); // logs nothing if true, or the failure if not.
+
+log.Precondition(0 <= guess && guess <= graphemes.LengthInTextElements);
+
+if (graphemes.SubstringByTextElements(guess,1) is "💥")
+    throw new ApplicationException("bang!");
+
+var remainder = Remove(graphemes,guess);
+
+log.Postcondition(remainder.Length < target.Length);
+```
+All methods log the current Method or Member name.
+Assertions,Pre- and Post-Conditions log nothing at all if they pass
+Assertions,Pre- and Post-Conditions log the failed expression if they fail.
+LogIf() logs nothing if the condition is false
+LogIf() logs the condition expression if it is true
+
+```
+Member()
+Assert()
+Precondition()
+Postcondition()
+
+LogIf()
+LogDebugIf()
+LogTraceIf()
+LogWarningIf()
+LogErrorIf()
+LogExceptionIf()
+
+LogException()
+LogExceptionAndThrow()
+LogCriticalAndExitProcessWithExitCode()
+```
+]]></PackageDescription>
+    <PackageReleaseNotes>
+      ChangeLog
+      ---------
+      0.1.0  First release
+    </PackageReleaseNotes>
+    <Copyright>(c) Chris F. Carroll, 2023-2026</Copyright>
+    <PackageLicenseExpression>LGPL-2.1-or-later</PackageLicenseExpression>
+    <Authors>Chris F Carroll</Authors>
+    <Owners>Chris F Carroll</Owners>
+    <PackageProjectUrl>https://github.com/chrisfcarroll/TestBase</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/chrisfcarroll/TestBase</RepositoryUrl>
+    <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
+    <IncludeSymbols>true</IncludeSymbols>
+    <PackageTags>stringify;serialization;tostring;debug;reflection;CallerArgumentExpression</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
 </Project>
