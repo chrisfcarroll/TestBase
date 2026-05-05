@@ -1,14 +1,13 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
-using Serilog;
 using Serilog.Events;
 
-namespace SerilogAssert;
+namespace Serilog.Assert;
 
 /// <summary>
 /// ILogger extension methods to log Assertion, Precondition, and Postcondition failures.
 /// </summary>
-public static partial class SerilogAssertions
+public static partial class LogAssert
 {
     /// <summary>
     /// If <paramref name="assertion"/> is false, log at <see cref="LogEventLevel.Error"/>.

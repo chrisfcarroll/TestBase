@@ -60,9 +60,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "HttpClient", "HttpClient", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LoggingAndMonitoring", "LoggingAndMonitoring", "{5747B1F2-DA20-4174-ABF1-A527F9BA75C7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogAssert", "LogAssert\LogAssert.csproj", "{5B7812E3-DDA4-467A-A10E-94EFA9B041C6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Log.Assert", "Log.Assert\Log.Assert.csproj", "{5B7812E3-DDA4-467A-A10E-94EFA9B041C6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogAssert.Tests", "LogAssert.Tests\LogAssert.Tests.csproj", "{91BADD50-1CA6-4B66-83B1-650BA8217343}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Log.Assert.Tests", "Log.Assert.Tests\Log.Assert.Tests.csproj", "{91BADD50-1CA6-4B66-83B1-650BA8217343}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serilog.Assert", "Serilog.Assert\Serilog.Assert.csproj", "{664054A6-C1E2-44F1-9D78-9B9F86A7F49C}"
 EndProject

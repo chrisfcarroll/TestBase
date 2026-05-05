@@ -1,6 +1,6 @@
-namespace LogAssert;
+namespace Serilog.Assert;
 
-public static partial class LogAssertions
+public static partial class LogAssert
 {
     /// <param name="action">The method or member call being logged.</param>
     /// <param name="label"></param>

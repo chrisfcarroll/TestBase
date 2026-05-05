@@ -1,6 +1,6 @@
 using Serilog.Events;
 
-namespace SerilogAssert.Tests;
+namespace Serilog.Assert.Tests;
 
 [TestFixture]
 public class SerilogCallTests
@@ -13,94 +13,94 @@ public class SerilogCallTests
     [Test]
     public void Call_DefaultsToInformation()
     {
-        log.Log.Call("state");
+        log.Log.Member("state");
 
-        Assert.That(log.Last.Level, Is.EqualTo(LogEventLevel.Information));
-        Assert.That(log.Last.Message, Does.Contain("state"));
+        NUnit.Framework.Assert.That(log.Last.Level, Is.EqualTo(LogEventLevel.Information));
+        NUnit.Framework.Assert.That(log.Last.Message, Does.Contain("state"));
     }
 
     [Test]
     public void Call_RespectsLogLevel()
     {
-        log.Log.Call("s", LogEventLevel.Fatal);
+        log.Log.Member("s", LogEventLevel.Fatal);
 
-        Assert.That(log.Last.Level, Is.EqualTo(LogEventLevel.Fatal));
+        NUnit.Framework.Assert.That(log.Last.Level, Is.EqualTo(LogEventLevel.Fatal));
     }
 
     [Test]
     public void CallAsDebug_LogsAtDebug()
     {
-        log.Log.CallAsDebug("state");
+        log.Log.MemberDebug("state");
 
-        Assert.That(log.Last.Level, Is.EqualTo(LogEventLevel.Debug));
+        NUnit.Framework.Assert.That(log.Last.Level, Is.EqualTo(LogEventLevel.Debug));
     }
 
     [Test]
     public void CallAsVerbose_LogsAtVerbose()
     {
-        log.Log.CallAsVerbose("state");
+        log.Log.MemberVerbose("state");
 
-        Assert.That(log.Last.Level, Is.EqualTo(LogEventLevel.Verbose));
+        NUnit.Framework.Assert.That(log.Last.Level, Is.EqualTo(LogEventLevel.Verbose));
     }
 
     [Test]
     public void CallAsWarning_LogsAtWarning()
     {
-        log.Log.CallAsWarning("state");
+        log.Log.MemberWarning("state");
 
-        Assert.That(log.Last.Level, Is.EqualTo(LogEventLevel.Warning));
+        NUnit.Framework.Assert.That(log.Last.Level, Is.EqualTo(LogEventLevel.Warning));
     }
 
     [Test]
     public void CallAsError_LogsAtError()
     {
-        log.Log.CallAsError("state");
+        log.Log.MemberError("state");
 
-        Assert.That(log.Last.Level, Is.EqualTo(LogEventLevel.Error));
+        NUnit.Framework.Assert.That(log.Last.Level, Is.EqualTo(LogEventLevel.Error));
     }
 
     [Test]
     public void CallWithException_LogsExceptionAtError()
     {
         var ex = new InvalidOperationException("boom");
-        log.Log.CallWithException(ex, "ctx");
+        log.Log.MemberException(ex, "ctx");
 
-        Assert.That(log.Last.Level, Is.EqualTo(LogEventLevel.Error));
-        Assert.That(log.Last.Exception, Is.SameAs(ex));
+        NUnit.Framework.Assert.That(log.Last.Level, Is.EqualTo(LogEventLevel.Error));
+        NUnit.Framework.Assert.That(log.Last.Exception, Is.SameAs(ex));
     }
 
     [Test]
     public void CallWithExceptionThenThrow_LogsThenThrows()
     {
         var ex = new InvalidOperationException("boom");
-        Assert.Throws<InvalidOperationException>(() =>
-            log.Log.CallWithExceptionThenThrow(ex, "ctx"));
-        Assert.That(log.Entries, Has.Count.GreaterThanOrEqualTo(1));
+        NUnit.Framework.Assert.Throws<InvalidOperationException>(() =>
+                                                                     log.Log.MemberExceptionThenThrow(ex, "ctx"));
+        NUnit.Framework.Assert.That(log.Entries, Has.Count.GreaterThanOrEqualTo(1));
     }
 
     [Test]
     public void Call_NullState_LogsEmptyString()
     {
-        log.Log.Call();
+        log.Log.Member();
 
-        Assert.That(log.Entries, Has.Count.EqualTo(1));
+        NUnit.Framework.Assert.That(log.Entries, Has.Count.EqualTo(1));
     }
 
     [Test]
     public void Call_WithStateName_IncludesLabel()
     {
-        log.Log.Call("val", helpfulLabel: "myParam");
+        log.Log.Member("val", helpfulLabel: "myParam");
 
-        Assert.That(log.Last.Message, Does.Contain("myParam:"));
+        NUnit.Framework.Assert.That(log.Last.Message, Does.Contain("myParam:"));
     }
 
     [Test]
     public void Call_UsesToLoggableState()
     {
         var obj = new CustomLoggable();
-        log.Log.Call(obj);
+        log.Log.Member(obj);
 
-        Assert.That(log.Last.Message, Does.Contain("custom-log-output"));
+        NUnit.Framework.Assert.That(log.Last.Message, Does.Contain("custom-log-output"));
     }
 
     class CustomLoggable

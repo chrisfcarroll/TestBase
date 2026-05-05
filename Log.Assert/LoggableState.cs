@@ -1,7 +1,7 @@
 using System.Collections.Concurrent;
 using System.Reflection;
 
-namespace LogAssert;
+namespace Log.Assert;
 
 /// <summary>
 /// An optional interface to remind you to add

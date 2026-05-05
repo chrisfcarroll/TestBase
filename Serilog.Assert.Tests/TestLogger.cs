@@ -1,8 +1,7 @@
-using Serilog;
 using Serilog.Core;
 using Serilog.Events;
 
-namespace SerilogAssert.Tests;
+namespace Serilog.Assert.Tests;
 
 /// <summary>
 /// A simple test logger that captures log events for test assertions.

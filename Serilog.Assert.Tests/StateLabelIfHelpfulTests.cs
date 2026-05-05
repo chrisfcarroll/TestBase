@@ -1,4 +1,4 @@
-namespace SerilogAssert.Tests;
+namespace Serilog.Assert.Tests;
 
 [TestFixture]
 public class StateLabelIfHelpfulTests
@@ -6,30 +6,30 @@ public class StateLabelIfHelpfulTests
     [Test]
     public void ReturnsEmpty_WhenNull()
     {
-        Assert.That(SerilogAssertions.StateLabelIfHelpful("action", null), Is.EqualTo(""));
+        NUnit.Framework.Assert.That(Serilog.Assert.LogAssert.StateLabelIfHelpful("action", null), Is.EqualTo(""));
     }
 
     [Test]
     public void ReturnsEmpty_WhenEmpty()
     {
-        Assert.That(SerilogAssertions.StateLabelIfHelpful("action", ""), Is.EqualTo(""));
+        NUnit.Framework.Assert.That(Serilog.Assert.LogAssert.StateLabelIfHelpful("action", ""), Is.EqualTo(""));
     }
 
     [Test]
     public void ReturnsEmpty_WhenSameAsAction()
     {
-        Assert.That(SerilogAssertions.StateLabelIfHelpful("DoStuff", "DoStuff"), Is.EqualTo(""));
+        NUnit.Framework.Assert.That(Serilog.Assert.LogAssert.StateLabelIfHelpful("DoStuff", "DoStuff"), Is.EqualTo(""));
     }
 
     [Test]
     public void ReturnsEmpty_WhenEndsWithToLoggableState()
     {
-        Assert.That(SerilogAssertions.StateLabelIfHelpful("action", "obj.ToLoggableState()"), Is.EqualTo(""));
+        NUnit.Framework.Assert.That(Serilog.Assert.LogAssert.StateLabelIfHelpful("action", "obj.ToLoggableState()"), Is.EqualTo(""));
     }
 
     [Test]
     public void ReturnsNameWithColon_WhenHelpful()
     {
-        Assert.That(SerilogAssertions.StateLabelIfHelpful("action", "userId"), Is.EqualTo("userId:"));
+        NUnit.Framework.Assert.That(Serilog.Assert.LogAssert.StateLabelIfHelpful("action", "userId"), Is.EqualTo("userId:"));
     }
 }

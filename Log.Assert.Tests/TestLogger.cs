@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Logging;
 
-namespace LogAssert.Tests;
+namespace Log.Assert.Tests;
 
 /// <summary>
 /// A simple ILogger implementation that captures log entries for test assertions.

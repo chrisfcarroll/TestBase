@@ -1,6 +1,6 @@
 using Serilog.Events;
 
-namespace SerilogAssert.Tests;
+namespace Serilog.Assert.Tests;
 
 [TestFixture]
 public class SerilogPostconditionTests
@@ -15,7 +15,7 @@ public class SerilogPostconditionTests
     {
         log.Log.Postcondition(true, "state");
 
-        Assert.That(log.Entries, Is.Empty);
+        NUnit.Framework.Assert.That(log.Entries, Is.Empty);
     }
 
     [Test]
@@ -23,9 +23,9 @@ public class SerilogPostconditionTests
     {
         log.Log.Postcondition(false, "state");
 
-        Assert.That(log.Entries, Has.Count.EqualTo(1));
-        Assert.That(log.Last.Level, Is.EqualTo(LogEventLevel.Error));
-        Assert.That(log.Last.Message, Does.Contain("Postcondition Failed"));
+        NUnit.Framework.Assert.That(log.Entries, Has.Count.EqualTo(1));
+        NUnit.Framework.Assert.That(log.Last.Level, Is.EqualTo(LogEventLevel.Error));
+        NUnit.Framework.Assert.That(log.Last.Message, Does.Contain("Postcondition Failed"));
     }
 
     [Test]
@@ -33,7 +33,7 @@ public class SerilogPostconditionTests
     {
         log.Log.Postcondition(false, "context-value");
 
-        Assert.That(log.Last.Message, Does.Contain("context-value"));
+        NUnit.Framework.Assert.That(log.Last.Message, Does.Contain("context-value"));
     }
 
     [Test]
@@ -41,7 +41,7 @@ public class SerilogPostconditionTests
     {
         log.Log.Postcondition(false);
 
-        Assert.That(log.Last.Level, Is.EqualTo(LogEventLevel.Error));
+        NUnit.Framework.Assert.That(log.Last.Level, Is.EqualTo(LogEventLevel.Error));
     }
 
     [Test]
@@ -49,8 +49,8 @@ public class SerilogPostconditionTests
     {
         var result = log.Log.PostconditionNotNull("hello");
 
-        Assert.That(result, Is.EqualTo("hello"));
-        Assert.That(log.Entries, Is.Empty);
+        NUnit.Framework.Assert.That(result, Is.EqualTo("hello"));
+        NUnit.Framework.Assert.That(log.Entries, Is.Empty);
     }
 
     [Test]
@@ -59,8 +59,8 @@ public class SerilogPostconditionTests
         string? value = null;
         var result = log.Log.PostconditionNotNull(value);
 
-        Assert.That(result, Is.EqualTo(value));
-        Assert.That(log.Entries, Has.Count.GreaterThanOrEqualTo(1));
+        NUnit.Framework.Assert.That(result, Is.EqualTo(value));
+        NUnit.Framework.Assert.That(log.Entries, Has.Count.GreaterThanOrEqualTo(1));
     }
 
     [Test]
@@ -69,6 +69,6 @@ public class SerilogPostconditionTests
         string? value = null;
         log.Log.PostconditionNotNull(value, "custom message");
 
-        Assert.That(log.Entries, Has.Count.GreaterThanOrEqualTo(1));
+        NUnit.Framework.Assert.That(log.Entries, Has.Count.GreaterThanOrEqualTo(1));
     }
 }

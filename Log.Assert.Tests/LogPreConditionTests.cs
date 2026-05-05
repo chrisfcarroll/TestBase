@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Logging;
 
-namespace LogAssert.Tests;
+namespace Log.Assert.Tests;
 
 [TestFixture]
 public class LogPreconditionTests
@@ -15,7 +15,7 @@ public class LogPreconditionTests
     {
         log.Precondition(true, "state");
 
-        Assert.That(log.Entries, Is.Empty);
+        NUnit.Framework.Assert.That(log.Entries, Is.Empty);
     }
 
     [Test]
@@ -23,9 +23,9 @@ public class LogPreconditionTests
     {
         log.Precondition(false, "state");
 
-        Assert.That(log.Entries, Has.Count.EqualTo(1));
-        Assert.That(log.Last.Level, Is.EqualTo(LogLevel.Error));
-        Assert.That(log.Last.Message, Does.Contain("Precondition Failed"));
+        NUnit.Framework.Assert.That(log.Entries, Has.Count.EqualTo(1));
+        NUnit.Framework.Assert.That(log.Last.Level, Is.EqualTo(LogLevel.Error));
+        NUnit.Framework.Assert.That(log.Last.Message, Does.Contain("Precondition Failed"));
     }
 
     [Test]
@@ -33,7 +33,7 @@ public class LogPreconditionTests
     {
         log.Precondition(false, "context-value");
 
-        Assert.That(log.Last.Message, Does.Contain("context-value"));
+        NUnit.Framework.Assert.That(log.Last.Message, Does.Contain("context-value"));
     }
 
     [Test]
@@ -41,7 +41,7 @@ public class LogPreconditionTests
     {
         log.Precondition(false);
 
-        Assert.That(log.Last.Level, Is.EqualTo(LogLevel.Error));
+        NUnit.Framework.Assert.That(log.Last.Level, Is.EqualTo(LogLevel.Error));
     }
 
     [Test]
@@ -49,8 +49,8 @@ public class LogPreconditionTests
     {
         var result = log.PreconditionNotNull("hello");
 
-        Assert.That(result, Is.EqualTo("hello"));
-        Assert.That(log.Entries, Is.Empty);
+        NUnit.Framework.Assert.That(result, Is.EqualTo("hello"));
+        NUnit.Framework.Assert.That(log.Entries, Is.Empty);
     }
 
     [Test]
@@ -59,8 +59,8 @@ public class LogPreconditionTests
         string? value = null;
         var result = log.PreconditionNotNull(value);
 
-        Assert.That(result, Is.EqualTo(value));
-        Assert.That(log.Entries, Has.Count.GreaterThanOrEqualTo(1));
+        NUnit.Framework.Assert.That(result, Is.EqualTo(value));
+        NUnit.Framework.Assert.That(log.Entries, Has.Count.GreaterThanOrEqualTo(1));
     }
 
     [Test]
@@ -69,6 +69,6 @@ public class LogPreconditionTests
         string? value = null;
         log.PreconditionNotNull(value, "custom message");
 
-        Assert.That(log.Entries, Has.Count.GreaterThanOrEqualTo(1));
+        NUnit.Framework.Assert.That(log.Entries, Has.Count.GreaterThanOrEqualTo(1));
     }
 }

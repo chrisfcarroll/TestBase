@@ -1,14 +1,13 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
-using Serilog;
 using Serilog.Events;
 
-namespace SerilogAssert;
+namespace Serilog.Assert;
 
 /// <summary>
 /// ILogger extension methods for logging the current Method call.
 /// </summary>
-public static class SerilogCalls
+public static class LogMember
 {
     /// <summary>
     /// Log the name of the current Method or Member call, optionally with any additional
@@ -26,7 +25,7 @@ public static class SerilogCalls
     /// Optional: a label to describe <paramref name="helpfulInformation"/>. Will be logged
     /// under the property name "Label".
     /// </param>
-    public static void Call(this ILogger log,
+    public static void Member(this ILogger log,
                             object? helpfulInformation = null,
                             LogEventLevel logLevel = LogEventLevel.Information,
                             [CallerMemberName] string action = "",
@@ -37,7 +36,7 @@ public static class SerilogCalls
         log.Write(logLevel,
                   "{Action}({Label}{@State})",
                   action,
-                  SerilogAssertions.StateLabelIfHelpful(action,helpfulLabel),
+                  LogAssert.StateLabelIfHelpful(action,helpfulLabel),
                   (helpfulInformation ?? "").ToLoggableState());
     }
 
@@ -55,12 +54,12 @@ public static class SerilogCalls
     /// Optional: a label to describe <paramref name="helpfulInformation"/>. Will be logged
     /// under the property name "Label".
     /// </param>
-    public static void CallAsDebug(this ILogger log,
+    public static void MemberDebug(this ILogger log,
                                    object? helpfulInformation = null,
                                    [CallerMemberName] string action = "",
                                    [CallerArgumentExpression("helpfulInformation")]
                                    string? helpfulLabel = null)
-        => Call(log,
+        => Member(log,
                 helpfulInformation,
                 LogEventLevel.Debug,
                 action,
@@ -80,12 +79,12 @@ public static class SerilogCalls
     /// Optional: a label to describe <paramref name="helpfulInformation"/>. Will be logged
     /// under the property name "Label".
     /// </param>
-    public static void CallAsVerbose(this ILogger log,
+    public static void MemberVerbose(this ILogger log,
                                      object? helpfulInformation = null,
                                      [CallerMemberName] string action = "",
                                      [CallerArgumentExpression("helpfulInformation")]
                                      string? helpfulLabel = null)
-        => Call(log,
+        => Member(log,
                 helpfulInformation,
                 LogEventLevel.Verbose,
                 action,
@@ -105,12 +104,12 @@ public static class SerilogCalls
     /// Optional: a label to describe <paramref name="helpfulInformation"/>. Will be logged
     /// under the property name "Label".
     /// </param>
-    public static void CallAsWarning(this ILogger log,
+    public static void MemberWarning(this ILogger log,
                                      object? helpfulInformation = null,
                                      [CallerMemberName] string action = "",
                                      [CallerArgumentExpression("helpfulInformation")]
                                      string? helpfulLabel = null)
-        => Call(log,
+        => Member(log,
                 helpfulInformation,
                 LogEventLevel.Warning,
                 action,
@@ -130,12 +129,12 @@ public static class SerilogCalls
     /// Optional: a label to describe <paramref name="helpfulInformation"/>. Will be logged
     /// under the property name "Label".
     /// </param>
-    public static void CallAsError(this ILogger log,
+    public static void MemberError(this ILogger log,
                                    object? helpfulInformation = null,
                                    [CallerMemberName] string action = "",
                                    [CallerArgumentExpression("helpfulInformation")]
                                    string? helpfulLabel = null)
-        => Call(log,
+        => Member(log,
                 helpfulInformation,
                 LogEventLevel.Error,
                 action,
@@ -160,7 +159,7 @@ public static class SerilogCalls
     /// Optional: a label to describe <paramref name="helpfulInformation"/>. Will be logged
     /// under the property name "Label".
     /// </param>
-    public static void CallWithException(this ILogger log,
+    public static void MemberException(this ILogger log,
                                          Exception? ex,
                                          object? helpfulInformation = null,
                                          [CallerMemberName] string action = "",
@@ -172,7 +171,7 @@ public static class SerilogCalls
         log.Error(ex,
                   "{Action}({Label}{State})",
                   action,
-                  SerilogAssertions.StateLabelIfHelpful(action,helpfulLabel),
+                  LogAssert.StateLabelIfHelpful(action,helpfulLabel),
                   (helpfulInformation ?? "").ToLoggableState());
     }
 
@@ -202,7 +201,7 @@ public static class SerilogCalls
     /// <exception cref="Exception"><paramref name="ex"/></exception>
     /// <exception cref="Exception">If <paramref name="ex"/> is null.</exception>
     [DoesNotReturn]
-    public static void CallWithExceptionThenThrow(this ILogger log,
+    public static void MemberExceptionThenThrow(this ILogger log,
                                                   Exception? ex,
                                                   object? helpfulInformation = null,
                                                   [CallerMemberName] string action = "",
@@ -213,7 +212,7 @@ public static class SerilogCalls
         log.Error(ex,
                   "{Action}({Label}{State})",
                   action,
-                  SerilogAssertions.StateLabelIfHelpful(action,helpfulLabel),
+                  LogAssert.StateLabelIfHelpful(action,helpfulLabel),
                   (helpfulInformation ?? "").ToLoggableState());
         throw ex;
     }
@@ -246,7 +245,7 @@ public static class SerilogCalls
     /// <exception cref="Exception"><paramref name="ex"/></exception>
     /// <exception cref="Exception">If <paramref name="ex"/> is null.</exception>
     [DoesNotReturn]
-    public static void CallWithFatalExceptionThenExitProcessWithCode(this ILogger log,
+    public static void MemberFatalExceptionThenExitProcessWithCode(this ILogger log,
                                                    Exception? ex,
                                                    int exitCode,
                                                    object? helpfulInformation = null,
@@ -259,7 +258,7 @@ public static class SerilogCalls
         log.Fatal(ex,
                   "{Action}({Label}{State})",
                   action,
-                  SerilogAssertions.StateLabelIfHelpful(action,helpfulLabel),
+                  LogAssert.StateLabelIfHelpful(action,helpfulLabel),
                   (helpfulInformation ?? "").ToLoggableState());
         Environment.Exit(exitCode);
     }

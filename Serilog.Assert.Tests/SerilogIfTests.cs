@@ -1,6 +1,6 @@
 using Serilog.Events;
 
-namespace SerilogAssert.Tests;
+namespace Serilog.Assert.Tests;
 
 [TestFixture]
 public class SerilogIfTests
@@ -17,10 +17,10 @@ public class SerilogIfTests
     {
         var result = log.Log.If(true, "some state");
 
-        Assert.That(result, Is.True);
-        Assert.That(log.Entries, Has.Count.EqualTo(1));
-        Assert.That(log.Last.Level, Is.EqualTo(LogEventLevel.Information));
-        Assert.That(log.Last.Message, Does.Contain("some state"));
+        NUnit.Framework.Assert.That(result, Is.True);
+        NUnit.Framework.Assert.That(log.Entries, Has.Count.EqualTo(1));
+        NUnit.Framework.Assert.That(log.Last.Level, Is.EqualTo(LogEventLevel.Information));
+        NUnit.Framework.Assert.That(log.Last.Message, Does.Contain("some state"));
     }
 
     [Test]
@@ -28,8 +28,8 @@ public class SerilogIfTests
     {
         var result = log.Log.If(false, "some state");
 
-        Assert.That(result, Is.False);
-        Assert.That(log.Entries, Is.Empty);
+        NUnit.Framework.Assert.That(result, Is.False);
+        NUnit.Framework.Assert.That(log.Entries, Is.Empty);
     }
 
     [Test]
@@ -37,7 +37,7 @@ public class SerilogIfTests
     {
         log.Log.If(true);
 
-        Assert.That(log.Entries, Has.Count.EqualTo(1));
+        NUnit.Framework.Assert.That(log.Entries, Has.Count.EqualTo(1));
     }
 
     [Test]
@@ -45,7 +45,7 @@ public class SerilogIfTests
     {
         log.Log.If(true, "state", logLevel:LogEventLevel.Fatal);
 
-        Assert.That(log.Last.Level, Is.EqualTo(LogEventLevel.Fatal));
+        NUnit.Framework.Assert.That(log.Last.Level, Is.EqualTo(LogEventLevel.Fatal));
     }
 
     [Test]
@@ -53,8 +53,8 @@ public class SerilogIfTests
     {
         log.Log.If(true, "myValue", helpfulLabel: "myLabel");
 
-        Assert.That(log.Last.Message, Does.Contain("myLabel:"));
-        Assert.That(log.Last.Message, Does.Contain("myValue"));
+        NUnit.Framework.Assert.That(log.Last.Message, Does.Contain("myLabel:"));
+        NUnit.Framework.Assert.That(log.Last.Message, Does.Contain("myValue"));
     }
 
     // ── WarnIf ──────────────────────────────────────────────────────────
@@ -64,16 +64,16 @@ public class SerilogIfTests
     {
         var result = log.Log.WarnIf(true, "warning state");
 
-        Assert.That(result, Is.True);
-        Assert.That(log.Last.Level, Is.EqualTo(LogEventLevel.Warning));
-        Assert.That(log.Last.Message, Does.Contain("warning state"));
+        NUnit.Framework.Assert.That(result, Is.True);
+        NUnit.Framework.Assert.That(log.Last.Level, Is.EqualTo(LogEventLevel.Warning));
+        NUnit.Framework.Assert.That(log.Last.Message, Does.Contain("warning state"));
     }
 
     [Test]
     public void WarnIf_WhenFalse_DoesNotLog()
     {
-        Assert.That(log.Log.WarnIf(false, "x"), Is.False);
-        Assert.That(log.Entries, Is.Empty);
+        NUnit.Framework.Assert.That(log.Log.WarnIf(false, "x"), Is.False);
+        NUnit.Framework.Assert.That(log.Entries, Is.Empty);
     }
 
     // ── ErrorIf ─────────────────────────────────────────────────────────
@@ -83,15 +83,15 @@ public class SerilogIfTests
     {
         var result = log.Log.ErrorIf(true, "err state");
 
-        Assert.That(result, Is.True);
-        Assert.That(log.Last.Level, Is.EqualTo(LogEventLevel.Error));
+        NUnit.Framework.Assert.That(result, Is.True);
+        NUnit.Framework.Assert.That(log.Last.Level, Is.EqualTo(LogEventLevel.Error));
     }
 
     [Test]
     public void ErrorIf_WhenFalse_DoesNotLog()
     {
-        Assert.That(log.Log.ErrorIf(false, "x"), Is.False);
-        Assert.That(log.Entries, Is.Empty);
+        NUnit.Framework.Assert.That(log.Log.ErrorIf(false, "x"), Is.False);
+        NUnit.Framework.Assert.That(log.Entries, Is.Empty);
     }
 
     // ── Information (via If) ────────────────────────────────────────────
@@ -101,7 +101,7 @@ public class SerilogIfTests
     {
         log.Log.If(true, "info state");
 
-        Assert.That(log.Last.Level, Is.EqualTo(LogEventLevel.Information));
+        NUnit.Framework.Assert.That(log.Last.Level, Is.EqualTo(LogEventLevel.Information));
     }
 
     // ── DebugIf ─────────────────────────────────────────────────────────
@@ -111,7 +111,7 @@ public class SerilogIfTests
     {
         log.Log.DebugIf(true, "debug state");
 
-        Assert.That(log.Last.Level, Is.EqualTo(LogEventLevel.Debug));
+        NUnit.Framework.Assert.That(log.Last.Level, Is.EqualTo(LogEventLevel.Debug));
     }
 
     // ── VerboseIf ───────────────────────────────────────────────────────
@@ -121,7 +121,7 @@ public class SerilogIfTests
     {
         log.Log.VerboseIf(true, "verbose state");
 
-        Assert.That(log.Last.Level, Is.EqualTo(LogEventLevel.Verbose));
+        NUnit.Framework.Assert.That(log.Last.Level, Is.EqualTo(LogEventLevel.Verbose));
     }
 
     // ── ExceptionIf ─────────────────────────────────────────────────────
@@ -132,9 +132,9 @@ public class SerilogIfTests
         var ex = new InvalidOperationException("boom");
         var result = log.Log.ExceptionIf(true, ex, "ctx");
 
-        Assert.That(result, Is.True);
-        Assert.That(log.Last.Level, Is.EqualTo(LogEventLevel.Error));
-        Assert.That(log.Last.Exception, Is.SameAs(ex));
+        NUnit.Framework.Assert.That(result, Is.True);
+        NUnit.Framework.Assert.That(log.Last.Level, Is.EqualTo(LogEventLevel.Error));
+        NUnit.Framework.Assert.That(log.Last.Exception, Is.SameAs(ex));
     }
 
     [Test]
@@ -142,7 +142,7 @@ public class SerilogIfTests
     {
         log.Log.ExceptionIf(false, new Exception("x"), "ctx");
 
-        Assert.That(log.Entries, Is.Empty);
+        NUnit.Framework.Assert.That(log.Entries, Is.Empty);
     }
 
     // ── ExceptionAndThrowIf ─────────────────────────────────────────────
@@ -151,9 +151,9 @@ public class SerilogIfTests
     public void ExceptionAndThrowIf_WhenTrue_ThrowsAndLogs()
     {
         var ex = new InvalidOperationException("boom");
-        Assert.Throws<InvalidOperationException>(() =>
-            log.Log.ExceptionAndThrowIf(true, ex, "ctx"));
-        Assert.That(log.Entries, Has.Count.GreaterThanOrEqualTo(1));
+        NUnit.Framework.Assert.Throws<InvalidOperationException>(() =>
+                                                                     log.Log.ExceptionAndThrowIf(true, ex, "ctx"));
+        NUnit.Framework.Assert.That(log.Entries, Has.Count.GreaterThanOrEqualTo(1));
     }
 
     [Test]
@@ -161,7 +161,7 @@ public class SerilogIfTests
     {
         log.Log.ExceptionAndThrowIf(false, new Exception("x"));
 
-        Assert.That(log.Entries, Is.Empty);
+        NUnit.Framework.Assert.That(log.Entries, Is.Empty);
     }
 
     // ── Return value semantics ──────────────────────────────────────────
@@ -169,13 +169,13 @@ public class SerilogIfTests
     [Test]
     public void If_ReturnsTrueWhenConditionTrue()
     {
-        Assert.That(log.Log.If(true), Is.True);
+        NUnit.Framework.Assert.That(log.Log.If(true), Is.True);
     }
 
     [Test]
     public void If_ReturnsFalseWhenConditionFalse()
     {
-        Assert.That(log.Log.If(false), Is.False);
+        NUnit.Framework.Assert.That(log.Log.If(false), Is.False);
     }
 
     // ── ILoggable / ToLoggableState integration ─────────────────────────
@@ -186,7 +186,7 @@ public class SerilogIfTests
         var loggableValue = new HasToLoggableState();
         log.Log.If(true, loggableValue);
 
-        Assert.That(log.Last.Message, Does.Contain("custom-loggable"));
+        NUnit.Framework.Assert.That(log.Last.Message, Does.Contain("custom-loggable"));
     }
 
     class HasToLoggableState

@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LogAssert\LogAssert.csproj" />
+    <ProjectReference Include="..\Log.Assert\Log.Assert.csproj" />
   </ItemGroup>
 
 </Project>

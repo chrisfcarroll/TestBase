@@ -2,12 +2,12 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using Microsoft.Extensions.Logging;
 
-namespace LogAssert;
+namespace Log.Assert;
 
 /// <summary>
 /// ILogger extension methods to log Assertion, Precondition, and Postcondition failures.
 /// </summary>
-public static partial class LogAssertions
+public static partial class LogAssert
 {
     /// <summary>
     /// If <paramref name="assertion"/> is false, log at <see cref="LogLevel.Error"/>.

@@ -1,7 +1,7 @@
 using System.Collections.Concurrent;
 using System.Reflection;
 
-namespace SerilogAssert;
+namespace Serilog.Assert;
 
 /// <summary>
 /// An optional interface to remind you to add

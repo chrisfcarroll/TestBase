@@ -1,4 +1,4 @@
-﻿namespace LogAssert.Tests;
+﻿namespace Log.Assert.Tests;
 
 public class Tests
 {
@@ -10,6 +10,6 @@ public class Tests
     [Test]
     public void Test1()
     {
-        Assert.Pass();
+        NUnit.Framework.Assert.Pass();
     }
 }

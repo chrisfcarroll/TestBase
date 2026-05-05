@@ -1,6 +1,10 @@
-namespace SerilogAssert;
+using System.Runtime.CompilerServices;
 
-public static partial class SerilogAssertions
+[assembly:InternalsVisibleTo("Log.Assert.Tests")]
+
+namespace Log.Assert;
+
+public static partial class LogAssert
 {
     /// <param name="action">The method or member call being logged.</param>
     /// <param name="label"></param>

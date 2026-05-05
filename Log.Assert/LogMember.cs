@@ -2,12 +2,12 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using Microsoft.Extensions.Logging;
 
-namespace LogAssert;
+namespace Log.Assert;
 
 /// <summary>
 /// ILogger extension methods for logging the current Method call.
 /// </summary>
-public static class LogCalls
+public static class LogMember
 {
     /// <summary>
     /// Log the name of the current Method or Member call, optionally with any additional
@@ -25,7 +25,7 @@ public static class LogCalls
     /// Optional: a label to describe <paramref name="helpfulInformation"/>. Will be logged
     /// under the property name "Label".
     /// </param>
-    public static void LogCall(this ILogger log,
+    public static void Member(this ILogger log,
                                object? helpfulInformation = null,
                                LogLevel logLevel = LogLevel.Information,
                                [CallerMemberName] string action = "",
@@ -36,7 +36,7 @@ public static class LogCalls
         log.Log(logLevel,
                 "{Action}({Label}{@State})",
                 action,
-                LogAssertions.StateLabelIfHelpful(action,helpfulLabel),
+                LogAssert.StateLabelIfHelpful(action,helpfulLabel),
                 (helpfulInformation ?? "").ToLoggableState());
     }
 
@@ -54,12 +54,12 @@ public static class LogCalls
     /// Optional: a label to describe <paramref name="helpfulInformation"/>. Will be logged
     /// under the property name "Label".
     /// </param>
-    public static void LogCallAsDebug(this ILogger log,
+    public static void MemberDebug(this ILogger log,
                                       object? helpfulInformation = null,
                                       [CallerMemberName] string action = "",
                                       [CallerArgumentExpression("helpfulInformation")]
                                       string? helpfulLabel = null)
-        => LogCall(log,
+        => Member(log,
                    helpfulInformation,
                    LogLevel.Debug,
                    action,
@@ -79,12 +79,12 @@ public static class LogCalls
     /// Optional: a label to describe <paramref name="helpfulInformation"/>. Will be logged
     /// under the property name "Label".
     /// </param>
-    public static void LogCallAsTrace(this ILogger log,
+    public static void MemberTrace(this ILogger log,
                                       object? helpfulInformation = null,
                                       [CallerMemberName] string action = "",
                                       [CallerArgumentExpression("helpfulInformation")]
                                       string? helpfulLabel = null)
-        => LogCall(log,
+        => Member(log,
                    helpfulInformation,
                    LogLevel.Trace,
                    action,
@@ -104,12 +104,12 @@ public static class LogCalls
     /// Optional: a label to describe <paramref name="helpfulInformation"/>. Will be logged
     /// under the property name "Label".
     /// </param>
-    public static void LogCallAsWarning(this ILogger log,
+    public static void MemberWarning(this ILogger log,
                                         object? helpfulInformation = null,
                                         [CallerMemberName] string action = "",
                                         [CallerArgumentExpression("helpfulInformation")]
                                         string? helpfulLabel = null)
-        => LogCall(log,
+        => Member(log,
                    helpfulInformation,
                    LogLevel.Warning,
                    action,
@@ -129,12 +129,12 @@ public static class LogCalls
     /// Optional: a label to describe <paramref name="helpfulInformation"/>. Will be logged
     /// under the property name "Label".
     /// </param>
-    public static void LogCallAsError(this ILogger log,
+    public static void MemberError(this ILogger log,
                                       object? helpfulInformation = null,
                                       [CallerMemberName] string action = "",
                                       [CallerArgumentExpression("helpfulInformation")]
                                       string? helpfulLabel = null)
-        => LogCall(log,
+        => Member(log,
                    helpfulInformation,
                    LogLevel.Error,
                    action,
@@ -159,7 +159,7 @@ public static class LogCalls
     /// Optional: a label to describe <paramref name="helpfulInformation"/>. Will be logged
     /// under the property name "Label".
     /// </param>
-    public static void LogCallWithException(this ILogger log,
+    public static void MemberException(this ILogger log,
                                             Exception? ex,
                                             object? helpfulInformation = null,
                                             [CallerMemberName] string action = "",
@@ -171,7 +171,7 @@ public static class LogCalls
         log.LogError(ex,
                      "{Action}({Label}{State})",
                      action,
-                     LogAssertions.StateLabelIfHelpful(action,helpfulLabel),
+                     LogAssert.StateLabelIfHelpful(action,helpfulLabel),
                      (helpfulInformation ?? "").ToLoggableState());
     }
 
@@ -201,7 +201,7 @@ public static class LogCalls
     /// <exception cref="Exception"><paramref name="ex"/></exception>
     /// <exception cref="Exception">If <paramref name="ex"/> is null.</exception>
     [DoesNotReturn]
-    public static void LogCallWithExceptionThenThrow(this ILogger log,
+    public static void MemberExceptionThenThrow(this ILogger log,
                                                    Exception? ex,
                                                    object? helpfulInformation = null,
                                                    [CallerMemberName] string action = "",
@@ -214,7 +214,7 @@ public static class LogCalls
         #pragma warning restore CA1873
                      "{Action}({Label}{State})",
                      action,
-                     LogAssertions.StateLabelIfHelpful(action,helpfulLabel),
+                     LogAssert.StateLabelIfHelpful(action,helpfulLabel),
                      (helpfulInformation ?? "").ToLoggableState());
         throw ex;
     }
@@ -247,7 +247,7 @@ public static class LogCalls
     /// <exception cref="Exception"><paramref name="ex"/></exception>
     /// <exception cref="Exception">If <paramref name="ex"/> is null.</exception>
     [DoesNotReturn]
-    public static void LogCallWithCriticalExceptionThenExitProcessWithCode(this ILogger log,
+    public static void MemberCriticalExceptionThenExitProcessWithCode(this ILogger log,
                                                    Exception? ex,
                                                    int exitCode,
                                                    object? helpfulInformation = null,
@@ -262,7 +262,7 @@ public static class LogCalls
         #pragma warning restore CA1873
                      "{Action}({Label}{State})",
                      action,
-                     LogAssertions.StateLabelIfHelpful(action,helpfulLabel),
+                     LogAssert.StateLabelIfHelpful(action,helpfulLabel),
                      (helpfulInformation ?? "").ToLoggableState());
         Environment.Exit(exitCode);
     }

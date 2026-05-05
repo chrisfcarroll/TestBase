@@ -1,14 +1,13 @@
 using System.Runtime.CompilerServices;
-using Serilog;
-using Serilog.Events;
+using Microsoft.Extensions.Logging;
 
-namespace SerilogAssert;
+namespace Log.Assert;
 
-public static class SerilogExceptionIfs
+public static class LogExceptionIfs
 {
     /// <summary>
     /// If <paramref name="condition"/> is true, log <paramref name="ex"/>
-    /// at <see cref="LogEventLevel.Error"/>.
+    /// at <see cref="LogLevel.Error"/>.
     /// Either way, return <paramref name="condition"/>.
     /// <p>Optionally also log <paramref name="helpfulInformation"/> under the property
     /// name "State", and log <paramref name="helpfulLabel"/> under the property name "Label".
@@ -31,32 +30,32 @@ public static class SerilogExceptionIfs
     /// Optional: a label to describe <paramref name="helpfulInformation"/>. Will be logged
     /// under the property name "Label".
     /// </param>
-    public static bool ExceptionIf(this ILogger log,
-                                   bool condition,
-                                   Exception? ex,
-                                   object? helpfulInformation = null,
-                                   [CallerMemberName] string action = "",
-                                   [CallerArgumentExpression("condition")]
-                                   string? conditionExpression = "",
-                                   [CallerArgumentExpression("helpfulInformation")]
-                                   string? helpfulLabel = "")
+    public static bool LogExceptionIf(this ILogger log,
+                                      bool condition,
+                                      Exception? ex,
+                                      object? helpfulInformation = null,
+                                      [CallerMemberName] string action = "",
+                                      [CallerArgumentExpression("condition")]
+                                      string? conditionExpression = "",
+                                      [CallerArgumentExpression("helpfulInformation")]
+                                      string? helpfulLabel = "")
     {
         if (!condition) return false;
-        if (!log.IsEnabled(LogEventLevel.Error)) return true;
+        if (!log.IsEnabled(LogLevel.Error)) return true;
         ex ??= new ApplicationException(message: $"Exception in {action}");
-        log.Write(LogEventLevel.Error,
-                  ex,
-                  "{Action}:Condition Failed:{Condition}:{Label}{State}",
-                  action,
-                  conditionExpression,
-                  SerilogAssertions.StateLabelIfHelpful(action,helpfulLabel),
-                  helpfulInformation.ToLoggableState() ?? string.Empty);
+        log.Log(LogLevel.Error,
+                ex,
+                "{Action}:Condition Failed:{Condition}:{Label}{State}",
+                action,
+                conditionExpression,
+                LogAssert.StateLabelIfHelpful(action,helpfulLabel),
+                helpfulInformation.ToLoggableState() ?? string.Empty);
         return true;
     }
 
     /// <summary>
     /// If <paramref name="condition"/> is true, log <paramref name="ex"/>
-    /// at <see cref="LogEventLevel.Error"/> then throw it.
+    /// at <see cref="LogLevel.Error"/> then throw it.
     /// Otherwise, return <paramref name="condition"/>.
     /// <p>Optionally also log <paramref name="helpfulInformation"/> under the property
     /// name "State", and log <paramref name="helpfulLabel"/> under the property name "Label".
@@ -79,26 +78,26 @@ public static class SerilogExceptionIfs
     /// Optional: a label to describe <paramref name="helpfulInformation"/>. Will be logged
     /// under the property name "Label".
     /// </param>
-    public static bool ExceptionAndThrowIf(this ILogger log,
-                                           bool condition,
-                                           Exception? ex,
-                                           object? helpfulInformation = null,
-                                           [CallerMemberName] string action = "",
-                                           [CallerArgumentExpression("condition")]
-                                           string? conditionExpression = "",
-                                           [CallerArgumentExpression("helpfulInformation")]
-                                           string? helpfulLabel = "")
+    public static bool LogExceptionAndThrowIf(this ILogger log,
+                                              bool condition,
+                                              Exception? ex,
+                                              object? helpfulInformation = null,
+                                              [CallerMemberName] string action = "",
+                                              [CallerArgumentExpression("condition")]
+                                              string? conditionExpression = "",
+                                              [CallerArgumentExpression("helpfulInformation")]
+                                              string? helpfulLabel = "")
     {
         if (!condition) return false;
         ex ??= new ApplicationException(message: $"Exception in {action}");
-        if (log.IsEnabled(LogEventLevel.Error))
-            log.Write(LogEventLevel.Error,
-                      ex,
-                      "{Action}:Condition Failed:{Condition}:{Label}{State}",
-                      action,
-                      conditionExpression,
-                      SerilogAssertions.StateLabelIfHelpful(action,helpfulLabel),
-                      helpfulInformation.ToLoggableState() ?? string.Empty);
+        if (log.IsEnabled(LogLevel.Error))
+            log.Log(LogLevel.Error,
+                    ex,
+                    "{Action}:Condition Failed:{Condition}:{Label}{State}",
+                    action,
+                    conditionExpression,
+                    LogAssert.StateLabelIfHelpful(action,helpfulLabel),
+                    helpfulInformation.ToLoggableState() ?? string.Empty);
         throw ex;
     }
 }
