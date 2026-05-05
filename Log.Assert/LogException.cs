@@ -3,6 +3,9 @@ using Microsoft.Extensions.Logging;
 
 namespace Log.Assert;
 
+/// <summary>
+/// ILogger extension methods for logging Exceptions.
+/// </summary>
 public static class LogException
 {
     /// <summary>
