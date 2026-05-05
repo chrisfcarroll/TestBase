@@ -1,4 +1,4 @@
-#Log.Assert( A better style of application logging ).
+# Log.Assert( A better style of application logging ).
 ```
 public string GoBang(string target, int guess)
 {
