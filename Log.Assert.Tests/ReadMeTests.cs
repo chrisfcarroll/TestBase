@@ -68,7 +68,7 @@ public class ReadMeExample(ILogger<ReadMeExample> log)
 {
     public string GoBang(string target, int guess)
     {
-        log.Member( (target,guess) );
+        log.Member( helpfulInformation: (target,guess) );
         log.PreconditionNotNull(target);
 
         var graphemes = new StringInfo(target??"");
@@ -80,10 +80,10 @@ public class ReadMeExample(ILogger<ReadMeExample> log)
             new ApplicationException("bang!"));
 
         var remainder = Remove(graphemes,guess);
-        log.DebugIf(remainder.Length == 0,"TBC:is this permitted?");
+        log.DebugIf(remainder.Length == 0,helpfulInformation: "TBC:is this permitted?");
         log.If(graphemes.LengthInTextElements > 0,
-                  (target,guess,graphemes.LengthInTextElements),
-                  label:"Remaining after Removal");
+                  helpfulInformation: (target,guess,graphemes.LengthInTextElements),
+                  label: "Remaining after Removal");
 
         log.PreconditionNotNull(target);
         log.Postcondition(remainder.Length < target.Length);

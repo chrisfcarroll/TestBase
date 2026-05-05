@@ -22,25 +22,25 @@ public static class LogConditionally
     ///     anything you think would be helpful to see when scanning the logs. Will be logged
     ///     under the property name "State".
     /// </param>
+    /// <param name="label">
+    ///     Optional: a label to describe <paramref name="helpfulInformation"/>. Will be logged
+    ///     under the property name "Label".
+    /// </param>
     /// <param name="logLevel">Defaults to <see cref="LogLevel.Information"/></param>
     /// <param name="action">Compiler populated: the name of the member (for instance,
     ///     the method) being logged. Will be logged under the property name "Action"</param>
     /// <param name="conditionExpression">
     ///     Compiler generated: the expression being tested.
     /// </param>
-    /// <param name="label">
-    ///     Optional: a label to describe <paramref name="helpfulInformation"/>. Will be logged
-    ///     under the property name "Label".
-    /// </param>
     public static bool If(this ILogger log,
-                             bool condition,
-                             object? helpfulInformation = null,
-                             LogLevel logLevel = LogLevel.Information,
-                             [CallerMemberName] string action = "",
-                             [CallerArgumentExpression("condition")]
-                             string? conditionExpression = "",
-                             [CallerArgumentExpression("helpfulInformation")]
-                             string? label = "")
+                          bool condition,
+                          object? helpfulInformation = null,
+                          [CallerArgumentExpression("helpfulInformation")]
+                          string? label = "",
+                          LogLevel logLevel = LogLevel.Information,
+                          [CallerMemberName] string action = "",
+                          [CallerArgumentExpression("condition")]
+                          string? conditionExpression = "")
     {
         if (!condition) return false;
         if (!log.IsEnabled(logLevel)) return true;
@@ -59,35 +59,36 @@ public static class LogConditionally
     /// <p>Optionally also log <paramref name="helpfulInformation"/> under the property
     /// name "State", and log <paramref name="label"/> under the property name "Label".
     /// </summary>
+    /// <param name="log"></param>
     /// <param name="condition">the value being asserted as true</param>
-    /// <param name="conditionExpression">
-    /// Compiler generated: the expression being tested.
-    /// </param>
     /// <param name="helpfulInformation">
-    /// anything you think would be helpful to see when scanning the logs. Will be logged
-    /// under the property name "State".
+    ///    anything you think would be helpful to see when scanning the logs. Will be logged
+    ///    under the property name "State".
+    /// </param>
+    /// <param name="label">
+    ///    Optional: a label to describe <paramref name="helpfulInformation"/>. Will be logged
+    ///    under the property name "Label".
     /// </param>
     /// <param name="action">Compiler populated: the name of the member (for instance,
-    /// the method) being logged. Will be logged under the property name "Action"</param>
-    /// <param name="label">
-    /// Optional: a label to describe <paramref name="helpfulInformation"/>. Will be logged
-    /// under the property name "Label".
+    ///    the method) being logged. Will be logged under the property name "Action"</param>
+    /// <param name="conditionExpression">
+    ///    Compiler generated: the expression being tested.
     /// </param>
     public static bool InformationIf(this ILogger log,
                                      bool condition,
                                      object? helpfulInformation = null,
+                                     [CallerArgumentExpression("helpfulInformation")]
+                                     string? label = "",
                                      [CallerMemberName] string action = "",
                                      [CallerArgumentExpression("condition")]
-                                     string? conditionExpression = "",
-                                     [CallerArgumentExpression("helpfulInformation")]
-                                     string? label = "")
+                                     string? conditionExpression = "")
         => If(log,
               condition,
               helpfulInformation,
+              label,
               LogLevel.Information,
               action,
-              conditionExpression,
-              label);
+              conditionExpression);
 
     /// <summary>
     /// If <paramref name="condition"/> is true, log at <see cref="LogLevel.Warning"/>.
@@ -95,35 +96,36 @@ public static class LogConditionally
     /// <p>Optionally also log <paramref name="helpfulInformation"/> under the property
     /// name "State", and log <paramref name="label"/> under the property name "Label".
     /// </summary>
+    /// <param name="log"></param>
     /// <param name="condition">the value being asserted as true</param>
-    /// <param name="conditionExpression">
-    /// Compiler generated: the expression being tested.
-    /// </param>
     /// <param name="helpfulInformation">
-    /// anything you think would be helpful to see when scanning the logs. Will be logged
-    /// under the property name "State".
+    ///    anything you think would be helpful to see when scanning the logs. Will be logged
+    ///    under the property name "State".
+    /// </param>
+    /// <param name="label">
+    ///    Optional: a label to describe <paramref name="helpfulInformation"/>. Will be logged
+    ///    under the property name "Label".
     /// </param>
     /// <param name="action">Compiler populated: the name of the member (for instance,
-    /// the method) being logged. Will be logged under the property name "Action"</param>
-    /// <param name="label">
-    /// Optional: a label to describe <paramref name="helpfulInformation"/>. Will be logged
-    /// under the property name "Label".
+    ///    the method) being logged. Will be logged under the property name "Action"</param>
+    /// <param name="conditionExpression">
+    ///    Compiler generated: the expression being tested.
     /// </param>
     public static bool WarnIf(this ILogger log,
-                                 bool condition,
-                                 object? helpfulInformation = null,
-                                 [CallerMemberName] string action = "",
-                                 [CallerArgumentExpression("condition")]
-                                 string? conditionExpression = "",
-                                 [CallerArgumentExpression("helpfulInformation")]
-                                 string? label = "")
+                              bool condition,
+                              object? helpfulInformation = null,
+                              [CallerArgumentExpression("helpfulInformation")]
+                              string? label = "",
+                              [CallerMemberName] string action = "",
+                              [CallerArgumentExpression("condition")]
+                              string? conditionExpression = "")
         => If(log,
               condition,
               helpfulInformation,
+              label,
               LogLevel.Warning,
-                 action,
-                 conditionExpression,
-                 label);
+              action,
+              conditionExpression);
 
     /// <summary>
     /// If <paramref name="condition"/> is true, log at <see cref="LogLevel.Error"/>.
@@ -131,35 +133,36 @@ public static class LogConditionally
     /// <p>Optionally also log <paramref name="helpfulInformation"/> under the property
     /// name "State", and log <paramref name="label"/> under the property name "Label".
     /// </summary>
+    /// <param name="log"></param>
     /// <param name="condition">the value being asserted as true</param>
-    /// <param name="conditionExpression">
-    /// Compiler generated: the expression being tested.
-    /// </param>
     /// <param name="helpfulInformation">
-    /// anything you think would be helpful to see when scanning the logs. Will be logged
-    /// under the property name "State".
+    ///    anything you think would be helpful to see when scanning the logs. Will be logged
+    ///    under the property name "State".
+    /// </param>
+    /// <param name="label">
+    ///    Optional: a label to describe <paramref name="helpfulInformation"/>. Will be logged
+    ///    under the property name "Label".
     /// </param>
     /// <param name="action">Compiler populated: the name of the member (for instance,
-    /// the method) being logged. Will be logged under the property name "Action"</param>
-    /// <param name="label">
-    /// Optional: a label to describe <paramref name="helpfulInformation"/>. Will be logged
-    /// under the property name "Label".
+    ///    the method) being logged. Will be logged under the property name "Action"</param>
+    /// <param name="conditionExpression">
+    ///    Compiler generated: the expression being tested.
     /// </param>
     public static bool ErrorIf(this ILogger log,
-                                  bool condition,
-                                  object? helpfulInformation = null,
-                                  [CallerMemberName] string action = "",
-                                  [CallerArgumentExpression("condition")]
-                                  string? conditionExpression = "",
-                                  [CallerArgumentExpression("helpfulInformation")]
-                                  string? label = "")
+                               bool condition,
+                               object? helpfulInformation = null,
+                               [CallerArgumentExpression("helpfulInformation")]
+                               string? label = "",
+                               [CallerMemberName] string action = "",
+                               [CallerArgumentExpression("condition")]
+                               string? conditionExpression = "")
         => If(log,
               condition,
               helpfulInformation,
+              label,
               LogLevel.Error,
-                 action,
-                 conditionExpression,
-                 label);
+              action,
+              conditionExpression);
 
     /// <summary>
     /// If <paramref name="condition"/> is true, log at <see cref="LogLevel.Debug"/>.
@@ -167,35 +170,36 @@ public static class LogConditionally
     /// <p>Optionally also log <paramref name="helpfulInformation"/> under the property
     /// name "State", and log <paramref name="label"/> under the property name "Label".
     /// </summary>
+    /// <param name="log"></param>
     /// <param name="condition">the value being asserted as true</param>
-    /// <param name="conditionExpression">
-    /// Compiler generated: the expression being tested.
-    /// </param>
     /// <param name="helpfulInformation">
-    /// anything you think would be helpful to see when scanning the logs. Will be logged
-    /// under the property name "State".
+    ///    anything you think would be helpful to see when scanning the logs. Will be logged
+    ///    under the property name "State".
+    /// </param>
+    /// <param name="label">
+    ///    Optional: a label to describe <paramref name="helpfulInformation"/>. Will be logged
+    ///    under the property name "Label".
     /// </param>
     /// <param name="action">Compiler populated: the name of the member (for instance,
-    /// the method) being logged. Will be logged under the property name "Action"</param>
-    /// <param name="label">
-    /// Optional: a label to describe <paramref name="helpfulInformation"/>. Will be logged
-    /// under the property name "Label".
+    ///    the method) being logged. Will be logged under the property name "Action"</param>
+    /// <param name="conditionExpression">
+    ///    Compiler generated: the expression being tested.
     /// </param>
     public static bool DebugIf(this ILogger log,
-                                  bool condition,
-                                  object? helpfulInformation = null,
-                                  [CallerMemberName] string action = "",
-                                  [CallerArgumentExpression("condition")]
-                                  string? conditionExpression = "",
-                                  [CallerArgumentExpression("helpfulInformation")]
-                                  string? label = "")
+                               bool condition,
+                               object? helpfulInformation = null,
+                               [CallerArgumentExpression("helpfulInformation")]
+                               string? label = "",
+                               [CallerMemberName] string action = "",
+                               [CallerArgumentExpression("condition")]
+                               string? conditionExpression = "")
         => If(log,
               condition,
               helpfulInformation,
+              label,
               LogLevel.Debug,
-                 action,
-                 conditionExpression,
-                 label);
+              action,
+              conditionExpression);
 
     /// <summary>
     /// If <paramref name="condition"/> is true, log at <see cref="LogLevel.Trace"/>.
@@ -203,35 +207,36 @@ public static class LogConditionally
     /// <p>Optionally also log <paramref name="helpfulInformation"/> under the property
     /// name "State", and log <paramref name="label"/> under the property name "Label".
     /// </summary>
+    /// <param name="log"></param>
     /// <param name="condition">the value being asserted as true</param>
-    /// <param name="conditionExpression">
-    /// Compiler generated: the expression being tested.
-    /// </param>
     /// <param name="helpfulInformation">
-    /// anything you think would be helpful to see when scanning the logs. Will be logged
-    /// under the property name "State".
+    ///    anything you think would be helpful to see when scanning the logs. Will be logged
+    ///    under the property name "State".
+    /// </param>
+    /// <param name="label">
+    ///    Optional: a label to describe <paramref name="helpfulInformation"/>. Will be logged
+    ///    under the property name "Label".
     /// </param>
     /// <param name="action">Compiler populated: the name of the member (for instance,
-    /// the method) being logged. Will be logged under the property name "Action"</param>
-    /// <param name="label">
-    /// Optional: a label to describe <paramref name="helpfulInformation"/>. Will be logged
-    /// under the property name "Label".
+    ///    the method) being logged. Will be logged under the property name "Action"</param>
+    /// <param name="conditionExpression">
+    ///    Compiler generated: the expression being tested.
     /// </param>
     public static bool TraceIf(this ILogger log,
-                                  bool condition,
-                                  object? helpfulInformation = null,
-                                  [CallerMemberName] string action = "",
-                                  [CallerArgumentExpression("condition")]
-                                  string? conditionExpression = "",
-                                  [CallerArgumentExpression("helpfulInformation")]
-                                  string? label = "")
+                               bool condition,
+                               object? helpfulInformation = null,
+                               [CallerArgumentExpression("helpfulInformation")]
+                               string? label = "",
+                               [CallerMemberName] string action = "",
+                               [CallerArgumentExpression("condition")]
+                               string? conditionExpression = "")
         => If(log,
               condition,
               helpfulInformation,
+              label,
               LogLevel.Trace,
-                 action,
-                 conditionExpression,
-                 label);
+              action,
+              conditionExpression);
 
 
     /// <summary>
@@ -240,33 +245,34 @@ public static class LogConditionally
     /// <p>Optionally also log <paramref name="helpfulInformation"/> under the property
     /// name "State", and log <paramref name="label"/> under the property name "Label".
     /// </summary>
+    /// <param name="log"></param>
     /// <param name="condition">the value being asserted as true</param>
-    /// <param name="conditionExpression">
-    /// Compiler generated: the expression being tested.
-    /// </param>
     /// <param name="helpfulInformation">
-    /// anything you think would be helpful to see when scanning the logs. Will be logged
-    /// under the property name "State".
+    ///    anything you think would be helpful to see when scanning the logs. Will be logged
+    ///    under the property name "State".
+    /// </param>
+    /// <param name="label">
+    ///    Optional: a label to describe <paramref name="helpfulInformation"/>. Will be logged
+    ///    under the property name "Label".
     /// </param>
     /// <param name="action">Compiler populated: the name of the member (for instance,
-    /// the method) being logged. Will be logged under the property name "Action"</param>
-    /// <param name="label">
-    /// Optional: a label to describe <paramref name="helpfulInformation"/>. Will be logged
-    /// under the property name "Label".
+    ///    the method) being logged. Will be logged under the property name "Action"</param>
+    /// <param name="conditionExpression">
+    ///    Compiler generated: the expression being tested.
     /// </param>
     public static bool CriticalIf(this ILogger log,
-                                     bool condition,
-                                     object? helpfulInformation = null,
-                                     [CallerMemberName] string action = "",
-                                     [CallerArgumentExpression("condition")]
-                                     string? conditionExpression = "",
-                                     [CallerArgumentExpression("helpfulInformation")]
-                                     string? label = "")
+                                  bool condition,
+                                  object? helpfulInformation = null,
+                                  [CallerArgumentExpression("helpfulInformation")]
+                                  string? label = "",
+                                  [CallerMemberName] string action = "",
+                                  [CallerArgumentExpression("condition")]
+                                  string? conditionExpression = "")
         => If(log,
               condition,
               helpfulInformation,
+              label,
               LogLevel.Critical,
-                 action,
-                 conditionExpression,
-                 label);
+              action,
+              conditionExpression);
 }
