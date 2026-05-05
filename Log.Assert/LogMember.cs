@@ -209,7 +209,7 @@ public static class LogMember
                                                    string? helpfulLabel = null)
     {
         ex ??= new ApplicationException(message: $"Exception in {action}");
-        #pragma warning disable CA1873 we're about to throw anyway.
+        #pragma warning disable CA1873
         log.LogError(ex,
         #pragma warning restore CA1873
                      "{Action}({Label}{State})",
@@ -257,7 +257,7 @@ public static class LogMember
     {
         ex ??= new ApplicationException(message: $"Terminating process with exit code {exitCode} " +
                                                  $"because Exception in {action}");
-        #pragma warning disable CA1873 we're about to throw anyway.
+        #pragma warning disable CA1873
         log.LogCritical(ex,
         #pragma warning restore CA1873
                      "{Action}({Label}{State})",
