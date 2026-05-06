@@ -103,7 +103,7 @@ log.MemberCriticalExceptionThenExitProcessWithCode()
     <RepositoryUrl>https://github.com/chrisfcarroll/TestBase</RepositoryUrl>
     <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
     <IncludeSymbols>true</IncludeSymbols>
-    <PackageTags>stringify;serialization;tostring;debug;reflection;CallerArgumentExpression</PackageTags>
+    <PackageTags>logging;debug;CallerArgumentExpression</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 

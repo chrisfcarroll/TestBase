@@ -104,7 +104,7 @@ log.MemberFatalExceptionThenExitProcessWithCode()
     <RepositoryUrl>https://github.com/chrisfcarroll/TestBase</RepositoryUrl>
     <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
     <IncludeSymbols>true</IncludeSymbols>
-    <PackageTags>stringify;serialization;tostring;debug;reflection;CallerArgumentExpression;serilog</PackageTags>
+    <PackageTags>logging;debug;CallerArgumentExpression</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
