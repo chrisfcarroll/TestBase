@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 
 namespace TestBase
@@ -14,6 +15,7 @@ namespace TestBase
         /// <summary>
         ///     Throws the active test runner's Inconclusive or Skip Exception with the given message.
         /// </summary>
+        [DoesNotReturn]
         #if NET6_0_OR_GREATER
         [StackTraceHidden]
         #else

@@ -34,5 +34,11 @@ namespace System.Diagnostics.CodeAnalysis
         /// <returns>The associated parameter name. The output will be non-null if the argument to the parameter specified is non-null.</returns>
         public string ParameterName { get; }
     }
+
+    /// <summary>Polyfill for
+    /// <see href="https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.codeanalysis.doesnotreturnattribute"/>
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Method, Inherited = false)]
+    internal sealed class DoesNotReturnAttribute : Attribute { }
 }
 #endif

@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Threading;
 
@@ -43,6 +44,7 @@ namespace TestBase
         ///     exception and throws it. Throws <paramref name="assertion"/> unchanged when
         ///     no framework is detected.
         /// </summary>
+        [DoesNotReturn]
         #if NET6_0_OR_GREATER
         [StackTraceHidden]
         #else
@@ -74,6 +76,7 @@ namespace TestBase
         ///     Throws the active test runner's inconclusive/skip exception.
         ///     Falls back to throwing an <see cref="Assertion"/> if no framework is detected.
         /// </summary>
+        [DoesNotReturn]
         #if NET6_0_OR_GREATER
         [StackTraceHidden]
         #else
