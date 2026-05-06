@@ -20,6 +20,8 @@ public class SerilogLogMemberTests
     {
         log.Member("state");
 
+        TestContext.Out.WriteLine(logBuilder.Last.Message);
+
         NUnit.Framework.Assert.That(logBuilder.Last.Level, Is.EqualTo(LogEventLevel.Information));
         NUnit.Framework.Assert.That(logBuilder.Last.Message, Does.Contain("state"));
     }

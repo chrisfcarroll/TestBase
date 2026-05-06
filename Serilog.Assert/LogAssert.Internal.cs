@@ -10,11 +10,11 @@ public static partial class LogAssert
     /// </returns>
     internal static string StateLabelIfHelpful(string action, string? label)
         => (label is null or ""
-            || label == action
+            || label.Trim('"') == action
             || label.EndsWith(".ToLoggableState()")
             )
                 ? ""
-                : label + "=";
+                : label.Trim('"') + "=";
 
     /// <summary>
     ///
