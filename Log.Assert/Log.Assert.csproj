@@ -48,11 +48,11 @@ return remainder;
 ## What is Logged?
  
 - All methods log the current Method or Member name.
-- All methods can log additional information, either auto-labelled or explicitly labelled.
 - Assertions, Pre-, and Post-Conditions log nothing at all if they pass.
 - Assertions, Pre-, and Post-Conditions log the literal failed expression if they fail.
 - log.If() logs nothing at all if the condition is false
 - log.If() logs the literal condition expression if it is true
+- All methods can log additional information, either auto-labelled or explicitly labelled.
 
 ```
 Member()
