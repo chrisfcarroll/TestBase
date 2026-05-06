@@ -99,7 +99,7 @@ public class LogCallTests
     {
         log.Member(helpfulInformation: "val", label: "myParam");
 
-        NUnit.Framework.Assert.That(log.Last.Message, Does.Contain("myParam:"));
+        NUnit.Framework.Assert.That(log.Last.Message, Does.Contain("myParam="));
     }
 
     [Test]

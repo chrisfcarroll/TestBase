@@ -14,7 +14,7 @@ public static partial class LogAssert
             || label.EndsWith(".ToLoggableState()")
             )
                 ? ""
-                : label + ":";
+                : label + "=";
 
     /// <summary>
     ///

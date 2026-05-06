@@ -32,6 +32,6 @@ public class StateNameIfHelpfulTests
     [Test]
     public void ReturnsNameWithColon_WhenHelpful()
     {
-        NUnit.Framework.Assert.That(LogAssert.StateLabelIfHelpful("action", "userId"), Is.EqualTo("userId:"));
+        NUnit.Framework.Assert.That(LogAssert.StateLabelIfHelpful("action", "userId"), Is.EqualTo("userId="));
     }
 }

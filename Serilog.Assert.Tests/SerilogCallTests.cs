@@ -91,7 +91,7 @@ public class SerilogCallTests
     {
         log.Log.Member("val", label: "myParam");
 
-        NUnit.Framework.Assert.That(log.Last.Message, Does.Contain("myParam:"));
+        NUnit.Framework.Assert.That(log.Last.Message, Does.Contain("myParam="));
     }
 
     [Test]
