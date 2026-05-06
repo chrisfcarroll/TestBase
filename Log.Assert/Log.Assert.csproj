@@ -55,24 +55,39 @@ return remainder;
 - All methods can log additional information, either auto-labelled or explicitly labelled.
 
 ```
-Member()          MemberDebug()    MemberTrace()
-MemberWarning()   MemberError()
+log.Member()
 
-Assert()          AssertNotNull()
-AssertNotNullOrEmpty()             AssertNotNullOrWhitespace()
+log.Assert()
+log.AssertNotNull()
+log.Precondition()
+log.PreconditionNotNull()
+log.Postcondition()
+log.PostconditionNotNull()
 
-Precondition()    PreconditionNotNull()
-PreconditionNotNullOrEmpty()       PreconditionNotNullOrWhitespace()
+log.If()
+log.IfNot()
+```
+and
 
-Postcondition()   PostconditionNotNull()
-PostconditionNotNullOrEmpty()      PostconditionNotNullOrWhitespace()
+```
+log.InformationIf()
+log.TraceIf()
+log.DebugIf()
+log.WarnIf()
+log.ErrorIf()
+log.CriticalIf()
 
-If()  InformationIf()  DebugIf()  TraceIf()  WarnIf()  ErrorIf()  CriticalIf()
-IfNot()  InformationIfNot()  DebugIfNot()  TraceIfNot()  WarnIfNot()  ErrorIfNot()  CriticalIfNot()
-
-ExceptionIf()     ExceptionAndThrowIf()
-MemberException() MemberExceptionThenThrow()
-MemberCriticalExceptionThenExitProcessWithCode()
+log.InformationIfNot()
+log.TraceIfNot()
+log.DebugIfNot()
+log.WarnIfNot()
+log.ErrorIfNot()
+log.CriticalIfNot()
+log.ExceptionIf()
+log.ExceptionAndThrowIf()
+log.MemberException()
+log.MemberExceptionThenThrow()
+log.MemberCriticalExceptionThenExitProcessWithCode()
 ```
 ]]></PackageDescription>
     <PackageReleaseNotes>
