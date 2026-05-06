@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 namespace Log.Assert.Tests;
 
 [TestFixture]
-public class LogCallTests
+public class LogMemberTests
 {
     TestLogger log = null!;
 
@@ -11,18 +11,18 @@ public class LogCallTests
     public void SetUp() => log = new TestLogger();
 
     [Test]
-    public void LogAction_DefaultsToInformation()
+    public void LogMember_DefaultsToInformation()
     {
-        log.Member(helpfulInformation: "state");
+        log.Member("state");
 
         NUnit.Framework.Assert.That(log.Last.Level, Is.EqualTo(LogLevel.Information));
         NUnit.Framework.Assert.That(log.Last.Message, Does.Contain("state"));
     }
 
     [Test]
-    public void LogAction_RespectsLogLevel()
+    public void LogMember_RespectsLogLevel()
     {
-        log.Member(helpfulInformation: "s", logLevel: LogLevel.Critical);
+        log.Member("s", logLevel: LogLevel.Critical);
 
         NUnit.Framework.Assert.That(log.Last.Level, Is.EqualTo(LogLevel.Critical));
     }
@@ -30,7 +30,7 @@ public class LogCallTests
     [Test]
     public void LogActionInformation_LogsAtInformation()
     {
-        log.Member(helpfulInformation: "state");
+        log.Member("state");
 
         NUnit.Framework.Assert.That(log.Last.Level, Is.EqualTo(LogLevel.Information));
     }
@@ -38,7 +38,7 @@ public class LogCallTests
     [Test]
     public void LogActionDebug_LogsAtDebug()
     {
-        log.MemberDebug(helpfulInformation: "state");
+        log.MemberDebug("state");
 
         NUnit.Framework.Assert.That(log.Last.Level, Is.EqualTo(LogLevel.Debug));
     }
@@ -46,7 +46,7 @@ public class LogCallTests
     [Test]
     public void LogActionTrace_LogsAtTrace()
     {
-        log.MemberTrace(helpfulInformation: "state");
+        log.MemberTrace("state");
 
         NUnit.Framework.Assert.That(log.Last.Level, Is.EqualTo(LogLevel.Trace));
     }
@@ -54,7 +54,7 @@ public class LogCallTests
     [Test]
     public void LogActionWarning_LogsAtWarning()
     {
-        log.MemberWarning(helpfulInformation: "state");
+        log.MemberWarning("state");
 
         NUnit.Framework.Assert.That(log.Last.Level, Is.EqualTo(LogLevel.Warning));
     }
@@ -62,7 +62,7 @@ public class LogCallTests
     [Test]
     public void LogActionError_LogsAtError()
     {
-        log.MemberError(helpfulInformation: "state");
+        log.MemberError("state");
 
         NUnit.Framework.Assert.That(log.Last.Level, Is.EqualTo(LogLevel.Error));
     }
@@ -71,7 +71,7 @@ public class LogCallTests
     public void LogActionException_LogsExceptionAtError()
     {
         var ex = new InvalidOperationException("boom");
-        log.MemberException(ex, helpfulInformation: "ctx");
+        log.MemberException(ex, "ctx");
 
         NUnit.Framework.Assert.That(log.Last.Level, Is.EqualTo(LogLevel.Error));
         NUnit.Framework.Assert.That(log.Last.Exception, Is.SameAs(ex));
@@ -87,7 +87,7 @@ public class LogCallTests
     }
 
     [Test]
-    public void LogAction_NullState_LogsEmptyString()
+    public void LogMember_NullState_LogsEmptyString()
     {
         log.Member();
 
@@ -95,15 +95,15 @@ public class LogCallTests
     }
 
     [Test]
-    public void LogAction_WithStateName_IncludesLabel()
+    public void LogMember_WithStateName_IncludesLabel()
     {
-        log.Member(helpfulInformation: "val", label: "myParam");
+        log.Member("val", label:"myParam");
 
         NUnit.Framework.Assert.That(log.Last.Message, Does.Contain("myParam="));
     }
 
     [Test]
-    public void LogAction_UsesToLoggableState()
+    public void LogMember_UsesToLoggableState()
     {
         var obj = new CustomLoggable();
         log.Member(helpfulInformation: obj);
