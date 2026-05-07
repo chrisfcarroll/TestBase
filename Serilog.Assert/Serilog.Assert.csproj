@@ -9,9 +9,11 @@
   <ItemGroup>
     <InternalsVisibleTo Include="Serilog.Assert.Tests" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="Serilog" Version="4.3.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <PropertyGroup>
@@ -107,8 +109,4 @@ log.MemberFatalExceptionThenExitProcessWithCode()
     <PackageTags>logging;debug;CallerArgumentExpression</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Include="README.md" Pack="true" PackagePath="\" />
-  </ItemGroup>
 </Project>
