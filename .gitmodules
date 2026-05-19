@@ -1,0 +1,3 @@
+[submodule "Log.Assert"]
+	path = Log.Assert
+	url = https://github.com/chrisfcarroll/Log.Assert

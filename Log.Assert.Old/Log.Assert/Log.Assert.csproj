@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>net10.0;net8.0;net6.0</TargetFrameworks>
@@ -7,20 +7,25 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <InternalsVisibleTo Include="Serilog.Assert.Tests" />
+    <InternalsVisibleTo Include="Log.Assert.Tests" />
   </ItemGroup>
-
+  <ItemGroup Condition=" $([System.Text.RegularExpressions.Regex]::IsMatch( '$(TargetFramework)', 'net[891].+' )) ">
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.7" />
+  </ItemGroup>
+  <ItemGroup Condition=" $([System.Text.RegularExpressions.Regex]::IsMatch( '$(TargetFramework)', 'net[67].+' )) ">
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.3" />
+  </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Serilog" Version="4.3.1" />
+    <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
-
+  
   <PropertyGroup>
     <AssemblyVersion>0.1</AssemblyVersion>
     <AssemblyFileVersion>0.1</AssemblyFileVersion>
     <PackageVersion>0.1</PackageVersion>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <Title>Serilog.Assert( it is "A better style of application logging" ).</Title>
-    <PackageDescription><![CDATA[Serilog.Assert is a better style of application logging.
+    <Title>Log.Assert( it is "A better style of application logging" ).</Title>
+    <PackageDescription><![CDATA[Log.Assert is a better style of application logging.
 ```
 log.Member();
 log.PreconditionNotNull(target);
@@ -46,7 +51,7 @@ log.Member(remainder);
 return remainder;
 ```
 ## What is Logged?
-
+ 
 - All methods log the current Method or Member name.
 - Assertions, Pre-, and Post-Conditions log nothing at all if they pass.
 - Assertions, Pre-, and Post-Conditions log the literal failed expression if they fail.
@@ -54,7 +59,6 @@ return remainder;
 - log.If() logs the literal condition expression if it is true
 - All methods can log additional information, either auto-labelled or explicitly labelled.
 
-```
 ```
 log.Member()
 
@@ -72,23 +76,23 @@ and
 
 ```
 log.InformationIf()
-log.VerboseIf()
+log.TraceIf()
 log.DebugIf()
 log.WarnIf()
 log.ErrorIf()
-log.FatalIf()
+log.CriticalIf()
 
 log.InformationIfNot()
-log.VerboseIfNot()
+log.TraceIfNot()
 log.DebugIfNot()
 log.WarnIfNot()
 log.ErrorIfNot()
-log.FatalIfNot()
+log.CriticalIfNot()
 log.ExceptionIf()
 log.ExceptionAndThrowIf()
 log.MemberException()
 log.MemberExceptionThenThrow()
-log.MemberFatalExceptionThenExitProcessWithCode()
+log.MemberCriticalExceptionThenExitProcessWithCode()
 ```
 ]]></PackageDescription>
     <PackageReleaseNotes>
@@ -107,8 +111,4 @@ log.MemberFatalExceptionThenExitProcessWithCode()
     <PackageTags>logging;debug;CallerArgumentExpression</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Include="README.md" Pack="true" PackagePath="\" />
-  </ItemGroup>
 </Project>

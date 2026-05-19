@@ -1,26 +1,28 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>net10.0;net8.0;net6.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+
   <ItemGroup>
-    <InternalsVisibleTo Include="Log.Assert.Tests" />
+    <InternalsVisibleTo Include="Serilog.Assert.Tests" />
   </ItemGroup>
-  <ItemGroup Condition=" $([System.Text.RegularExpressions.Regex]::IsMatch( '$(TargetFramework)', 'net[891].+' )) ">
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.7" />
+  <ItemGroup>
+    <PackageReference Include="Serilog" Version="4.3.1" />
   </ItemGroup>
-  <ItemGroup Condition=" $([System.Text.RegularExpressions.Regex]::IsMatch( '$(TargetFramework)', 'net[67].+' )) ">
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.3" />
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
+
   <PropertyGroup>
     <AssemblyVersion>0.1</AssemblyVersion>
     <AssemblyFileVersion>0.1</AssemblyFileVersion>
     <PackageVersion>0.1</PackageVersion>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <Title>Log.Assert( it is "A better style of application logging" ).</Title>
-    <PackageDescription><![CDATA[Log.Assert is a better style of application logging.
+    <Title>Serilog.Assert( it is "A better style of application logging" ).</Title>
+    <PackageDescription><![CDATA[Serilog.Assert is a better style of application logging.
 ```
 log.Member();
 log.PreconditionNotNull(target);
@@ -46,7 +48,7 @@ log.Member(remainder);
 return remainder;
 ```
 ## What is Logged?
- 
+
 - All methods log the current Method or Member name.
 - Assertions, Pre-, and Post-Conditions log nothing at all if they pass.
 - Assertions, Pre-, and Post-Conditions log the literal failed expression if they fail.
@@ -54,6 +56,7 @@ return remainder;
 - log.If() logs the literal condition expression if it is true
 - All methods can log additional information, either auto-labelled or explicitly labelled.
 
+```
 ```
 log.Member()
 
@@ -71,23 +74,23 @@ and
 
 ```
 log.InformationIf()
-log.TraceIf()
+log.VerboseIf()
 log.DebugIf()
 log.WarnIf()
 log.ErrorIf()
-log.CriticalIf()
+log.FatalIf()
 
 log.InformationIfNot()
-log.TraceIfNot()
+log.VerboseIfNot()
 log.DebugIfNot()
 log.WarnIfNot()
 log.ErrorIfNot()
-log.CriticalIfNot()
+log.FatalIfNot()
 log.ExceptionIf()
 log.ExceptionAndThrowIf()
 log.MemberException()
 log.MemberExceptionThenThrow()
-log.MemberCriticalExceptionThenExitProcessWithCode()
+log.MemberFatalExceptionThenExitProcessWithCode()
 ```
 ]]></PackageDescription>
     <PackageReleaseNotes>
@@ -106,8 +109,4 @@ log.MemberCriticalExceptionThenExitProcessWithCode()
     <PackageTags>logging;debug;CallerArgumentExpression</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Include="README.md" Pack="true" PackagePath="\" />
-  </ItemGroup>
 </Project>

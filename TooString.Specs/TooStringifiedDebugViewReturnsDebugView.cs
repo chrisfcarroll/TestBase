@@ -1,7 +1,8 @@
 using System.Numerics;
 using System.Reflection;
+#if NET8_0_OR_GREATER
 using System.Runtime.InteropServices;
-
+#endif
 namespace TooString.Specs;
 
 public struct AStruct { public string A {get; init; } public Complex B { get; init; } }
@@ -239,7 +240,7 @@ public class TooStringifiedDebugViewReturnsDebugView
             .GetMethods(BindingFlags.Instance|BindingFlags.Public)
             .First(m=>m.Name=="GetMethods")
             .Module;
-#if NET10_0_OR_GREATER
+        #if NET10_0_OR_GREATER
         var expected = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
              ? """
                { MDStreamVersion = 131072, FullyQualifiedName = --filename--, ModuleVersionId = { Variant = 9, Version = 4 }, MetadataToken = 100000000, ScopeName = System.Private.CoreLib.dll, Name = System.Private.CoreLib.dll, Assembly = { CodeBase = file:///--filename--, FullName = System.Private.CoreLib, Version=X.X.X.X, Culture=neutral, PublicKeyToken=7cec85d7bea7798e, EntryPoint = null, DefinedTypes = System.RuntimeType[99], IsCollectible = False, ManifestModule = System.Private.CoreLib.dll, ReflectionOnly = False, Location = --filename--, ImageRuntimeVersion = v4.0.30319, GlobalAssemblyCache = False, HostContext = 0, IsDynamic = False, ExportedTypes = System.Type[99], IsFullyTrusted = True, CustomAttributes = { Type = ReadOnlyCollection<CustomAttributeData>, Count = 22 }, EscapedCodeBase = file:///--filename--, Modules = System.Reflection.RuntimeModule[1], SecurityRuleSet = None }, ModuleHandle = { MDStreamVersion = 131072 }, CustomAttributes = { Type = ReadOnlyCollection<CustomAttributeData>, Count = 3 } }
@@ -248,25 +249,21 @@ public class TooStringifiedDebugViewReturnsDebugView
                { MDStreamVersion = 131072, FullyQualifiedName = --filename--, ModuleVersionId = { Variant = 11, Version = 4 }, MetadataToken = 100000000, ScopeName = System.Private.CoreLib.dll, Name = System.Private.CoreLib.dll, Assembly = { CodeBase = file:///--filename--, FullName = System.Private.CoreLib, Version=X.X.X.X, Culture=neutral, PublicKeyToken=7cec85d7bea7798e, EntryPoint = null, DefinedTypes = System.RuntimeType[99], IsCollectible = False, ManifestModule = System.Private.CoreLib.dll, ReflectionOnly = False, Location = --filename--, ImageRuntimeVersion = v4.0.30319, GlobalAssemblyCache = False, HostContext = 0, IsDynamic = False, ExportedTypes = System.Type[99], IsFullyTrusted = True, CustomAttributes = { Type = ReadOnlyCollection<CustomAttributeData>, Count = 22 }, EscapedCodeBase = file:///--filename--, Modules = System.Reflection.RuntimeModule[1], SecurityRuleSet = None }, ModuleHandle = { MDStreamVersion = 131072 }, CustomAttributes = { Type = ReadOnlyCollection<CustomAttributeData>, Count = 3 } }
                """
              ;
-#else
+        #else
         var expected = """
-                       { MDStreamVersion = 131072, FullyQualifiedName = --filename--, ModuleVersionId = {  }, MetadataToken = 100000000, ScopeName = System.Private.CoreLib.dll, Name = System.Private.CoreLib.dll, Assembly = { CodeBase = file:///--filename--, FullName = System.Private.CoreLib, Version=X.X.X.X, Culture=neutral, PublicKeyToken=7cec85d7bea7798e, EntryPoint = null, DefinedTypes = System.RuntimeType[2341], IsCollectible = False, ManifestModule = System.Private.CoreLib.dll, ReflectionOnly = False, Location = --filename--, ImageRuntimeVersion = v4.0.30319, GlobalAssemblyCache = False, HostContext = 0, IsDynamic = False, ExportedTypes = System.Type[1186], IsFullyTrusted = True, CustomAttributes = { Type = ReadOnlyCollection<CustomAttributeData>, Count = 22 }, EscapedCodeBase = file:///--filename--, Modules = System.Reflection.RuntimeModule[1], SecurityRuleSet = None }, ModuleHandle = { MDStreamVersion = 131072 }, CustomAttributes = { Type = ReadOnlyCollection<CustomAttributeData>, Count = 2 } }
+                       { MDStreamVersion = 131072, FullyQualifiedName = --filename--, ModuleVersionId = {  }, MetadataToken = 100000000, ScopeName = System.Private.CoreLib.dll, Name = System.Private.CoreLib.dll, Assembly = { CodeBase = file:///--filename--, FullName = System.Private.CoreLib, Version=X.X.X.X, Culture=neutral, PublicKeyToken=7cec85d7bea7798e, EntryPoint = null, DefinedTypes = System.RuntimeType[99], IsCollectible = False, ManifestModule = System.Private.CoreLib.dll, ReflectionOnly = False, Location = --filename--, ImageRuntimeVersion = v4.0.30319, GlobalAssemblyCache = False, HostContext = 0, IsDynamic = False, ExportedTypes = System.Type[99], IsFullyTrusted = True, CustomAttributes = { Type = ReadOnlyCollection<CustomAttributeData>, Count = 22 }, EscapedCodeBase = file:///--filename--, Modules = System.Reflection.RuntimeModule[1], SecurityRuleSet = None }, ModuleHandle = { MDStreamVersion = 131072 }, CustomAttributes = { Type = ReadOnlyCollection<CustomAttributeData>, Count = 3 } }
                        """;
-#endif
+        #endif
         var actual = value.TooString(options: TooStringOptions.Default with { WriteIndented = false, MaxDepth = 2, StringifyAs = StringifyAs.DebugView });
 
         TestContext.Progress.WriteLine(actual.RegexReplaceCompilationDependentValuesWithPseudoValues());
 
-        var comparableValue = actual.RegexReplaceCompilationDependentValuesWithPseudoValues();
-        #if NET6_0
-        Assert.That(comparableValue,Is.EqualTo(expected.RegexReplaceCompilationDependentValuesWithPseudoValues())
-        );
-        #else
-        Assert.That(comparableValue.Substring(0,300),
-                    Is.EqualTo(expected.Substring(0,300)
-                                                 .RegexReplaceCompilationDependentValuesWithPseudoValues()));
+        Assert.That(actual
+                        .RegexReplaceCompilationDependentValuesWithPseudoValues(),
+                    Is.EqualTo(
+                        expected
+                            .RegexReplaceCompilationDependentValuesWithPseudoValues())
+                    );
         Assert.That(actual.Length >= expected.Length);
-        #endif
     }
-    
 }
