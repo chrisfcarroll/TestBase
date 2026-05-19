@@ -5,7 +5,7 @@
     <NoWarn>1591;1701;1702;1705;NU1701</NoWarn>
     <AssemblyVersion>5.4</AssemblyVersion>
     <AssemblyFileVersion>5.4</AssemblyFileVersion>
-    <PackageVersion>5.4-preview5</PackageVersion>
+    <PackageVersion>5.4-preview6</PackageVersion>
     <LangVersion Condition=" $([System.Text.RegularExpressions.Regex]::IsMatch( '$(TargetFramework)', 'net[45].+|netstandard.+' )) ">10</LangVersion>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Title>TestBase – Rich, fluent assertions and tools for testing with heavyweight dependencies: AspNetCore, AdoNet, HttpClient, AspNet.Mvc, Streams, Logging</Title>
@@ -77,8 +77,12 @@ Should.ThrowAsync();
 Should.NotThrow();
 
 Inconclusive.Because()
-Inconclusive.IfPreconditionFails()
 Inconclusive.If()
+
+Precondition.InconclusiveBecause()
+Precondition.InconclusiveIf()
+Precondition.Failed()
+Precondition.FailIf()
 ```
 
 Testable Logging is in packages Extensions.Logging.ListOfString and Serilog.Sinks.ListOfString
@@ -98,6 +102,7 @@ Serilog.Logger slogger= new LoggerConfiguration().WriteTo.StringList(log).Create
       5.4.0&#x2008;&#x2007; Breaking change for users of HenriFormatter: it now swallows exceptions
       &#x2007;&#x2008;&#x2007;&#x2008;&#x2007;&#x2008;&#x2007; and returns what it's got so far, rather than throw.
       &#x2007;&#x2008;&#x2007;&#x2008;&#x2007;&#x2008;&#x2007; Should.ThrowAsync remove unhelpful signatures.
+      &#x2007;&#x2008;&#x2007;&#x2008;&#x2007;&#x2008;&#x2007; Precondition.InconclusiveBecause(),InconclusiveIf(),Failed(),FailIf() as fluent synonyms
       5.3.x&#x2008;&#x2007; Add Should.__() instead of Assert.__() | Add Should.ThrowAsync()
       &#x2007;&#x2008;&#x2007;&#x2008;&#x2007;&#x2008;&#x2007; Add Inconclusive.__() methods which throw an Inconclusive (or Skip) Exception.
       5.2.x&#x2008;&#x2007; Recognise NUnit, MSTest, xUnit and throw framework-specific exceptions.

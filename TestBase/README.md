@@ -66,8 +66,12 @@ Should.ThrowAsync();
 Should.NotThrow();
 
 Inconclusive.Because()
-Inconclusive.IfPreconditionFails()
 Inconclusive.If()
+
+Precondition.InconclusiveBecause()
+Precondition.InconclusiveIf()
+Precondition.Failed()
+Precondition.FailIf()
 ```
 
 TestBase.HttpClient.Fake
