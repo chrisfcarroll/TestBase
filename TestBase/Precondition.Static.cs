@@ -19,7 +19,7 @@ namespace TestBase
         #else
         [DebuggerHidden]
         #endif
-        public static void Inconclusive(string message, params object[] args)
+        public static void InconclusiveBecause(string message, params object[] args)
         {
             TestBase.Inconclusive.Because(message, args);
         }
@@ -69,7 +69,7 @@ namespace TestBase
         #else
         [DebuggerHidden]
         #endif
-        public static void Fail(string message, params object[] args)
+        public static void Failed(string message, params object[] args)
         {
             var formatted = args?.Length > 0 ? string.Format(message, args) : message;
             KnownTestRunnerAssertions.Throw(new Assertion(formatted));

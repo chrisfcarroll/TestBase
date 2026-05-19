@@ -9,7 +9,7 @@ public class PreconditionTests
     public void Inconclusive_ShouldThrowInconclusiveException()
     {
         var ex = Assert.Throws<InconclusiveException>(
-            () => Precondition.Inconclusive("not ready"));
+            () => Precondition.InconclusiveBecause("not ready"));
 
         ex.Message.ShouldContain("not ready");
     }
@@ -18,7 +18,7 @@ public class PreconditionTests
     public void Inconclusive_ShouldFormatMessageArgs()
     {
         var ex = Assert.Throws<InconclusiveException>(
-            () => Precondition.Inconclusive("missing {0}", "dependency"));
+            () => Precondition.InconclusiveBecause("missing {0}", "dependency"));
 
         ex.Message.ShouldContain("missing dependency");
     }
@@ -57,7 +57,7 @@ public class PreconditionTests
     public void Fail_ShouldThrowAssertionException()
     {
         var ex = Assert.Throws<AssertionException>(
-            () => Precondition.Fail("bad state"));
+            () => Precondition.Failed("bad state"));
 
         ex.Message.ShouldContain("bad state");
     }
@@ -66,7 +66,7 @@ public class PreconditionTests
     public void Fail_ShouldFormatMessageArgs()
     {
         var ex = Assert.Throws<AssertionException>(
-            () => Precondition.Fail("expected {0} but got {1}", "a", "b"));
+            () => Precondition.Failed("expected {0} but got {1}", "a", "b"));
 
         ex.Message.ShouldContain("expected a but got b");
     }
