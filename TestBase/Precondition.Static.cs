@@ -12,7 +12,7 @@ namespace TestBase
     public static class Precondition
     {
         /// <summary>
-        ///     Throws the active test runner's Inconclusive or Skip exception with the given message.
+        /// Throws the active test runner's Inconclusive or Skip exception with the given message.
         /// </summary>
         [DoesNotReturn]
         #if NET6_0_OR_GREATER
@@ -26,19 +26,19 @@ namespace TestBase
         }
 
         /// <summary>
-        ///     If <paramref name="predicate"/>(<paramref name="actual"/>) evaluates to false,
-        ///     the test is inconclusive (or skipped) instead of failed.
-        ///     Returns <paramref name="actual"/> if the precondition holds.
+        /// If <paramref name="predicate"/>(<paramref name="actual"/>) evaluates to true,
+        /// the test is inconclusive (or skipped) instead of failed.
+        /// Returns <paramref name="actual"/> if the predicate fails.
         /// </summary>
         #if NET6_0_OR_GREATER
         [StackTraceHidden]
         #else
         [DebuggerHidden]
         #endif
-        public static T InconclusiveIf<T>(T                         actual,
+        public static T InconclusiveIf<T>(T actual,
                                           Expression<Func<T, bool>> predicate,
                                           [CallerArgumentExpression("predicate")]
-                                          string                    comment = null)
+                                          string comment = null)
         {
             if (predicate.Compile()(actual))
             {
@@ -48,8 +48,8 @@ namespace TestBase
         }
 
         /// <summary>
-        ///     If <paramref name="actual"/> evaluates to false, the test is inconclusive (or skipped).
-        ///     Returns the <see cref="Precondition{T}"/> if it holds.
+        ///     If <paramref name="actual"/> is true, the test is inconclusive (or skipped).
+        ///     Returns false if actual is false.
         /// </summary>
         #if NET6_0_OR_GREATER
         [StackTraceHidden]
@@ -83,19 +83,19 @@ namespace TestBase
         }
 
         /// <summary>
-        ///     If <paramref name="predicate"/>(<paramref name="actual"/>) evaluates to false,
-        ///     the test fails with an assertion failure (not inconclusive).
-        ///     Returns <paramref name="actual"/> if the precondition holds.
+        /// If <paramref name="predicate"/>(<paramref name="actual"/>) evaluates to true,
+        /// the test fails with an assertion failure.
+        /// Returns <paramref name="actual"/> if the precondition fails.
         /// </summary>
         #if NET6_0_OR_GREATER
         [StackTraceHidden]
         #else
         [DebuggerHidden]
         #endif
-        public static T FailIf<T>(T                         actual,
+        public static T FailIf<T>(T actual,
                                   Expression<Func<T, bool>> predicate,
                                   [CallerArgumentExpression("predicate")]
-                                  string                    comment = null)
+                                  string comment = null)
         {
             var result = new Precondition<T>(actual, predicate, comment);
             if (result) KnownTestRunnerAssertions.Throw(result);
@@ -103,9 +103,9 @@ namespace TestBase
         }
 
         /// <summary>
-        ///     If <paramref name="actual"/> evaluates to false,
-        ///     the test fails with an assertion failure (not inconclusive).
-        ///     Returns the <see cref="Precondition{T}"/> if it holds.
+        /// If <paramref name="actual"/> is true,
+        /// the test fails with an assertion failure.
+        /// Otherwise, returns false.
         /// </summary>
         #if NET6_0_OR_GREATER
         [StackTraceHidden]
@@ -114,7 +114,7 @@ namespace TestBase
         #endif
         public static bool FailIf(bool actual,
                                   [CallerArgumentExpression("actual")]
-                                  string          comment = null)
+                                  string comment = null)
         {
             if (actual) KnownTestRunnerAssertions.Throw(comment);
             return false;
