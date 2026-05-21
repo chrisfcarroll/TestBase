@@ -21,7 +21,5 @@ public class Precondition<T> : Assertion<T>
         T                         actual,
         Expression<Func<T, bool>> predicate,
         string                    comment = null,
-        params object[]           commentArgs) : base(actual, predicate, comment, commentArgs)
-    {
-    }
+        params object[]           commentArgs) : base(actual, predicate, comment, commentArgs) { }
 }

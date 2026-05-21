@@ -2,11 +2,12 @@ using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
+using System.Runtime.CompilerServices;
 
 namespace TestBase
 {
     /// <summary>
-    ///     Static methods for marking test preconditions as inconclusive or failed.
+    /// Static methods for marking test preconditions as inconclusive or failed.
     /// </summary>
     public static class Precondition
     {
@@ -21,7 +22,7 @@ namespace TestBase
         #endif
         public static void InconclusiveBecause(string message, params object[] args)
         {
-            TestBase.Inconclusive.Because(message, args);
+            Inconclusive.Because(message, args);
         }
 
         /// <summary>
@@ -34,13 +35,16 @@ namespace TestBase
         #else
         [DebuggerHidden]
         #endif
-        public static T InconclusiveIf<T>(
-            T                         actual,
-            Expression<Func<T, bool>> predicate,
-            string                    comment = null,
-            params object[]           commentArgs)
+        public static T InconclusiveIf<T>(T                         actual,
+                                          Expression<Func<T, bool>> predicate,
+                                          [CallerArgumentExpression("predicate")]
+                                          string                    comment = null)
         {
-            return TestBase.Inconclusive.IfPreconditionFails(actual, predicate, comment, commentArgs);
+            if (predicate.Compile()(actual))
+            {
+                KnownTestRunnerAssertions.ThrowInconclusive(comment);
+            }
+            return actual;
         }
 
         /// <summary>
@@ -52,16 +56,19 @@ namespace TestBase
         #else
         [DebuggerHidden]
         #endif
-        public static Precondition<BoolWithString> InconclusiveIf(
-            BoolWithString  actual,
-            string          comment = null,
-            params object[] commentArgs)
+        public static bool InconclusiveIf(bool actual,
+                                          [CallerArgumentExpression("actual")]
+                                          string comment = null)
         {
-            return TestBase.Inconclusive.IfPreconditionFails(actual, comment, commentArgs);
+            if (actual)
+            {
+                KnownTestRunnerAssertions.ThrowInconclusive(comment);
+            }
+            return false;
         }
 
         /// <summary>
-        ///     Throws the active test runner's assertion failure exception with the given message.
+        /// Throws the active test runner's assertion failure exception with the given message.
         /// </summary>
         [DoesNotReturn]
         #if NET6_0_OR_GREATER
@@ -85,15 +92,13 @@ namespace TestBase
         #else
         [DebuggerHidden]
         #endif
-        public static T FailIf<T>(
-            T                         actual,
-            Expression<Func<T, bool>> predicate,
-            string                    comment = null,
-            params object[]           commentArgs)
+        public static T FailIf<T>(T                         actual,
+                                  Expression<Func<T, bool>> predicate,
+                                  [CallerArgumentExpression("predicate")]
+                                  string                    comment = null)
         {
-            var result = new Precondition<T>(actual, predicate, comment, commentArgs);
-            if (result) return actual;
-            KnownTestRunnerAssertions.Throw(result);
+            var result = new Precondition<T>(actual, predicate, comment);
+            if (result) KnownTestRunnerAssertions.Throw(result);
             return actual;
         }
 
@@ -107,15 +112,12 @@ namespace TestBase
         #else
         [DebuggerHidden]
         #endif
-        public static Precondition<BoolWithString> FailIf(
-            BoolWithString  actual,
-            string          comment = null,
-            params object[] commentArgs)
+        public static bool FailIf(bool actual,
+                                  [CallerArgumentExpression("actual")]
+                                  string          comment = null)
         {
-            var result = new Precondition<BoolWithString>(actual, a => a, comment, commentArgs);
-            if (result) return result;
-            KnownTestRunnerAssertions.Throw(result);
-            return result;
+            if (actual) KnownTestRunnerAssertions.Throw(comment);
+            return false;
         }
     }
 }

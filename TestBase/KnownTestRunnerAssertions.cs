@@ -150,5 +150,7 @@ namespace TestBase
             return System.Threading.Thread.GetDomain().GetAssemblies();
 #endif
         }
+
+        public static void Throw(string message) => Throw(new Exception(message));
     }
 }

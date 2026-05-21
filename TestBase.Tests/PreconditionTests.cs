@@ -24,33 +24,32 @@ public class PreconditionTests
     }
 
     [Test]
-    public void InconclusiveIf_ShouldReturnActual_WhenPredicateHolds()
+    public void InconclusiveIf_ShouldReturnActual_WhenPredicateFails()
     {
-        var result = Precondition.InconclusiveIf(42, x => x > 0);
+        var result = Precondition.InconclusiveIf(42, x => x < 0);
 
         result.ShouldBe(42);
     }
 
     [Test]
-    public void InconclusiveIf_ShouldThrowInconclusive_WhenPredicateFails()
+    public void InconclusiveIf_ShouldThrowInconclusive_WhenPredicateHolds()
     {
         Assert.Throws<InconclusiveException>(
-            () => Precondition.InconclusiveIf(0, x => x > 0));
+            () => Precondition.InconclusiveIf(0, x => x == 0));
     }
 
     [Test]
-    public void InconclusiveIf_BoolWithString_ShouldReturnResult_WhenTrue()
+    public void InconclusiveIf_True_ShouldThrowInconclusive()
     {
-        var result = Precondition.InconclusiveIf(new BoolWithString(true, "ok"));
+        Assert.Throws<InconclusiveException>(
+            ()=> Precondition.InconclusiveIf(true));
 
-        ((bool)result).ShouldBe(true);
     }
 
     [Test]
-    public void InconclusiveIf_BoolWithString_ShouldThrowInconclusive_WhenFalse()
+    public void InconclusiveIf_False_Should_Return_False()
     {
-        Assert.Throws<InconclusiveException>(
-            () => Precondition.InconclusiveIf(new BoolWithString(false, "nope")));
+        Precondition.InconclusiveIf(false).ShouldBeFalse();
     }
 
     [Test]
@@ -72,32 +71,27 @@ public class PreconditionTests
     }
 
     [Test]
-    public void FailIf_ShouldReturnActual_WhenPredicateHolds()
+    public void FailIf_ShouldReturnActual_WhenPredicateFails()
     {
-        var result = Precondition.FailIf(42, x => x > 0);
-
-        result.ShouldBe(42);
+        Precondition.FailIf(42, x => x < 0).ShouldBe(42);
     }
 
     [Test]
-    public void FailIf_ShouldThrowAssertionFailure_WhenPredicateFails()
+    public void FailIf_ShouldThrowAssertionFailure_WhenPredicateHolds()
     {
         Assert.Throws<AssertionException>(
-            () => Precondition.FailIf(0, x => x > 0));
+            () => Precondition.FailIf(0, x => x == 0));
     }
 
     [Test]
-    public void FailIf_BoolWithString_ShouldReturnResult_WhenTrue()
+    public void FailIf_Bool_ShouldReturnResult_WhenFalse()
     {
-        var result = Precondition.FailIf(new BoolWithString(true, "ok"));
-
-        ((bool)result).ShouldBe(true);
+        Precondition.FailIf(false).ShouldBeFalse();
     }
 
     [Test]
-    public void FailIf_BoolWithString_ShouldThrowAssertionFailure_WhenFalse()
+    public void FailIf_Bool_ShouldThrowAssertionFailure_WhenTrue()
     {
-        Assert.Throws<AssertionException>(
-            () => Precondition.FailIf(new BoolWithString(false, "nope")));
+        Assert.Throws<AssertionException>(() => Precondition.FailIf(true));
     }
 }
