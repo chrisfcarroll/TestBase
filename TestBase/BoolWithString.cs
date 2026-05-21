@@ -26,7 +26,7 @@ namespace TestBase
     /// <summary>
     ///     A <see cref="bool"/> with an explanation. <see cref="BoolWithString" /> is convertible to and from <see cref="bool" />
     /// </summary>
-    public struct BoolWithString
+     public readonly struct BoolWithString
     {
         /// <summary>True if both value and <see cref="ToString" /> match.</summary>
         /// <param name="other"></param>
