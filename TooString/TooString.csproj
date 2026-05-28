@@ -10,7 +10,7 @@
     <PropertyGroup>
         <AssemblyVersion>0.8.10</AssemblyVersion>
         <AssemblyFileVersion>0.8.10</AssemblyFileVersion>
-        <PackageVersion>0.8.10-preview</PackageVersion>
+        <PackageVersion>0.8.10</PackageVersion>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <Title>value.TooString() — The stringifier for CSharp and Json output, going places that serializers don't.</Title>
         <PackageDescription><![CDATA[TooString is a Stringifier that goes places serializers don't.
