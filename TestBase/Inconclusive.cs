@@ -40,7 +40,6 @@ namespace TestBase
         #endif
         public static T IfPreconditionFails<T>(T actual,
                                                Expression<Func<T, bool>> predicate,
-                                               [CallerArgumentExpression("actual")]
                                                string comment = null,
                                                params object[] commentArgs)
         {
@@ -48,6 +47,25 @@ namespace TestBase
             if (result) return actual;
             KnownTestRunnerAssertions.ThrowInconclusive(result.Message);
             return actual;
+        }
+
+        /// <summary>
+        ///     If <paramref name="actual"/> evaluates to false, the test is inconclusive (or skipped).
+        ///     Returns the <see cref="Precondition{T}"/> if it holds.
+        /// </summary>
+        #if NET6_0_OR_GREATER
+        [StackTraceHidden]
+        #else
+        [DebuggerHidden]
+        #endif
+        public static Precondition<BoolWithString> IfPreconditionFails(BoolWithString actual,
+                                                                       string comment = null,
+                                                                       params object[] commentArgs)
+        {
+            var result = new Precondition<BoolWithString>(actual, a => a, comment, commentArgs);
+            if (result) return result;
+            KnownTestRunnerAssertions.ThrowInconclusive(result.Message);
+            return result;
         }
 
         /// <summary>
@@ -66,7 +84,9 @@ namespace TestBase
                               string comment = null,
                               params object[] commentArgs)
         {
-            return IfPreconditionFails(actual, predicate, comment, commentArgs);
+            var result = new Precondition<T>(actual, predicate, comment, commentArgs);
+            if (result) KnownTestRunnerAssertions.ThrowInconclusive(result.Message);
+            return actual;
         }
 
         /// <summary>
@@ -78,32 +98,12 @@ namespace TestBase
         #else
         [DebuggerHidden]
         #endif
-        public static Precondition<BoolWithString> IfPreconditionFails(
-                            BoolWithString actual,
-                            [CallerArgumentExpression("actual")] string comment = null,
-                            params object[] commentArgs)
+        public static BoolWithString If(BoolWithString actual,
+                                        [CallerArgumentExpression("actual")]
+                                        string comment = null)
         {
-            var result = new Precondition<BoolWithString>(actual, a => a, comment, commentArgs);
-            if (result) return result;
-            KnownTestRunnerAssertions.ThrowInconclusive(result.Message);
-            return result;
-        }
-
-        /// <summary>
-        ///     If <paramref name="actual"/> evaluates to false, the test is inconclusive (or skipped).
-        ///     Returns the <see cref="Precondition{T}"/> if it holds.
-        /// </summary>
-        #if NET6_0_OR_GREATER
-        [StackTraceHidden]
-        #else
-        [DebuggerHidden]
-        #endif
-        public static Precondition<BoolWithString> If(BoolWithString  actual,
-                                                      [CallerArgumentExpression("actual")]
-                                                      string          comment = null,
-                                                      params object[] commentArgs)
-        {
-            return IfPreconditionFails(actual, comment, commentArgs);
+            if (actual) KnownTestRunnerAssertions.ThrowInconclusive(comment);
+            return !actual;
         }
     }
 }

@@ -93,17 +93,24 @@ public class KnownTestRunnerAssertionsTests
     }
 
     [Test]
-    public void SkipIf_ShouldReturnActual_WhenPreconditionHolds()
+    public void SkipIf_ShouldReturnActual_WhenConditionFails()
     {
-        var result = Inconclusive.If(42, x => x > 0);
+        try
+        {
+            var result = Inconclusive.If(42, x => x < 0);
+            result.ShouldBe(42);
+        } 
+        catch (InconclusiveException e)
+        {
+            Assert.Fail("was inconclusive, should not have been.");
+        }
 
-        result.ShouldBe(42);
     }
 
     [Test]
-    public void SkipIf_ShouldThrowInconclusive_WhenPreconditionFails()
+    public void SkipIf_ShouldThrowInconclusive_WhenConditionHoldds()
     {
         NUnit.Framework.Assert.Throws<NUnit.Framework.InconclusiveException>(
-            () => Inconclusive.If(0, x => x > 0));
+            () => Inconclusive.If(0, x => x == 0));
     }
 }
