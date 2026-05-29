@@ -58,14 +58,13 @@ namespace TestBase
         #else
         [DebuggerHidden]
         #endif
-        public static Precondition<BoolWithString> IfPreconditionFails(BoolWithString actual,
-                                                                       string comment = null,
-                                                                       params object[] commentArgs)
+        public static BoolWithString IfPreconditionFails(BoolWithString actual,
+                                                         [CallerArgumentExpression("actual")]
+                                                         string comment = null)
         {
-            var result = new Precondition<BoolWithString>(actual, a => a, comment, commentArgs);
-            if (result) return result;
-            KnownTestRunnerAssertions.ThrowInconclusive(result.Message);
-            return result;
+            if (actual) return actual;
+            KnownTestRunnerAssertions.ThrowInconclusive($"Precondition Failed:{comment}");
+            return actual;
         }
 
         /// <summary>

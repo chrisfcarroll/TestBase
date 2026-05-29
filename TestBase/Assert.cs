@@ -175,12 +175,13 @@ namespace TestBase
         #else
         [DebuggerHidden]
         #endif
-        public static Precondition<BoolWithString> Precondition(
-            BoolWithString  actual,
-            string          comment = null,
-            params object[] commentArgs)
+        public static Precondition<BoolWithString> Precondition(BoolWithString  actual,
+                                                                string          comment = null,
+                                                                params object[] commentArgs)
         {
-            return Inconclusive.IfPreconditionFails(actual, comment, commentArgs);
+            
+            var c = Assertion.CommentFormattedV1(actual.ToString(), comment, commentArgs);
+            return new Precondition<BoolWithString>(actual, c);
         }
 
         /// <summary>

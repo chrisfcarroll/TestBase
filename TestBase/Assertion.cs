@@ -33,7 +33,6 @@ namespace TestBase
         }
         #pragma warning restore 1591
         // ReSharper disable once StaticMemberInGenericType
-        static readonly string nl = Environment.NewLine;
 
         /// <summary>
         ///     Called by <seealso cref="ActualToString" />. Modify this if you want to change the order of methods attempted
@@ -351,14 +350,6 @@ namespace TestBase
         /// </summary>
         public override string Message => ToStringEvenIfPassed();
 
-        static string CommentFormattedV1(string actual, string comment, object[] commentArgs)
-        {
-            var commentFormatted = comment?.Replace("{{actual}}", actual);
-            if (commentFormatted != null && commentArgs?.Length > 0)
-                commentFormatted = string.Format(commentFormatted, commentArgs);
-            return commentFormatted;
-        }
-
         static string ActualToString(T actual)
         {
             foreach (var toString in PreferredToStringMethod)
@@ -467,6 +458,8 @@ namespace TestBase
     /// </remarks>
     public class Assertion : Exception
     {
+        protected static readonly string nl = Environment.NewLine;
+
         /// <inheritdoc />
         protected Assertion() { }
 
@@ -517,5 +510,13 @@ namespace TestBase
         ///     Returns <c>this</c> unchanged when no supported test framework is detected.
         /// </summary>
         public Exception ForActiveTestRunner() => KnownTestRunnerAssertions.From(this);
+
+        internal static string CommentFormattedV1(string actual, string comment, object[] commentArgs)
+        {
+            var commentFormatted = comment?.Replace("{{actual}}", actual);
+            if (commentFormatted != null && commentArgs?.Length > 0)
+                commentFormatted = string.Format(commentFormatted, commentArgs);
+            return commentFormatted;
+        }
     }
 }
